@@ -47,7 +47,8 @@ endif
 # zip
 .PHONY: zip
 zip:
-    zip $(output).zip $(find . -type f)
+	@echo "Zipping.";\
+    tar -zcvf $(output).tar.gz $(find . -type f | grep -v "git")
 
 # clean
 .PHONY: clean 
