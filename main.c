@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 
 void printHelp()
 {
-	printf("IFJ project.\n"
+	out("IFJ project.\n"
 					"2017/2018\n\n"
 					"Usage:\n"
 					"-h\tPrints this help.\n"
