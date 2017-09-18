@@ -1,3 +1,4 @@
+
 # Makefile
 # Project manager file
 # IFJ project
@@ -8,8 +9,8 @@
 # compile settings
 cc = gcc
 defines = -DDEBUG_MODE
-linkings = -lpthread
-flags = -O2 -g -std=c99 -pedantic -Wall -Wextra -lm
+linkings = -lpthread -lm
+flags = $(defines) -O2 -g -std=c99 -pedantic -Wall -Wextra
 
 
 # source settings
@@ -28,7 +29,7 @@ all: $(output)
 # linking
 $(output) : $(obj)
 	@echo "Linking project into $@.";\
-	$(cc) $(flags) $(defines) $(obj) -o $@ $(linkings) 
+	$(cc) $(flags) $(obj) -o $@ $(linkings)
 
 # dependencies generating
 ifneq ($(MAKECMDGOALS),clean)
@@ -53,7 +54,7 @@ zip:
 	tar -zcvf $(output).tar.gz $(src) $(head) Makefile > /dev/null
 
 # clean
-.PHONY: clean 
+.PHONY: clean
 clean:
 	@echo "Cleaning project files.";\
 	rm -rf *~ *.o *.gch *.dep $(output) $(output).tar.gz
