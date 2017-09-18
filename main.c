@@ -5,6 +5,7 @@
 // FIT VUT
 // 2017/2018
 
+#include "io.h"
 #include "log.h"
 
 /**
