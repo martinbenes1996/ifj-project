@@ -28,33 +28,40 @@
  * programme will log about wanted activity.
  */
 
-  /********************************************************/
+  /*********************** SYMBOLS *************************/
   #ifdef DEBUG_MODE
 
     //#define INIT_DEBUG /* Initialization of programme. */
-    #define IO_DEBUG /* IO module debug. */
+    //#define IO_DEBUG /* IO module debug. */
+    //#define ARGS_DEBUG /* Arguments debug. */
 
 	  /*add your own*/
-
-
-
 
   #endif // DEBUG_MODE
   /********************************************************/
 
 
-/*------------------------- OUTPUT --------------------------*/
+
+/*---------------------------- OUTPUT ----------------------------------*/
+
 /**
- * @brief   Prints to syslog and to stderr. Flushes it afterwards.
+ * @brief   Prints to syslog and to stderr with newline. Flushes it afterwards.
  * @param str     Format message.
  */
 void debug(const char * str, ...);
 
+
 /**
- * @brief   Prints to stdout. Flushes it afterwards.
+ * @brief   Prints to stdout with newline. Flushes it afterwards.
  * @param str     Format message.
  */
 void out(const char * str, ...);
+
+/**
+ * @brief   Prints to stderr with newline. Flushes it afterwards.
+ * @param str     Format message.
+ */
+void error(const char * str, ...);
 
 
 /**
@@ -64,7 +71,7 @@ void closeOut();
 
 
 
-/*------------------------ INPUT ------------------------*/
+/*----------------------------- INPUT ---------------------------------*/
 /**
  * @brief   Loads line from source of maximum size.
  * @param src     Read source.

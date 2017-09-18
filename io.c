@@ -46,7 +46,7 @@ void closeOut()
 }
 
 /**
- * @brief   Prints to syslog and to stderr. Flushes it afterwards.
+ * @brief   Prints to syslog and to stderr with newline. Flushes it afterwards.
  * @param str     String to be written.
  */
 void debug(const char * str, ...)
@@ -64,7 +64,7 @@ void debug(const char * str, ...)
 }
 
 /**
- * @brief   Prints to stdout. Flushes it afterwards.
+ * @brief   Prints to stdout with newline. Flushes it afterwards.
  * @param str     String to be written.
  */
 void out(const char * str, ...)
@@ -74,6 +74,19 @@ void out(const char * str, ...)
   fprintf(stdout, str, args);
   fprintf(stdout, "\n");
   fflush(stdout);
+}
+
+/**
+ * @brief   Prints to stderr with newline. Flushes it afterwards.
+ * @param str     String to be written.
+ */
+void error(const char * str, ...)
+{
+  va_list args;
+  va_start(args, str);
+  fprintf(stderr, str, args);
+  fprintf(stderr, "\n");
+  fflush(stderr);
 }
 
 
