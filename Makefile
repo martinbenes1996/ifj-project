@@ -57,4 +57,4 @@ zip:
 .PHONY: clean
 clean:
 	@echo "Cleaning project files.";\
-	rm -rf *~ *.o *.gch *.dep $(output) $(output).tar.gz
+	rm -rf *~ *.o *.gch *.dep $(output) $(output).tar.gz doc/*
