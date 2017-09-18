@@ -23,3 +23,6 @@
 *.exe
 *.out
 ifj
+
+### Documentation ###
+./doc/*

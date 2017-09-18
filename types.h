@@ -13,7 +13,7 @@
 /** @brief   Structure representing arguments. */
 typedef struct
 {
-  bool help; /*< Help parameter. */
+  bool help; /**< Help parameter. */
   /* will be added */
 } args_t;
 
