@@ -18,6 +18,7 @@
  */
 inline bool processArguments(args_t* a, int argc, char *argv[])
 {
+
 	// defaults
 	a->help = false;
 
