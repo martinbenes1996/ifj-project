@@ -39,19 +39,21 @@ endif
 	$(cc) $(flags) -MM $< -MF $@ && \
 	sed -i $@ -e 's_$*.o[ ]*:_$*.o $@: _'
 
+
 # compiling
 %.o : %.c
 	@echo "Compiling $@.";\
 	$(cc) $(flags) $(defines) -c $< -o $@
 
+
 # zip
 .PHONY: zip
 zip:
-	@echo "Zipping.";\
-    tar -zcvf $(output).tar.gz $(find . -type f | grep -v "git")
+	@echo "Compressing and zipping.";\
+	tar -zcvf $(output).tar.gz $(src) $(head) Makefile > /dev/null
 
 # clean
 .PHONY: clean 
 clean:
 	@echo "Cleaning project files.";\
-	rm -rf *~ *.o *.gch *.dep $(output)
+	rm -rf *~ *.o *.gch *.dep $(output) $(output).tar.gz

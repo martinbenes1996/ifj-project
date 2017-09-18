@@ -1,5 +1,5 @@
 # .gitignore
-# Determines the files to track with git
+# Determines the files to not track with git
 # IFJ project
 # FIT VUT
 # 2017/2018
@@ -22,3 +22,4 @@
 ### Executables ###
 *.exe
 *.out
+ifj
