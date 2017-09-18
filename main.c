@@ -6,7 +6,6 @@
 // 2017/2018
 
 #include "io.h"
-#include "log.h"
 
 /**
  * @brief 	Main function.
@@ -14,12 +13,21 @@
  * @param argv 		Argument pointer.
  * @returns 			Return code of programme.
  */
-int main()
+int main(int argc, char *argv[])
 {
 
 	#ifdef INIT_DEBUG
-		debug("Init.");
+		debug("IFJ project started.");
 	#endif
+	
+	/*
+	// example of usage input
+	const int max = 100;
+	char buff[max];
+	while( getLine(stdin, buff, max) ) printf("%s\n", buff);
+	*/
+
+
 
 	closeOut();
 	return 0;
