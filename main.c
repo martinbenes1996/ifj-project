@@ -11,12 +11,19 @@
 #include <string.h>
 
 #include "io.h"
-#include "tools.h"
 #include "types.h"
 
 
 /** @brief 	Prints help to stdout. */
 void printHelp();
+
+/**
+ * @brief 	Processes the arguments to the structure.
+ * @param argc 		Number of arguments.
+ * @param argv 		Argument pointer.
+ * @returns 			Filled structure.
+ */
+bool processArguments(args_t* a, int argc, char *argv[]);
 
 /**
  * @brief 	Main function.
@@ -50,11 +57,40 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
+bool processArguments(args_t* a, int argc, char *argv[])
+{
+
+	// defaults
+	a->help = false;
+
+	for(int i = 1; i < argc; i++)
+	{
+		// help
+		if( !strcmp(argv[i], "-h") || !strcmp(argv[i], "--help") )
+		{
+			a->help = true;
+			#ifdef ARGS_DEBUG
+				debug("Argument -h");
+			#endif
+			break;
+		}
+
+		// unknown
+		else
+		{
+			err("Unknown parameter!");
+			return false;
+		}
+	}
+
+	return true;
+}
+
 void printHelp()
 {
 	out("IFJ project.\n"
 					"2017/2018\n\n"
 					"Usage:\n"
-					"-h\tPrints this help.\n"
+					"-h\tPrints this help."
 	);
 }
