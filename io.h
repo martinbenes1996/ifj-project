@@ -61,7 +61,7 @@ void out(const char * str, ...);
  * @brief   Prints to stderr with newline. Flushes it afterwards.
  * @param str     Format message.
  */
-void error(const char * str, ...);
+void err(const char * str, ...);
 
 
 /**

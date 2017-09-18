@@ -14,7 +14,7 @@
 typedef struct
 {
   bool help; /*< Help parameter. */
-  /*will be added*/
+  /* will be added */
 } args_t;
 
 #endif // TYPES_H

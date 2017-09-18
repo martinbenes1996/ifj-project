@@ -76,7 +76,7 @@ bool processArguments(args_t* a, int argc, char *argv[])
 		// unknown
 		else
 		{
-			error("Unknown parameter!");
+			err("Unknown parameter!");
 			return false;
 		}
 	}

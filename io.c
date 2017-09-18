@@ -18,11 +18,10 @@
 
 void debug(const char * str, ...);
 void out(const char * str, ...);
+void err(const char * str, ...);
 
 static bool outWasInit = false; /*< Wheater syslog was opened or not. */
-/**
- * @brief   Initializes output (syslog).
- */
+
 void initOut()
 {
   openlog("ifj", LOG_NDELAY | LOG_CONS, LOG_LOCAL0);
@@ -32,9 +31,7 @@ void initOut()
   #endif
 
 }
-/**
- * @brief   Closes output (syslog).
- */
+
 void closeOut()
 {
   if(!outWasInit) return;
@@ -45,10 +42,6 @@ void closeOut()
   outWasInit = false;
 }
 
-/**
- * @brief   Prints to syslog and to stderr with newline. Flushes it afterwards.
- * @param str     String to be written.
- */
 void debug(const char * str, ...)
 {
   if(!outWasInit) initOut();
@@ -63,10 +56,6 @@ void debug(const char * str, ...)
 
 }
 
-/**
- * @brief   Prints to stdout with newline. Flushes it afterwards.
- * @param str     String to be written.
- */
 void out(const char * str, ...)
 {
   va_list args;
@@ -76,11 +65,7 @@ void out(const char * str, ...)
   fflush(stdout);
 }
 
-/**
- * @brief   Prints to stderr with newline. Flushes it afterwards.
- * @param str     String to be written.
- */
-void error(const char * str, ...)
+void err(const char * str, ...)
 {
   va_list args;
   va_start(args, str);
@@ -91,13 +76,6 @@ void error(const char * str, ...)
 
 
 /*----------------------- INPUT -------------------------*/
-/**
- * @brief   Loads line from source of maximum size.
- * @param src     Read source.
- * @param buff    Target address.
- * @param max     Maximum size.
- * @returns       If EOF, it returns false. Otherwise true.
- */
 bool getLine(FILE * src, char buff[], long max)
 {
   int c, i;
