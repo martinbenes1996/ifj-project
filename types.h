@@ -1,20 +1,38 @@
 
-// types.h
-// Definitions of public types
-// IFJ project
-// FIT VUT
-// 2017/2018
+/**
+ * @file types.h
+ * @authors xbenes49 xbolsh00 xkrato47 xpolan09
+ * @date 19th september 2017
+ * @brief Definitions of public types.
+ *
+ * This module defines basic public types, used in all project.
+ */
 
 #ifndef TYPES_H
 #define TYPES_H
 
 #include <stdbool.h>
 
-/** @brief   Structure representing arguments. */
+/*--------------------------------------------------*/
+/** @addtogroup Public_types
+ * Macros and symbols for selective debugging.
+ * @{
+ */
+
+
+/**
+ * @brief   Structure representing arguments.
+ *
+ * This structure is filled in arguments of main, and then it indicates
+ * wanted functionality.
+ */
 typedef struct
 {
   bool help; /**< Help parameter. */
   /* will be added */
 } args_t;
 
+
+/** @} */
+/*--------------------------------------------------*/
 #endif // TYPES_H

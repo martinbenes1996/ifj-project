@@ -1,9 +1,16 @@
 
-// io.h
-// Input Output library (including logging)
-// IFJ project
-// FIT VUT
-// 2017/2018
+/**
+ * @file io.h
+ * @interface io
+ * @authors xbenes49 xbolsh00 xkrato47 xpolan09
+ * @date 19th september 2017
+ * @brief Input Output library.
+ *
+ * This module consists of declaration of input output operation, that are
+ * used throughout the project. It can be then sent into file, syslog etc.
+ * It also has preprocessor symbols for enabling selective logging,
+ * which is useful for development.
+ */
 
 #ifndef IO_H
 #define IO_H
@@ -12,21 +19,25 @@
 #include <stdio.h>
 
 /*------------------------ DEBUG -------------------------*/
+/** @addtogroup Debug_macros
+ * Macros and symbols for selective debugging.
+ * @{
+ */
 
-/**
- * HOWTO:
- * This module ensures the logging system. All the project (all parts)
- * should be commented as shown:
+/*
+ HOWTO:
+ This module ensures the logging system. All the project (all parts)
+ should be commented as shown:
 
 #ifdef ???
   debug("-activity-");
 #endif
 
- * It must have this line-alignment.
- *
- * If you do so, then - when you uncomment the one of lines below, the
- * programme will log about wanted activity.
- */
+ It must have this line-alignment.
+
+ If you do so, then - when you uncomment the one of lines below, the
+ programme will log about wanted activity.
+*/
 
   /*********************** SYMBOLS *************************/
   #ifdef DEBUG_MODE
@@ -41,39 +52,64 @@
   /********************************************************/
 
 
-
+/** @}*/
 /*---------------------------- OUTPUT ----------------------------------*/
+/** @addtogroup Output
+ * Functions for output.
+ * @{
+ */
 
 /**
- * @brief   Prints to syslog and to stderr with newline. Flushes it afterwards.
+ * @brief   Prints to syslog and to stderr.
+ *
+ * This function prints given message with variadic parameters
+ * to syslog (/var/log/syslog) and to stderr, it adds linefeed afterwards.
+ * Then flushes it.
  * @param str     Format message.
  */
 void debug(const char * str, ...);
 
 
 /**
- * @brief   Prints to stdout with newline. Flushes it afterwards.
+ * @brief   Prints to stdout.
+ *
+ * This function prints given message with variadic parameters to stdout,
+ * it adds linefeed afterwards. Then flushes it.
  * @param str     Format message.
  */
 void out(const char * str, ...);
 
 /**
- * @brief   Prints to stderr with newline. Flushes it afterwards.
+ * @brief   Prints to stderr.
+ *
+ * This function prints given message with variadic parameters to stderr,
+ * it adds linefeed afterwards. Then flushes it.
  * @param str     Format message.
  */
 void err(const char * str, ...);
 
 
 /**
- * @brief   Closes output (syslog).
+ * @brief   Closes output.
+ *
+ * This function ends communication of programme with syslog.
  */
 void closeOut();
 
 
-
+/** @} */
 /*----------------------------- INPUT ---------------------------------*/
+/** @addtogroup Input
+ * Functions for input.
+ * @{
+ */
+
 /**
- * @brief   Loads line from source of maximum size.
+ * @brief   Loads line from source.
+ *
+ * This function gets line from given source (ended with EOF, or linefeed)
+ * within given maximum length, and saves it to the given buffer with '\0'
+ * in the end.
  * @param src     Read source.
  * @param buff    Target address.
  * @param max     Maximum size.
@@ -83,4 +119,5 @@ bool getLine(FILE * src, char buff[], long max);
 
 
 
+/** @} */
 #endif // IO_H

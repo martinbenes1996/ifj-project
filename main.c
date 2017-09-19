@@ -1,9 +1,12 @@
 
-// main.c
-// Main module
-// IFJ project
-// FIT VUT
-// 2017/2018
+/**
+ * @file main.c
+ * @authors xbenes49 xbolsh00 xkrato47 xpolan09
+ * @date 19th september 2017
+ * @brief Main module.
+ *
+ * This module contains the function main().
+ */
 
 #include <stdbool.h>
 #include <stdlib.h>
@@ -13,20 +16,39 @@
 #include "io.h"
 #include "types.h"
 
+/*------------------------------------------------------*/
+/** @addtogroup main
+ * Main() function and tools.
+ * @{
+ */
 
-/** @brief 	Prints help to stdout. */
+/**
+ * @brief 	Prints help.
+ *
+ * This function prints help to standard output.
+ */
 void printHelp();
 
 /**
- * @brief 	Processes the arguments to the structure.
+ * @brief 	Processes the arguments.
+ *
+ * This function processes the argc and argv from main into the structure,
+ * which is sent as pointer in parameter. Returns true, if succeeded, or
+ * false, if it fails.
+ * @param a 			Structure to fill.
  * @param argc 		Number of arguments.
  * @param argv 		Argument pointer.
- * @returns 			Filled structure.
+ * @returns 			True, if success, false otherwise.
  */
 bool processArguments(args_t* a, int argc, char *argv[]);
 
+/*-----------------------------------------------------*/
+
 /**
  * @brief 	Main function.
+ *
+ * This function is called as first. It recieves arguments from cmd
+ * into its parameter.
  * @param argc 		Number of arguments (from shell).
  * @param argv 		Argument pointer.
  * @returns 			Return code of programme.
@@ -56,6 +78,9 @@ int main(int argc, char *argv[])
 	closeOut();
 	return 0;
 }
+
+/** @}*/
+/*-----------------------------------------------------*/
 
 bool processArguments(args_t* a, int argc, char *argv[])
 {

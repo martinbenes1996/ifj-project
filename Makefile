@@ -53,6 +53,12 @@ zip:
 	@echo "Compressing and zipping.";\
 	tar -zcvf $(output).tar.gz $(src) $(head) Makefile > /dev/null
 
+# zip
+.PHONY: doc
+doc:
+	@echo "Generating documentation.";\
+	doxygen Doxyfile 2> /dev/null > /dev/null
+
 # clean
 .PHONY: clean
 clean:

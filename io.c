@@ -1,9 +1,13 @@
 
-// io.c
-// Input Output module
-// IFJ project
-// FIT VUT
-// 2017/2018
+/**
+ * @file io.c
+ * @authors xbenes49 xbolsh00 xkrato47 xpolan09
+ * @date 19th september 2017
+ * @brief Input Output module.
+ *
+ * This module consists of definitions of input output operation, that are
+ * used throughout the project. It can be then sent into file, syslog etc.
+ */
 
 #include <stdarg.h>
 #include <stdbool.h>
