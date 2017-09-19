@@ -5,7 +5,7 @@
  * @date 19th september 2017
  * @brief Definitions of public types.
  *
- * This module defines basic public types, used in all project.
+ * This module defines basic public types, used in whole project.
  */
 
 #ifndef TYPES_H
@@ -15,7 +15,7 @@
 
 /*--------------------------------------------------*/
 /** @addtogroup Public_types
- * Macros and symbols for selective debugging.
+ * Basic public types, used in whole project.
  * @{
  */
 
