@@ -33,7 +33,11 @@ $(output) : $(obj)
 
 # dependencies generating
 ifneq ($(MAKECMDGOALS),clean)
+ifneq ($(MAKECMDGOALS),zip)
+ifneq ($(MAKECMDGOALS),doc)
 -include $(dep)
+endif
+endif
 endif
 %.dep: %.c
 	@echo "Generating dependencies $@.";\
