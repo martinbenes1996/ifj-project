@@ -1,0 +1,40 @@
+
+GIT
+sudo apt-get install git
+
+---- zacatek ----
+git init                                             # zacne git v aktualni slozce
+git remote add origin <url>                          # da <url> alias 'origin'
+git clone <url>                                      # stahne existujici projekt
+   -> git clone origin (pokud je zadan alias)
+git branch --set-upstream-to=origin/master master
+
+
+---- lokalni prace ----
+git status                                           # vypise status lokalniho gitu
+git add <file>                                       # prida <file> do staging area (zahrnut v pristim commitu)
+   -> git add . (prida vse)
+git commit -m "<pojmenovani>"                        # vytvori commit v lokalnim gitu
+git log                                              # vypise historii commitu
+git checkout <hash commitu>                          # prepne se na zadany commit
+
+
+---- branches ----
+git branch                                           # vypise vetve
+git branch <jmeno>                                   # zacne novou vetev
+git checkout <jmeno>                                 # prepne se na zadanou vetev
+git merge <jmeno>                                    # pokusi se sloucit aktualni praci se zadanou vetvi
+git mergetool                                        # v pripade nemoznosti 'zmergovani' vetvi (tzv. conflict) je nutne udelat to manualne
+
+
+---- sdileni prace ----
+git push                                             # odesle commity do vzdaleneho repozitare
+   -> git push origin/master
+git pull                                             # prijme commity ze vzdaleneho repozitare
+   -> git pull origin/master
+
+
+---- tipy & triky ----
+git config --global credential.helper 'cache --timeout 7200'   # prihlasovani probiha kazde dve hodiny
+git config merge.tool meld                                     # nastavi meld jako mergetool
+git config merge.conflictstyle meld                            # nastavi meld jako conflict margetool
