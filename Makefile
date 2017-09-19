@@ -57,7 +57,7 @@ zip:
 	@echo "Compressing and zipping.";\
 	tar -zcvf $(output).tar.gz $(src) $(head) Makefile > /dev/null
 
-# zip
+# doc
 .PHONY: doc
 doc:
 	@echo "Generating documentation.";\
