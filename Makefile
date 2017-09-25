@@ -35,7 +35,9 @@ $(output) : $(obj)
 ifneq ($(MAKECMDGOALS),clean)
 ifneq ($(MAKECMDGOALS),zip)
 ifneq ($(MAKECMDGOALS),doc)
+ifneq ($(MAKECMDGOALS),test)
 -include $(dep)
+endif
 endif
 endif
 endif
@@ -63,8 +65,14 @@ doc:
 	@echo "Generating documentation.";\
 	doxygen Doxyfile 2> /dev/null > /dev/null
 
+# test
+.PHONY: test
+test:
+	@echo "Running verification.";\
+	./verify
+
 # clean
 .PHONY: clean
 clean:
 	@echo "Cleaning project files.";\
-	rm -rf *~ *.o *.gch *.dep $(output) $(output).tar.gz doc/*
+	rm -rf *~ *.o *.gch *.dep $(output) $(output).tar.gz doc/* test/*.err test/*.out test/*.stderr test/*.stdout
