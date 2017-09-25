@@ -28,31 +28,46 @@ static bool outWasInit = false; /*< Wheater syslog was opened or not. */
 
 void initOut()
 {
-  openlog("ifj", LOG_NDELAY | LOG_CONS, LOG_LOCAL0);
   outWasInit = true;
-  #if defined INIT_DEBUG || defined IO_DEBUG
+  
+  #ifdef USE_SYSLOG
+  openlog("ifj", LOG_NDELAY | LOG_CONS, LOG_LOCAL0);
+
+  #ifdef IO_DEBUG
     debug("Initializing log.");
+  #endif
+
   #endif
 
 }
 
 void closeOut()
 {
+  #ifdef USE_SYSLOG
   if(!outWasInit) return;
-  #if defined INIT_DEBUG || defined IO_DEBUG
+
+  #ifdef IO_DEBUG
     debug("Closing log.");
   #endif
+
   closelog();
+  #endif
+
   outWasInit = false;
 }
 
 void debug(const char * str, ...)
 {
+  #ifdef USE_SYSLOG
   if(!outWasInit) initOut();
+  #endif
 
   va_list args;
   va_start(args, str);
+
+  #ifdef USE_SYSLOG
   syslog(LOG_ERR, str, args);
+  #endif
 
   fprintf(stderr, str, args);
   fprintf(stderr, "\n");

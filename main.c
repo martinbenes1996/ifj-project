@@ -60,6 +60,7 @@ int main(int argc, char *argv[])
 		debug("IFJ project started.");
 	#endif
 
+
 	// argument process
 	args_t a;
 	if(!processArguments(&a, argc, argv)) exit(1);

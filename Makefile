@@ -8,7 +8,7 @@
 
 # compile settings
 cc = gcc
-defines = -DDEBUG_MODE
+defines = -DDEBUG_MODE #-DUSE_SYSLOG
 linkings = -lpthread -lm
 flags = $(defines) -O2 -g -std=c99 -pedantic -Wall -Wextra
 

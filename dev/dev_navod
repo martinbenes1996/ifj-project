@@ -1,0 +1,34 @@
+
+----- general -----
+- Kodime pro sebe i pro ostatni. Nebudme prasata.
+- Anglictina je obecne nejvhodnejsi programovaci jazyk (identifikatory i komentare).
+- Cti a pak se ptej.
+
+----- coding style -----
+- 80 znaku na radek
+- Vystizne pojmenovavat identifikatory (lepsi delsi vypovidajici nazev nez nic nerikajici zkratka).
+- Pouze ASCII.
+- Clenit kod (odsazene bloky, funkce, moduly) - vse radne okomentovano.
+
+Hlavickovy soubor (.h)
+- guard (preprocesorova formule - viz hlavickove soubory - prvni dva a posledni radek)
+- deklarace funkci, ktere maji byt z modulu dostupne verejne jinym modulum
+- mnozstvi komentaru, popisujicich funkce, modul, vedlejsi efekty, funkcionalitu atd atd.
+- kazda funkce bude obsahovat dokumentacni komentar
+
+/**
+ * @brief   Counts the c of triangle.
+ * @param a     side a
+ * @param b     side b
+ * @returns     side c (hypotenuse)
+ */
+double pythagoras(double a, double b);
+
+- neobsahuje promenne, maximalne pristupove funkce (getter, setter)
+- dodrzovat striktni poradek
+
+Modul (.c)
+- obsahuje definice verejnych a privatnich funkci (ty nejsou v hlavickovem souboru)
+(potrebne promenne pro modul mohou byt globalni, ale nastavene jako static,
+aby se branilo pripadnemu pristupu pomoci extern)
+- nesetrete komentari, ale neni to tak striktni, jak v .h souborech
