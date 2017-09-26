@@ -1,7 +1,0 @@
-
-MAKEFILE
-
-make              # vygeneruje zavislosti (.dep), prelozi (.o) a slinkuje (ifj)
-make zip          # vsechny .c, .h a Makefile zkomprimuje do ifj.tar.gz
-make doc          # vygeneruje dokumentaci do ./doc/
-make clean        # smaze vsechny vygenerovane soubory, zip a dokumentaci

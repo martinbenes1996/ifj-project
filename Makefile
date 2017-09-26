@@ -5,7 +5,6 @@
 # FIT VUT
 # 2017/2018
 
-
 # compile settings
 cc = gcc
 defines = -DDEBUG_MODE #-DUSE_SYSLOG
@@ -36,7 +35,9 @@ ifneq ($(MAKECMDGOALS),clean)
 ifneq ($(MAKECMDGOALS),zip)
 ifneq ($(MAKECMDGOALS),doc)
 ifneq ($(MAKECMDGOALS),test)
+ifneq ($(MAKECMDGOALS),help)
 -include $(dep)
+endif
 endif
 endif
 endif
@@ -70,6 +71,12 @@ doc:
 test:
 	@echo "Running verification.";\
 	./verify
+
+# help
+.PHONY: help
+help:
+	@echo "Makefile Help.";\
+	cat dev/make_howto
 
 # clean
 .PHONY: clean

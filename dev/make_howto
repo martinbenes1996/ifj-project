@@ -1,0 +1,12 @@
+--------------------------------------------------------------------------------
+make | make all | make ifj    Generates dependencies *.dep and object files.
+                              Then links it into output file.
+make clean                    Deletes all generated files, zip file
+                              and documentation.
+
+make zip                      Zips all code files (*.c, *.h, Makefile).
+make doc                      Generates Doxygen documentation into ./doc/.
+
+make help                     Prints this help.
+
+--------------------------------------------------------------------------------
