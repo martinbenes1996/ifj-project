@@ -1,0 +1,24 @@
+### README ###
+
+- STRUCTURE
+In the main directory, there are files needed for global overlook over
+all structure.
+
+Makefile - project manager file
+Doxyfile - configuration file for Doxygen (documentation generation)
+install.sh - installs necessary and useful files and programs to the computer
+verify - automatized verificator and validator
+.gitignore - list of ignored files
+
+dev/ - all the developer stuff (scripts, howtos etc.)
+doc/ - documentation generation target
+src/ - code
+test/ - test files, compiler
+
+- INTERFACE
+For all the information about available make calls, type:
+  $ make help
+
+- INFORMATIONS
+For more informations, visit directory dev/ and check the *_howto files. I
+hope you will find your answers there.

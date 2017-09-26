@@ -20,7 +20,7 @@ doc:
 .PHONY: test
 test:
 	@echo "Running verification.";\
-	./test/verify
+	cd test && ./verify
 
 # help
 .PHONY: help
