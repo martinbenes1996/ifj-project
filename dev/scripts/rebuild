@@ -1,4 +1,4 @@
 #!/bin/bash
 
-make clean
-make -j5
+make clean -s
+make -j5 -s

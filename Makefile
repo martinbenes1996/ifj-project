@@ -5,60 +5,10 @@
 # FIT VUT
 # 2017/2018
 
-# compile settings
-cc = gcc
-defines = -DDEBUG_MODE #-DUSE_SYSLOG
-linkings = -lpthread -lm
-flags = $(defines) -O2 -g -std=c99 -pedantic -Wall -Wextra
+all:
+	@printf "";\
+	$(MAKE) -C src/
 
-
-# source settings
-src = $(wildcard *.c)
-head = $(wildcard *.h)
-
-dep = $(src:.c=.dep)
-obj = $(src:.c=.o)
-
-
-#output settings
-output = ifj
-all: $(output)
-
-
-# linking
-$(output) : $(obj)
-	@echo "Linking project into $@.";\
-	$(cc) $(flags) $(obj) -o $@ $(linkings)
-
-# dependencies generating
-ifneq ($(MAKECMDGOALS),clean)
-ifneq ($(MAKECMDGOALS),zip)
-ifneq ($(MAKECMDGOALS),doc)
-ifneq ($(MAKECMDGOALS),test)
-ifneq ($(MAKECMDGOALS),help)
--include $(dep)
-endif
-endif
-endif
-endif
-endif
-%.dep: %.c
-	@echo "Generating dependencies $@.";\
-	$(cc) $(flags) -MM $< -MF $@ && \
-	sed -i $@ -e 's_$*.o[ ]*:_$*.o $@: _'
-
-
-# compiling
-%.o : %.c
-	@echo "Compiling $@.";\
-	$(cc) $(flags) $(defines) -c $< -o $@
-
-
-# zip
-.PHONY: zip
-zip:
-	@echo "Compressing and zipping.";\
-	tar -zcvf $(output).tar.gz $(src) $(head) Makefile > /dev/null
 
 # doc
 .PHONY: doc
@@ -70,7 +20,7 @@ doc:
 .PHONY: test
 test:
 	@echo "Running verification.";\
-	./verify
+	./test/verify
 
 # help
 .PHONY: help
@@ -78,8 +28,16 @@ help:
 	@echo "Makefile Help.";\
 	cat dev/make_howto
 
+# zip
+.PHONY: zip
+zip:
+	@printf "";\
+	cd ./src && make zip
+
 # clean
 .PHONY: clean
 clean:
+	@printf "";\
+	cd ./src && make clean
 	@echo "Cleaning project files.";\
-	rm -rf *~ *.o *.gch *.dep $(output) $(output).tar.gz doc/* test/*.err test/*.out test/*.stderr test/*.stdout
+	rm -rf doc/* test/*.err test/*.out test/*.stderr test/*.stdout

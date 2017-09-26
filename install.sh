@@ -8,10 +8,14 @@
 # $ rebuild          <- make clean and parallel make
 
 # makes directory for user binaries
-if [ ! -e "~/bin" ]; then
-  mkdir ~/bin
-fi
+mkdir -p ~/bin
 
 # installs new user scripts
+if [ -e "~/bin/build" ]; then
+  rm ~/bin/build
+fi
 cp dev/scripts/build ~/bin/
+if [ -e "~/bin/rebuild" ]; then
+  rm ~/bin/rebuild
+fi
 cp dev/scripts/rebuild ~/bin/
