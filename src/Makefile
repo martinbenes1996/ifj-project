@@ -22,10 +22,14 @@ obj = $(src:.c=.o)
 
 #output settings
 output = ifj
-ifneq ($(MAKECMDGOALS),$(filter $(MAKECMDGOALS),clean zip))
+all: $(output)
+	
+ifneq ($(MAKECMDGOALS),clean)#$(filter $(MAKECMDGOALS), clean zip )
+ifneq ($(MAKECMDGOALS),zip)
 -include $(dep)
 endif
-all: $(output)
+endif
+
 
 
 # linking

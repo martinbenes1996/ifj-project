@@ -7,7 +7,7 @@
 
 all:
 	@printf "";\
-	$(MAKE) -C src/
+	$(MAKE) -C src/ -s
 
 
 # doc
@@ -32,12 +32,12 @@ help:
 .PHONY: zip
 zip:
 	@printf "";\
-	cd ./src && make zip
+	cd ./src && make zip -s
 
 # clean
 .PHONY: clean
 clean:
 	@printf "";\
-	cd ./src && make clean
+	cd ./src && make clean -s
 	@echo "Cleaning project files.";\
 	rm -rf doc/* test/*.err test/*.out test/*.stderr test/*.stdout
