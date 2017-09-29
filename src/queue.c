@@ -8,7 +8,7 @@ QueueHead InitQueue()
 {
   QueueHead h;
   h = malloc(sizeof(struct queue_head));
-  QueueHead->first = NULL;
+  h->first = NULL;
   /* implementation */
   return h;
 }
@@ -38,8 +38,8 @@ bool AddToQueue(QueueTail q, Phrasem data)
 
   /* implementation */
   return false;
-	}
-	}
+	
+	
 }
 
 Phrasem RemoveFromQueue(QueueHead q)
@@ -59,7 +59,7 @@ void ClearQueue(QueueHead q)
 {	
 	QueueItem pointer;
 	pointer = q->first;
-	if(q == NULL) return NULL;
+	if(q == NULL) return;
 	while(pointer != NULL) {
 		q->first = q->first->next;
 		free(pointer);
