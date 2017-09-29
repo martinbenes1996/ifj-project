@@ -1,26 +1,30 @@
 
 /**
- * @file parser.h
- * @interface parser
+ * @file parser.c
  * @authors xbenes49 xbolsh00 xkrato47 xpolan09
  * @date 29th september 2017
- * @brief Lexical Parser library.
+ * @brief Syntax parser module.
  *
- * This module implements Lexical Parser and its operation.
+ * This module implements Syntax Analyser.
  */
 
 #ifndef PARSER_H
 #define PARSER_H
 
+#include <stdbool.h>
+
 #include "queue.h"
 
 /**
- * @brief   Gives new head of queue.
+ * @brief   Launches parser.
  *
- * Parser communicates with syntax analyser by queue. This is how they
- * initialize their communication.
- * @param h       New head.
+ * This function launches the parser, scanner in separated thread and starts
+ * scanning at all.
+ * @returns     False if fail, true if success.
  */
-void NewQueueToParser(QueueTail h);
+bool RunParser();
+
+void ResetParserQueue(QueueItem qi);
+
 
 #endif // PARSER_H

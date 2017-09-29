@@ -14,6 +14,7 @@
 #include <string.h>
 
 #include "io.h"
+#include "parser.h"
 #include "types.h"
 
 /*------------------------------------------------------*/
@@ -66,6 +67,7 @@ int main(int argc, char *argv[])
 	if(!processArguments(&a, argc, argv)) exit(1);
 	if(a.help) { printHelp(); exit(0); }
 
+	RunParser();
 
 	/*
 	// example of usage input

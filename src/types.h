@@ -43,6 +43,8 @@ typedef struct phrasem_data
   /* will be added */
 } * Phrasem;
 
+#define ALLOC_ERR 99
+
 /** @} */
 /*--------------------------------------------------*/
 #endif // TYPES_H

@@ -49,6 +49,7 @@ bool AddToQueue(QueueTail q, Phrasem data);
 Phrasem RemoveFromQueue(QueueHead q);
 
 void ClearQueue(QueueHead q);
+void PrintQueue(QueueHead q);
 
 
 
