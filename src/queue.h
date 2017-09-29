@@ -19,16 +19,16 @@
 typedef struct queue_item{
   Phrasem data;
   struct queue_item * next;
-} QueueItem;
+} * QueueItem;
 
 typedef struct queue_head
 {
-  QueueItem * first;
-} QueueHead;
+  QueueItem first;
+} *QueueHead;
 typedef struct queue_tail
 {
-  QueueItem * last;
-} QueueTail;
+  QueueItem last;
+} *QueueTail;
 
 /**
  * @brief   Initializes queue.
