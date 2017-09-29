@@ -117,6 +117,12 @@ void closeOut();
  */
 bool getLine(FILE * src, char buff[], long max);
 
+/**
+ * @brief   Returns byte from input file, or EOF.
+ * @returns       Byte, or EOF.
+ */
+int getByte();
+
 
 
 /** @} */

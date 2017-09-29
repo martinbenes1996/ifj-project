@@ -32,6 +32,16 @@ typedef struct
   /* will be added */
 } args_t;
 
+/**
+ * @brief   Structure representing phrasem data.
+ *
+ * This structure is filled with data of phrasem, type etc.
+ */
+typedef struct phrasem_data
+{
+  int id; /**< Id of phrasem (only sample). */
+  /* will be added */
+} * Phrasem;
 
 /** @} */
 /*--------------------------------------------------*/

@@ -1,22 +1,37 @@
 #!/bin/bash
 
 # You can use or not. Enables parallel compiling.
-# $ ./install.sh     <- installation
+# $ ./install.sh -i     <- installation
+# $ ./install.sh -u     <- uninstallation
 
 # Then
-# $ build            <- parallel make
-# $ rebuild          <- make clean and parallel make
+# $ build               <- parallel make
+# $ rebuild             <- make clean and parallel make
 
-# makes directory for user binaries
-mkdir -p ~/bin
+install() {
+  # makes directory for user binaries
+  mkdir -p ~/bin
 
-# install build
-if [ -e "~/bin/build" ]; then
-  rm ~/bin/build
+  # install build
+  rm -f ~/bin/build
+  cp dev/scripts/build ~/bin/
+
+  # install rebuild
+  rm -f ~/bin/rebuild
+  cp dev/scripts/rebuild ~/bin/
+}
+
+uninstall() {
+  rm -f ~/bin/build
+  rm -f ~/bin/rebuild
+}
+
+if [ "$1" = "-i" ]; then
+  echo "Installing..."
+  install
+elif [ "$1" = "-u" ]; then
+  echo "Uninstalling..."
+  uninstall
+else
+  printf "Give parameter:\n-i\tinstall\n-u\tuninstall\n"
 fi
-cp dev/scripts/build ~/bin/
-# install rebuild
-if [ -e "~/bin/rebuild" ]; then
-  rm ~/bin/rebuild
-fi
-cp dev/scripts/rebuild ~/bin/

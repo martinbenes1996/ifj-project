@@ -20,8 +20,8 @@ init() {
 test_count=0
 test_succ=0
 launch_test() {
-  ./ifj < "$1" > "$1.out" 2> "$1.err"
-  ./ifj < "$1" > "$1.stdout" 2> "$1.stderr"
+  ../ifj < "$1" > "$1.out" 2> "$1.err"
+  ../ifj < "$1" > "$1.stdout" 2> "$1.stderr"
   #echo "a" >> "$1.stdout"
   if [ "$(cat "$1.out")" = "$(cat "$1.stdout")" ]; then
     test_succ=$((test_succ+1))
@@ -34,14 +34,16 @@ launch_test() {
 
 run_all_tests()
 {
+  cd ..
   echo "======= Cleaning with Makefile ======="
   make clean -s
   echo "======= Building with Makefile ======="
   make -s -j5
   echo "======================================"
+  cd test/
   sleep 2
 
-  for t in $(find * -type f -name *.test); do
+  for t in $(find * -type f -name *.bas); do
     test_count=$((test_count+1))
 
     printf "TEST $test_count: "

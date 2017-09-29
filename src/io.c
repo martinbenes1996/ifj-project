@@ -29,7 +29,7 @@ static bool outWasInit = false; /*< Wheater syslog was opened or not. */
 void initOut()
 {
   outWasInit = true;
-  
+
   #ifdef USE_SYSLOG
   openlog("ifj", LOG_NDELAY | LOG_CONS, LOG_LOCAL0);
 
@@ -112,3 +112,7 @@ bool getLine(FILE * src, char buff[], long max)
 
   return true;
 }
+
+int getByte() { return getchar(); }
+
+/*-------------------------------------------------------*/

@@ -1,18 +1,16 @@
 ### README ###
 
 - STRUCTURE
-In the main directory, there are files needed for global overlook over
-all structure.
+In the main directory, there are these files and directories:
 
 Makefile - project manager file
 Doxyfile - configuration file for Doxygen (documentation generation)
 install.sh - installs necessary and useful files and programs to the computer
-verify - automatized verificator and validator
 .gitignore - list of ignored files
 
 dev/ - all the developer stuff (scripts, howtos etc.)
 doc/ - documentation generation target
-src/ - code
+src/ - source files with code
 test/ - test files, compiler
 
 - INTERFACE
