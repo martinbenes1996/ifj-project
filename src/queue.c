@@ -13,6 +13,7 @@ QueueHead InitQueue()
   return h;
 }
 
+extern void NewQueueToParser(QueueTail);
 bool AddToQueue(QueueTail q, Phrasem data)
 {
 	if(q == NULL)
@@ -21,7 +22,10 @@ bool AddToQueue(QueueTail q, Phrasem data)
 	if(q->last == NULL) {
 		q->last = i;
 		q->last->next = NULL;
-
+		
+		QueueTail t = malloc(sizeof(struct queue_tail));
+		t->last = i;
+		NewQueueToParser(t);
 	}
 
 

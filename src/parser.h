@@ -21,6 +21,6 @@
  * initialize their communication.
  * @param h       New head.
  */
-void NewQueueToParser(QueueHead h);
+void NewQueueToParser(QueueTail h);
 
 #endif // PARSER_H

@@ -2,6 +2,6 @@
 #include "parser.h"
 #include "queue.h"
 
-static QueueHead queue;
+static QueueTail queue;
 
-void NewQueueToParser(QueueHead h) { queue = h; }
+void NewQueueToParser(QueueTail h) { queue = h; }
