@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "err.h"
 #include "io.h"
 #include "parser.h"
 #include "types.h"
@@ -76,10 +77,15 @@ int main(int argc, char *argv[])
 	while( getLine(stdin, buff, max) ) printf("%s\n", buff);
 	*/
 
+	// error log
+	if(getErrorCode() != OK)
+	{
+		err("%s. Line: %d\n", getErrorMessage(), getErrorLine());
+	}
 
-
+	// final operations
 	closeOut();
-	return 0;
+	return getErrorCode();
 }
 
 /** @}*/

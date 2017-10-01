@@ -26,9 +26,9 @@ bool RunParser()
 
   pthread_t sc;
   pthread_create(&sc, NULL, InitScanner, NULL);
-  
+
   Phrasem p;
-  while(!isEnd())
+  while(ScannerIsScanning())
   {
     p = RemoveFromQueue(qh);
     if(p == NULL) return false;

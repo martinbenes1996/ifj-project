@@ -12,8 +12,24 @@
 #ifndef SCANNER_H
 #define SCANNER_H
 
-int isEnd();
+#include <stdbool.h>
 
+/**
+ * @brief    Scanner process status getter.
+ *
+ * The scanner reads input file. If the file gives EOF, this function will
+ * return false.
+ * @returns     True, if scanner is scanning, false if ended.
+ */
+bool ScannerIsScanning();
+
+/**
+ * @brief   Initial function for module.
+ *
+ * This function starts reading and pushing into queue.
+ * @param v     Ignored.
+ * @returns     NULL
+ */
 void *InitScanner(void * v);
 
 #endif // SCANNER_H

@@ -37,4 +37,3 @@ git pull                                             # prijme commity ze vzdalen
 ---- tipy & triky ----
 git config --global credential.helper 'cache --timeout 7200'   # prihlasovani probiha kazde dve hodiny
 git config merge.tool meld                                     # nastavi meld jako mergetool
-git config merge.conflictstyle meld                            # nastavi meld jako conflict margetool

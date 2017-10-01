@@ -16,19 +16,12 @@
 
 #include "types.h"
 
-typedef struct queue_item{
-  Phrasem data;
-  struct queue_item * next;
-} * QueueItem;
-
-typedef struct queue_head
-{
-  QueueItem first;
-} *QueueHead;
-typedef struct queue_tail
-{
-  QueueItem last;
-} *QueueTail;
+struct queue_item;
+struct queue_head;
+struct queue_tail;
+typedef struct queue_item * QueueItem;
+typedef struct queue_head * QueueHead;
+typedef struct queue_tail * QueueTail;
 
 /**
  * @brief   Initializes queue.

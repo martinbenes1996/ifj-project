@@ -4,17 +4,17 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "err.h"
 #include "io.h"
 #include "scanner.h"
 #include "queue.h"
 
-int errcode;
-int isEnd() { return errcode; }
+static bool isscanning = true;
+bool ScannerIsScanning() { return isscanning; }
 static QueueTail queue;
 
 bool InitScannerQueue()
 {
-  errcode = 0;
   queue = malloc( sizeof(struct queue_tail) );
   if(queue == NULL) return false;
 
@@ -30,7 +30,8 @@ void *InitScanner(void * v)
 
   if(!InitScannerQueue())
   {
-    errcode = ALLOC_ERR;
+    setErrorType(ErrorType_Internal);
+    setErrorMessage("Scanner: InitScannerQueue: couldn't allocate memory.");
     return NULL;
   }
 
@@ -40,15 +41,17 @@ void *InitScanner(void * v)
     Phrasem phr = malloc( sizeof(struct phrasem_data) );
     if( phr == NULL )
     {
-      errcode = ALLOC_ERR;
+      setErrorType(ErrorType_Internal);
+      setErrorMessage("Scanner: InitScanner: couldn't allocate memory.");
       return NULL;
     }
 
     phr->id = input;
-    //fprintf(stderr, "%d\n", input);
+    fprintf(stderr, "%d\n", input);
     AddToQueue(queue, phr);
   }
 
+  isscanning = false;
   #ifdef SCANNER_DEBUG
     debug("End Scanner.");
   #endif

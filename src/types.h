@@ -32,6 +32,7 @@ typedef struct
   /* will be added */
 } args_t;
 
+
 /**
  * @brief   Structure representing phrasem data.
  *
@@ -43,8 +44,63 @@ typedef struct phrasem_data
   /* will be added */
 } * Phrasem;
 
-#define ALLOC_ERR 99
 
 /** @} */
 /*--------------------------------------------------*/
+/** @addtogroup Queue_types
+ * Types used in Queue module and others.
+ * @{
+ */
+
+
+/**
+ * @brief   One item in queue.
+ *
+ * Queue is made by head (to remove from), tail (to add to) and linked
+ * list of items, containing data and pointer to next item.
+ * First item is addressed by pointer from head, last from tail and
+ * the next element is set to NULL (nothing).
+ */
+struct queue_item{
+  Phrasem data; /**< Data of item. */
+  struct queue_item * next; /**< Pointer to next item. */
+};
+
+/**
+ * @brief   Head of queue
+ *
+ * It points to the item, which is to be removed as first.
+ */
+struct queue_head
+{
+  struct queue_item * first; /**< First item in the queue (to be removed). */
+};
+
+/**
+ * @brief   Tail of queue
+ *
+ * It points to the item, where to put new item (behind).
+ */
+struct queue_tail
+{
+  struct queue_item * last; /**< Last element in the queue (new items are added behind). */
+};
+
+
+/** @} */
+/*--------------------------------------------------*/
+/** @addtogroup Return_codes
+ * Return codes.
+ * @{
+ */
+
+#define OK 0
+#define SYNTAX_ERROR 1
+#define SEMANTIC1_ERROR 2
+#define SEMANTIC2_ERROR 3
+#define INTERNAL_ERROR 99
+
+/** @} */
+/*--------------------------------------------------*/
+
 #endif // TYPES_H
