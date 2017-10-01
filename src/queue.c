@@ -6,6 +6,9 @@
 #include "queue.h"
 
 pthread_mutex_t ReadEnabled;
+bool connected;
+
+void FinishConnectionToQueue() { connected = false; }
 
 QueueHead InitQueue()
 {
@@ -24,6 +27,8 @@ QueueHead InitQueue()
   #ifdef QUEUE_DEBUG
     debug("Queue Read locked.");
   #endif
+
+  connected = true;
 
   // fill and return
   h->first = NULL;
@@ -53,8 +58,6 @@ bool AddToQueue(QueueTail q, Phrasem data)
     // reset the Parser connection
     ResetParserQueue(i);
 
-    // let the parser
-    pthread_mutex_unlock(&ReadEnabled);
   }
 
   // not empty queue
@@ -69,7 +72,11 @@ bool AddToQueue(QueueTail q, Phrasem data)
 		i->next = NULL;
 		q->last = q->last->next;
 
+    // let the parser
+    pthread_mutex_unlock(&ReadEnabled);
+
 	}
+
 
   // copy data
 	q->last->data = data;
@@ -80,10 +87,15 @@ Phrasem RemoveFromQueue(QueueHead q)
 {
   // control
 	if(q == NULL) return NULL;
-  if(q->first == NULL) pthread_mutex_lock(&ReadEnabled);
+  if(connected)
+  {
+    if(q->first == NULL) pthread_mutex_lock(&ReadEnabled);
+    if(q->first->next == NULL) pthread_mutex_lock(&ReadEnabled);
+  }
+
 
   #ifdef QUEUE_DEBUG
-    debug("Queue: removing queue.");
+    debug("Queue: removing from queue.");
   #endif
 
   // copy
@@ -118,6 +130,7 @@ void ClearQueue(QueueHead q)
 		q->first = q->first->next;
 
     // clear item
+    #warning ClearQueue doesnt work properly
     //free(ph);
 		free(qi);
 

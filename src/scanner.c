@@ -22,8 +22,9 @@ bool InitScannerQueue()
   return true;
 }
 
-void *InitScanner(void * v)
+void *InitScanner(void * v /*ignore this warning*/)
 {
+
   #ifdef SCANNER_DEBUG
     debug("Init Scanner.");
   #endif
@@ -31,7 +32,8 @@ void *InitScanner(void * v)
   if(!InitScannerQueue())
   {
     setErrorType(ErrorType_Internal);
-    setErrorMessage("Scanner: InitScannerQueue: couldn't allocate memory.");
+    setErrorMessage("Scanner: InitScannerQueue: couldn't allocate memory");
+    FinishConnectionToQueue();
     return NULL;
   }
 
@@ -42,7 +44,8 @@ void *InitScanner(void * v)
     if( phr == NULL )
     {
       setErrorType(ErrorType_Internal);
-      setErrorMessage("Scanner: InitScanner: couldn't allocate memory.");
+      setErrorMessage("Scanner: InitScanner: couldn't allocate memory");
+      FinishConnectionToQueue();
       return NULL;
     }
 
@@ -55,6 +58,7 @@ void *InitScanner(void * v)
   #ifdef SCANNER_DEBUG
     debug("End Scanner.");
   #endif
+  FinishConnectionToQueue();
   free(queue);
   return NULL;
 }

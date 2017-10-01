@@ -10,6 +10,7 @@
  */
 
 #include "err.h"
+#include "io.h"
 #include "types.h"
 
 
@@ -57,6 +58,9 @@ int getErrorCode()
     // ok
     case ErrorType_Ok:
       return OK;
+    default:
+      err("err: getErrorCode: unknown error type");
+      return INTERNAL_ERROR;
 
   }
 }

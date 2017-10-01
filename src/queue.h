@@ -41,6 +41,13 @@ bool AddToQueue(QueueTail q, Phrasem data);
  */
 Phrasem RemoveFromQueue(QueueHead q);
 
+/**
+ * @brief   Ends connection.
+ *
+ * Ends connection between head and tail (because of error etc.).
+ */
+void FinishConnectionToQueue();
+
 void ClearQueue(QueueHead q);
 void PrintQueue(QueueHead q);
 

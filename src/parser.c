@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "err.h"
 #include "io.h"
 #include "parser.h"
 #include "queue.h"
@@ -22,7 +23,12 @@ bool RunParser()
   #endif
 
   qh = InitQueue();
-  if(qh == NULL) return false;
+  if(qh == NULL)
+  {
+    setErrorType(ErrorType_Internal);
+    setErrorMessage("Parser: RunParser: couldn't allocate memory");
+    return false;
+  }
 
   pthread_t sc;
   pthread_create(&sc, NULL, InitScanner, NULL);
@@ -31,7 +37,11 @@ bool RunParser()
   while(ScannerIsScanning())
   {
     p = RemoveFromQueue(qh);
-    if(p == NULL) return false;
+    if(p == NULL) {
+      setErrorType(ErrorType_Internal);
+      setErrorMessage("Parser: RunParser: queue error");
+      return false;
+    }
 
     fprintf(stderr, "%d ", p->id);
   }
