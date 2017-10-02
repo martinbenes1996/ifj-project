@@ -8,57 +8,59 @@
 #include "io.h"
 #include "scanner.h"
 #include "queue.h"
+#include "types.h"
 
 static bool isscanning = true;
 bool ScannerIsScanning() { return isscanning; }
-static QueueTail queue;
 
-bool InitScannerQueue()
+void EndScanner(const char * msg, ErrorType errtype)
 {
-  queue = malloc( sizeof(struct queue_tail) );
-  if(queue == NULL) return false;
-
-  queue->last = NULL;
-  return true;
+  if(msg != NULL)
+  {
+    #ifdef SCANNER_DEBUG
+      debug(msg);
+    #endif
+    setErrorType(errtype);
+    setErrorMessage(msg);
+  }
+  else
+  {
+    #ifdef SCANNER_DEBUG
+      debug("End Scanner.");
+    #endif
+  }
+  FinishConnectionToQueue();
+  isscanning = false;
 }
 
 void *InitScanner(void * v /*ignore this warning*/)
 {
-
   #ifdef SCANNER_DEBUG
     debug("Init Scanner.");
   #endif
 
-  if(!InitScannerQueue())
-  {
-    setErrorType(ErrorType_Internal);
-    setErrorMessage("Scanner: InitScannerQueue: couldn't allocate memory");
-    FinishConnectionToQueue();
-    return NULL;
-  }
-
   int input;
   while((input = getchar()) != EOF)
   {
+
     Phrasem phr = malloc( sizeof(struct phrasem_data) );
     if( phr == NULL )
     {
-      setErrorType(ErrorType_Internal);
-      setErrorMessage("Scanner: InitScanner: couldn't allocate memory");
-      FinishConnectionToQueue();
+      EndScanner("Scanner: InitScanner: couldn't allocate memory", ErrorType_Internal);
       return NULL;
     }
 
+    // here will be lexical analysis
+
     phr->id = input;
-    fprintf(stderr, "%d\n", input);
-    AddToQueue(queue, phr);
+
+    #ifdef SCANNER_DEBUG
+      PrintPhrasem(phr);
+    #endif
+
+    AddToQueue(phr);
   }
 
-  isscanning = false;
-  #ifdef SCANNER_DEBUG
-    debug("End Scanner.");
-  #endif
-  FinishConnectionToQueue();
-  free(queue);
+  EndScanner(NULL, ErrorType_Ok);
   return NULL;
 }

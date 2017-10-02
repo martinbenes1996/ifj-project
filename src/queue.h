@@ -16,30 +16,22 @@
 
 #include "types.h"
 
-struct queue_item;
-struct queue_head;
-struct queue_tail;
-typedef struct queue_item * QueueItem;
-typedef struct queue_head * QueueHead;
-typedef struct queue_tail * QueueTail;
-
 /**
  * @brief   Initializes queue.
- * @returns     Queue structure, NULL if fail.
  */
-QueueHead InitQueue();
+void InitQueue();
 
 /**
  * @brief   Adds to given queue.
  * @returns     True if success, false if fail.
  */
-bool AddToQueue(QueueTail q, Phrasem data);
+bool AddToQueue(Phrasem data);
 
 /**
  * @brief   Removes from given queue.
  * @returns     True if success, false if fail.
  */
-Phrasem RemoveFromQueue(QueueHead q);
+Phrasem RemoveFromQueue();
 
 /**
  * @brief   Ends connection.
@@ -48,8 +40,8 @@ Phrasem RemoveFromQueue(QueueHead q);
  */
 void FinishConnectionToQueue();
 
-void ClearQueue(QueueHead q);
-void PrintQueue(QueueHead q);
+void ClearQueue();
+void PrintQueue();
 
 
 

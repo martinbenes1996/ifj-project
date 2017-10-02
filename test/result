@@ -1,0 +1,45 @@
+TEST lorem.data: TEST lorem.data: [OK]
+TEST numdeq.data: [FAIL]
+TEST numrow.data: TEST lorem.data: TEST lorem.data: [OK]
+TEST numdeq.data: [FAIL]
+TEST numrow.data: [FAIL]
+TEST lorem.data: [OK]
+TEST numdeq.data: [OK]
+TEST numrow.data: [OK]
+TOTAL: 3/3
+TEST lorem.data: [OK]
+TEST numdeq.data: [OK]
+TEST numrow.data: [OK]
+TOTAL: 3/3
+TEST lorem.data: [OK]
+TEST numdeq.data: [OK]
+TEST numrow.data: [OK]
+TOTAL: 3/3
+TEST lorem.data: [OK]
+TEST numdeq.data: [OK]
+TEST numrow.data: [OK]
+TOTAL: 3/3
+TEST lorem.data: [OK]
+TEST numdeq.data: [OK]
+TEST numrow.data: [OK]
+TOTAL: 3/3
+TEST lorem.data: [OK]
+TEST numdeq.data: [OK]
+TEST numrow.data: [OK]
+TOTAL: 3/3
+TEST lorem.data: [OK]
+TEST numdeq.data: [OK]
+TEST numrow.data: [OK]
+TOTAL: 3/3
+TEST lorem.data: [OK]
+TEST numdeq.data: [OK]
+TEST numrow.data: [OK]
+TOTAL: 3/3
+TEST lorem.data: [OK]
+TEST numdeq.data: [OK]
+TEST numrow.data: [OK]
+TOTAL: 3/3
+TEST lorem.data: [OK]
+TEST numdeq.data: [OK]
+TEST numrow.data: [OK]
+TOTAL: 3/3

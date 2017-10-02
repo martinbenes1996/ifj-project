@@ -11,48 +11,68 @@
 #include "queue.h"
 #include "scanner.h"
 
-static QueueHead qh;
-
-
-void ResetParserQueue(QueueItem qi) { qh->first = qi; }
+void EndParser(const char * msg, ErrorType errtype)
+{
+  if(msg != NULL)
+  {
+    #ifdef PARSER_DEBUG
+      debug(msg);
+    #endif
+    setErrorType(errtype);
+    setErrorMessage(msg);
+  }
+  else
+  {
+    #ifdef PARSER_DEBUG
+      debug("Ending Parser.");
+    #endif
+    setErrorType(ErrorType_Ok);
+    setErrorMessage("");
+  }
+}
 
 bool RunParser()
 {
-  #ifdef SCANNER_DEBUG
+  #ifdef PARSER_DEBUG
     debug("Init Parser.");
   #endif
 
-  qh = InitQueue();
-  if(qh == NULL)
-  {
-    setErrorType(ErrorType_Internal);
-    setErrorMessage("Parser: RunParser: couldn't allocate memory");
-    return false;
-  }
+  InitQueue();
 
+  // running scanner
   pthread_t sc;
   pthread_create(&sc, NULL, InitScanner, NULL);
 
+  // reading cycle
   Phrasem p;
   while(ScannerIsScanning())
   {
-    p = RemoveFromQueue(qh);
+    p = RemoveFromQueue();
     if(p == NULL) {
-      setErrorType(ErrorType_Internal);
-      setErrorMessage("Parser: RunParser: queue error");
+      EndParser("Parser: RunParser: queue error", ErrorType_Internal);
       return false;
     }
+    else if(p == END_PTR) break;
 
-    fprintf(stderr, "%d ", p->id);
+    // here will be syntax analysis
+
+    #ifdef PARSER_DEBUG
+      PrintPhrasem(p);
+    #endif
+
+    free(p);
   }
-  fprintf(stderr, "\n");
 
+  // ending scanner
   pthread_join(sc, NULL);
 
-  PrintQueue(qh);
+  // to be removed-----
+  PrintQueue();
+  ClearQueue();
+  //------------------
 
-  ClearQueue(qh);
-  free(qh);
+  EndParser(NULL, ErrorType_Ok);
 
+  // end
   return true;
 }

@@ -24,7 +24,6 @@
  */
 bool RunParser();
 
-void ResetParserQueue(QueueItem qi);
 
 
 #endif // PARSER_H

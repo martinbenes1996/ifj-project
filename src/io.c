@@ -70,7 +70,7 @@ void debug(const char * str, ...)
   syslog(LOG_ERR, str, args);
   #endif
 
-  fprintf(stderr, str, args);
+  vfprintf(stderr, str, args);
   fprintf(stderr, "\n");
   fflush(stderr);
 
@@ -80,7 +80,7 @@ void out(const char * str, ...)
 {
   va_list args;
   va_start(args, str);
-  fprintf(stdout, str, args);
+  vfprintf(stdout, str, args);
   fprintf(stdout, "\n");
   fflush(stdout);
 }
@@ -89,7 +89,7 @@ void err(const char * str, ...)
 {
   va_list args;
   va_start(args, str);
-  fprintf(stderr, str, args);
+  vfprintf(stderr, str, args);
   fprintf(stderr, "\n");
   fflush(stderr);
 }

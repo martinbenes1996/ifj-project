@@ -5,17 +5,54 @@
 #include "io.h"
 #include "queue.h"
 
+/*--------------------------------------------------*/
+/** @addtogroup Queue_types
+ * Types used in Queue module.
+ * @{
+ */
+
+/**
+ * @brief   One item in queue.
+ *
+ * Queue is made by head (to remove from), tail (to add to) and linked
+ * list of items, containing data and pointer to next item.
+ * First item is addressed by pointer from head, last from tail and
+ * the next element is set to NULL (nothing).
+ */
+typedef struct queue_item {
+  Phrasem data; /**< Data of item. */
+  struct queue_item * next; /**< Pointer to next item. */
+} * QueueItem;
+
+typedef QueueItem QueueHead;
+typedef QueueItem QueueTail;
+
+/** @} */
+/*--------------------------------------------------*/
+
+QueueHead head = NULL; /**< Head of the queue. */
+QueueTail tail = NULL; /**< Tail of the queue. */
+bool isValid() { return (head == NULL && tail == NULL)
+                     || (head != NULL && tail != NULL); }
+bool isEmpty() { return head == NULL && tail == NULL; }
+
+bool finished = false; /**< True, if scanner ended. */
 pthread_mutex_t ReadEnabled;
-bool connected;
 
-void FinishConnectionToQueue() { connected = false; }
-
-QueueHead InitQueue()
+/**
+ * @brief   Queue is filled.
+ */
+void FinishConnectionToQueue()
 {
-  // alloc head
-  QueueHead h = malloc(sizeof(struct queue_head));
-  if(h == NULL) return NULL;
+  finished = true;
+  pthread_mutex_unlock(&ReadEnabled);
+  #ifdef QUEUE_DEBUG
+    debug("Connection to Queue finished.");
+  #endif
+}
 
+void InitQueue()
+{
   #ifdef QUEUE_DEBUG
     debug("Queue init.");
   #endif
@@ -24,141 +61,123 @@ QueueHead InitQueue()
   pthread_mutex_init(&ReadEnabled, NULL);
   pthread_mutex_lock(&ReadEnabled);
 
-  #ifdef QUEUE_DEBUG
-    debug("Queue Read locked.");
-  #endif
-
-  connected = true;
-
-  // fill and return
-  h->first = NULL;
-  return h;
+  // fill
+  finished = false;
+  head = NULL;
+  tail = NULL;
 }
 
-extern void ResetParserQueue(QueueItem);
-bool AddToQueue(QueueTail q, Phrasem data)
+bool AddToQueue(Phrasem data)
 {
   // control
-	if(q == NULL) return false;
+	if(data == NULL) return false;
+  if(!isValid()) return false;
 
   // allocating a new item
   QueueItem i = malloc(sizeof(struct queue_item));
+  if(i == NULL) return false;
 
-  // empty queue
-  if(q->last == NULL) {
-
+  // empty
+  if(isEmpty())
+  {
+    head = i;
+    tail = i;
+    tail->data = data;
     #ifdef QUEUE_DEBUG
       debug("Queue: adding to empty queue.");
+      PrintPhrasem(data);
     #endif
-
-    // set the pointers
-		q->last = i;
-		q->last->next = NULL;
-
-    // reset the Parser connection
-    ResetParserQueue(i);
-
+    pthread_mutex_unlock(&ReadEnabled);
   }
-
-  // not empty queue
-	else {
+  else
+  {
+    tail->next = i;
+    tail = i;
+    tail->data = data;
 
     #ifdef QUEUE_DEBUG
       debug("Queue: adding to queue.");
+      PrintPhrasem(data);
     #endif
+  }
 
-    // set the pointers
-  	q->last->next = i;
-		i->next = NULL;
-		q->last = q->last->next;
-
-    // let the parser
-    pthread_mutex_unlock(&ReadEnabled);
-
-	}
-
-
-  // copy data
-	q->last->data = data;
   return true;
 }
 
-Phrasem RemoveFromQueue(QueueHead q)
+Phrasem RemoveFromQueue()
 {
   // control
-	if(q == NULL) return NULL;
-  if(connected)
+  if(isEmpty())
   {
-    if(q->first == NULL) pthread_mutex_lock(&ReadEnabled);
-    if(q->first->next == NULL) pthread_mutex_lock(&ReadEnabled);
+    if(finished) return END_PTR;
+    #ifdef QUEUE_DEBUG
+      debug("Queue: waiting for data.");
+    #endif
+    pthread_mutex_lock(&ReadEnabled);
+    if(finished) return END_PTR;
   }
 
+  if(!isValid()) return NULL;
+  if(isEmpty()) return NULL;
+
+  // copy
+  if(head == NULL) return NULL;
+	QueueItem p = head;
+	Phrasem d = head->data;
+
+  // set pointer
+  fprintf(stderr, "queue pointers: %p %p\n", head, tail);
+	if(head != NULL) head = head->next;
+  if(head == NULL) tail = NULL;
 
   #ifdef QUEUE_DEBUG
     debug("Queue: removing from queue.");
+    PrintPhrasem(d);
   #endif
-
-  // copy
-	QueueItem p = q->first;
-	Phrasem d = q->first->data;
-
-  // set pointer
-	q->first = q->first->next;
 
   // dealloc memory and return data
 	free(p);
   return d;
 }
 
-void ClearQueue(QueueHead q)
+void ClearQueue()
 {
   #ifdef QUEUE_DEBUG
     debug("Queue: clearing the queue.");
   #endif
 
   // control
-	if(q == NULL) return;
-
-  // help pointer
-	QueueItem qi = q->first;
-  Phrasem ph = q->first->data;
+  if(!isValid()) return;
+  if(isEmpty()) return;
 
   // clear cycle
-	while(qi != NULL) {
+	while(head != NULL) {
+
+    free(head->data);
+    QueueItem qi = head;
 
     // moving head
-		q->first = q->first->next;
+		head = head->next;
 
-    // clear item
-    #warning ClearQueue doesnt work properly
-    //free(ph);
-		free(qi);
-
-    // reset help pointer
-		qi = q->first;
-    ph = q->first->data;
+    free(qi);
 	}
+  tail = NULL;
 }
 
-void PrintQueue(QueueHead q)
+void PrintQueue()
 {
   // control
-	if(q == NULL) return;
+  if(!isValid()) return;
+  if(isEmpty()) return;
 
-  // help pointer
-	QueueItem pointer = q->first;
+  QueueItem q = head;
 
   // clear cycle
-	while(pointer != NULL) {
+	while(q != NULL) {
 
-    // moving head
-		q->first = q->first->next;
+    PrintPhrasem(q->data);
+    q = q->next;
 
-    // clear item
-		fprintf(stderr, "%d[%c] ", pointer->data->id, pointer->data->id);
-
-    // reset help pointer
-		pointer = q->first;
 	}
-  fprintf(stderr, "\n");
+
 }
