@@ -4,9 +4,10 @@
  * @interface scanner
  * @authors xbenes49 xbolsh00 xkrato47 xpolan09
  * @date 29th september 2017
- * @brief Lexical Scanner library.
+ * @brief Lexical Scanner interface.
  *
- * This module implements Lexical Scanner and its operation.
+ * This interface declares Lexical Scanner and its operation. It writes
+ * in a queue.
  */
 
 #ifndef SCANNER_H

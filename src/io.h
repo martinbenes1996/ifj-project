@@ -46,8 +46,8 @@
     //#define IO_DEBUG /* IO module debug. */
     //#define ARGS_DEBUG /* Arguments debug. */
     //#define QUEUE_DEBUG
-    #define SCANNER_DEBUG
-    #define PARSER_DEBUG
+    //#define SCANNER_DEBUG
+    //#define PARSER_DEBUG
 
 	  /*add your own*/
 

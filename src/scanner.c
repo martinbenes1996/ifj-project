@@ -1,4 +1,13 @@
 
+/**
+ * @file scanner
+ * @authors xbenes49 xbolsh00 xkrato47 xpolan09
+ * @date 2nd october 2017
+ * @brief Lexical Scanner module.
+ *
+ * This module implements Lexical Scanner.
+ */
+
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -33,8 +42,10 @@ void EndScanner(const char * msg, ErrorType errtype)
   isscanning = false;
 }
 
-void *InitScanner(void * v /*ignore this warning*/)
+void *InitScanner(void * v /*not used*/)
 {
+  (void)v; /* to avoid compiler warning */
+
   #ifdef SCANNER_DEBUG
     debug("Init Scanner.");
   #endif
@@ -50,7 +61,7 @@ void *InitScanner(void * v /*ignore this warning*/)
       return NULL;
     }
 
-    // here will be lexical analysis
+    // here will be lexical analysis ----------------------------------
 
     phr->id = input;
 

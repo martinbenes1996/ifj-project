@@ -126,7 +126,6 @@ Phrasem RemoveFromQueue()
 	Phrasem d = head->data;
 
   // set pointer
-  fprintf(stderr, "queue pointers: %p %p\n", head, tail);
 	if(head != NULL) head = head->next;
   if(head == NULL) tail = NULL;
 

@@ -1,12 +1,11 @@
 
 /**
  * @file err.c
- * @interface err
  * @authors xbenes49 xbolsh00 xkrato47 xpolan09
  * @date 29th september 2017
  * @brief Error module
  *
- * This interface enables storing error data.
+ * This module enables storing error data.
  */
 
 #include "err.h"

@@ -1,11 +1,12 @@
 
 /**
- * @file parser.c
+ * @file parser.h
  * @authors xbenes49 xbolsh00 xkrato47 xpolan09
  * @date 29th september 2017
- * @brief Syntax parser module.
+ * @brief Syntax parser interface.
  *
- * This module implements Syntax Analyser.
+ * This interface declares Syntax Analyser and its function. It reads
+ * from a queue.
  */
 
 #ifndef PARSER_H

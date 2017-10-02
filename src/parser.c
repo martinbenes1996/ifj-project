@@ -1,4 +1,13 @@
 
+/**
+ * @file parser.c
+ * @authors xbenes49 xbolsh00 xkrato47 xpolan09
+ * @date 2nd october 2017
+ * @brief Syntax parser module.
+ *
+ * This module implements Syntax Analyser.
+ */
+
 #include <pthread.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -54,7 +63,7 @@ bool RunParser()
     }
     else if(p == END_PTR) break;
 
-    // here will be syntax analysis
+    // here will be syntax analysis ---------------------------
 
     #ifdef PARSER_DEBUG
       PrintPhrasem(p);
