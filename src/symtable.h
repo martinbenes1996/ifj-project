@@ -10,13 +10,29 @@
  */
 
 
-#ifndef SYMBOLTABLE_H
-#define SYMBOLTABLE_H
+#ifndef SYMTABLE_H
+#define SYMTABLE_H
 
 #include <stdlib.h>
 #include <stdio.h>
 
                 /*in the process of creation*/
+
+/*----------------------------------------------------------*/
+
+/**
+ * @brief   Data type enumeration.
+ *
+ * This enum contains list af all possible types.
+ */
+typedef enum{
+    Integer,
+    Double,
+    String,
+    Function
+} dataType;
+
+
 
 /*----------------------------------------------------------*/
 /**
@@ -43,12 +59,6 @@ const char keywords[35][9] = {"as", "asc", "declare", "dim", "do", "double", "el
  * @returns Keyword code.
  */
 int isKeyword(const char * word);
-/*-----------------------------------------------------------*/
-
-//definitions of constant/var/param types, might be moved to another file later
-#define INTEGER 1
-#define DOUBLE 2
-#define STRING 3
 
 /*-----------------------------------------------------------*/
                 //DATA CONSTANT TABLE
@@ -61,7 +71,7 @@ typedef union dataUnion{
     int ivalue;
     double dvalue;
     char * svalue;      //malloc memory needed to store string (i guess there is no max length of a constant)
-} dataUnion;
+} DataUnion;
 
 /**
  * @brief   Structure representing characteristics of constants.
@@ -70,7 +80,7 @@ typedef union dataUnion{
  * Value is represented by union.
  */
 struct constant{
-    int type;
+    dataType type;
     union dataUnion data;
 };
 
@@ -109,7 +119,7 @@ ConstData * constInit(void);
  * @param uni    value of constant.
  * @returns array index.
  */
-int constInsert(ConstData * ptr, int type, dataUnion uni);
+int constInsert(ConstData * ptr, dataType type, dataUnion uni);
 
 /*TO DO:
     delete_array
@@ -127,7 +137,7 @@ int constInsert(ConstData * ptr, int type, dataUnion uni);
  * List.
  */
 struct paramFce{
-    int type;
+    dataType type;
     char * name;
     struct paramFce *next;
 };
@@ -190,7 +200,7 @@ int functionInsert(FunctionData * ptr, char * name);
  * @param paramName    name of parametre.
  * @returns -1 -> failure, 1 -> success.
  */
-int paramInsert(char * name, int type, char * paramName);
+int paramInsert(char * name, dataType type, char * paramName);
 
 
 /*TO DO:
@@ -199,9 +209,60 @@ int paramInsert(char * name, int type, char * paramName);
     findFunction
     findParametreName (finds one param of a function, takes index of param)
     findParametreType
+    findParametreInd
 */
 
 /*-----------------------------------------------------------*/
+
+            //ACTIVE FUNCTION STACK AND DATA OF VARIABLES
+
+/**
+ * @brief   Structure representing information about variables.
+ *
+ * It contains name, type and data of a variable.
+ */
+struct htab_listitem_prom{
+    char * name;
+    dataType type;
+    DataUnion data;
+};
+
+/**
+ * @brief   Structure representing hash table of variables.
+ *
+ * This structure is filled with variables.
+ * It knows its size and number of entities. Will resize automatically.
+ */
+struct htab_prom{
+    size_t arr_size;    //array size
+    size_t n;           //number of entities in array
+    struct htab_listitem_prom *arr[];
+};
+
+/**
+ * @brief   Structure representing informations about active functions.
+ *
+ * This structure contains an index into a hash table of declared functions
+ * and a pointer to a hash table of variables of each function.
+ */
+typedef struct activeFunc{
+    size_t index;
+    struct htab_prom * ptr;
+} ActiveFunc;
+
+/**
+ * @brief   Structure representing stack made by array (or is list better?).
+ *
+ * This structure contains an array (pointer), number of allocated entities
+ * and index of the first free entity.
+ * Will resize automatically.
+ */
+typedef struct arrStack{
+    ActiveFunc * AFarray;   //malloc array, potom realokovat
+    int length;
+    int top;
+} ArrStack;
+
 
 
 
