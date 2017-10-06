@@ -55,7 +55,7 @@ typedef enum{
     Lesser,     // <
     LesserEq,   // <=
     Bigger,     // >
-    BiggerEq,    // >=
+    BiggerEq    // >=
     // i added new operators
     OpenBracket,  // (
     CloseBracket, // )
@@ -85,6 +85,20 @@ inline const char * TablesToString(Tables tb)
   }
 }
 
+/*</Public tables>*/
+
+/**
+ * @brief   Structure representing values of constants/variables.
+ *
+ * This structure contains an int/double/string value.
+ */
+typedef union dataUnion{
+    int ivalue;
+    double dvalue;
+    char * svalue;
+} DataUnion;
+
+
 /**
  * @brief   Structure representing arguments.
  *
@@ -96,6 +110,7 @@ typedef struct
   bool help; /**< Help parameter. */
   /* will be added */
 } args_t;
+
 
 /**
  * @brief   Structure representing phrasem data.
