@@ -18,21 +18,6 @@
 
                 /*in the process of creation*/
 
-/*----------------------------------------------------------*/
-
-/**
- * @brief   Data type enumeration.
- *
- * This enum contains list af all possible types.
- */
-typedef enum{
-    Integer,
-    Double,
-    String,
-    Function
-} dataType;
-
-
 
 /*----------------------------------------------------------*/
 /**
@@ -263,9 +248,29 @@ typedef struct arrStack{
     int top;
 } ArrStack;
 
+/*-----------------------------------------------------------*/
+
+            //ACTIVE FUNCTION FUNCTIONS
+
+ArrStack * stackInit(void);
 
 
 
+
+/*
+TO DO:
+    init
+    push
+    pop
+    free
+    resize
+
+    init_prom
+    insert_prom
+    change_value
+    free
+    ...
+*/
 
 
 

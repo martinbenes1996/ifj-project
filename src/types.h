@@ -21,6 +21,41 @@
 
 
 /**
+ * @brief   Data type enumeration.
+ *
+ * This enum contains list of all possible types.
+ */
+typedef enum{
+    Integer,
+    Double,
+    String,
+    Function,
+    Id,
+    Operator
+} dataType;
+
+
+/**
+ * @brief   Operators enumeration.
+ *
+ * This enum contains list of all possible operators.
+ */
+typedef enum{
+    Mul,
+    DivInt,
+    DivDouble,
+    Add,
+    Sub,
+    Equal,      // =
+    Nequal,     // <>
+    Lesser,     // <
+    LesserEq,   // <=
+    Bigger,     // >
+    BiggerEq    // >=
+} Operators;
+
+
+/**
  * @brief   Structure representing arguments.
  *
  * This structure is filled in arguments of main, and then it indicates
