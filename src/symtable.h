@@ -6,7 +6,7 @@
  * @date 6th november 2017
  * @brief Table library
  *
- * This interface enables interactions between various tables
+ * This interface enables interactions with tables
  */
 
 
@@ -18,6 +18,17 @@
 
                 /*in the process of creation*/
 
+                /*DONE (interface):
+                    Operator table -> types.h
+                    Table of data types -> types.h
+                    Keyword table -> symtable.h
+                    Constant table (almost) -> symtable.h
+                    Table of all tables -> types.h
+
+                  TO BE DONE:
+                    Stupid id table. I need to think about that a lot more...
+                */
+
 
 /*----------------------------------------------------------*/
 /**
@@ -25,13 +36,13 @@
  *
  * This array contains list af all possible keywords.
  */
-const char keywords[35][9] = {"as", "asc", "declare", "dim", "do", "double", "else",
+static const char keywords[35][9] = {"as", "asc", "declare", "dim", "do", "double", "else",
                               "end", "chr", "function", "if", "input", "integer",
                               "length", "loop", "print", "return", "scope", "string",
                               "substr", "then", "while", "and", "boolean", "continue",
                               "elseif", "exit", "false", "for", "next", "not", "or",
                               "shared", "static", "true"};
-//maybe static const char?
+//static const char?
 
 /*-----------------------------------------------------------*/
 /**
@@ -46,7 +57,9 @@ const char keywords[35][9] = {"as", "asc", "declare", "dim", "do", "double", "el
 int isKeyword(const char * word);
 
 /*-----------------------------------------------------------*/
-                //DATA CONSTANT TABLE
+
+                //CONSTANT DATA TABLE
+
 /**
  * @brief   Structure representing values of constants/variables.
  *
@@ -66,7 +79,7 @@ typedef union dataUnion{
  */
 struct constant{
     dataType type;
-    union dataUnion data;
+    DataUnion data;
 };
 
 /**
@@ -113,6 +126,32 @@ int constInsert(ConstData * ptr, dataType type, dataUnion uni);
     find_type
 */
 /*-----------------------------------------------------------*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*the rest of this file is most likely wrong and will be reworked*/
+
+
+
+
                     //FUNCTION TABLE DATA
 
 
@@ -258,7 +297,7 @@ ArrStack * stackInit(void);
 
 
 /*
-TO DO:
+TO DO: (jednoduseji!)
     init
     push
     pop

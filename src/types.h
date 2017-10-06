@@ -26,10 +26,11 @@
  * This enum contains list of all possible types.
  */
 typedef enum{
-    Integer,
+    Integer,    //in const structure...
     Double,
     String,
-    Function,
+    Constant,   //token...
+    Function,   //Martin required that...
     Id,
     Operator
 } dataType;
@@ -41,18 +42,34 @@ typedef enum{
  * This enum contains list of all possible operators.
  */
 typedef enum{
-    Mul,
-    DivInt,
-    DivDouble,
-    Add,
-    Sub,
-    Equal,      // =
+    Mul,        // *    PRIORITY 1
+    DivDouble,  // /
+
+    DivInt,     // '\'  PRIORITY 2
+
+    Add,        // +    PRIORITY 3
+    Sub,        // -
+
+    Equal,      // =    PRIORITY 4
     Nequal,     // <>
     Lesser,     // <
     LesserEq,   // <=
     Bigger,     // >
     BiggerEq    // >=
 } Operators;
+
+/**
+ * @brief   Tables enumeration.
+ *
+ * This enum contains list of certain tables. Use for tokens.
+ */
+typedef enum{
+    IdTab,
+    ConstTab,
+    OperatorTab,
+    KeywordTab,
+    /*to be continued*/
+} Tables;
 
 
 /**
