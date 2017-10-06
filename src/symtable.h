@@ -32,6 +32,7 @@ const char keywords[35][9] = {"as", "asc", "declare", "dim", "do", "double", "el
                               "elseif", "exit", "false", "for", "next", "not", "or",
                               "shared", "static", "true"};
 //maybe static const char?
+//----- yep, static, but this will be in symtable.c, so no one could reach it
 
 /*-----------------------------------------------------------*/
 /**
@@ -93,6 +94,13 @@ struct constantArray{
  * @returns Pointer to array of constants.
  */
 ConstData * constInit(void);
+// --- why do you need this? there will be only one table of constants,
+// --- all you need is to keep pointer inside module. and first call of
+// --- function below (constInsert) will check the table. if it is not
+// --- initialized yet, it will initialize it.
+// --- so Parser wouldn't have to deal with ConstData *
+// --- and the structure ConstData could be private
+
 /**
  * @brief   Insert constant.
  *
@@ -163,6 +171,7 @@ typedef struct htab_t{
  * @returns Pointer to array of functions.
  */
 FunctionData * functionInit(void);
+// --- the same as what I type above
 
 /**
  * @brief   Insert function.
@@ -223,6 +232,8 @@ struct htab_prom{
     size_t n;           //number of entities in array
     struct htab_listitem_prom *arr[];
 };
+// --- why *arr[]? isn't one direction enought? it looks like linked list
+// --- why not to save the whole structure in the table
 
 /**
  * @brief   Structure representing informations about active functions.
@@ -231,7 +242,7 @@ struct htab_prom{
  * and a pointer to a hash table of variables of each function.
  */
 typedef struct activeFunc{
-    size_t index;
+    size_t index; /**< Index to function table! (Link) */
     struct htab_prom * ptr;
 } ActiveFunc;
 

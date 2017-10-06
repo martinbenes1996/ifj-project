@@ -41,17 +41,20 @@ typedef enum{
  * This enum contains list of all possible operators.
  */
 typedef enum{
-    Mul,
-    DivInt,
-    DivDouble,
-    Add,
-    Sub,
-    Equal,      // =
-    Nequal,     // <>
-    Lesser,     // <
-    LesserEq,   // <=
-    Bigger,     // >
-    BiggerEq    // >=
+    Mul,          // *
+    DivInt,       // /
+    DivDouble,    // backslash
+    Add,          // +
+    Sub,          // -
+    Equal,        // =
+    Nequal,       // <>
+    Lesser,       // <
+    LesserEq,     // <=
+    Bigger,       // >
+    BiggerEq,     // >=
+    // i added new operators
+    OpenBracket,  // (
+    CloseBracket, // )
 } Operators;
 
 
