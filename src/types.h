@@ -19,7 +19,7 @@
  * @{
  */
 
-
+/*<Public tables>*/
 /**
  * @brief   Data type enumeration.
  *
@@ -56,9 +56,6 @@ typedef enum{
     LesserEq,   // <=
     Bigger,     // >
     BiggerEq    // >=
-    // i added new operators
-    OpenBracket,  // (
-    CloseBracket, // )
 } Operators;
 
 /**
@@ -73,6 +70,19 @@ typedef enum{
     KeywordTab,
     /*to be continued*/
 } Tables;
+
+/*</Public tables>*/
+
+/**
+ * @brief   Structure representing values of constants/variables.
+ *
+ * This structure contains an int/double/string value.
+ */
+typedef union dataUnion{
+    int ivalue;
+    double dvalue;
+    char * svalue;
+} DataUnion;
 
 
 /**
