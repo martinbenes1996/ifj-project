@@ -55,7 +55,7 @@ typedef enum{
     Lesser,     // <
     LesserEq,   // <=
     Bigger,     // >
-    BiggerEq    // >=
+    BiggerEq,    // >=
     // i added new operators
     OpenBracket,  // (
     CloseBracket, // )
@@ -73,7 +73,17 @@ typedef enum{
     KeywordTab,
     /*to be continued*/
 } Tables;
-
+inline const char * TablesToString(Tables tb)
+{
+  switch(tb)
+  {
+    case IdTab: return "Symbol Table";
+    case ConstTab: return "Table of Constants";
+    case OperatorTab: return "Operator Table";
+    case KeywordTab: return "Keyword Table";
+    default: return "Unknown TableType!";
+  }
+}
 
 /**
  * @brief   Structure representing arguments.
@@ -87,7 +97,6 @@ typedef struct
   /* will be added */
 } args_t;
 
-
 /**
  * @brief   Structure representing phrasem data.
  *
@@ -95,8 +104,8 @@ typedef struct
  */
 typedef struct phrasem_data
 {
-  int id; /**< Id of phrasem (only sample). */
-  /* will be added */
+  Tables table;
+  long index;
 }* Phrasem;
 /**
  * @brief   Debug function to print phrasem.
@@ -104,7 +113,7 @@ typedef struct phrasem_data
  */
 inline void PrintPhrasem(Phrasem p)
 {
-  if(p != NULL) debug("Phrasem: %d", p->id);
+  if(p != NULL) debug("Phrasem: %d %d", TablesToString(p->table), p->index);
 }
 
 /** @} */

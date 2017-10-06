@@ -29,6 +29,7 @@
                     Stupid id table. I need to think about that a lot more...
                 */
 
+                /*Ksenia will give you only the symbol names*/
 
 /*----------------------------------------------------------*/
 /**
