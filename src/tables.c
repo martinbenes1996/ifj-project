@@ -11,9 +11,27 @@
 
 
 #include <stdlib.h>
+#include <string.h>
 #include "tables.h"
 #include "types.h"
 
+
+/*-----------------------------------------------------------*/
+
+                //KEYWORD TABLE FUNCTIONS
+
+int isKeyword(const char * word)
+{
+    int index = -1;
+
+    for(int i = 0; i < 35 ;++i)
+        if(strcmp(word, keywords[i]) == 0)
+        {
+            index = i;
+            break;
+        }
+    return index;
+}
 
 /*-----------------------------------------------------------*/
 
