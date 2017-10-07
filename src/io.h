@@ -48,6 +48,7 @@
     //#define QUEUE_DEBUG
     //#define SCANNER_DEBUG
     //#define PARSER_DEBUG
+    //#define STACK_DEBUG
 
 	  /*add your own*/
 

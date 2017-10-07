@@ -19,6 +19,7 @@
 #include "parser.h"
 #include "queue.h"
 #include "scanner.h"
+#include "stack.h"
 
 void EndParser(const char * msg, ErrorType errtype)
 {
