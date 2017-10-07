@@ -13,6 +13,8 @@
 
 #include <stdbool.h>
 
+#include "io.h"
+
 /*--------------------------------------------------*/
 /** @addtogroup Public_types
  * Basic public types, used in whole project.

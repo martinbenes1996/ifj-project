@@ -12,13 +12,14 @@
 #ifndef STACK_H
 #define STACK_H
 
-/** @}*/
-/*---------------------------- OUTPUT ----------------------------------*/
+#include "types.h"
+
+/*---------------------------- STACK ----------------------------------*/
 /** @addtogroup Stack
  * Stack functions.
  * @{
  */
- 
+
 /**
  * @brief     Pushes data onto stack.
  * @param data         Data to be pushed.

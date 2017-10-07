@@ -9,6 +9,7 @@
  * This implements interactions with tables.
  */
 
+
     /*Work in progress, read with caution.*/
 
 /*NOTES:
@@ -391,4 +392,8 @@ int get_word(char *s, int maximum, FILE *f);
 */
 void vypis(const char *ret, size_t *cislo);
 
+<<<<<<< HEAD
 
+=======
+//#endif
+>>>>>>> cb00ab6c920a8c751462c8f127cd6b69d6b9c681
