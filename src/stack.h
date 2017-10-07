@@ -29,7 +29,7 @@ bool PushOntoStack(Phrasem data);
 
 /**
  * @brief     Pops from the stack.
- * @returns            Data being pushed. NULL if error. END_PTR if empty.
+ * @returns            Data being pushed. NULL if empty.
  */
 Phrasem PopFromStack();
 
