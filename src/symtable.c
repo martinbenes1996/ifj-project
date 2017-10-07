@@ -10,6 +10,12 @@
  */
 
 #include "symtable.h"
+#include "types.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
     /*Work in progress, read with caution.*/
 
 /*NOTES:
@@ -23,7 +29,7 @@
  *
  * This array contains list af all possible keywords.
  */
-static const char keywords[35][9] = {"as", "asc", "declare", "dim", "do", "double", "else",
+const char keywords[35][9] = {"as", "asc", "declare", "dim", "do", "double", "else",
                                      "end", "chr", "function", "if", "input", "integer",
                                      "length", "loop", "print", "return", "scope", "string",
                                      "substr", "then", "while", "and", "boolean", "continue",
@@ -127,7 +133,7 @@ struct variable{
  * and variadic array of variables (identificators). Will resize automatically.
  * It is also an entity of stack.
  */
-typedef struct symboltable_frame{
+typedef struct symbolTableFrame{
     int functionIndex;
     struct symboltable_frame * next;
     size_t arr_size;    //array size
@@ -143,12 +149,282 @@ typedef struct symboltable_frame{
  * Will resize automatically.
  */
 typedef struct symbolTable{
-    int size;
-    int count;
-    SymbolTableFrame * frame;   //malloc array, potom realokovat
+    size_t size;
+    size_t count;
+    struct symbolTableFrame * frame;   //malloc array, potom realokovat
 } SymbolTable;
 
+//initialisation of symbol table
+SymbolTable symtable = {.size = 0, .count = 0, .frame = NULL};
+
+
+
+
+/*************************************************************/
+
+                //SYMBOL TABLE FUNCTIONS
+
+/*************************************************************/
+
+
+                    //DECLARATIONS
+unsigned int hashFunction(const char *str);
+
+//size of initialised arrays
+#define STARTING_CHUNK 10
+
+/**
+ * @brief   Initialisation of hash symbol table.
+ *
+ * This function creates a frame and sets its size on 10.
+ * Returns NULL when unsuccessful, otherwise
+ * returns pointer to the structure.
+ * @param size  size of the table
+ * @returns Pointer to array of functions or NULL.
+ */
+SymbolTableFrame * frameInit(size_t size);
+
+/**
+ * @brief   Destruction of hash symbol table.
+ *
+ * This function frees memory of a frame.
+ */
+void frameFree(SymbolTableFrame * frame);
+
+/**
+ * @brief   Returns the number of entities in table.
+ *
+ * @param frame pointer to a frame
+ * @returns Number of entities in table.
+ */
+size_t frameEntityCount(SymbolTableFrame * frame);
+
+/**
+ * @brief   Returns the size of a table.
+ *
+ * @param frame pointer to a frame
+ * @returns Size of the table.
+ */
+size_t frameTableSize(SymbolTableFrame * frame);
+
+/**
+ * @brief   Empties a symbol table frame.
+ *
+ * @param frame     pointer to a frame
+ */
+//void frameClear(SymbolTableFrame * frame);          <---DELETE
+
+/**
+ * @brief   Resizes a table, deletes the old one.
+
+ * Creates a new resized table from the previous one.
+ * Returns NULL when unsuccessful + frame2 is unchanged,
+ * returns pointer to a new table and frame2 is deleted when successful.
+ * @param newsize   new size of the table
+ * @param frame2    pointer to a source table
+ * @returns Pointer to a new frame or NULL.
+*/
+SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2);
+
+/**
+ * @brief   Finds variable with specified name.
+
+ * Returns pointer to a variable or NULL
+ * @param frame   pointer to a frame
+ * @param name    name of the variable
+ * @returns Pointer to a variable or NULL.
+*/
+//struct variable * frameFind(SymbolTableFrame * frame, const char * name);
+
+/**
+ * @brief   Adds variable into frame.
+
+ * @param frame   pointer to a frame
+ * @param name    name of the variable
+ * @returns True if successful, false if not.
+*/
+//bool frameAddSymbol(SymbolTableFrame * frame, const char * name);
+
+/**
+ * @brief   Changes value of a variable.
+
+ * @param frame   pointer to a frame
+ * @param name    name of the variable
+ * @param type    type of the variable
+ * @param value   new value of the variable
+ * @returns True if successful, false if not.
+*/
+bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type, DataUnion value);
+
 /*-----------------------------------------------------------*/
+
+                    //FUNCTION BODY
+
+
+SymbolTableFrame * frameInit(size_t size)
+{
+    SymbolTableFrame *frame = NULL;
+
+    //allocation of the table with variadic array
+    if( (frame = malloc(sizeof(SymbolTableFrame) + size * sizeof(struct variable)))  != NULL)
+        {
+            //inicializace prvku vytvorene tabulky
+            frame->arr_size = size;
+            frame->count = 0;
+            frame->functionIndex = -1;
+            frame->next = NULL;
+
+            //fixing potential frees of empty entities
+            for(size_t i = 0; i < size ;++i)
+            {
+                frame->arr[i].name = NULL;
+                frame->arr[i].type = DataType_Integer;
+            }
+        }
+
+    return frame;
+}
+
+void frameFree(SymbolTableFrame * frame)
+{
+    if(frame == NULL) return;
+
+    //frees strings in frame
+    for(size_t i = 0;i < frame->arr_size;i++)
+    {
+        free(frame->arr[i].name);
+
+        if(frame->arr[i].type == DataType_String)
+            free(frame->arr[i].value.svalue);
+    }
+
+    //destroys a frame
+    free(frame);
+
+    return;
+}
+
+size_t frameTableSize(SymbolTableFrame * frame)
+{
+    return frame->arr_size;
+}
+
+size_t frameEntityCount(SymbolTableFrame * frame)
+{
+    return frame->count;
+}
+
+SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2)
+{
+    SymbolTableFrame *frame = NULL;
+    unsigned int hashNumber;
+
+    if(frame2 == NULL) return NULL;
+
+    if((frame = frameInit(newsize)) != NULL)
+    {
+        frame->count = frame2->count;
+        frame->functionIndex = frame2->functionIndex;
+        frame->next = frame2->next;
+
+        //going through all variables in table and copying variables
+        for(size_t i=0;i < frame2->arr_size;++i)
+        {
+            /*POTREBA ZMENIT CHOVANI HASH FCE*/
+//hashNumber = hashFunction(frame2->arr[i].name) % newsize;
+hashNumber = 0; //prekladac rve
+
+            /*---------------------------------------------------------------------------*/
+            frame->arr[hashNumber].type = frame2->arr[i].type;
+
+            //allocation of memory for a name string in new table
+            if((frame->arr[hashNumber].name = malloc(sizeof(char) * strlen(frame2->arr[i].name)
+                                                    + sizeof(char))) != NULL)
+            {
+                strcpy(frame->arr[hashNumber].name, frame2->arr[i].name);
+            }
+                else return NULL;
+
+
+            /*copying various types of values in union-----------------------------------*/
+            if(frame2->arr[i].type == DataType_String)
+            {
+                //allocation of memory for a value string in union
+                if((frame->arr[hashNumber].value.svalue = malloc(sizeof(char) * strlen(frame2->arr[i].value.svalue)
+                                                        + sizeof(char))) != NULL)
+                {
+                    strcpy(frame->arr[hashNumber].value.svalue, frame2->arr[i].value.svalue);
+                }
+                    else return NULL;
+            }
+            else if(frame2->arr[i].type == DataType_Integer)
+                frame->arr[hashNumber].value.ivalue = frame2->arr[i].value.ivalue;
+            else if(frame2->arr[i].type == DataType_Double)
+                frame->arr[hashNumber].value.dvalue = frame2->arr[i].value.dvalue;
+            else    //functions are identified by integer (?)
+                frame->arr[hashNumber].value.ivalue = frame2->arr[i].value.ivalue;
+            //</copy union---------------------------------------------------------------->
+
+        }
+        //destroys old frame
+        frameFree(frame2);
+    }
+
+    return frame;
+}
+/*
+struct variable * frameFind(SymbolTableFrame * frame, const char * name)
+{
+    size_t hashNumber;
+
+    hashNumber = hashFunction(name);
+
+    WILL BE DONE, NEED HASH FUNCTION
+
+    return ;
+}
+
+bool frameAddSymbol(SymbolTableFrame * frame, const char * name)
+{
+    if(frameFind(frame, name) == NULL) return false;
+
+    WILL BE DONE, NEED HASH FUNCTION
+
+    frame->count++;
+
+    return ;
+}*/
+
+bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type, DataUnion value)
+{
+    struct variable * var = NULL;
+
+    //cannot change value if there is no symbol
+//if((var = frameFind(frame, name)) == NULL) return false;
+    (void *)name;
+    (void *)frame;
+    //types must be same
+    if(var->type != type) return false;
+
+    //Changes the value
+    if(type == DataType_Integer || type == DataType_Function)
+        var->value.ivalue = value.ivalue;
+    else if(type == DataType_Double)
+        var->value.dvalue = value.dvalue;
+    else
+        var->value.svalue = value.svalue;
+
+    return true;
+}
+
+/*
+STACK:
+    push
+    pop
+    ...
+FRAME:
+    init
+*/
 
 
 
@@ -264,44 +540,6 @@ struct htab_t{
 unsigned int hash_function(const char *str);
 
 
-/**
- * vytvori tabulku o zadane velikosti
- * vraci ukazatel na tabulku nebo NULL pointer v pripade neuspechu
- @param velikost celociselna hodnota udavajici velikost pole seznamu
-*/
-struct htab_t *htab_init(size_t velikost);
-
-/**
- * uvolni tabulku z pameti
- @param t ukazatel na tabulku
-*/
-void htab_free(struct htab_t *t);
-
-/**
- * vytvori tabulku t z tabulky t2 o nove velikosti
- * vraci NULL pri neuspechu a t2 je nezmenena, pri uspechu vraci ukazatel na novou tabulku a t2 je prazdna
- @param newsize nova velikost tabulky
- @param t2 ukazatel na zvetsovanou tabulku
-*/
-struct htab_t *htab_move(size_t newsize, struct htab_t *t2);
-
-/**
- * fce odstrani polozky pole tabulky
- @param t ukazatel na tabulku
-*/
-void htab_clear(struct htab_t *t);
-
-/**
- * vraci pocet prvku tabulky
- @param ukazatel na tabulku
-*/
-size_t htab_size(struct htab_t *t);
-
-/**
- * vraci velikost pole tabulky
- @param ukazatel na tabulku
-*/
-size_t htab_bucket_count(struct htab_t *t);
 
 /**
  * hleda zaznam retezce key v tabulce t
@@ -351,5 +589,3 @@ int get_word(char *s, int maximum, FILE *f);
  @param cislo cislo, ktere se ma vypsat
 */
 void vypis(const char *ret, size_t *cislo);
-
-//#endif
