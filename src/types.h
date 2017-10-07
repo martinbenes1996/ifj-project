@@ -16,27 +16,23 @@
 #include "io.h"
 
 /*--------------------------------------------------*/
-/** @addtogroup Public_types
- * Basic public types, used in whole project.
+/** @addtogroup Symbol_types
+ * Types used in symbol table etc.
  * @{
  */
 
-
 /**
- * @brief   Data type enumeration.
+ * @brief   Data type enumeration for symbols.
  *
- * This enum contains list of all possible types.
+ * This enum contains list of all possible types for symbols,
+ * integer, double, string or function.
  */
 typedef enum{
-    Integer,    //in const structure...
-    Double,
-    String,
-    Constant,   //token...
-    Function,   //Martin required that...
-    Id,
-    Operator
-} dataType;
-
+  DataType_Integer,
+  DataType_Double,
+  DataType_String,
+  DataType_Function
+} DataType;
 
 /**
  * @brief   Operators enumeration.
@@ -44,50 +40,24 @@ typedef enum{
  * This enum contains list of all possible operators.
  */
 typedef enum{
-    Mul,        // *    PRIORITY 1
-    DivDouble,  // /
+  Mul,        // *    PRIORITY 1
+  DivDouble,  // /
 
-    DivInt,     // '\'  PRIORITY 2
+  DivInt,     // '\'  PRIORITY 2
 
-    Add,        // +    PRIORITY 3
-    Sub,        // -
+  Add,        // +    PRIORITY 3
+  Sub,        // -
 
-    Equal,      // =    PRIORITY 4
-    Nequal,     // <>
-    Lesser,     // <
-    LesserEq,   // <=
-    Bigger,     // >
-    BiggerEq,    // >=
-    // i added new operators
-    OpenBracket,  // (
-    CloseBracket, // )
+  Equal,      // =    PRIORITY 4
+  Nequal,     // <>
+  Lesser,     // <
+  LesserEq,   // <=
+  Bigger,     // >
+  BiggerEq,    // >=
+
+  OpenBracket,  // (   NOT OPERATOR SYMBOLS
+  CloseBracket, // )
 } Operators;
-
-/**
- * @brief   Tables enumeration.
- *
- * This enum contains list of certain tables. Use for tokens.
- */
-typedef enum{
-    IdTab,
-    ConstTab,
-    OperatorTab,
-    KeywordTab,
-    /*to be continued*/
-} Tables;
-inline const char * TablesToString(Tables tb)
-{
-  switch(tb)
-  {
-    case IdTab: return "Symbol Table";
-    case ConstTab: return "Table of Constants";
-    case OperatorTab: return "Operator Table";
-    case KeywordTab: return "Keyword Table";
-    default: return "Unknown TableType!";
-  }
-}
-
-/*</Public tables>*/
 
 /**
  * @brief   Structure representing values of constants/variables.
@@ -100,6 +70,89 @@ typedef union dataUnion{
     char * svalue;
 } DataUnion;
 
+/**
+ * @brief   Table types.
+ *
+ * This enum contains list of certain tables.
+ */
+typedef enum{
+    Table_SymbolTable,
+    Table_ConstantTable,
+    Table_OperatorTable,
+    Table_KeywordTable
+} Table;
+inline const char * TableToString(Table tb)
+{
+  switch(tb)
+  {
+    case Table_SymbolTable: return "Symbol Table";
+    case Table_ConstantTable: return "Table of Constants";
+    case Table_OperatorTable: return "Operator Table";
+    case Table_KeywordTable: return "Keyword Table";
+    default: return "Unknown TableType!";
+  }
+}
+
+/** @} */
+/*--------------------------------------------------*/
+/** @addtogroup Token_types
+ * Types used in token.
+ * @{
+ */
+
+/**
+ * @brief   Enumeration for token types.
+ *
+ * This enumeration contains possible types of tokens. Their datatype
+ * is then saved in symbol table.
+ */
+typedef enum{
+  TokenType_Constant,
+  TokenType_Function,
+  TokenType_Operator,
+  TokenType_Keyword,
+  TokenType_Variable,
+  TokenType_Separator
+} TokenType;
+inline const char * TokenTypeToString(TokenType tt)
+{
+  switch(tt)
+  {
+    case TokenType_Constant: return "Constant";
+    case TokenType_Function: return "Function";
+    case TokenType_Operator: return "Operator";
+    case TokenType_Keyword: return "Keyword";
+    case TokenType_Variable: return "Variable";
+    case TokenType_Separator: return "Separator";
+    default: return "Unknown TokenType!";
+  }
+}
+
+/**
+ * @brief   Structure representing phrasem data.
+ *
+ * This structure is filled with data of phrasem, type etc.
+ */
+typedef struct phrasem_data
+{
+  TokenType table;
+  long index;
+}* Phrasem;
+/**
+ * @brief   Debug function to print phrasem.
+ * @param p       Phrasem to be printed.
+ */
+inline void PrintPhrasem(Phrasem p)
+{
+  if(p != NULL) debug("Phrasem: %d %d", TokenTypeToString(p->table), p->index);
+}
+
+/** @} */
+/*--------------------------------------------------*/
+/** @addtogroup Public_types
+ * Basic public types, used in whole project.
+ * @{
+ */
 
 /**
  * @brief   Structure representing arguments.
@@ -113,25 +166,6 @@ typedef struct
   /* will be added */
 } args_t;
 
-
-/**
- * @brief   Structure representing phrasem data.
- *
- * This structure is filled with data of phrasem, type etc.
- */
-typedef struct phrasem_data
-{
-  Tables table;
-  long index;
-}* Phrasem;
-/**
- * @brief   Debug function to print phrasem.
- * @param p       Phrasem to be printed.
- */
-inline void PrintPhrasem(Phrasem p)
-{
-  if(p != NULL) debug("Phrasem: %d %d", TablesToString(p->table), p->index);
-}
 
 /** @} */
 /*--------------------------------------------------*/

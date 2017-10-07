@@ -37,6 +37,33 @@ static const char keywords[35][9] = {"as", "asc", "declare", "dim", "do", "doubl
 
 /*-----------------------------------------------------------*/
 
+        //CONSTANT DATA TABLE (not sure if public or private yet)
+
+/**
+ * @brief   Structure representing characteristics of constants.
+ *
+ * This structure is filled with type and value of the constant.
+ * Value is represented by union.
+ */
+struct constant{
+    DataType type;
+    DataUnion data;
+};
+
+/**
+ * @brief   Structure representing table of constants.
+ *
+ * This structure is filled with structures representing constants.
+ * It knows its own size and resizes automatically by (+10?) entities.
+ */
+struct constantArray{
+    size_t arr_size;    //array size
+    size_t n;           //number of entities in array
+    struct constant arr[];
+} ConstData;
+
+/*-----------------------------------------------------------*/
+
 /**
  * @brief   Initialisation of table of constants.
  *
@@ -54,33 +81,6 @@ ConstData * constInit(void);
 // --- and the structure ConstData could be private
 
 // +++ yeah i see, will be removed
-
-/*-----------------------------------------------------------*/
-
-        //CONSTANT DATA TABLE (not sure if public or private yet)
-
-/**
- * @brief   Structure representing characteristics of constants.
- *
- * This structure is filled with type and value of the constant.
- * Value is represented by union.
- */
-struct constant{
-    dataType type;
-    DataUnion data;
-};
-
-/**
- * @brief   Structure representing table of constants.
- *
- * This structure is filled with structures representing constants.
- * It knows its own size and resizes automatically by (+10?) entities.
- */
-struct constantArray{
-    size_t arr_size;    //array size
-    size_t n;           //number of entities in array
-    struct constant arr[];
-} ConstData;
 
 
 
@@ -137,10 +137,10 @@ struct htab_t{
  *
  * List.
  */
-struct paramFce{
-    dataType type;
+struct paramFce {
+    DataType type;
     char * name;
-    struct paramFce *next;
+    struct paramFce * next;
 };
 
 /**
@@ -149,11 +149,11 @@ struct paramFce{
  * This structure is filled with informations about declared functions.
  * Contains structure with info about parametres.
  */
-struct htab_listitem{
+typedef struct {
     char * name;
     size_t numberOfParam;
     struct paramFce * param;
-};
+} Function;
 
 /**
  * @brief   Structure representing hash table of function names/parametres.
@@ -161,10 +161,10 @@ struct htab_listitem{
  * This structure is filled with functions.
  * It knows its size and number of entities. Will resize automatically.
  */
-typedef struct htab_t{
+typedef struct{
     size_t arr_size;    //array size
     size_t n;           //number of entities in array
-    struct htab_listitem *arr[];
+    struct Function *arr[];
 } FunctionData;
 /*-----------------------------------------------------------*/
 
@@ -225,7 +225,7 @@ int paramInsert(char * name, dataType type, char * paramName);
  */
 struct htab_listitem_prom{
     char * name;
-    dataType type;
+    DataType type;
     DataUnion data;
 };
 
@@ -304,18 +304,6 @@ TO DO: (jednoduseji!)
 /*               (IJC 2.proj) RUBBISH - IGNORE!             */
 
 extern unsigned short int flag;
-
-struct htab_listitem{
-    char *key;
-    size_t data;
-    struct htab_listitem *next;
-};
-
-struct htab_t{
-    size_t arr_size;
-    size_t n;
-    struct htab_listitem *arr[];
-};
 
 
 /**

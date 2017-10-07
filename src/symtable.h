@@ -65,7 +65,7 @@ int isKeyword(const char * word);
  * @param uni    value of constant.
  * @returns array index.
  */
-int constInsert(dataType type, dataUnion uni);
+int constInsert(DataType type, DataUnion uni);
 //dataUnion and dataType are in types.h
 
 
@@ -83,11 +83,10 @@ int constInsert(dataType type, dataUnion uni);
 /**
  * @brief   Insert variable.
  *
- * This function inserts variable into array of variables.
- * Returns -1 when unsuccessful, otherwise
- * returns an index into array of variable. (Hopefully)
+ * This function inserts variable into array of variables and returns
+ * an index into array of variable. (Hopefully)
  * @param name    Name of a variable.
- * @returns array index.
+ * @returns Array index. -1 if error
  */
 int varInsert(const char * name);
 

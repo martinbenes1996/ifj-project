@@ -38,7 +38,7 @@ bool PushOntoStack(Phrasem data)
 
 Phrasem PopFromStack()
 {
-  StackItem * it = mstack.first;
+  StackItem it = mstack.first;
   if(it == NULL) return END_PTR;
 
   mstack.first = it;
