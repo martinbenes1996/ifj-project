@@ -13,7 +13,7 @@ typedef struct stack_item
 
 typedef struct stack_head
 {
-  StackItem * first;
+  StackItem first;
 } Stack;
 
 static Stack mstack;
