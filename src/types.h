@@ -55,7 +55,7 @@ typedef enum{
     Lesser,     // <
     LesserEq,   // <=
     Bigger,     // >
-    BiggerEq    // >=
+    BiggerEq,    // >=
     // i added new operators
     OpenBracket,  // (
     CloseBracket, // )

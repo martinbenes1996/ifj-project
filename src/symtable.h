@@ -27,7 +27,7 @@
                     Table of all tables -> types.h
 
                   TO BE DONE:
-                    Stupid symbol table. I need to think about that a lot more...
+                    Symbol table.
                 */
 
                 /*Ksenia will give you only the symbol names*/

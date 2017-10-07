@@ -36,26 +36,6 @@ static const char keywords[35][9] = {"as", "asc", "declare", "dim", "do", "doubl
 
 /*-----------------------------------------------------------*/
 
-/**
- * @brief   Initialisation of table of constants.
- *
- * This function creates array of constants.
- * Returns NULL when unsuccessful, otherwise
- * returns pointer to array of size 10.
- * @returns Pointer to array of constants.
- */
-ConstData * constInit(void);
-// --- why do you need this? there will be only one table of constants,
-// --- all you need is to keep pointer inside module. and first call of
-// --- function below (constInsert) will check the table. if it is not
-// --- initialized yet, it will initialize it.
-// --- so Parser wouldn't have to deal with ConstData *
-// --- and the structure ConstData could be private
-
-// +++ yeah i see, will be removed
-
-/*-----------------------------------------------------------*/
-
         //CONSTANT DATA TABLE (not sure if public or private yet)
 
 /**
@@ -66,7 +46,7 @@ ConstData * constInit(void);
  */
 struct constant{
     dataType type;
-    DataUnion data;
+    DataUnion value;
 };
 
 /**
@@ -77,59 +57,13 @@ struct constant{
  */
 struct constantArray{
     size_t arr_size;    //array size
-    size_t n;           //number of entities in array
+    size_t count;           //number of entities in array
     struct constant arr[];
-} ConstData;
+} ConstArray;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-struct htab_listitem{
-    char *key;
-    size_t data;
-    struct htab_listitem *next;
-};
-
-struct htab_listitem{
-    char *key;
-    size_t data;
-    struct htab_listitem *next;
-};
-
-struct htab_t{
-    size_t arr_size;    //array size
-    size_t n;           //number of entities in array
-    struct htab_listitem *arr[];
-};
-
-
-
-
-
-
-
-
-
-
-     /*the rest of this file is most likely wrong and will be reworked*/
-
-
-
+/*----------------------------------------------------------------*/
 
                     //FUNCTION TABLE DATA
-
 
 /**
  * @brief   Structure representing type and name of parametres.
@@ -148,24 +82,127 @@ struct paramFce{
  * This structure is filled with informations about declared functions.
  * Contains structure with info about parametres.
  */
-struct htab_listitem{
+struct function{
     char * name;
+    dataType type;
     size_t numberOfParam;
     struct paramFce * param;
 };
 
 /**
- * @brief   Structure representing hash table of function names/parametres.
+ * @brief   Structure representing (hash?) table of function names/parametres.
  *
  * This structure is filled with functions.
  * It knows its size and number of entities. Will resize automatically.
  */
-typedef struct htab_t{
+typedef struct functionArray{
     size_t arr_size;    //array size
-    size_t n;           //number of entities in array
-    struct htab_listitem *arr[];
-} FunctionData;
+    size_t count;           //number of entities in array
+    struct function arr[];
+} FunctionArray;
+
 /*-----------------------------------------------------------*/
+
+                //VARIABLE TABLE DATA
+
+/**
+ * @brief   Structure representing a variable.
+ *
+ * This structure contains type, name and value of a variable.
+ */
+struct variable{
+    dataType type;
+    char * name;
+    DataUnion value;
+}
+/*-----------------------------------------------------------*/
+
+                //STACK OF MODULES DATA
+
+/**
+ * @brief   Structure representing a hash table of variables of a function.
+ *
+ * This structure contains index into array of functions, its size, number of entities
+ * and variadic array of variables (identificators). Will resize automatically.
+ * It is also an entity of stack.
+ */
+struct SymbolTableFrame{
+    int functionIndex;
+    struct SymbolTableFrame * next;
+    size_t arr_size;    //array size
+    size_t count;           //number of entities in array
+    struct variable arr[];
+}
+
+/**
+ * @brief   Structure representing stack made by array (or is list better?).
+ *
+ * This structure contains an array (pointer), number of allocated entities
+ * and index of the first free entity.
+ * Will resize automatically.
+ */
+typedef struct symbolTable{
+    int size;
+    int count;
+    SymbolTableFrame * frame;   //malloc array, potom realokovat
+} SymbolTable;
+
+/*-----------------------------------------------------------*/
+
+
+
+
+
+
+
+
+
+
+
+
+/*-----------------------------------------------------------*/
+
+                //CONST TABLE FUNCTIONS
+
+
+/**
+ * @brief   Initialisation of table of constants.
+ *
+ * This function creates array of constants.
+ * Returns NULL when unsuccessful, otherwise
+ * returns pointer to array of size 10.
+ * @returns Pointer to array of constants.
+ */
+ConstData * constInit(void);
+// --- why do you need this? there will be only one table of constants,
+// --- all you need is to keep pointer inside module. and first call of
+// --- function below (constInsert) will check the table. if it is not
+// --- initialized yet, it will initialize it.
+// --- so Parser wouldn't have to deal with ConstData *
+// --- and the structure ConstData could be private
+
+// +++ yeah i see, will be removed
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     /*the rest of this file is most likely wrong and will be reworked*/
+
+
+
+
+
 
                     //FUNCTION TABLE FUNCTIONS
 
@@ -215,66 +252,7 @@ int paramInsert(char * name, dataType type, char * paramName);
 
 /*-----------------------------------------------------------*/
 
-            //ACTIVE FUNCTION STACK AND DATA OF VARIABLES
-
-/**
- * @brief   Structure representing information about variables.
- *
- * It contains name, type and data of a variable.
- */
-struct htab_listitem_prom{
-    char * name;
-    dataType type;
-    DataUnion data;
-};
-
-/**
- * @brief   Structure representing hash table of variables.
- *
- * This structure is filled with variables.
- * It knows its size and number of entities. Will resize automatically.
- */
-struct htab_prom{
-    size_t arr_size;    //array size
-    size_t n;           //number of entities in array
-    struct htab_listitem_prom *arr[];
-};
-// --- why *arr[]? isn't one direction enought? it looks like linked list
-// --- why not to save the whole structure in the table
-
-/**
- * @brief   Structure representing informations about active functions.
- *
- * This structure contains an index into a hash table of declared functions
- * and a pointer to a hash table of variables of each function.
- */
-typedef struct activeFunc{
-    size_t index; /**< Index to function table! (Link) */
-    struct htab_prom * ptr;
-} ActiveFunc;
-
-/**
- * @brief   Structure representing stack made by array (or is list better?).
- *
- * This structure contains an array (pointer), number of allocated entities
- * and index of the first free entity.
- * Will resize automatically.
- */
-typedef struct arrStack{
-    ActiveFunc * AFarray;   //malloc array, potom realokovat
-    int length;
-    int top;
-} ArrStack;
-
-/*-----------------------------------------------------------*/
-
-            //ACTIVE FUNCTION FUNCTIONS
-
-ArrStack * stackInit(void);
-
-
-
-
+                //STACK FUNCTIONS
 /*
 TO DO: (jednoduseji!)
     init
@@ -413,5 +391,4 @@ int get_word(char *s, int maximum, FILE *f);
 */
 void vypis(const char *ret, size_t *cislo);
 
-//#endif
 
