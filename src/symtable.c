@@ -6,7 +6,7 @@
  * @date 6th november 2017
  * @brief Symbol table source code
  *
- * This implements interactions with tables.
+ * This implements interactions with symbol table.
  */
 
 #include "symtable.h"
@@ -23,50 +23,6 @@
       (i guess there is no max length of a constant)
 */
 
-/*----------------------------------------------------------*/
-/**
- * @brief   Keyword table.
- *
- * This array contains list af all possible keywords.
- */
-const char keywords[35][9] = {"as", "asc", "declare", "dim", "do", "double", "else",
-                                     "end", "chr", "function", "if", "input", "integer",
-                                     "length", "loop", "print", "return", "scope", "string",
-                                     "substr", "then", "while", "and", "boolean", "continue",
-                                     "elseif", "exit", "false", "for", "next", "not", "or",
-                                     "shared", "static", "true"};
-
-//----- yep, static, but this will be in symtable.c, so no one could reach it
-
-//I think it will have to be accessible for syntax analysis
-//you will need to know what keyword is in the token (there will be just an index into this array)
-
-/*-----------------------------------------------------------*/
-
-        //CONSTANT DATA TABLE (not sure if public or private yet)
-
-/**
- * @brief   Structure representing characteristics of constants.
- *
- * This structure is filled with type and value of the constant.
- * Value is represented by union.
- */
-struct constant{
-    DataType type;
-    DataUnion data;
-};
-
-/**
- * @brief   Structure representing table of constants.
- *
- * This structure is filled with structures representing constants.
- * It knows its own size and resizes automatically by (+10?) entities.
- */
-struct constantArray{
-    size_t arr_size;    //array size
-    size_t count;           //number of entities in array
-    struct constant arr[];
-} ConstArray;
 
 /*----------------------------------------------------------------*/
 
@@ -435,57 +391,7 @@ FRAME:
 
 
 
-/*-----------------------------------------------------------*/
 
-                //CONST TABLE FUNCTIONS
-
-     /*the rest of this file is most likely wrong and will be reworked*/
-
-                    //FUNCTION TABLE FUNCTIONS
-
-/**
- * @brief   Initialisation of table of functions.
- *
- * This function creates array of functions.
- * Returns NULL when unsuccessful, otherwise
- * returns pointer to array of size (10?).
- * @returns Pointer to array of functions.
- */
-//FunctionData * functionInit(void);
-// --- the same as what I type above
-
-/**
- * @brief   Insert function.
- *
- * This function inserts function into array of functions.
- * Returns -1 when unsuccessful, otherwise returns 1
- * @param ptr    array pointer.
- * @param name   name of the function.
- * @returns -1 -> failure, 1 -> success.
- */
-//int functionInsert(FunctionData * ptr, char * name);
-
-/**
- * @brief   Insert parameter into an existing function.
- *
- * This function inserts parameter into a function.
- * Returns -1 when unsuccessful (function not found,...), otherwise returns 1
- * @param name   name of the function.
- * @param type   type of parameter.
- * @param paramName    name of parametre.
- * @returns -1 -> failure, 1 -> success.
- */
-int paramInsert(char * name, DataType type, char * paramName);
-
-
-/*TO DO:
-    int numberOfParam(FunctionData * ptr, const char * name);
-    freeTable
-    findFunction
-    findParametreName (finds one param of a function, takes index of param)
-    findParametreType
-    findParametreInd
-*/
 
 /*-----------------------------------------------------------*/
 
@@ -504,88 +410,3 @@ TO DO: (jednoduseji!)
     free
     ...
 */
-
-
-
-
-
-
-
-
-
-
-
-/*               (IJC 2.proj) RUBBISH - IGNORE!             */
-
-extern unsigned short int flag;
-
-struct htab_listitem{
-    char *key;
-    size_t data;
-    struct htab_listitem *next;
-};
-
-struct htab_t{
-    size_t arr_size;
-    size_t n;
-    struct htab_listitem *arr[];
-};
-
-
-/**
- * hashovaci fce pro retezce
- * vraci unsigned int prislusici retezci
- @param str ukazatel na retezec
-*/
-unsigned int hash_function(const char *str);
-
-
-
-/**
- * hleda zaznam retezce key v tabulce t
- * vraci ukazatel na zaznam, ve kterem je retezec ulozen nebo NULL, pokud nenajde
- @param t ukazatel na tabulku
- @param key ukazatel na retezec
-*/
-struct htab_listitem *htab_find(struct htab_t *t, const char *key);
-
-/**
- * hleda zaznam retezce key v tabulce t
- * vraci ukazatel na zaznam, ve kterem je retezec ulozen,\
-   pokud ho nenajde, vlozi ho do tabulky a vrati ukazatel na nej
- * pri neuspesnem vlozeni vraci NULL
- @param t ukazatel na tabulku
- @param key ukazatel na retezec
-*/
-struct htab_listitem *htab_lookup_add(struct htab_t *t, const char *key);
-
-/**
- * odstrani ulozeny retezec z tabulky t
- * vraci true, pokud byl retezec odstranen nebo false, pokud nebyl nalezen
- @param t ukazatel na tabulku
- @param key hledany retezec
-*/
-_Bool htab_remove(struct htab_t *t, const char *key);
-
-/**
- * pro vsechny prvky tabulky zavola funkci
- @param t tabulka
- @param (*func)... ukazatel na funkci
-*/
-void htab_foreach(struct htab_t *t, void (*func)(const char *constkey, size_t *valueptr));
-
-/**
- * nacte slovo a vrati jeho delku
- * v pripade neuspechu vraci EOF
- @param s cilovy retezec pro nactene slovo
- @param maximum maximalni delka slova
- @param f ukazatel na strukturu FILE
-*/
-int get_word(char *s, int maximum, FILE *f);
-
-/**
- * vypis tabulky - htab_foreach
- @param ret retezec, ktery se ma vypsat
- @param cislo cislo, ktere se ma vypsat
-*/
-void vypis(const char *ret, size_t *cislo);
