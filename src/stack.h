@@ -34,7 +34,6 @@ bool PushOntoStack(Phrasem data);
 Phrasem PopFromStack();
 
 
-
 /**
  * @brief     Clears all stack.
  */
