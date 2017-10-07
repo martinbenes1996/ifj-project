@@ -13,6 +13,8 @@
 
 #include <stdbool.h>
 
+#include "io.h"
+
 /*--------------------------------------------------*/
 /** @addtogroup Public_types
  * Basic public types, used in whole project.
@@ -55,7 +57,7 @@ typedef enum{
     Lesser,     // <
     LesserEq,   // <=
     Bigger,     // >
-    BiggerEq    // >=
+    BiggerEq,    // >=
     // i added new operators
     OpenBracket,  // (
     CloseBracket, // )

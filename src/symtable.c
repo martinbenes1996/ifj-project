@@ -9,6 +9,7 @@
  * This implements interactions with tables.
  */
 
+#include "symtable.h"
     /*Work in progress, read with caution.*/
 
 /*NOTES:
@@ -414,4 +415,3 @@ int get_word(char *s, int maximum, FILE *f);
 void vypis(const char *ret, size_t *cislo);
 
 //#endif
-
