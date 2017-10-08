@@ -63,7 +63,7 @@ void *InitScanner(void * v /*not used*/)
 
     // here will be lexical analysis ----------------------------------
 
-    phr->index = input;
+    phr->d.index = input;
 
     #ifdef SCANNER_DEBUG
       PrintPhrasem(phr);

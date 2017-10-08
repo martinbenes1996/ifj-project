@@ -129,6 +129,12 @@ inline const char * TokenTypeToString(TokenType tt)
   }
 }
 
+typedef union
+{
+  const char * str; /**< If phrasem id. */
+  long index; /**< If phrasem keyword, operator etc. */
+} PhrasemData;
+
 /**
  * @brief   Structure representing phrasem data.
  *
@@ -136,8 +142,10 @@ inline const char * TokenTypeToString(TokenType tt)
  */
 typedef struct phrasem_data
 {
-  TokenType table;
-  long index;
+  TokenType table; /**< Token type. */
+  PhrasemData d; /**< Table line or pointer. */
+
+  long line; /**< Line */
 }* Phrasem;
 /**
  * @brief   Debug function to print phrasem.
@@ -145,7 +153,7 @@ typedef struct phrasem_data
  */
 inline void PrintPhrasem(Phrasem p)
 {
-  if(p != NULL) debug("Phrasem: %d %d", TokenTypeToString(p->table), p->index);
+  if(p != NULL) debug("Phrasem: %d %d", TokenTypeToString(p->table), p->d.index);
 }
 
 /** @} */
