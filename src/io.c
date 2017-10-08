@@ -114,6 +114,26 @@ bool getLine(FILE * src, char buff[], long max)
   return true;
 }
 
-int getByte() { return getchar(); }
+static int mem = -1;
+int getByte()
+{
+  if(mem != -1)
+  {
+    int ret = mem;
+    mem = -1;
+    return ret;
+  }
+  else return getchar();
+}
+
+bool returnByte(char c)
+{
+  if(mem == -1)
+  {
+    mem = c;
+    return true;
+  }
+  else return false;
+}
 
 /*-------------------------------------------------------*/
