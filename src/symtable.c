@@ -11,6 +11,7 @@
 
 #include "symtable.h"
 #include "types.h"
+#include "err.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -66,7 +67,7 @@ typedef struct functionArray{
 
 /*-----------------------------------------------------------*/
 
-                //VARIABLE TABLE DATA
+                //VARIABLE TABLE DATA - may be useless
 
 /**
  * @brief   Structure representing a variable.
@@ -80,7 +81,7 @@ struct variable{
 };
 /*-----------------------------------------------------------*/
 
-                //STACK OF MODULES DATA
+                //STACK OF FRAMES DATA
 
 /**
  * @brief   Structure representing a hash table of variables of a function.
@@ -126,10 +127,9 @@ SymbolTable symtable = {.size = 0, .count = 0, .frame = NULL};
                     //DECLARATIONS
 
 
-//size of initialised arrays
-#define STARTING_CHUNK 10
-#define PORTION_OF_TABLE 2
-#define RESIZE_RATE 2
+#define STARTING_CHUNK 10   //size of initialised arrays
+#define PORTION_OF_TABLE 2  //when should table resize (count > arr_size/PORTION_OF_TABLE)
+#define RESIZE_RATE 2       //how much should it resize
 
 
 /**
@@ -201,13 +201,6 @@ size_t frameEntityCount(SymbolTableFrame * frame);
 size_t frameTableSize(SymbolTableFrame * frame);
 
 /**
- * @brief   Empties a symbol table frame.
- *
- * @param frame     pointer to a frame
- */
-//void frameClear(SymbolTableFrame * frame);          <---DELETE
-
-/**
  * @brief   Resizes a table, deletes the old one.
 
  * Creates a new resized table from the previous one.
@@ -265,7 +258,26 @@ bool frameAddSymbolType(SymbolTableFrame * frame, const char * name, DataType ty
                     //FUNCTION BODY
 
 
-            /*-----HASH FUNCTIONS-----*/
+//debug function
+void EndHash(const char * msg, ErrorType errtype)
+{
+  if(msg != NULL)
+  {
+    #ifdef SYMTABLE_DEBUG
+      debug(msg);
+    #endif
+    setErrorType(errtype);
+    setErrorMessage(msg);
+  }
+  else
+  {
+    #ifdef SYMTABLE_DEBUG
+      debug("End Hash.");
+    #endif
+  }
+}
+
+                /*-----HASH FUNCTIONS-----*/
 
 unsigned int hashCentral(SymbolTableFrame * frame, const char * name)
 {
@@ -273,7 +285,7 @@ unsigned int hashCentral(SymbolTableFrame * frame, const char * name)
 
     if(name == NULL)
     {
-        //chybove hlaseni
+        EndHash("Hash: hashCentral: pointer to NULL as a name of symbol", ErrorType_Internal);
         return 0;
     }
 
@@ -333,6 +345,11 @@ SymbolTableFrame * frameInit(size_t size)
                 frame->arr[i].type = DataType_Unknown;
             }
         }
+    else
+    {
+        EndHash("Frame: frameInit: could not allocate memory", ErrorType_Internal);
+        return NULL;
+    }
 
     return frame;
 }
@@ -375,12 +392,12 @@ SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2)
 
     if((frame = frameInit(newsize)) != NULL)
     {
-        frame->count = frame2->count;
+        frame->count = frameEntityCount(frame2);
         frame->functionIndex = frame2->functionIndex;
         frame->next = frame2->next;
 
         //going through all variables in table and copying variables
-        for(size_t i=0;i < frame2->arr_size;++i)
+        for(size_t i=0;i < frameTableSize(frame2);++i)
         {
             /*computes a new hash in a new frame*/
             if(frame2->arr[i].name == NULL) continue;
@@ -395,7 +412,12 @@ SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2)
             {
                 strcpy(frame->arr[hashNumber].name, frame2->arr[i].name);
             }
-                else return NULL;
+                else
+                {
+                    EndHash("Frame: frameResize: could not allocate memory for a symbol name",
+                                    ErrorType_Internal);
+                    return NULL;
+                }
 
 /*
             //copying various types of values in union-----------------------------------
@@ -421,6 +443,10 @@ SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2)
         //destroys old frame
         frameFree(frame2);
     }
+    else
+    {
+        EndHash("Frame: frameResize: could not resize table", ErrorType_Internal);
+    }
 
     return frame;
 }
@@ -442,7 +468,11 @@ bool frameAddSymbol(SymbolTableFrame ** pframe, const char * name)
 {
     SymbolTableFrame * frame = *pframe;
     size_t hashNumber;
-    if(name == NULL) return false;
+    if(name == NULL)
+    {
+        EndHash("SymTabFrame: frameAddSymbol: name of symbol is NULL", ErrorType_Internal);
+        return false;
+    }
 
     hashNumber = hashCentral(frame, name);
 
@@ -455,7 +485,8 @@ bool frameAddSymbol(SymbolTableFrame ** pframe, const char * name)
         }
             else
             {
-                //chybove hlaseni!
+                EndHash("SymTabFrame: frameAddSymbol: could not allocate memory for symbol name",
+                                    ErrorType_Internal);
                 return false;
             }
     }
@@ -504,24 +535,6 @@ bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type
     return true;
 }
 */
-/*
-STACK:
-    push
-    pop
-    ...
-FRAME:
-    init
-*/
-
-
-
-
-
-
-
-
-
-
 
 
 /*-----------------------------------------------------------*/
