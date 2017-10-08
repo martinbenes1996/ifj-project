@@ -8,15 +8,16 @@
  * This module implements Lexical Scanner.
  */
 
+#include <ctype.h>
 #include <stdbool.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "err.h"
 #include "io.h"
-#include "scanner.h"
 #include "queue.h"
+#include "scanner.h"
 #include "types.h"
 
 static bool isscanning = true;
@@ -44,32 +45,62 @@ void EndScanner(const char * msg, ErrorType errtype)
   FinishConnectionToQueue();
   isscanning = false;
 }
-/*
-getString(int input) {
-  int state = 1;
+extern bool AddToBuffer(char c);
+bool getString() {
+  int state = 0;
+  int input;
+  int asciival = 0;
+  bool end = false;
 
-  switch (state) {
-    case 1:
-      if (input == '"') {state = 2; break;}
+  while(!end)
+    input = getByte();
+    switch (state) {
+      
+      case 0:
+        if (input == '!') {state = 1; break;}
+        else goto ErrorLabel;
+      
+      case 1:
+        if (input == '"') {state = 2; break;}
+        else goto ErrorLabel;
+      
+      case 2: 
+        if (input == '"') { end = true; break; }
+        else if (input == EOF) goto ErrorLabel;
+        else if (input != '\\') { AddToBuffer(input); break; }
+        else { state = 3; break; }
 
-    case 2: 
-      if(input == '/') {
-        returnByte(input);
-          if (input != '/') {
-            getByte(input);
-            state = 3;
-
-          }
-          else { AddToBuffer(input); getByte(input);} 
-        break;
-      }
+      case 3:
+        if (input == 'n') { AddToBuffer('\n'); break; }
+        else if (input == 't') {}
+        else if (isdigit(input)) { asciival += 100*(input - '0'); state = 4; break; }
+        //TODO
+        else goto ErrorLabel;
     
-    case 3:
-      if(input != '"') {AddToBuffer(input); break;}
+      case 4:
+        if(isdigit(input)) { asciival += 10*(input-'0'); state = 5; break;}
+        else goto ErrorLabel;
+
+      case 5:
+        if(isdigit(input))
+        { 
+          asciival += input-'0'; 
+          if(asciival > 255) goto ErrorLabel;
+          AddToBuffer(asciival);
+          state = 2;
+          break;
+        }
+        else goto ErrorLabel;
   }
 
+  return true;
+  // i know it is pigstyle, but Martin typed it.
+  ErrorLabel:
+    EndScanner("Scanner: getString: Syntax Error!", ErrorType_Syntax);
+    return false;
+
 }
-*/
+
 void *InitScanner(void * v /*not used*/)
 {
   (void)v; /* to avoid compiler warning */
@@ -92,7 +123,8 @@ void *InitScanner(void * v /*not used*/)
     // here will be lexical analysis ----------------------------------
 /*
     if (input == '!') {
-      getString(input);
+      returnByte(input);
+      getString();
     }
 */
     phr->d.index = input;
