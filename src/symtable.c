@@ -124,10 +124,45 @@ SymbolTable symtable = {.size = 0, .count = 0, .frame = NULL};
 
 
                     //DECLARATIONS
-unsigned int hashFunction(const char *str);
+
 
 //size of initialised arrays
 #define STARTING_CHUNK 10
+
+
+/**
+ * @brief   Manages two hash functions.
+ *
+ * This function returns an index into hash table.
+ * Has multiple purposes:
+ *      For function find finds a record or returns
+ *      an empty spot (symbol is not there).
+ *      For function add finds a record or not.
+ * @param frame  pointer to a frame
+ * @param name   name of the symbol
+ * @returns Index into hash table.
+ */
+unsigned int hashCentral(SymbolTableFrame * frame, const char * name);
+
+/**
+ * @brief   Rehash function - colision solver.
+ *
+ * This function finds another index for a name
+ * in case of a colision (+3 linear probing).
+ * @param index  an index into hash table
+ * @returns A +3 number.
+ */
+unsigned int rehashFunction(unsigned int index);
+
+/**
+ * @brief   Main hash function.
+ *
+ * This function maps a string into a number.
+ * Cannot deal with string containing NULL.
+ * @param name  name string
+ * @returns A number.
+ */
+unsigned int hashFunction(const char * name);
 
 /**
  * @brief   Initialisation of hash symbol table.
@@ -190,7 +225,7 @@ SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2);
  * @param name    name of the variable
  * @returns Pointer to a variable or NULL.
 */
-//struct variable * frameFind(SymbolTableFrame * frame, const char * name);
+struct variable * frameFindSymbol(SymbolTableFrame * frame, const char * name);
 
 /**
  * @brief   Adds variable into frame.
@@ -199,7 +234,7 @@ SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2);
  * @param name    name of the variable
  * @returns True if successful, false if not.
 */
-//bool frameAddSymbol(SymbolTableFrame * frame, const char * name);
+bool frameAddSymbol(SymbolTableFrame * frame, const char * name);
 
 /**
  * @brief   Changes value of a variable.
@@ -210,12 +245,71 @@ SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2);
  * @param value   new value of the variable
  * @returns True if successful, false if not.
 */
-bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type, DataUnion value);
+//bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type, DataUnion value);
+
+/**
+ * @brief   Adds variable type.
+
+ * @param frame   pointer to a frame
+ * @param name    name of the variable
+ * @param type    type of the variable
+ * Types of symbols cannot be rewritten (atleast i think so)!
+ * @returns True if successful, false if not.
+*/
+bool frameAddSymbolType(SymbolTableFrame * frame, const char * name, DataType type);
 
 /*-----------------------------------------------------------*/
 
                     //FUNCTION BODY
 
+
+            /*-----HASH FUNCTIONS-----*/
+
+unsigned int hashCentral(SymbolTableFrame * frame, const char * name)
+{
+    unsigned int hashNumber;
+
+    if(name == NULL)
+    {
+        //chybove hlaseni
+        return 0;
+    }
+
+    hashNumber = hashFunction(name) % frame->arr_size;
+
+    //maximal number of rehashes is the size of table -1
+    for(size_t i = 0; i < (frame->arr_size - 1) ;++i)
+    {
+        //not found or found an empty spot to save symbol
+        if(frame->arr[hashNumber].name == NULL)
+            return hashNumber;
+        //found a record
+        else if(strcmp(frame->arr[hashNumber].name, name) == 0)
+            return hashNumber;
+        //found a different record -> continues finding
+        else
+            hashNumber = rehashFunction(hashNumber) % frame->arr_size;
+    }
+    //table cant be full, it hopefully resizes automatically so it should not reach this
+    return hashNumber;
+}
+
+unsigned int rehashFunction(unsigned int index)
+{
+    return index + 3;
+}
+
+unsigned int hashFunction(const char * name)
+{
+    unsigned int h=0;
+    const unsigned char *p;
+
+    for(p=(const unsigned char*)name;*p!='\0'; p++)
+        h = 65599*h + *p;
+
+    return h;
+}
+/*-----------------------------------------------------------*/
 
 SymbolTableFrame * frameInit(size_t size)
 {
@@ -234,7 +328,7 @@ SymbolTableFrame * frameInit(size_t size)
             for(size_t i = 0; i < size ;++i)
             {
                 frame->arr[i].name = NULL;
-                frame->arr[i].type = DataType_Integer;
+                frame->arr[i].type = DataType_Unknown;
             }
         }
 
@@ -286,9 +380,9 @@ SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2)
         //going through all variables in table and copying variables
         for(size_t i=0;i < frame2->arr_size;++i)
         {
-            /*POTREBA ZMENIT CHOVANI HASH FCE*/
-//hashNumber = hashFunction(frame2->arr[i].name) % newsize;
-hashNumber = 0; //prekladac rve
+            /*computes a new hash in a new frame*/
+            if(frame->arr[i].name == NULL) continue;
+            hashNumber = hashCentral(frame, frame2->arr[i].name) % newsize;
 
             /*---------------------------------------------------------------------------*/
             frame->arr[hashNumber].type = frame2->arr[i].type;
@@ -317,7 +411,7 @@ hashNumber = 0; //prekladac rve
                 frame->arr[hashNumber].value.ivalue = frame2->arr[i].value.ivalue;
             else if(frame2->arr[i].type == DataType_Double)
                 frame->arr[hashNumber].value.dvalue = frame2->arr[i].value.dvalue;
-            else    //functions are identified by integer (?)
+            else if(frame2->arr[i].type == DataType_Function)   //functions are identified by integer (?)
                 frame->arr[hashNumber].value.ivalue = frame2->arr[i].value.ivalue;
             //</copy union---------------------------------------------------------------->
 
@@ -328,29 +422,61 @@ hashNumber = 0; //prekladac rve
 
     return frame;
 }
-/*
-struct variable * frameFind(SymbolTableFrame * frame, const char * name)
+
+struct variable * frameFindSymbol(SymbolTableFrame * frame, const char * name)
 {
     size_t hashNumber;
 
-    hashNumber = hashFunction(name);
+    if(name == NULL) return NULL;
+    hashNumber = hashCentral(frame, name);
 
-    WILL BE DONE, NEED HASH FUNCTION
+    if(frame->arr[hashNumber].name == NULL) return NULL; //not found
+        else return &frame->arr[hashNumber]; //found
 
-    return ;
+    return &frame->arr[hashNumber];
 }
 
 bool frameAddSymbol(SymbolTableFrame * frame, const char * name)
 {
-    if(frameFind(frame, name) == NULL) return false;
+    size_t hashNumber;
+    if(name == NULL) return false;
 
-    WILL BE DONE, NEED HASH FUNCTION
+    hashNumber = hashCentral(frame, name);
 
+    if(frame->arr[hashNumber].name == NULL) //not found -> can be added
+    {
+        if((frame->arr[hashNumber].name = malloc(sizeof(char) * strlen(name)
+                                                    + sizeof(char))) != NULL)
+        {
+            strcpy(frame->arr[hashNumber].name, name);
+        }
+            else
+            {
+                //chybove hlaseni!
+                return false;
+            }
+    }
+        else return false; //found -> cant be added
+
+    //increase the amount of symbols in table
     frame->count++;
 
-    return ;
-}*/
+    return true;
+}
 
+bool frameAddSymbolType(SymbolTableFrame * frame, const char * name, DataType type)
+{
+    struct variable * var;
+    var = frameFindSymbol(frame, name);
+    if(var == NULL) return false;   //symbol not found
+
+    if(var->type == DataType_Unknown)   //if symbol type has not been set yet, do it
+        var->type = type;
+    else return false;  //cannot retype symbol
+
+    return true;
+}
+/*MIGHT NOT BE NEEDED, SYMBOLS DONT NEED VALUE
 bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type, DataUnion value)
 {
     struct variable * var = NULL;
@@ -372,7 +498,7 @@ bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type
 
     return true;
 }
-
+*/
 /*
 STACK:
     push

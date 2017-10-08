@@ -31,7 +31,8 @@ typedef enum{
   DataType_Integer,
   DataType_Double,
   DataType_String,
-  DataType_Function
+  DataType_Function,
+  DataType_Unknown  //i need that for symtable
 } DataType;
 
 /**
