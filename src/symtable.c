@@ -91,7 +91,7 @@ struct variable{
  * It is also an entity of stack.
  */
 typedef struct symbolTableFrame{
-    int functionIndex;
+    size_t functionIndex;
     struct symboltable_frame * next;
     size_t arr_size;    //array size
     size_t count;           //number of entities in array
@@ -106,13 +106,11 @@ typedef struct symbolTableFrame{
  * Will resize automatically.
  */
 typedef struct symbolTable{
-    size_t size;
-    size_t count;
-    struct symbolTableFrame * frame;   //malloc array, potom realokovat
+    struct symbolTableFrame * first;   //malloc array, potom realokovat
 } SymbolTable;
 
 //initialisation of symbol table
-SymbolTable symtable = {.size = 0, .count = 0, .frame = NULL};
+static SymbolTable symtable = {.size = 0, .count = 0, .first = NULL};
 
 
 
@@ -276,7 +274,13 @@ void EndHash(const char * msg, ErrorType errtype)
     #endif
   }
 }
+/*interface function
+int varInsert(const char * name)
+{
 
+
+    return ;
+}*/
                 /*-----HASH FUNCTIONS-----*/
 
 unsigned int hashCentral(SymbolTableFrame * frame, const char * name)
@@ -351,6 +355,9 @@ SymbolTableFrame * frameInit(size_t size)
         return NULL;
     }
 
+    #ifdef SYMTABLE_DEBUG
+        debug("New frame has been initialised.");
+    #endif
     return frame;
 }
 
@@ -370,6 +377,9 @@ void frameFree(SymbolTableFrame * frame)
     //destroys a frame
     free(frame);
 
+    #ifdef SYMTABLE_DEBUG
+        debug("Frame was freed.");
+    #endif
     return;
 }
 
@@ -448,6 +458,9 @@ SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2)
         EndHash("Frame: frameResize: could not resize table", ErrorType_Internal);
     }
 
+    #ifdef SYMTABLE_DEBUG
+        debug("Frame was resized.");
+    #endif
     return frame;
 }
 
@@ -497,6 +510,9 @@ bool frameAddSymbol(SymbolTableFrame ** pframe, const char * name)
     if(frame->count > frame->arr_size/PORTION_OF_TABLE)
         *pframe = frameResize(RESIZE_RATE * frame->arr_size, frame);
 
+    #ifdef SYMTABLE_DEBUG
+        debug("New symbol added into frame.");
+    #endif
     return true;
 }
 
@@ -510,6 +526,9 @@ bool frameAddSymbolType(SymbolTableFrame * frame, const char * name, DataType ty
         var->type = type;
     else return false;  //cannot retype symbol
 
+    #ifdef SYMTABLE_DEBUG
+        debug("Symbol type was added.");
+    #endif
     return true;
 }
 /*MIGHT NOT BE NEEDED, SYMBOLS DONT NEED VALUE
@@ -539,18 +558,50 @@ bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type
 
 /*-----------------------------------------------------------*/
 
-                //STACK FUNCTIONS
-/*
-TO DO: (jednoduseji!)
-    init
-    push
-    pop
-    free
-    resize
+                //STACK FUNCTIONS - not tested
 
-    init_prom
-    insert_prom
-    change_value
-    free
-    ...
-*/
+    /*WILL ADD MORE WHEN I REALISE WHAT YOU WANT FROM ME*/
+
+bool pushOntoSymtableStack(size_t functionId)
+{
+    SymbolTableFrame * frame;
+    frame = frameInit(STARTING_CHUNK);
+    if(frame == NULL)
+    {
+        EndHash("Symtable stack: pushOntoSymtableStack: could not initialise frame", ErrorType_Internal);
+        return false;
+    }
+    //set function id and connect list
+    frame->functionIndex = functionId;
+    frame->next = symtable.first;
+    symtable.first = frame;
+
+    #ifdef SYMTABLE_DEBUG
+        debug("Frame was created and pushed onto a symtable stack.");
+    #endif
+    return true;
+}
+//i think we will not need that frame so i dont have to return it
+//if we need it i will fix it
+bool popFromSymtableStack(void)
+{
+    if(symtable.first == NULL) return false;
+
+    SymbolTableFrame * frame = symtable.first;
+    symtable.first = symtable.first->next;
+    frameFree(frame);
+
+    #ifdef SYMTABLE_DEBUG
+        debug("Frame was destroyed from top of the symtable stack.");
+    #endif
+    return true;
+}
+void clearSymtableStack()
+{
+    while(popFromSymtableStack() != false)
+    {}
+
+    #ifdef SYMTABLE_DEBUG
+        debug("Symtable stack was cleared.");
+    #endif
+}
