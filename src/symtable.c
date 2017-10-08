@@ -92,7 +92,7 @@ struct variable{
  */
 typedef struct symbolTableFrame{
     size_t functionIndex;
-    struct symboltable_frame * next;
+    struct symbolTableFrame * next;
     size_t arr_size;    //array size
     size_t count;           //number of entities in array
     struct variable arr[];
@@ -106,11 +106,11 @@ typedef struct symbolTableFrame{
  * Will resize automatically.
  */
 typedef struct symbolTable{
-    struct symbolTableFrame * first;   //malloc array, potom realokovat
+    SymbolTableFrame * first;   //malloc array, potom realokovat
 } SymbolTable;
 
 //initialisation of symbol table
-static SymbolTable symtable = {.size = 0, .count = 0, .first = NULL};
+static SymbolTable symtable = {.first = NULL};
 
 
 
