@@ -46,6 +46,52 @@ void EndScanner(const char * msg, ErrorType errtype)
   isscanning = false;
 }
 extern bool AddToBuffer(char c);
+/*
+bool getOperator() {
+  int state = 0;
+  int input;
+  bool end = false;
+
+  while(!end) {
+    input = getByte();
+
+    switch (state) {
+
+      case 0: 
+        if ( input == '<' ) { state = 1; break;}
+        else if ( input == '>') { state = 2; break;}
+        else if (input == '=') {AddToBuffer(input); end = true; break;}
+        else if (input == '+') {AddToBuffer(input); end = true; break;}
+        else if (input == '-') {AddToBuffer(input); end = true; break;}
+        else if (input == '*') {AddToBuffer(input); end = true; break;}
+        else if (input == '/') {AddToBuffer(input); end = true; break;}
+        else if (input == '\\') {AddToBuffer(input); end = true; break;}
+
+        else goto ErrorLabel;
+  
+
+      case 1:
+        if ( input == '>') {AddToBuffer('<>'); end = true; break;}
+        else if (input == '=') {AddToBuffer('<='); end = true; break;}
+        else if ((input == ' ')||((input >= '0')&&(input <= '9'))) {AddToBuffer('<'); returnByte(input); end = true; break;}
+        else goto ErrorLabel;
+
+      case 2:
+        if ( input == '=') {AddToBuffer('>='); end = true; break;}
+        else if ((input == ' ')||((input >= '0')&&(input <= '9'))) {AddToBuffer('>'); returnByte(input); end = true; break;}
+        else goto ErrorLabel;
+
+
+
+    return true;
+    ErrorLabel:
+      EndScanner("Scanner: getString: Syntax Error!", ErrorType_Syntax);
+      return false;
+   }
+  }
+}
+
+*/
 bool getString() {
   int state = 0;
   int input;
@@ -71,10 +117,12 @@ bool getString() {
         else { state = 3; break; }
 
       case 3:
-        if (input == 'n') { AddToBuffer('\n'); break; }
-        else if (input == 't') {}
+        if (input == 'n') { AddToBuffer('\n'); state = 2; break; }
+        else if (input == 't') { AddToBuffer('\t'); state = 2; break; }
+        else if (input == '"') { AddToBuffer ('"'); state = 2; break; }
+        else if (input == '\\') { AddToBuffer('\\'); state = 2; break; }
         else if (isdigit(input)) { asciival += 100*(input - '0'); state = 4; break; }
-        //TODO
+        
         else goto ErrorLabel;
     
       case 4:
@@ -125,6 +173,11 @@ void *InitScanner(void * v /*not used*/)
     if (input == '!') {
       returnByte(input);
       getString();
+    }
+
+    if (input == '<') {
+      returnByte(input);
+      getOperator();  
     }
 */
     phr->d.index = input;
