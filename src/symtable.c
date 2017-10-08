@@ -232,11 +232,11 @@ struct variable * frameFindSymbol(SymbolTableFrame * frame, const char * name);
 /**
  * @brief   Adds variable into frame.
 
- * @param frame   pointer to a frame
+ * @param pframe  pointer to a pointer to a frame (frameResize needs it)
  * @param name    name of the variable
  * @returns True if successful, false if not.
 */
-bool frameAddSymbol(SymbolTableFrame * frame, const char * name);
+bool frameAddSymbol(SymbolTableFrame ** pframe, const char * name);
 
 /**
  * @brief   Changes value of a variable.
@@ -346,8 +346,8 @@ void frameFree(SymbolTableFrame * frame)
     {
         free(frame->arr[i].name);
 
-        if(frame->arr[i].type == DataType_String)
-            free(frame->arr[i].value.svalue);
+        //if(frame->arr[i].type == DataType_String)
+            //free(frame->arr[i].value.svalue);
     }
 
     //destroys a frame
@@ -383,8 +383,8 @@ SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2)
         for(size_t i=0;i < frame2->arr_size;++i)
         {
             /*computes a new hash in a new frame*/
-            if(frame->arr[i].name == NULL) continue;
-            hashNumber = hashCentral(frame, frame2->arr[i].name) % newsize;
+            if(frame2->arr[i].name == NULL) continue;
+            hashNumber = hashCentral(frame, frame2->arr[i].name);
 
             /*---------------------------------------------------------------------------*/
             frame->arr[hashNumber].type = frame2->arr[i].type;
@@ -397,8 +397,8 @@ SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2)
             }
                 else return NULL;
 
-
-            /*copying various types of values in union-----------------------------------*/
+/*
+            //copying various types of values in union-----------------------------------
             if(frame2->arr[i].type == DataType_String)
             {
                 //allocation of memory for a value string in union
@@ -416,7 +416,7 @@ SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2)
             else if(frame2->arr[i].type == DataType_Function)   //functions are identified by integer (?)
                 frame->arr[hashNumber].value.ivalue = frame2->arr[i].value.ivalue;
             //</copy union---------------------------------------------------------------->
-
+*/
         }
         //destroys old frame
         frameFree(frame2);
@@ -438,8 +438,9 @@ struct variable * frameFindSymbol(SymbolTableFrame * frame, const char * name)
     return &frame->arr[hashNumber];
 }
 
-bool frameAddSymbol(SymbolTableFrame * frame, const char * name)
+bool frameAddSymbol(SymbolTableFrame ** pframe, const char * name)
 {
+    SymbolTableFrame * frame = *pframe;
     size_t hashNumber;
     if(name == NULL) return false;
 
@@ -463,7 +464,7 @@ bool frameAddSymbol(SymbolTableFrame * frame, const char * name)
     //increase the amount of symbols in table and resizes if needed
     frame->count++;
     if(frame->count > frame->arr_size/PORTION_OF_TABLE)
-        frame = frameResize(RESIZE_RATE * frame->arr_size, frame);
+        *pframe = frameResize(RESIZE_RATE * frame->arr_size, frame);
 
     return true;
 }
