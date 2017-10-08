@@ -20,6 +20,9 @@
 #include "types.h"
 
 static bool isscanning = true;
+bool done = false;
+int line = 1;
+
 bool ScannerIsScanning() { return isscanning; }
 
 void EndScanner(const char * msg, ErrorType errtype)
@@ -41,7 +44,32 @@ void EndScanner(const char * msg, ErrorType errtype)
   FinishConnectionToQueue();
   isscanning = false;
 }
+/*
+getString(int input) {
+  int state = 1;
 
+  switch (state) {
+    case 1:
+      if (input == '"') {state = 2; break;}
+
+    case 2: 
+      if(input == '/') {
+        returnByte(input);
+          if (input != '/') {
+            getByte(input);
+            state = 3;
+
+          }
+          else { AddToBuffer(input); getByte(input);} 
+        break;
+      }
+    
+    case 3:
+      if(input != '"') {AddToBuffer(input); break;}
+  }
+
+}
+*/
 void *InitScanner(void * v /*not used*/)
 {
   (void)v; /* to avoid compiler warning */
@@ -51,9 +79,9 @@ void *InitScanner(void * v /*not used*/)
   #endif
 
   int input;
-  while((input = getchar()) != EOF)
+  while(!done)
   {
-
+    input = getByte();
     Phrasem phr = malloc( sizeof(struct phrasem_data) );
     if( phr == NULL )
     {
@@ -62,7 +90,11 @@ void *InitScanner(void * v /*not used*/)
     }
 
     // here will be lexical analysis ----------------------------------
-
+/*
+    if (input == '!') {
+      getString(input);
+    }
+*/
     phr->index = input;
 
     #ifdef SCANNER_DEBUG
