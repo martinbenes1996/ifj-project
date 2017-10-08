@@ -95,7 +95,7 @@ void *InitScanner(void * v /*not used*/)
       getString(input);
     }
 */
-    phr->index = input;
+    phr->d.index = input;
 
     #ifdef SCANNER_DEBUG
       PrintPhrasem(phr);
