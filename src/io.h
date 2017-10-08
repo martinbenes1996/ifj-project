@@ -127,6 +127,16 @@ bool getLine(FILE * src, char buff[], long max);
  */
 int getByte();
 
+/**
+ * @brief   Gives byte back to input pipe.
+ *
+ * This function will return the given byte into memoy of input and
+ * at next getByte() call, it will be returned.
+ * @param c       Given byte.
+ * @returns       False, if fail.
+ */
+bool returnByte(char c);
+
 
 
 /** @} */
