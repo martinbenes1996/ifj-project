@@ -27,50 +27,11 @@
 
 /*----------------------------------------------------------------*/
 
-                    //FUNCTION TABLE DATA
-
-/**
- * @brief   Structure representing type and name of parametres.
- *
- * List.
- */
-struct paramFce{
-    DataType type;
-    char * name;
-    struct paramFce *next;
-};
-
-/**
- * @brief   Structure representing function data.
- *
- * This structure is filled with informations about declared functions.
- * Contains structure with info about parametres.
- */
-struct function{
-    char * name;
-    DataType type;
-    size_t numberOfParam;
-    struct paramFce * param;
-};
-
-/**
- * @brief   Structure representing (hash?) table of function names/parametres.
- *
- * This structure is filled with functions.
- * It knows its size and number of entities. Will resize automatically.
- */
-typedef struct functionArray{
-    size_t arr_size;    //array size
-    size_t count;           //number of entities in array
-    struct function arr[];
-} FunctionArray;
-
-/*-----------------------------------------------------------*/
 
                 //VARIABLE TABLE DATA - may be useless
 
 /**
- * @brief   Structure representing a variable.
+ * @brief   Structure representing a variable (+ functions but i dont want to rename everything).
  *
  * This structure contains type, name and value of a variable.
  */
@@ -605,3 +566,159 @@ void clearSymtableStack()
         debug("Symtable stack was cleared.");
     #endif
 }
+
+
+
+
+
+/*************************************************************/
+
+                    //FUNCTION TABLE
+
+/*************************************************************/
+
+                //FUNCTION TABLE DATA
+
+/**
+ * @brief   Structure representing type and name of parametres.
+ *
+ * List.
+ */
+struct paramFce{
+    DataType type;
+    char * name;        //do i need to know name of the parameter?
+    struct paramFce *next;
+};
+
+/**
+ * @brief   Structure representing function data.
+ *
+ * This structure is filled with informations about declared functions.
+ * Contains structure with info about parametres.
+ */
+struct function{
+    char * name;
+    DataType type;
+    size_t numberOfParam;
+    struct paramFce * param;    //list
+};
+
+/**
+ * @brief   Structure representing (hash?) table of function names/parametres.
+ *
+ * This structure is filled with functions.
+ * It knows its size and number of entities. Will resize automatically.
+ */
+typedef struct functionArray{
+    size_t arr_size;    //array size
+    size_t count;           //number of entities in array
+    struct function * arr;  //dynamic array
+} FunctionArray;
+
+
+static FunctionArray functiontable = {.arr_size = 0, .count = 0, .arr = NULL};
+
+/*-----------------------------------------------------------*/
+
+                    //DECLARATIONS
+
+/**
+ * @brief   Initiation of table of functions.
+ *
+ * This function allocates table of a starting size.
+ * @returns true -> ok, false -> error.
+ */
+bool functionTableInit(void);
+/**
+ * @brief   Destroys table of functions.
+ *
+ * This function frees the whole table.
+ */
+void functionTableFree(void);
+/**
+ * @brief   Reallocs array of functions.
+ *
+ * This function increases size of table of functions.
+ * @returns true -> ok, false -> fail.
+ */
+bool functionTableResize(void);
+/*-----------------------------------------------------------*/
+
+                    //FUNCTION BODY - needs testing
+
+bool functionTableInit(void)
+{
+    //allocation of the table
+    if( (functiontable.arr = malloc(STARTING_CHUNK * sizeof(struct function)))  == NULL)
+    {
+        //error message
+        return false;
+    }
+    functiontable.arr_size = STARTING_CHUNK;
+    functiontable.count = 0;
+
+    for(size_t i = 0; i < functiontable.arr_size ;++i)  //maybe not necessary, count = 0
+    {
+        functiontable.arr[i].name = NULL;
+        functiontable.arr[i].type = DataType_Unknown;
+        functiontable.arr[i].numberOfParam = 0;
+        functiontable.arr[i].param = NULL;
+    }
+
+    return true;
+}
+
+void functionTableFree(void)
+{
+    struct paramFce * pomparam = NULL;
+
+    for(size_t i = 0;i < functiontable.count;++i)
+    {
+        free(functiontable.arr[i].name);   //free name of function and
+        while(functiontable.arr[i].param != NULL)  //while function has parameters in a list
+        {
+            pomparam = functiontable.arr[i].param;
+            functiontable.arr[i].param = functiontable.arr[i].param->next;
+            free(pomparam->name);   //free them one by one
+            free(pomparam);
+        }
+    }
+
+    functiontable.arr_size = 0;
+    functiontable.count = 0;
+    free(functiontable.arr);
+}
+
+bool functionTableResize(void)
+{
+    if( (functiontable.arr = realloc(functiontable.arr, functiontable.arr_size * RESIZE_RATE
+                                                    * sizeof(struct function)))  == NULL)
+    {
+        //error message
+        return false;
+    }
+
+    //for(size_t i = 0;i < consttable.arr_size;++i)     incomplete, may not be needed
+        //consttable.arr[i]->type = DataType_Unknown;
+
+    functiontable.arr_size = functiontable.arr_size * RESIZE_RATE;
+
+    return true;
+}
+
+/*TO DO:
+    finding
+    adding + resizing controll
+
+    Need to know more information about interaction requirements.
+*/
+
+/*-----------------------------------------------------------*/
+
+/*TO DO:
+    int numberOfParam();
+    findFunction
+    findParametreName (finds one param of a function, takes index of param)
+    findParametreType
+    findParametreInd
+*/

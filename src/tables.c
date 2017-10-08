@@ -12,6 +12,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "tables.h"
 #include "types.h"
 
@@ -33,9 +34,19 @@ int isKeyword(const char * word)
     return index;
 }
 
-/*-----------------------------------------------------------*/
 
-        //CONSTANT DATA TABLE (not sure if public or private yet)
+/*************************************************************/
+
+                    //TABLE OF CONSTANTS
+
+/*************************************************************/
+
+        //CONSTANT TABLE DATA (not sure if public or private yet)
+
+
+#define STARTING_CHUNK 10   //size of initialised arrays
+#define PORTION_OF_TABLE 2  //when should table resize (count > arr_size/PORTION_OF_TABLE)
+#define RESIZE_RATE 2       //how much should it resize
 
 /**
  * @brief   Structure representing characteristics of constants.
@@ -54,62 +65,103 @@ struct constant{
  * This structure is filled with structures representing constants.
  * It knows its own size and resizes automatically by (+10?) entities.
  */
-struct constantArray{
+typedef struct constantArray{
     size_t arr_size;    //array size
     size_t count;           //number of entities in array
-    struct constant arr[];
+    struct constant * arr;  //non variadic array of constants (its easier)
 } ConstArray;
 
-
+static ConstArray consttable = {.arr_size = 0, .count = 0, .arr = NULL};
 
 /*-----------------------------------------------------------*/
 
                 //CONST TABLE FUNCTIONS
 
-     /*the rest of this file is most likely wrong and will be reworked*/
+                    //DECLARATIONS
 
-                    //FUNCTION TABLE FUNCTIONS
-
+/*-----------------------------------------------------------*/
 /**
- * @brief   Initialisation of table of functions.
+ * @brief   Initiation of table of constants.
  *
- * This function creates array of functions.
- * Returns NULL when unsuccessful, otherwise
- * returns pointer to array of size (10?).
- * @returns Pointer to array of functions.
+ * This function allocates table os a starting size.
+ * @returns true -> ok, false -> error.
  */
-//FunctionData * functionInit(void);
-// --- the same as what I type above
-
+bool constTableInit(void);
 /**
- * @brief   Insert function.
+ * @brief   Destroys table of constants.
  *
- * This function inserts function into array of functions.
- * Returns -1 when unsuccessful, otherwise returns 1
- * @param ptr    array pointer.
- * @param name   name of the function.
- * @returns -1 -> failure, 1 -> success.
+ * This function frees the whole table.
  */
-//int functionInsert(FunctionData * ptr, char * name);
-
+void constTableFree(void);
 /**
- * @brief   Insert parameter into an existing function.
+ * @brief   Reallocs array of constants.
  *
- * This function inserts parameter into a function.
- * Returns -1 when unsuccessful (function not found,...), otherwise returns 1
- * @param name   name of the function.
- * @param type   type of parameter.
- * @param paramName    name of parametre.
- * @returns -1 -> failure, 1 -> success.
+ * This function increases size of table of constants.
+ * @returns true -> ok, false -> fail.
  */
-int paramInsert(char * name, DataType type, char * paramName);
+bool constTableResize(void);
+/*-----------------------------------------------------------*/
 
+                    //FUNCTION BODY - needs testing
+
+bool constTableInit(void)
+{
+    //allocation of the table
+    if( (consttable.arr = malloc(STARTING_CHUNK * sizeof(struct constant)))  == NULL)
+    {
+        //error message
+        return false;
+    }
+    consttable.arr_size = STARTING_CHUNK;
+    consttable.count = 0;
+
+    for(size_t i = 0; i < consttable.arr_size ;++i)
+    {
+        consttable.arr[i].type = DataType_Unknown;
+    }
+
+    return true;
+}
+
+void constTableFree(void)
+{
+    consttable.arr_size = 0;
+    consttable.count = 0;
+    free(consttable.arr);
+}
+
+bool constTableResize(void)
+{
+    if( (consttable.arr = realloc(consttable.arr, consttable.arr_size * RESIZE_RATE
+                                                    * sizeof(struct constant)))  == NULL)
+    {
+        //error message
+        return false;
+    }
+
+    //for(size_t i = 0;i < consttable.arr_size;++i)     incomplete, may not be needed
+        //consttable.arr[i]->type = DataType_Unknown;
+
+    consttable.arr_size = consttable.arr_size * RESIZE_RATE;
+
+    return true;
+}
 
 /*TO DO:
-    int numberOfParam(FunctionData * ptr, const char * name);
-    freeTable
-    findFunction
-    findParametreName (finds one param of a function, takes index of param)
-    findParametreType
-    findParametreInd
+    finding
+    adding + resizing controll
+
+    Need to know more information about interaction requirements.
 */
+
+/*-----------------------------------------------------------*/
+
+
+
+
+
+
+
+
+
+
