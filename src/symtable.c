@@ -128,6 +128,8 @@ SymbolTable symtable = {.size = 0, .count = 0, .frame = NULL};
 
 //size of initialised arrays
 #define STARTING_CHUNK 10
+#define PORTION_OF_TABLE 2
+#define RESIZE_RATE 2
 
 
 /**
@@ -458,8 +460,10 @@ bool frameAddSymbol(SymbolTableFrame * frame, const char * name)
     }
         else return false; //found -> cant be added
 
-    //increase the amount of symbols in table
+    //increase the amount of symbols in table and resizes if needed
     frame->count++;
+    if(frame->count > frame->arr_size/PORTION_OF_TABLE)
+        frame = frameResize(RESIZE_RATE * frame->arr_size, frame);
 
     return true;
 }
