@@ -28,8 +28,8 @@ static Phrasem p;
 extern void ClearTables();
 void EndParser(const char * msg, int line, ErrorType errtype)
 {
-  // ukoncit druhe vlakno
-  AskScannerToEnd();
+  // end second thread
+  AskScannerToEnd(); /**< Symetric end. Better assymetric. */
   pthread_join(sc, NULL);
 
   if(msg != NULL)
