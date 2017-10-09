@@ -64,6 +64,8 @@ void *InitScanner(void * v /*not used*/)
     // here will be lexical analysis ----------------------------------
 
     phr->d.index = input;
+    phr->table = TokenType_Variable;
+    phr->line = 1;
 
     #ifdef SCANNER_DEBUG
       PrintPhrasem(phr);
