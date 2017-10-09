@@ -20,9 +20,18 @@
 #include "queue.h"
 #include "scanner.h"
 #include "stack.h"
+#include "tables.h"
 
-void EndParser(const char * msg, ErrorType errtype)
+pthread_t sc;
+static Phrasem p;
+
+extern void ClearTables();
+void EndParser(const char * msg, int line, ErrorType errtype)
 {
+  // end second thread
+  AskScannerToEnd(); /**< Symetric end. Better assymetric. */
+  pthread_join(sc, NULL);
+
   if(msg != NULL)
   {
     #ifdef PARSER_DEBUG
@@ -30,6 +39,7 @@ void EndParser(const char * msg, ErrorType errtype)
     #endif
     setErrorType(errtype);
     setErrorMessage(msg);
+    setErrorLine(line);
   }
   else
   {
@@ -39,6 +49,11 @@ void EndParser(const char * msg, ErrorType errtype)
     setErrorType(ErrorType_Ok);
     setErrorMessage("");
   }
+
+  free(p);
+  ClearQueue();
+  ClearStack();
+  //ClearTables();
 }
 
 bool RunParser()
@@ -50,20 +65,75 @@ bool RunParser()
   InitQueue();
 
   // running scanner
-  pthread_t sc;
   pthread_create(&sc, NULL, InitScanner, NULL);
 
   // reading cycle
-  Phrasem p;
   while(ScannerIsScanning())
   {
     p = RemoveFromQueue();
     if(p == NULL) {
-      EndParser("Parser: RunParser: queue error", ErrorType_Internal);
+      EndParser("Parser: RunParser: queue error", p->line, ErrorType_Internal);
       return false;
     }
     else if(p == END_PTR) break;
 
+    switch(p->table)
+    {
+      case TokenType_Keyword:
+        if(p->d.index == isKeyword("if"))
+        {
+          // condition
+        }
+        else if(p->d.index == isKeyword("while"))
+        {
+          // while cycle
+        }
+        else if(p->d.index == isKeyword("function"))
+        {
+          // function
+        }
+        else if(p->d.index == isKeyword("declare"))
+        {
+          // declaration
+        }
+        else if(p->d.index == isKeyword("dim"))
+        {
+          // variable
+        }
+        else if(p->d.index == isKeyword("scope"))
+        {
+          // main
+        }
+
+        // etc ...
+
+        else
+        {
+          EndParser("Parser: Syntax error", p->line, ErrorType_Syntax);
+          return false;
+        }
+        break;
+      case TokenType_Constant:
+        EndParser("Parser: Syntax error", p->line, ErrorType_Syntax);
+        return false;
+
+      // empty line
+      case TokenType_Separator:
+        break;
+      case TokenType_Variable:
+        // assignment
+        break;
+      case TokenType_Function:
+        // function call
+        break;
+      case TokenType_Operator:
+        // can be??
+        break;
+
+      default:
+        EndParser("Parser: Unknown token type", p->line, ErrorType_Syntax);
+        return false;
+    }
     // here will be syntax analysis ---------------------------
 
     #ifdef PARSER_DEBUG
@@ -81,7 +151,7 @@ bool RunParser()
   ClearQueue();
   //------------------
 
-  EndParser(NULL, ErrorType_Ok);
+  EndParser(NULL, -1, ErrorType_Ok);
 
   // end
   return true;

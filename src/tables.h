@@ -13,25 +13,6 @@
 #define TABLES_H
 #include "types.h"
 
-/*----------------------------------------------------------*/
-/**
- * @brief   Keyword table.
- *
- * This array contains list af all possible keywords.
- */
-const char keywords[35][9] = {"as", "asc", "declare", "dim", "do", "double", "else",
-                              "end", "chr", "function", "if", "input", "integer",
-                              "length", "loop", "print", "return", "scope", "string",
-                              "substr", "then", "while", "and", "boolean", "continue",
-                              "elseif", "exit", "false", "for", "next", "not", "or",
-                              "shared", "static", "true"};
-
-//----- yep, static, but this will be in symtable.c, so no one could reach it
-
-//I think it will have to be accessible for syntax analysis
-//you will need to know what keyword is in the token (there will be just an index into this array)
-
-
 /*-----------------------------------------------------------*/
 
                 //KEYWORD TABLE FUNCTIONS

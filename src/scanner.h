@@ -25,6 +25,13 @@
 bool ScannerIsScanning();
 
 /**
+ * @brief   Asks scanner to end.
+ *
+ * This function will ask scanner to end, at it will, when it processed phrasem.
+ */
+void AskScannerToEnd();
+
+/**
  * @brief   Initial function for module.
  *
  * This function starts reading and pushing into queue.

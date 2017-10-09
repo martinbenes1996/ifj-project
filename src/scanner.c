@@ -20,10 +20,13 @@
 #include "scanner.h"
 #include "types.h"
 
-static bool isscanning = true;
 bool done = false;
 int line = 1;
 
+bool outer_error = false;
+void AskScannerToEnd() { outer_error = true; }
+
+static bool isscanning = true;
 bool ScannerIsScanning() { return isscanning; }
 
 void EndScanner(const char * msg, ErrorType errtype)
@@ -57,7 +60,7 @@ bool getOperator() {
 
     switch (state) {
 
-      case 0: 
+      case 0:
         if ( input == '<' ) { state = 1; break;}
         else if ( input == '>') { state = 2; break;}
         else if (input == '=') {AddToBuffer(input); end = true; break;}
@@ -68,7 +71,7 @@ bool getOperator() {
         else if (input == '\\') {AddToBuffer(input); end = true; break;}
 
         else goto ErrorLabel;
-  
+
 
       case 1:
         if ( input == '>') {AddToBuffer('<>'); end = true; break;}
@@ -101,16 +104,16 @@ bool getString() {
   while(!end)
     input = getByte();
     switch (state) {
-      
+
       case 0:
         if (input == '!') {state = 1; break;}
         else goto ErrorLabel;
-      
+
       case 1:
         if (input == '"') {state = 2; break;}
         else goto ErrorLabel;
-      
-      case 2: 
+
+      case 2:
         if (input == '"') { end = true; break; }
         else if (input == EOF) goto ErrorLabel;
         else if (input != '\\') { AddToBuffer(input); break; }
@@ -122,17 +125,17 @@ bool getString() {
         else if (input == '"') { AddToBuffer ('"'); state = 2; break; }
         else if (input == '\\') { AddToBuffer('\\'); state = 2; break; }
         else if (isdigit(input)) { asciival += 100*(input - '0'); state = 4; break; }
-        
+
         else goto ErrorLabel;
-    
+
       case 4:
         if(isdigit(input)) { asciival += 10*(input-'0'); state = 5; break;}
         else goto ErrorLabel;
 
       case 5:
         if(isdigit(input))
-        { 
-          asciival += input-'0'; 
+        {
+          asciival += input-'0';
           if(asciival > 255) goto ErrorLabel;
           AddToBuffer(asciival);
           state = 2;
@@ -160,6 +163,10 @@ void *InitScanner(void * v /*not used*/)
   int input;
   while(!done)
   {
+    // outer error
+    if(outer_error) { EndScanner("", ErrorType_Ok); return NULL; }
+
+    // reading
     input = getByte();
     Phrasem phr = malloc( sizeof(struct phrasem_data) );
     if( phr == NULL )
@@ -178,10 +185,12 @@ void *InitScanner(void * v /*not used*/)
     if ((input == '<')||(input == '>')||(input == '=')||(input == '+')||(input == '-')||( input == '*')||( input == '/')
        ||( input == '\' )) {
       returnByte(input);
-      getOperator();  
+      getOperator();
     }
 */
     phr->d.index = input;
+    phr->table = TokenType_Constant;
+    phr->line = 1;
 
     #ifdef SCANNER_DEBUG
       PrintPhrasem(phr);

@@ -21,6 +21,17 @@
 
                 //KEYWORD TABLE FUNCTIONS
 
+/**
+ * @brief   Keyword table.
+ *
+ * This array contains list af all possible keywords.
+ */
+const char keywords[35][9] = {"as", "asc", "declare", "dim", "do", "double",
+  "else", "end", "chr", "function", "if", "input", "integer", "length",
+  "loop", "print", "return", "scope", "string", "substr", "then", "while",
+  "and", "boolean", "continue", "elseif", "exit", "false", "for", "next",
+  "not", "or", "shared", "static", "true"};
+
 int isKeyword(const char * word)
 {
     int index = -1;
@@ -155,13 +166,3 @@ bool constTableResize(void)
 */
 
 /*-----------------------------------------------------------*/
-
-
-
-
-
-
-
-
-
-
