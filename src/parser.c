@@ -22,9 +22,16 @@
 #include "stack.h"
 #include "tables.h"
 
+pthread_t sc;
+static Phrasem p;
+
 extern void ClearTables();
 void EndParser(const char * msg, int line, ErrorType errtype)
 {
+  // ukoncit druhe vlakno
+  AskScannerToEnd();
+  pthread_join(sc, NULL);
+
   if(msg != NULL)
   {
     #ifdef PARSER_DEBUG
@@ -43,8 +50,7 @@ void EndParser(const char * msg, int line, ErrorType errtype)
     setErrorMessage("");
   }
 
-  // ukoncit druhe vlakno
-
+  free(p);
   ClearQueue();
   ClearStack();
   //ClearTables();
@@ -59,11 +65,9 @@ bool RunParser()
   InitQueue();
 
   // running scanner
-  pthread_t sc;
   pthread_create(&sc, NULL, InitScanner, NULL);
 
   // reading cycle
-  Phrasem p;
   while(ScannerIsScanning())
   {
     p = RemoveFromQueue();
@@ -106,13 +110,11 @@ bool RunParser()
         else
         {
           EndParser("Parser: Syntax error", p->line, ErrorType_Syntax);
-          free(p);
           return false;
         }
         break;
       case TokenType_Constant:
         EndParser("Parser: Syntax error", p->line, ErrorType_Syntax);
-        free(p);
         return false;
 
       // empty line
@@ -130,7 +132,6 @@ bool RunParser()
 
       default:
         EndParser("Parser: Unknown token type", p->line, ErrorType_Syntax);
-        free(p);
         return false;
     }
     // here will be syntax analysis ---------------------------
