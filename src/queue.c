@@ -22,7 +22,7 @@
 typedef struct queue_item {
   Phrasem data; /**< Data of item. */
   struct queue_item * next; /**< Pointer to next item. */
-} * QueueItem;
+} * volatile QueueItem;
 
 typedef QueueItem QueueHead;
 typedef QueueItem QueueTail;
@@ -30,8 +30,8 @@ typedef QueueItem QueueTail;
 /** @} */
 /*--------------------------------------------------*/
 
-QueueHead head = NULL; /**< Head of the queue. */
-QueueTail tail = NULL; /**< Tail of the queue. */
+volatile QueueHead head = NULL; /**< Head of the queue. */
+volatile QueueTail tail = NULL; /**< Tail of the queue. */
 bool isValid() { return (head == NULL && tail == NULL)
                      || (head != NULL && tail != NULL); }
 bool isEmpty() { return head == NULL && tail == NULL; }

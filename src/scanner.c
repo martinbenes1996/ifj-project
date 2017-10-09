@@ -26,7 +26,7 @@ int line = 1;
 bool outer_error = false;
 void AskScannerToEnd() { outer_error = true; }
 
-static bool isscanning = true;
+static volatile bool isscanning = true;
 bool ScannerIsScanning() { return isscanning; }
 
 void EndScanner(const char * msg, ErrorType errtype)
