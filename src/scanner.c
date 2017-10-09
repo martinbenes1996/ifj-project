@@ -175,7 +175,8 @@ void *InitScanner(void * v /*not used*/)
       getString();
     }
 
-    if (input == '<') {
+    if ((input == '<')||(input == '>')||(input == '=')||(input == '+')||(input == '-')||( input == '*')||( input == '/')
+       ||( input == '\' )) {
       returnByte(input);
       getOperator();  
     }
