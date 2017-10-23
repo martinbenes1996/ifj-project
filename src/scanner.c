@@ -103,6 +103,9 @@ bool getComment() {
 
 }
 
+*/
+
+
 /**
  * @brief the function can recognize if this is an operator and save it to buffer
  * return true if everything is allright in other way - false
@@ -153,6 +156,8 @@ bool getOperator() {
   }
   return true;
 }
+*/
+
 
 /**
  * @brief The function can recognize if this is string and save it to buffer
@@ -218,6 +223,37 @@ bool getString() {
 
 }
 
+bool getIdentifier(){
+	int state = 0;
+ 	int input;
+  	bool end = false;
+
+  	while(!end) {
+    	input = getByte();
+
+    	switch (state) {
+
+      	case 0:
+	  		if (input == '_') {AddToBuffer(input); state = 1; break;}
+	  		else if ((input >= 'A') && (input <= 'Z')) {AddToBuffer(input); state = 1; break;}
+	  		else if ((input >= 'a') && (input <= 'z')) {AddToBuffer(input); state = 1; break;}
+			else goto ErrorLabel;
+
+		case 1:
+			if (input == '\n') {end = true; break;}
+			else if (input == EOF) {end = true; break;}
+			else if ((input >= 'A') && (input <= 'Z')) {AddToBuffer(input); break;}
+			else if ((input >= 'a') && (input <= 'z')) {AddToBuffer(input); break;}
+			else goto ErrorLabel;
+			
+	return true;
+
+	ErrorLabel:
+    	EndScanner("Scanner: getString: Syntax Error!", ErrorType_Syntax);
+    	return false;
+
+}
+
 */
 
 void *InitScanner(void * v /*not used*/)
@@ -263,6 +299,11 @@ void *InitScanner(void * v /*not used*/)
        ||( input == '\\' )) {
       returnByte(input);
       getOperator();
+    }
+
+    else if ((input >= 'A') && (input <= 'Z') || (input >= 'a') && (input <= 'z') || (input == '_')) {
+		returnByte(input);
+		getIdentifier();
     }
     */
 
