@@ -74,7 +74,7 @@ bool getComment() {
         elseif (input == ''') {state = 2; break;}
         else goto ErrorLabel;
 
-      case 1: 
+      case 1:
         if (input != '/') {AddToBuffer('/'); end = true; getByte(input); break;}
         else {state = 3; break;}
 
@@ -82,11 +82,11 @@ bool getComment() {
         if ( input != '\n') {break;}
         else {end = true; break;}
 
-      case 3: 
+      case 3:
         if (input != '/') {break;}
         else { state = 4; break;}
 
-      case 4: 
+      case 4:
         if (input != '/') {state = 3; break;}
         else {end = true; break;}
 
@@ -136,26 +136,32 @@ bool getOperator() {
 
 
       case 1:
-        if ( input == '>') {AddToBuffer('>'); end = true; break;}
-        else if (input == '=') {AddToBuffer('='); end = true; break;}
-      
-        else goto ErrorLabel;
+        if ( input == '>') {AddToBuffer(input); end = true; break;}
+        else if (input == '=') {AddToBuffer(input); end = true; break;}
+        else {
+          returnByte(input);
+          end = true;
+          break;
+        }
 
       case 2:
-        if ( input == '=') {AddToBuffer('='); end = true; break;}
-        
-        else goto ErrorLabel;
+        if ( input == '=') {AddToBuffer(input); end = true; break;}
+        else {
+          returnByte(input);
+          end = true;
+          break;
+        }
+      default:
+        goto ErrorLabel;
 
-
-
-    return true;
-    ErrorLabel:
-      EndScanner("Scanner: getString: Syntax Error!", ErrorType_Syntax);
-      return false;
-   }
-  }
+    }
   return true;
+  ErrorLabel:
+    EndScanner("Scanner: getString: Syntax Error!", ErrorType_Syntax);
+    return false;
+
 }
+
 */
 
 
@@ -163,7 +169,6 @@ bool getOperator() {
  * @brief The function can recognize if this is string and save it to buffer
  * return true if everything is ok in otherway -false
  */
-
 
 /*
 bool getString() {
@@ -226,26 +231,46 @@ bool getString() {
 bool getIdentifier(){
 	int state = 0;
  	int input;
-  	bool end = false;
+  bool end = false;
 
-  	while(!end) {
-    	input = getByte();
+  while(!end) {
+  	input = getByte();
 
-    	switch (state) {
+  	switch (state) {
+      // first letter
+      case 0:
+	  		if ( (input == '_')
+          || (input >= 'A') && (input <= 'Z')
+          || (input >= 'a') && (input <= 'z') )
+        {
+          AddToBuffer(input);
+          state = 1;
+          break;
+        }
+	      else goto ErrorLabel;
 
-      	case 0:
-	  		if (input == '_') {AddToBuffer(input); state = 1; break;}
-	  		else if ((input >= 'A') && (input <= 'Z')) {AddToBuffer(input); state = 1; break;}
-	  		else if ((input >= 'a') && (input <= 'z')) {AddToBuffer(input); state = 1; break;}
-			else goto ErrorLabel;
+      // other letters
+      case 1:
+        if ((input == '\n')|| (input == EOF))
+        {
+          returnByte(input);
+          end = true;
+          break;
+        }
+/////////////////////////podivat se jestli id muze obsahovat _/////////////////////////////////
+			  else if ((input >= 'A') && (input <= 'Z')
+              || (input >= 'a') && (input <= 'z')
+              || (input >= '0') && (input <= '9'))
+        {
+          AddToBuffer(input);
+          break;
+        }
+			  else goto ErrorLabel;
 
-		case 1:
-			if (input == '\n') {end = true; break;}
-			else if (input == EOF) {end = true; break;}
-			else if ((input >= 'A') && (input <= 'Z')) {AddToBuffer(input); break;}
-			else if ((input >= 'a') && (input <= 'z')) {AddToBuffer(input); break;}
-			else goto ErrorLabel;
-			
+      // bad state
+      default:
+        goto ErrorLabel;
+
 	return true;
 
 	ErrorLabel:
@@ -290,12 +315,20 @@ void *InitScanner(void * v /*not used*/)
       getString();
     }
 
-    else if ((input == '/')||( input == ''')) {
+    else if ( input == '\'' ) {
       returnByte(input);
       getComment();
     }
+    else if (input == '/') {
+      input = getByte();
+      if (input == '/') {returnByte('~'); getComment();}
+      else {
+        returnByte(input);
+        // zjistit z tabulky operatoru
 
-    else if ((input == '<')||(input == '>')||(input == '=')||(input == '+')||(input == '-')||( input == '*')||( input == '/')
+      }
+    }
+    else if ((input == '<')||(input == '>')||(input == '=')||(input == '+')||(input == '-')||( input == '*')
        ||( input == '\\' )) {
       returnByte(input);
       getOperator();

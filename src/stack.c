@@ -6,51 +6,27 @@
 #include "stack.h"
 #include "types.h"
 
-/*--------------------------------------------------*/
-/** @addtogroup Stack_types
- * Types for stack.
- * @{
- */
 
-/**
- * @brief   Stack item.
- *
- * This structure represents item of stack.
- */
-typedef struct stack_item
-{
-  Phrasem data; /**< Data part. */
-  struct stack_item * next; /**< Pointer to next item. */
-} StackItem;
-
-/**
- * @brief   Stack head.
- */
-typedef struct stack_head
-{
-  StackItem * first; /**< Pointer to first. */
-} Stack;
-
-/** @} */
-/*--------------------------------------------------*/
-/** @addtogroup Stack_data
- * Data for stack.
- * @{
- */
-
-static Stack mstack; /**< Stack. */
-
-
-/** @} */
 /*--------------------------------------------------*/
 /** @addtogroup Stack_functions
  * Functions for interaction with stack.
  * @{
  */
 
-void ClearStack();
+Stack InitStack()
+{
+  // allocation
+  Stack st = malloc(sizeof(struct stack));
+  if(st == NULL) return NULL;
+
+  // initialization
+  st->first = NULL;
+  return st;
+}
+
 void EndStack(const char * msg, ErrorType errtype)
 {
+  // error
   if(msg != NULL)
   {
     #ifdef STACK_DEBUG
@@ -59,6 +35,7 @@ void EndStack(const char * msg, ErrorType errtype)
     setErrorType(errtype);
     setErrorMessage(msg);
   }
+  // ok
   else
   {
     #ifdef STACK_DEBUG
@@ -67,8 +44,16 @@ void EndStack(const char * msg, ErrorType errtype)
   }
 }
 
-bool PushOntoStack(Phrasem data)
+bool PushOntoStack(Stack st, Phrasem data)
 {
+  // control
+  if(st == NULL)
+  {
+    EndStack("Stack: PushOntoStack: recieved NULL pointer", ErrorType_Internal);
+    return false;
+  }
+
+  // allocation
   StackItem * it = malloc(sizeof(struct stack_item));
   if(it == NULL)
   {
@@ -78,19 +63,27 @@ bool PushOntoStack(Phrasem data)
 
   // filling up
   it->data = data;
-  it->next = mstack.first;
+  it->next = st->first;
 
-  // moving head
-  mstack.first = it;
+  // moving pointer
+  st->first = it;
   #ifdef STACK_DEBUG
     debug("Stack recieved an item.");
   #endif
   return true;
 }
 
-Phrasem PopFromStack()
+Phrasem PopFromStack(Stack st)
 {
-  StackItem * it = mstack.first;
+  // control
+  if(st == NULL)
+  {
+    EndStack("Stack: PopFromStack: recieved NULL pointer", ErrorType_Internal);
+    return NULL;
+  }
+
+  // selecting the first
+  StackItem * it = st->first;
   if(it == NULL)
   {
     #ifdef STACK_DEBUG
@@ -99,9 +92,13 @@ Phrasem PopFromStack()
     return NULL;
   }
 
-  mstack.first = it;
+  // moving the head
+  st->first = it;
 
+  // getting the data
   Phrasem p = it->data;
+
+  // free the item, return data
   free(it);
   #ifdef STACK_DEBUG
     debug("Stack popped an item.");
@@ -109,9 +106,10 @@ Phrasem PopFromStack()
   return p;
 }
 
-void ClearStack()
+void ClearStack(Stack st)
 {
   Phrasem p;
-  while((p = PopFromStack()) != NULL) { free(p); }
+  while((p = PopFromStack(st)) != NULL) { free(p); }
+  free(st);
   EndStack(NULL, ErrorType_Ok);
 }

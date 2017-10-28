@@ -176,6 +176,33 @@ typedef struct
 } args_t;
 
 
+
+/** @} */
+/*--------------------------------------------------*/
+/** @addtogroup Stack_types
+ * Types for stack.
+ * @{
+ */
+
+/**
+ * @brief   Stack item.
+ *
+ * This structure represents item of stack.
+ */
+typedef struct stack_item
+{
+  Phrasem data; /**< Data part. */
+  struct stack_item * next; /**< Pointer to next item. */
+} StackItem;
+
+/**
+ * @brief   Stack head.
+ */
+typedef struct stack
+{
+  StackItem * first; /**< Pointer to first. */
+} * Stack;
+
 /** @} */
 /*--------------------------------------------------*/
 /** @addtogroup Return_codes

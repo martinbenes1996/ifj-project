@@ -19,7 +19,6 @@
 #include "parser.h"
 #include "queue.h"
 #include "scanner.h"
-#include "stack.h"
 #include "tables.h"
 
 pthread_t sc;
@@ -52,7 +51,6 @@ void EndParser(const char * msg, int line, ErrorType errtype)
 
   free(p);
   ClearQueue();
-  ClearStack();
   //ClearTables();
 }
 

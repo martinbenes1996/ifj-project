@@ -14,30 +14,33 @@
 
 #include "types.h"
 
+
 /*---------------------------- STACK ----------------------------------*/
 /** @addtogroup Stack
  * Stack functions.
  * @{
  */
 
+Stack InitStack();
+
 /**
  * @brief     Pushes data onto stack.
  * @param data         Data to be pushed.
  * @returns            True, if success. Fail otherwise.
  */
-bool PushOntoStack(Phrasem data);
+bool PushOntoStack(Stack, Phrasem);
 
 /**
  * @brief     Pops from the stack.
  * @returns            Data being pushed. NULL if empty.
  */
-Phrasem PopFromStack();
+Phrasem PopFromStack(Stack);
 
 
 /**
  * @brief     Clears all stack.
  */
-void ClearStack();
+void ClearStack(Stack);
 
 
 /** @}*/
