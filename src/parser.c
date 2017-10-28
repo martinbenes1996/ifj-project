@@ -86,10 +86,15 @@ bool DataTypeParse(Phrasem p)
         || (p->d.index == isKeyword("string")));
 }
 
-bool ExpressionParse()
+bool ExpressionParse(Phrasem p)
 {
+  if(p != NULL)
+  {
+    // first phrasem given
+  }
+
   // parsing expression
-  return false;
+  return true;
 }
 
 bool VariableDefinitionParse()
@@ -149,7 +154,7 @@ bool VariableDefinitionParse()
   else if((s->table == TokenType_Operator) && (s->d.index == isKeyword("=")))
   {
     // get expression
-    if(!ExpressionParse())
+    if(!ExpressionParse(NULL))
     {
       // error
     }
@@ -210,6 +215,52 @@ bool InputParse()
   free(q);
 
   // semantics call
+  return true;
+}
+
+bool PrintParse(bool first)
+{
+  // expression
+  // first parameter
+  if(first)
+  {
+    if(!ExpressionParse(NULL)) return false;
+  }
+  // non first print parameter (may not exist)
+  else
+  {
+    Phrasem q = RemoveFromQueue();
+    if(q == NULL) {
+      EndParser("Parser: InputParse: queue error", q->line, ErrorType_Internal);
+      return false;
+    }
+    if(q->table == TokenType_Separator)
+    {
+      free(q);
+      return true;
+    }
+    else
+    {
+      if(!ExpressionParse(q)) return false;
+    }
+    free(q);
+  }
+
+  // ;
+  Phrasem p = RemoveFromQueue();
+  if(p == NULL) {
+    EndParser("Parser: InputParse: queue error", p->line, ErrorType_Internal);
+    return false;
+  }
+  // error
+  /*if((p->table != TokenType_Operator) || (p->d.str != isOperator(";")))
+  {
+    return false;
+  }*/
+  free(p);
+
+  PrintParse(false);
+
   return true;
 }
 
