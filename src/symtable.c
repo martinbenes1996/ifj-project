@@ -19,12 +19,6 @@
 
     /*Work in progress, read with caution.*/
 
-/*NOTES:
-    --malloc memory needed to store string from dataUnion in various functions
-      (i guess there is no max length of a constant)
-*/
-
-
 /*----------------------------------------------------------------*/
 
 
@@ -38,7 +32,7 @@
 struct variable{
     DataType type;
     char * name;
-    DataUnion value;
+    //DataUnion value;
 };
 /*-----------------------------------------------------------*/
 
@@ -49,29 +43,50 @@ struct variable{
  *
  * This structure contains index into array of functions, its size, number of entities
  * and variadic array of variables (identificators). Will resize automatically.
- * It is also an entity of stack.
  */
 typedef struct symbolTableFrame{
-    size_t functionIndex;
-    struct symbolTableFrame * next;
+    //size_t functionIndex;
+    //struct symbolTableFrame * next;
     size_t arr_size;    //array size
     size_t count;           //number of entities in array
     struct variable arr[];
 } SymbolTableFrame;
 
 /**
- * @brief   Structure representing stack made by array (or is list better?).
+ * @brief   Structure representing type and name of parametres.
  *
- * This structure contains an array (pointer), number of allocated entities
- * and index of the first free entity.
- * Will resize automatically.
+ * List.
+ */
+struct paramFce{
+    DataType type;
+    char * name;        //do i need to know name of the parameter?
+    struct paramFce *nextParam;
+};
+/**
+ * @brief   Structure representing a function frame.
+ *
+ * This structure contains type, name and parametres of a function.
  */
 typedef struct symbolTable{
-    SymbolTableFrame * first;   //malloc array, potom realokovat
+    DataType type;
+    char *name;
+    size_t numberOfParameters;
+    struct paramFce *firstParam;
+    SymbolTableFrame *variables;
+    struct symbolTable * next;
 } SymbolTable;
+/**
+ * @brief   Structure representing stack made by function frames.
+ *
+ * This structure contains informations about declared functions.
+ */
+typedef struct symbolTableStack{
+    SymbolTable * first;
+    size_t count;
+} SymbolTableStack;
 
-//initialisation of symbol table
-static SymbolTable symtable = {.first = NULL};
+//initialisation of symbol table stack
+static SymbolTableStack symtableStack = {.first = NULL, .count = 0};
 
 
 
@@ -85,11 +100,14 @@ static SymbolTable symtable = {.first = NULL};
 
                     //DECLARATIONS
 
+#ifndef NAMED_CONSTANTS
+#define NAMED_CONSTANTS
 
 #define STARTING_CHUNK 10   //size of initialised arrays
 #define PORTION_OF_TABLE 2  //when should table resize (count > arr_size/PORTION_OF_TABLE)
 #define RESIZE_RATE 2       //how much should it resize
 
+#endif
 
 /**
  * @brief   Manages two hash functions.
@@ -300,8 +318,8 @@ SymbolTableFrame * frameInit(size_t size)
             //inicializace prvku vytvorene tabulky
             frame->arr_size = size;
             frame->count = 0;
-            frame->functionIndex = -1;
-            frame->next = NULL;
+            //frame->functionIndex = -1;
+            //frame->next = NULL;
 
             //fixing potential frees of empty entities
             for(size_t i = 0; i < size ;++i)
@@ -364,8 +382,8 @@ SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2)
     if((frame = frameInit(newsize)) != NULL)
     {
         frame->count = frameEntityCount(frame2);
-        frame->functionIndex = frame2->functionIndex;
-        frame->next = frame2->next;
+        //frame->functionIndex = frame2->functionIndex;
+        //frame->next = frame2->next;
 
         //going through all variables in table and copying variables
         for(size_t i=0;i < frameTableSize(frame2);++i)
@@ -376,7 +394,10 @@ SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2)
 
             /*---------------------------------------------------------------------------*/
             frame->arr[hashNumber].type = frame2->arr[i].type;
-
+            frame->arr[hashNumber].name = frame2->arr[i].name;
+            frame2->arr[i].type = DataType_Unknown;
+            frame2->arr[i].name = NULL;
+/*
             //allocation of memory for a name string in new table
             if((frame->arr[hashNumber].name = malloc(sizeof(char) * strlen(frame2->arr[i].name)
                                                     + sizeof(char))) != NULL)
@@ -389,7 +410,7 @@ SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2)
                                     ErrorType_Internal);
                     return NULL;
                 }
-
+*/
 /*
             //copying various types of values in union-----------------------------------
             if(frame2->arr[i].type == DataType_String)
@@ -519,44 +540,280 @@ bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type
 
 /*-----------------------------------------------------------*/
 
-                //STACK FUNCTIONS - not tested
+                    //STACK FUNCTIONS
 
     /*WILL ADD MORE WHEN I REALISE WHAT YOU WANT FROM ME*/
 
-bool pushOntoSymtableStack(size_t functionId)
+/**
+ * @brief   Searches for a function in a stack.
+ *
+ * Returns NULL when unsuccessful or pointer to function frame
+ * @param functionName  name of the function
+ * @returns pointer/NULL.
+ */
+SymbolTable * findFunction(char * name)
 {
-    SymbolTableFrame * frame;
-    frame = frameInit(STARTING_CHUNK);
-    if(frame == NULL)
+    SymbolTable * pom = symtableStack.first;
+
+    while(pom != NULL)
+    {
+        if(!strcmp(pom->name, name)) return pom;
+        pom = pom->next;
+    }
+    return NULL;
+}
+
+/**
+ * @brief   Inserts a function symbol table onto stack.
+ *
+ * This function creates a symbol table and initialises it.
+ * Returns false when unsuccessful or true
+ * @param functionName  name of the function
+ * @returns True/false.
+ */
+bool pushOntoSymtableStack(char * functionName)
+{
+    //there cannot be two functions with the same name
+    if(findFunction(functionName) != NULL) return false;
+
+    SymbolTable *symtable;
+    symtable = malloc(sizeof(SymbolTable));
+    if(symtable == NULL)
+    {
+        EndHash("Symtable stack: pushOntoSymtableStack: could not allocate memory", ErrorType_Internal);
+        return false;
+    }
+
+    //initialising symbol table of a function --------------------------
+    symtable->type = DataType_Unknown;
+    symtable->firstParam = NULL;
+    symtable->numberOfParameters = 0;
+
+    //allocating memory for a function name
+    symtable->name = malloc(sizeof(char) * strlen(functionName) + sizeof(char));
+    if(symtable->name == NULL)
+    {
+        EndHash("Symtable stack: pushOntoSymtableStack: could not allocate memory for a symbol name",
+                                                                                    ErrorType_Internal);
+        return false;
+    }
+    strcpy(symtable->name, functionName);
+
+    //initialising hash table of variables
+    symtable->variables = frameInit(STARTING_CHUNK);
+    if(symtable->variables == NULL)
     {
         EndHash("Symtable stack: pushOntoSymtableStack: could not initialise frame", ErrorType_Internal);
         return false;
     }
-    //set function id and connect list
-    frame->functionIndex = functionId;
-    frame->next = symtable.first;
-    symtable.first = frame;
+
+    //connecting stack -------------------------------------------------
+    symtable->next = symtableStack.first;
+    symtableStack.first = symtable;
+    symtableStack.count++;
 
     #ifdef SYMTABLE_DEBUG
         debug("Frame was created and pushed onto a symtable stack.");
     #endif
     return true;
 }
+/**
+ * @brief   Sets datatype of a function symbol on top of the stack.
+ *
+ * Returns false when unsuccessful or true
+ * @param type  type of the function
+ * @returns True/false.
+ */
+bool setFunctionType(DataType type)
+{
+    if(symtableStack.first == NULL) return false;
+    symtableStack.first->type = type;
+
+    #ifdef SYMTABLE_DEBUG
+        debug("Setting type of a function %s.", symtableStack.first->name);
+    #endif
+    return true;
+}
+/**
+ * @brief   finds a parameter of a function.
+ *
+ * Returns pointer to a parameter when successful or NULL
+ * @param functionName  name of the function
+ * @param paramName  name of the parameter
+ * @returns pointer or NULL.
+ */
+struct paramFce * findParameter(char * functionName, char * paramName)
+{
+    SymbolTable * pom;
+    pom = findFunction(functionName);
+
+    struct paramFce * pom2 = pom->firstParam;
+    while(pom2 != NULL)
+    {
+        if(strcmp(pom2->name, paramName) == 0) return pom2;
+        pom2 = pom2->nextParam;
+    }
+
+    return pom2;    //pom2 will be NULL here
+}
+
+/**
+ * @brief   Adds a parameter of a function on top of the stack.
+ *
+ * Returns false when unsuccessful or true
+ * @param name  name of the parameter
+ * @param type  type of the parameter
+ * @returns True/false.
+ */
+//it is a list of parameters in order from the first added to the last
+bool addFunctionParameter(char * name, DataType type)
+{
+    //function cannot have two parameters with same name
+    if(findParameter(symtableStack.first->name, name) != NULL) return false;
+
+    if(symtableStack.first == NULL) return false;
+
+    //allocation of a new list entity
+    struct paramFce ** pom = &symtableStack.first->firstParam;
+    while(*pom != NULL) pom = &(*pom)->nextParam;
+    *pom = malloc(sizeof(struct paramFce));
+    if(*pom == NULL)
+    {
+        EndHash("Symtable stack: addFunctionParameter: could not allocate memory", ErrorType_Internal);
+        return false;
+    }
+    //setting parameter info
+    (*pom)->nextParam = NULL;
+    (*pom)->type = type;
+    (*pom)->name = malloc(sizeof(char) * strlen(name) + sizeof(char));
+    if((*pom)->name == NULL)
+    {
+        EndHash("Symtable stack: addFunctionParameter: could not allocate memory", ErrorType_Internal);
+        return false;
+    }
+    strcpy((*pom)->name, name);
+
+    symtableStack.first->numberOfParameters++;
+
+    #ifdef SYMTABLE_DEBUG
+        debug("Adding parameter into function %s.", symtableStack.first->name);
+    #endif
+    return true;
+}
+/**
+ * @brief   Adds a variable of a function (that is on top of the stack).
+ *
+ * Returns false when unsuccessful or true
+ * @param name  name of the variable
+ * @returns True/false.
+ */
+bool addVariable(char * name)
+{
+    if(symtableStack.first == NULL) return false;
+
+    #ifdef SYMTABLE_DEBUG
+        debug("Adding variable into function %s.", symtableStack.first->name);
+    #endif
+
+    return frameAddSymbol( &symtableStack.first->variables, name);
+}
+/**
+ * @brief   Adds a variable type (of a function on top of the stack).
+ *
+ * Returns false when unsuccessful or true
+ * @param name  name of the variable
+ * @param type  type of the variable
+ * @returns True/false.
+ */
+bool addVariableType(char * name, DataType type)
+{
+    if(symtableStack.first == NULL) return false;
+
+    #ifdef SYMTABLE_DEBUG
+        debug("Adding the type of %s in function %s.", name, symtableStack.first->name);
+    #endif
+
+    return frameAddSymbolType(symtableStack.first->variables, name, type);
+}
+/**
+ * @brief   Finds a variable in a function on top of the stack.
+ *
+ * Returns false when unsuccessful or true
+ * @param name  name of the variable
+ * @returns True/false.
+ */
+bool findVariable(char * name)
+{
+    if(symtableStack.first == NULL) return false;
+
+    #ifdef SYMTABLE_DEBUG
+        debug("Finding variable %s in function %s.", name, symtableStack.first->name);
+    #endif
+
+    if( frameFindSymbol(symtableStack.first->variables, name) == NULL ) return false;
+    return true;
+}
+/**
+ * @brief   Destroys parameters of a function.
+ *
+ */
+void paramFree(struct paramFce * parameter)
+{
+    struct paramFce * pom;
+
+    while(parameter != NULL)
+    {
+        pom = parameter;
+        parameter = parameter->nextParam;
+        free(pom->name);
+        free(pom);
+    }
+    #ifdef SYMTABLE_DEBUG
+        debug("Freeing parameters.");
+    #endif
+}
+/**
+ * @brief   Destroys symbol table (function).
+ *
+ */
+void symtableFree(SymbolTable * symtable)
+{
+    paramFree(symtable->firstParam);
+    free(symtable->name);
+    frameFree(symtable->variables);
+    free(symtable);
+
+    #ifdef SYMTABLE_DEBUG
+        debug("Freeing symbol table (function).");
+    #endif
+}
+/**
+ * @brief   Deletes a function symbol table from stack.
+ *
+ * Returns false when unsuccessful or true
+ * @returns True/false.
+ */
 //i think we will not need that frame so i dont have to return it
 //if we need it i will fix it
 bool popFromSymtableStack(void)
 {
-    if(symtable.first == NULL) return false;
+    if(symtableStack.first == NULL) return false;
 
-    SymbolTableFrame * frame = symtable.first;
-    symtable.first = symtable.first->next;
-    frameFree(frame);
+    SymbolTable * symtable = symtableStack.first;
+    symtableStack.first = symtableStack.first->next;
+
+    symtableFree(symtable);
+    symtableStack.count--;
 
     #ifdef SYMTABLE_DEBUG
         debug("Frame was destroyed from top of the symtable stack.");
     #endif
     return true;
 }
+/**
+ * @brief   Destroys the whole stack of symbol tables (functions).
+ *
+ */
 void clearSymtableStack()
 {
     while(popFromSymtableStack() != false)
@@ -571,6 +828,14 @@ void clearSymtableStack()
 
 
 
+
+
+
+
+
+
+
+#ifdef skladka
 /*************************************************************/
 
                     //FUNCTION TABLE
@@ -644,7 +909,7 @@ void functionTableFree(void);
 bool functionTableResize(void);
 /*-----------------------------------------------------------*/
 
-                    //FUNCTION BODY - needs testing
+                    //FUNCTION BODY
 
 bool functionTableInit(void)
 {
@@ -722,3 +987,4 @@ bool functionTableResize(void)
     findParametreType
     findParametreInd
 */
+#endif
