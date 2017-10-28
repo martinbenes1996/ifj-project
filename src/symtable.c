@@ -545,6 +545,25 @@ bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type
     /*WILL ADD MORE WHEN I REALISE WHAT YOU WANT FROM ME*/
 
 /**
+ * @brief   Searches for a function in a stack.
+ *
+ * Returns NULL when unsuccessful or pointer to function frame
+ * @param functionName  name of the function
+ * @returns pointer/NULL.
+ */
+SymbolTable * findFunction(char * name)
+{
+    SymbolTable * pom = symtableStack.first;
+
+    while(pom != NULL)
+    {
+        if(!strcmp(pom->name, name)) return pom;
+        pom = pom->next;
+    }
+    return NULL;
+}
+
+/**
  * @brief   Inserts a function symbol table onto stack.
  *
  * This function creates a symbol table and initialises it.
@@ -554,6 +573,9 @@ bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type
  */
 bool pushOntoSymtableStack(char * functionName)
 {
+    //there cannot be two functions with the same name
+    if(findFunction(functionName) != NULL) return false;
+
     SymbolTable *symtable;
     symtable = malloc(sizeof(SymbolTable));
     if(symtable == NULL)
@@ -613,6 +635,29 @@ bool setFunctionType(DataType type)
     return true;
 }
 /**
+ * @brief   finds a parameter of a function.
+ *
+ * Returns pointer to a parameter when successful or NULL
+ * @param functionName  name of the function
+ * @param paramName  name of the parameter
+ * @returns pointer or NULL.
+ */
+struct paramFce * findParameter(char * functionName, char * paramName)
+{
+    SymbolTable * pom;
+    pom = findFunction(functionName);
+
+    struct paramFce * pom2 = pom->firstParam;
+    while(pom2 != NULL)
+    {
+        if(strcmp(pom2->name, paramName) == 0) return pom2;
+        pom2 = pom2->nextParam;
+    }
+
+    return pom2;    //pom2 will be NULL here
+}
+
+/**
  * @brief   Adds a parameter of a function on top of the stack.
  *
  * Returns false when unsuccessful or true
@@ -623,27 +668,30 @@ bool setFunctionType(DataType type)
 //it is a list of parameters in order from the first added to the last
 bool addFunctionParameter(char * name, DataType type)
 {
+    //function cannot have two parameters with same name
+    if(findParameter(symtableStack.first->name, name) != NULL) return false;
+
     if(symtableStack.first == NULL) return false;
 
     //allocation of a new list entity
-    struct paramFce * pom = symtableStack.first->firstParam;
-    while(pom != NULL) pom = pom->nextParam;
-    pom = malloc(sizeof(struct paramFce));
-    if(pom == NULL)
+    struct paramFce ** pom = &symtableStack.first->firstParam;
+    while(*pom != NULL) pom = &(*pom)->nextParam;
+    *pom = malloc(sizeof(struct paramFce));
+    if(*pom == NULL)
     {
         EndHash("Symtable stack: addFunctionParameter: could not allocate memory", ErrorType_Internal);
         return false;
     }
     //setting parameter info
-    pom->nextParam = NULL;
-    pom->type = type;
-    pom->name = malloc(sizeof(char) * strlen(name) + sizeof(char));
-    if(pom->name == NULL)
+    (*pom)->nextParam = NULL;
+    (*pom)->type = type;
+    (*pom)->name = malloc(sizeof(char) * strlen(name) + sizeof(char));
+    if((*pom)->name == NULL)
     {
         EndHash("Symtable stack: addFunctionParameter: could not allocate memory", ErrorType_Internal);
         return false;
     }
-    strcpy(pom->name, name);
+    strcpy((*pom)->name, name);
 
     symtableStack.first->numberOfParameters++;
 
@@ -733,6 +781,7 @@ void symtableFree(SymbolTable * symtable)
     paramFree(symtable->firstParam);
     free(symtable->name);
     frameFree(symtable->variables);
+    free(symtable);
 
     #ifdef SYMTABLE_DEBUG
         debug("Freeing symbol table (function).");
