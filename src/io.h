@@ -45,10 +45,10 @@
     //#define INIT_DEBUG /* Initialization of programme. */
     //#define IO_DEBUG /* IO module debug. */
     //#define ARGS_DEBUG /* Arguments debug. */
-    //#define QUEUE_DEBUG
-    //#define SCANNER_DEBUG
-    //#define PARSER_DEBUG
-    //#define STACK_DEBUG
+    //#define QUEUE_DEBUG /* Scanner-Parser queue connection debug. */
+    //#define SCANNER_DEBUG /* Lexical analysis debug. */
+    #define PARSER_DEBUG /* Syntactic analysis debug. */
+    //#define STACK_DEBUG /* Stack debug. */
 
 	  /*add your own*/
 

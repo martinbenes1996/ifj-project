@@ -17,12 +17,13 @@
 #include "err.h"
 #include "io.h"
 #include "parser.h"
+#include "pedant.h"
 #include "queue.h"
 #include "scanner.h"
 #include "tables.h"
 
 pthread_t sc;
-static Phrasem p;
+long function_id; /**< Id of actual function (for symbol table). */
 
 extern void ClearTables();
 void EndParser(const char * msg, int line, ErrorType errtype)
@@ -49,9 +50,264 @@ void EndParser(const char * msg, int line, ErrorType errtype)
     setErrorMessage("");
   }
 
-  free(p);
   ClearQueue();
   //ClearTables();
+}
+
+bool VariableParse(Phrasem p)
+{
+  #ifdef PARSER_DEBUG
+    debug("Variable parse.");
+  #endif
+  if(p == NULL) return false;
+
+  if(p->table != TokenType_Symbol)
+  {
+    EndParser("Parser: VariableParse: variable name expected", p->line, ErrorType_Internal);
+    return false;
+  }
+
+  // retyping
+  p->table = TokenType_Variable;
+  return true;
+}
+
+bool DataTypeParse(Phrasem p)
+{
+  #ifdef PARSER_DEBUG
+    debug("Data type parse.");
+  #endif
+  if(p == NULL) return false;
+
+  if(p->table != TokenType_Keyword) return false;
+
+  return ((p->d.index == isKeyword("integer"))
+        || (p->d.index == isKeyword("double"))
+        || (p->d.index == isKeyword("string")));
+}
+
+bool ExpressionParse()
+{
+  // parsing expression
+  return false;
+}
+
+bool VariableDefinitionParse()
+{
+  bool status = true;
+
+  // getting symbol
+  Phrasem p = RemoveFromQueue();
+  if(p == NULL)
+  {
+    EndParser("Parser: VariableDefinitionParse: queue error", p->line, ErrorType_Internal);
+    return false;
+  }
+  if(!VariableParse(p))
+  {
+    // error
+    status = false;
+  }
+
+  // getting keyword 'as'
+  Phrasem q = RemoveFromQueue();
+  if(q == NULL)
+  {
+    EndParser("Parser: VariableDefinitionParse: queue error", q->line, ErrorType_Internal);
+    return false;
+  }
+  if( (q->table != TokenType_Keyword) || (q->d.index != isKeyword("as")) )
+  {
+    // error
+    status = false;
+  }
+  free(q);
+
+  // getting datatype keyword
+  Phrasem r = RemoveFromQueue();
+  if(r == NULL) {
+    EndParser("Parser: VariableDefinitionParse: queue error", r->line, ErrorType_Internal);
+    return false;
+  }
+  if(!DataTypeParse(r))
+  {
+    // error
+  }
+
+  // getting LF/=
+  Phrasem s = RemoveFromQueue();
+  if(s == NULL) {
+    EndParser("Parser: VariableDefinitionParse: queue error", s->line, ErrorType_Internal);
+    return false;
+  }
+  // LF
+  if(s->table == TokenType_Separator)
+  {
+    // semantics - initialize to zero
+  }
+  // =
+  else if((s->table == TokenType_Operator) && (s->d.index == isKeyword("=")))
+  {
+    // get expression
+    if(!ExpressionParse())
+    {
+      // error
+    }
+
+    // getting LF
+    Phrasem t = RemoveFromQueue();
+    if(t == NULL) {
+      EndParser("Parser: VariableDefinitionParse: queue error", t->line, ErrorType_Internal);
+      return false;
+    }
+    if(t->table != TokenType_Separator)
+    {
+      // error
+    }
+    free(t);
+
+  }
+  else
+  {
+    // error
+  }
+  free(s);
+
+  // write to symbol table
+  // semantics
+  return status;
+}
+
+bool InputParse()
+{
+  // variable
+  Phrasem p = RemoveFromQueue();
+  if(p == NULL) {
+    EndParser("Parser: InputParse: queue error", p->line, ErrorType_Internal);
+    return false;
+  }
+  // error
+  if(!VariableParse(p))
+  {
+    return false;
+  }
+
+  // control of previous definition
+  Sem_VariableDefined(sc, p->d.str);
+
+  // LF
+  Phrasem q = RemoveFromQueue();
+  if(q == NULL) {
+    EndParser("Parser: InputParse: queue error", q->line, ErrorType_Internal);
+    return false;
+  }
+  if(q->table != TokenType_Separator)
+  {
+    // error
+    EndParser("Parser: InputParse: separator expected", q->line, ErrorType_Internal);
+    return false;
+  }
+  free(q);
+
+  // semantics call
+  return true;
+}
+
+bool LineParse()
+{
+  Phrasem p = RemoveFromQueue();
+  if(p == NULL) {
+    EndParser("Parser: RunParser: queue error", p->line, ErrorType_Internal);
+    return false;
+  }
+
+  switch(p->table)
+  {
+    case TokenType_Keyword:
+      // variable declaration/definition
+      if(p->d.index == isKeyword("dim"))
+      {
+        return VariableDefinitionParse();
+      }
+      // function declaration
+      else if(p->d.index == isKeyword("declare"))
+      {
+      }
+      // function definition
+      else if(p->d.index == isKeyword("function"))
+      {
+      }
+      // main
+      else if(p->d.index == isKeyword("scope"))
+      {
+      }
+      // end
+      else if(p->d.index == isKeyword("end"))
+      {
+      }
+      // condition
+      else if(p->d.index == isKeyword("if"))
+      {
+      }
+      // printing
+      else if(p->d.index == isKeyword("print"))
+      {
+      }
+      // loading
+      else if(p->d.index == isKeyword("input"))
+      {
+      }
+      // cycle
+      else if(p->d.index == isKeyword("do"))
+      {
+      }
+      // end cycle
+      else if(p->d.index == isKeyword("loop"))
+      {
+      }
+      // function return
+      else if(p->d.index == isKeyword("return"))
+      {
+      }
+      // error
+      else
+      {
+        EndParser("Parser: LineParse: unknown keyword", p->line, ErrorType_Syntax);
+        free(p);
+        return false;
+      }
+      break;
+    case TokenType_Constant:
+      EndParser("Parser: LineParse: line beginning with constant", p->line, ErrorType_Syntax);
+      free(p);
+      return false;
+
+    // empty line
+    case TokenType_Separator:
+      break;
+    case TokenType_Variable:
+      // assignment
+      break;
+    case TokenType_Function:
+      // function call
+      break;
+    case TokenType_Operator:
+      // can be??
+      break;
+
+    default:
+      EndParser("Parser: Unknown token type", p->line, ErrorType_Syntax);
+      free(p);
+      return false;
+  }
+  // here will be syntax analysis ---------------------------
+
+  #ifdef PARSER_DEBUG
+    PrintPhrasem(p);
+  #endif
+
+  free(p);
+  return true;
 }
 
 bool RunParser()
@@ -66,79 +322,9 @@ bool RunParser()
   pthread_create(&sc, NULL, InitScanner, NULL);
 
   // reading cycle
-  while(ScannerIsScanning())
+  while(ScannerIsScanning() && LineParse())
   {
-    p = RemoveFromQueue();
-    if(p == NULL) {
-      EndParser("Parser: RunParser: queue error", p->line, ErrorType_Internal);
-      return false;
-    }
-    else if(p == END_PTR) break;
-
-    switch(p->table)
-    {
-      case TokenType_Keyword:
-        if(p->d.index == isKeyword("if"))
-        {
-          // condition
-        }
-        else if(p->d.index == isKeyword("while"))
-        {
-          // while cycle
-        }
-        else if(p->d.index == isKeyword("function"))
-        {
-          // function
-        }
-        else if(p->d.index == isKeyword("declare"))
-        {
-          // declaration
-        }
-        else if(p->d.index == isKeyword("dim"))
-        {
-          // variable
-        }
-        else if(p->d.index == isKeyword("scope"))
-        {
-          // main
-        }
-
-        // etc ...
-
-        else
-        {
-          EndParser("Parser: Syntax error", p->line, ErrorType_Syntax);
-          return false;
-        }
-        break;
-      case TokenType_Constant:
-        EndParser("Parser: Syntax error", p->line, ErrorType_Syntax);
-        return false;
-
-      // empty line
-      case TokenType_Separator:
-        break;
-      case TokenType_Variable:
-        // assignment
-        break;
-      case TokenType_Function:
-        // function call
-        break;
-      case TokenType_Operator:
-        // can be??
-        break;
-
-      default:
-        EndParser("Parser: Unknown token type", p->line, ErrorType_Syntax);
-        return false;
-    }
-    // here will be syntax analysis ---------------------------
-
-    #ifdef PARSER_DEBUG
-      PrintPhrasem(p);
-    #endif
-
-    free(p);
+    // something to do
   }
 
   // ending scanner

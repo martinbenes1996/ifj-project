@@ -109,10 +109,11 @@ inline const char * TableToString(Table tb)
  */
 typedef enum{
   TokenType_Constant,
-  TokenType_Function,
   TokenType_Operator,
   TokenType_Keyword,
+  TokenType_Symbol, // for lexical - in syntax, it will be changed to variable/function
   TokenType_Variable,
+  TokenType_Function,
   TokenType_Separator
 } TokenType;
 inline const char * TokenTypeToString(TokenType tt)
@@ -120,9 +121,10 @@ inline const char * TokenTypeToString(TokenType tt)
   switch(tt)
   {
     case TokenType_Constant: return "Constant";
-    case TokenType_Function: return "Function";
     case TokenType_Operator: return "Operator";
     case TokenType_Keyword: return "Keyword";
+    case TokenType_Symbol: return "Symbol";
+    case TokenType_Function: return "Function";
     case TokenType_Variable: return "Variable";
     case TokenType_Separator: return "Separator";
     default: return "Unknown TokenType!";
