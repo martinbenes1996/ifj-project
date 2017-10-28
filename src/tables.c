@@ -54,11 +54,14 @@ int isKeyword(const char * word)
 
         //CONSTANT TABLE DATA (not sure if public or private yet)
 
+#ifndef NAMED_CONSTANTS
+#define NAMED_CONSTANTS
 
 #define STARTING_CHUNK 10   //size of initialised arrays
 #define PORTION_OF_TABLE 2  //when should table resize (count > arr_size/PORTION_OF_TABLE)
 #define RESIZE_RATE 2       //how much should it resize
 
+#endif
 /**
  * @brief   Structure representing characteristics of constants.
  *
