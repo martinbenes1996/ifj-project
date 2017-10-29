@@ -70,24 +70,20 @@ bool getComment() {
 
     switch (state) {
       case 0:
-        if ( input == '/') {state = 1; break;}
-        elseif (input == ''') {state = 2; break;}
+        if ( input == '~') {state = 2; break;}
+        elseif (input == ''') {state = 1; break;}
         else goto ErrorLabel;
 
       case 1:
-        if (input != '/') {AddToBuffer('/'); end = true; getByte(input); break;}
-        else {state = 3; break;}
-
-      case 2:
         if ( input != '\n') {break;}
         else {end = true; break;}
 
-      case 3:
+      case 2:
         if (input != '/') {break;}
-        else { state = 4; break;}
+        else { state = 3; break;}
 
-      case 4:
-        if (input != '/') {state = 3; break;}
+      case 3:
+        if (input != '/') {state = 2; break;}
         else {end = true; break;}
 
 
@@ -257,10 +253,11 @@ bool getIdentifier(){
           end = true;
           break;
         }
-/////////////////////////podivat se jestli id muze obsahovat _/////////////////////////////////
+
 			  else if ((input >= 'A') && (input <= 'Z')
               || (input >= 'a') && (input <= 'z')
-              || (input >= '0') && (input <= '9'))
+              || (input >= '0') && (input <= '9')
+              || (input == '_'))
         {
           AddToBuffer(input);
           break;
