@@ -23,15 +23,29 @@ void InitQueue();
 
 /**
  * @brief   Adds to given queue.
- * @returns     True if success, false if fail.
+ *
+ * This function adds phrasem from tail to the queue. It is called
+ * from a scanner.
+ * @param data    Phrasem to add.
+ * @returns True if success, false if fail.
  */
 bool AddToQueue(Phrasem data);
 
 /**
  * @brief   Removes from given queue.
- * @returns     True if success, false if fail.
+ *
+ * This function removes one phrasem from queue. It may wait,
+ * if the queue has been emptied.
+ * @returns       True if success, false if fail.
  */
 Phrasem RemoveFromQueue();
+
+/**
+ * @brief   Returns phrasem back to queue (from parser).
+ * @param p       Phrasem to return.
+ * @returns True, if success. False otherwise.
+ */
+bool ReturnToQueue(Phrasem p);
 
 /**
  * @brief   Ends connection.

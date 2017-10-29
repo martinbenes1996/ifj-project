@@ -27,6 +27,8 @@ typedef struct queue_item {
 typedef QueueItem QueueHead;
 typedef QueueItem QueueTail;
 
+Phrasem mem;
+
 /** @} */
 /*--------------------------------------------------*/
 
@@ -106,6 +108,13 @@ bool AddToQueue(Phrasem data)
 
 Phrasem RemoveFromQueue()
 {
+  if(mem != NULL)
+  {
+    Phrasem p = mem;
+    mem = NULL;
+    return p;
+  }
+
   // control
   if(isEmpty())
   {
@@ -137,6 +146,14 @@ Phrasem RemoveFromQueue()
   // dealloc memory and return data
 	free(p);
   return d;
+}
+
+bool ReturnToQueue(Phrasem p)
+{
+  if(mem != NULL) return false;
+
+  mem = p;
+  return true;
 }
 
 void ClearQueue()

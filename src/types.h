@@ -58,6 +58,7 @@ typedef enum{
 
   OpenBracket,  // (   NOT OPERATOR SYMBOLS
   CloseBracket, // )
+  Comma,        // ,
 } Operators;
 
 /**
