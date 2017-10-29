@@ -32,12 +32,19 @@ long function_id; /**< Id of actual function (for symbol table). */
 char end_type = 0;
 
 
-#define RaiseError(msg, phrasem, errtype)     \
-  do {                                        \
-    EndParser(msg, phrasem->line, errtype);\
-    return false;                             \
+#define RaiseError(msg, phrasem, errtype)                       \
+  do {                                                          \
+    err("%s: %s: l.%d: %s", __FILE__, __func__, __LINE__, msg); \
+    EndParser(msg, phrasem->line, errtype);                     \
+    return false;                                               \
   } while(0)
 
+#define RaiseQueueError(phrasem)                                \
+  do {                                                          \
+    RaiseError("queue error", phrasem, ErrorType_Internal);     \
+  } while(0)
+
+#define CheckQueue(phrasem) RemoveFromQueue(); if(phrasem == NULL) { RaiseQueueError(phrasem); }
 
 /*---------------------------- CLEAR --------------------------------*/
 /**
@@ -51,10 +58,17 @@ char end_type = 0;
 void EndParser(const char * msg, int line, ErrorType errtype);
 
 /*------------------------ CONDITION SIMPLIFIERS ---------------------*/
+
 bool isOperator(Phrasem p, const char * op)
 {
   (void)op;
   return (p->table == TokenType_Operator) /*&& (p->d.index == getOperatorId(op))*/;
+}
+
+bool matchesKeyword(Phrasem p, const char * op)
+{
+  (void)op;
+  return (p->table == TokenType_Keyword) && (p->d.index == isKeyword(op));
 }
 
 /*-------------------------- LOW LEVEL PARSER FUNCTIONS --------------------*/
@@ -224,13 +238,12 @@ bool VariableParse(Phrasem p)
   #endif
   if(p == NULL)
   {
-    RaiseError("Parser: VariableParse: variable expected", p, ErrorType_Syntax);
+    RaiseError("variable expected", p, ErrorType_Syntax);
   }
 
   if(p->table != TokenType_Symbol)
   {
-    EndParser("Parser: VariableParse: variable name expected", p->line, ErrorType_Internal);
-    return false;
+    RaiseError("variable name expected", p, ErrorType_Internal);
   }
 
   // retyping
@@ -249,16 +262,13 @@ bool DataTypeParse(Phrasem p)
 
   if(p->table != TokenType_Keyword) return false;
 
-  return ((p->d.index == isKeyword("integer"))
-        || (p->d.index == isKeyword("double"))
-        || (p->d.index == isKeyword("string")));
+  return (matchesKeyword(p, "integer") || matchesKeyword(p, "double") || matchesKeyword(p, "string"));
 }
 
 bool OpenBracketParse(Phrasem p)
 {
   if(p == NULL) {
-    EndParser("Parser: OpenBracketParse: NULL pointer recieved", p->line, ErrorType_Internal);
-    return false;
+    RaiseError("NULL pointer recieved", p, ErrorType_Internal);
   }
   if(!isOperator(p, "(")) return false;
 
@@ -269,10 +279,13 @@ bool OpenBracketParse(Phrasem p)
 bool CloseBracketParse(Phrasem p)
 {
   if(p == NULL) {
-    EndParser("Parser: CloseBracketParse: NULL pointer recieved", p->line, ErrorType_Internal);
-    return false;
+    RaiseError("NULL pointer recieved", p, ErrorType_Internal);
   }
-  if(!isOperator(p, ")")) return false;
+
+  if(!isOperator(p, ")"))
+  {
+    RaiseError("\')\' expected", p, ErrorType_Syntax);
+  }
 
   free(p);
   return true;
@@ -300,69 +313,50 @@ bool VariableDefinitionParse()
   bool status = true;
 
   // getting symbol
-  Phrasem p = RemoveFromQueue();
-  if(p == NULL)
-  {
-    EndParser("Parser: VariableDefinitionParse: queue error", p->line, ErrorType_Internal);
-    return false;
-  }
+  Phrasem p = CheckQueue(p);
+
   if(!VariableParse(p))
   {
-    // error
-    status = false;
+    RaiseError("variable expected", p, ErrorType_Syntax);
   }
 
   // getting keyword 'as'
-  Phrasem q = RemoveFromQueue();
-  if(q == NULL)
+  Phrasem q = CheckQueue(q);
+
+  if(!matchesKeyword(q, "as"))
   {
-    EndParser("Parser: VariableDefinitionParse: queue error", q->line, ErrorType_Internal);
-    return false;
-  }
-  if( (q->table != TokenType_Keyword) || (q->d.index != isKeyword("as")) )
-  {
-    // error
-    status = false;
+    RaiseError("keyword \'as\' expected", q, ErrorType_Syntax);
   }
   free(q);
 
   // getting datatype keyword
-  Phrasem r = RemoveFromQueue();
-  if(r == NULL) {
-    EndParser("Parser: VariableDefinitionParse: queue error", r->line, ErrorType_Internal);
-    return false;
-  }
+  Phrasem r = CheckQueue(r);
+
   if(!DataTypeParse(r))
   {
-    // error
+    RaiseError("datatype keyword expected", r, ErrorType_Syntax);
   }
 
   // getting LF/=
-  Phrasem s = RemoveFromQueue();
-  if(s == NULL) {
-    EndParser("Parser: VariableDefinitionParse: queue error", s->line, ErrorType_Internal);
-    return false;
-  }
+  Phrasem s = CheckQueue(s);
+
   // LF
   if(s->table == TokenType_Separator)
   {
     // semantics - initialize to zero
   }
   // =
-  else if((s->table == TokenType_Operator) && (s->d.index == isKeyword("=")))
+  else if((s->table == TokenType_Operator) && matchesKeyword(s, "="))
   {
     // get expression
     if(!ExpressionParse())
     {
-      // error
+      RaiseError("invalid expression", s, ErrorType_Syntax);
     }
 
     // getting LF
-    Phrasem t = RemoveFromQueue();
-    if(t == NULL) {
-      EndParser("Parser: VariableDefinitionParse: queue error", t->line, ErrorType_Internal);
-      return false;
-    }
+    Phrasem t = CheckQueue(t);
+
     if(t->table != TokenType_Separator)
     {
       // error
@@ -388,11 +382,8 @@ bool InputParse()
   #endif
 
   // variable
-  Phrasem p = RemoveFromQueue();
-  if(p == NULL) {
-    EndParser("Parser: InputParse: queue error", p->line, ErrorType_Internal);
-    return false;
-  }
+  Phrasem p = CheckQueue(p);
+
   // error
   if(!VariableParse(p))
   {
@@ -403,16 +394,11 @@ bool InputParse()
   Sem_VariableDefined(sc, p->d.str);
 
   // LF
-  Phrasem q = RemoveFromQueue();
-  if(q == NULL) {
-    EndParser("Parser: InputParse: queue error", q->line, ErrorType_Internal);
-    return false;
-  }
+  Phrasem q = CheckQueue(q);
+
   if(q->table != TokenType_Separator)
   {
-    // error
-    EndParser("Parser: InputParse: separator expected", q->line, ErrorType_Internal);
-    return false;
+    RaiseError("separator expected", q, ErrorType_Internal);
   }
   free(q);
 
@@ -434,11 +420,8 @@ bool PrintParse(bool first)
   // non first print parameter (may not exist)
   else
   {
-    Phrasem q = RemoveFromQueue();
-    if(q == NULL) {
-      EndParser("Parser: InputParse: queue error", q->line, ErrorType_Internal);
-      return false;
-    }
+    Phrasem q = CheckQueue(q);
+
     if(q->table == TokenType_Separator)
     {
       free(q);
@@ -446,22 +429,16 @@ bool PrintParse(bool first)
     }
     else
     {
-      if(!ReturnToQueue(q))
-      {
-        EndParser("Parser: InputParse: queue error", q->line, ErrorType_Internal);
-        return false;
-      }
+      if(!ReturnToQueue(q)) RaiseQueueError(q);
+
       if(!ExpressionParse()) return false;
     }
     free(q);
   }
 
   // ;
-  Phrasem p = RemoveFromQueue();
-  if(p == NULL) {
-    EndParser("Parser: InputParse: queue error", p->line, ErrorType_Internal);
-    return false;
-  }
+  Phrasem p = CheckQueue(p);
+
   // error
   if(!isOperator(p, ";"))
   {
@@ -478,23 +455,15 @@ bool FunctionArgumentsParse()
 {
   if(!ExpressionParse()) return false;
 
-  Phrasem p = RemoveFromQueue();
-  if(p == NULL) {
-    EndParser("Parser: FunctionArgumentsParse: queue error", p->line, ErrorType_Internal);
-    return false;
-  }
+  Phrasem p = CheckQueue(p);
+
   if(isOperator(p, ","))
   {
     return FunctionArgumentsParse();
   }
   else if(isOperator(p, ")"))
   {
-
-    if(!ReturnToQueue(p))
-    {
-      EndParser("Parser: FunctionArgumentsParse: queue error", p->line, ErrorType_Internal);
-      return false;
-    }
+    if(!ReturnToQueue(p)) RaiseQueueError(p);
   }
   return true;
 }
@@ -539,60 +508,56 @@ bool LineParse()
   #ifdef PARSER_DEBUG
     debug("Line parse.");
   #endif
-  Phrasem p = RemoveFromQueue();
-  if(p == NULL) {
-    EndParser("Parser: LineParse: queue error", p->line, ErrorType_Internal);
-    return false;
-  }
+  Phrasem p = CheckQueue(p);
 
   switch(p->table)
   {
     case TokenType_Keyword:
       // variable declaration/definition
-      if(p->d.index == isKeyword("dim"))
+      if(matchesKeyword(p, "dim"))
       {
         return VariableDefinitionParse();
       }
       // function declaration
-      else if(p->d.index == isKeyword("declare"))
+      else if(matchesKeyword(p, "declare"))
       {
       }
       // function definition
-      else if(p->d.index == isKeyword("function"))
+      else if(matchesKeyword(p, "function"))
       {
       }
       // main
-      else if(p->d.index == isKeyword("scope"))
+      else if(matchesKeyword(p, "scope"))
       {
       }
       // end
-      else if(p->d.index == isKeyword("end"))
+      else if(matchesKeyword(p, "end"))
       {
       }
       // condition
-      else if(p->d.index == isKeyword("if"))
+      else if(matchesKeyword(p, "if"))
       {
       }
       // printing
-      else if(p->d.index == isKeyword("print"))
+      else if(matchesKeyword(p, "print"))
       {
         PrintParse(true);
       }
       // loading
-      else if(p->d.index == isKeyword("input"))
+      else if(matchesKeyword(p, "input"))
       {
         InputParse();
       }
       // cycle
-      else if(p->d.index == isKeyword("do"))
+      else if(matchesKeyword(p, "do"))
       {
       }
       // end cycle
-      else if(p->d.index == isKeyword("loop"))
+      else if(matchesKeyword(p, "loop"))
       {
       }
       // function return
-      else if(p->d.index == isKeyword("return"))
+      else if(matchesKeyword(p, "return"))
       {
       }
       // error
@@ -658,33 +623,23 @@ bool GlobalLineParse()
   }
 
   // read function
-  Phrasem p = RemoveFromQueue();
-  if(p == NULL) {
-    EndParser("Parser: GlobalLineParse: queue error", p->line, ErrorType_Internal);
-    return false;
-  }
-  if(p->table != TokenType_Keyword)
-  {
-    EndParser("Parser: GlobalLineParse: syntax error on global level", p->line, ErrorType_Internal);
-    return false;
-  }
+  Phrasem p = CheckQueue(p);
+
+  if(p->table != TokenType_Keyword) RaiseError("syntax error on global level", p, ErrorType_Syntax);
 
   // function declaration
-  if(p->d.index == isKeyword("declare"))
+  if(matchesKeyword(p, "declare"))
   {
 
   }
   // function definition
-  else if(p->d.index == isKeyword("function"))
+  else if(matchesKeyword(p, "function"))
   {
 
   }
   // error (global not supported)
-  else
-  {
-    EndParser("Parser: GlobalLineParse: syntax error on global level", p->line, ErrorType_Internal);
-    return false;
-  }
+  else RaiseError("syntax error on global level", p, ErrorType_Syntax);
+
   free(p);
 
   do {
