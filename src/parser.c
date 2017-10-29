@@ -88,6 +88,9 @@ bool DataTypeParse(Phrasem p)
 
 bool ExpressionParse(Phrasem p)
 {
+  #ifdef PARSER_DEBUG
+    debug("Expression parse.");
+  #endif
   if(p != NULL)
   {
     // first phrasem given
@@ -99,6 +102,10 @@ bool ExpressionParse(Phrasem p)
 
 bool VariableDefinitionParse()
 {
+  #ifdef PARSER_DEBUG
+    debug("Variable definition parse.");
+  #endif
+
   bool status = true;
 
   // getting symbol
@@ -185,6 +192,10 @@ bool VariableDefinitionParse()
 
 bool InputParse()
 {
+  #ifdef PARSER_DEBUG
+    debug("Input parse.");
+  #endif
+
   // variable
   Phrasem p = RemoveFromQueue();
   if(p == NULL) {
@@ -220,6 +231,9 @@ bool InputParse()
 
 bool PrintParse(bool first)
 {
+  #ifdef PARSER_DEBUG
+    debug("Print parse.");
+  #endif
   // expression
   // first parameter
   if(first)
@@ -266,6 +280,9 @@ bool PrintParse(bool first)
 
 bool LineParse()
 {
+  #ifdef PARSER_DEBUG
+    debug("Line parse.");
+  #endif
   Phrasem p = RemoveFromQueue();
   if(p == NULL) {
     EndParser("Parser: RunParser: queue error", p->line, ErrorType_Internal);
@@ -303,10 +320,12 @@ bool LineParse()
       // printing
       else if(p->d.index == isKeyword("print"))
       {
+        PrintParse(true);
       }
       // loading
       else if(p->d.index == isKeyword("input"))
       {
+        InputParse();
       }
       // cycle
       else if(p->d.index == isKeyword("do"))
@@ -375,7 +394,7 @@ bool RunParser()
   // reading cycle
   while(ScannerIsScanning() && LineParse())
   {
-    // something to do
+    // something to do after each line
   }
 
   // ending scanner
