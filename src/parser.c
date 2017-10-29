@@ -31,7 +31,16 @@ long function_id; /**< Id of actual function (for symbol table). */
 #define END_LOOP 0x08
 char end_type = 0;
 
-
+/*-------------------------- ERROR MACROS --------------------------------*/
+/**
+ * @brief  Error raiser.
+ *
+ * This macro writes debug info to err function. It also calls EndParser
+ * and returns false from a function, where it is used.
+ * @param msg         Message to write.
+ * @param phrasem     Bad phrasem.
+ * @param errtype     Type of error.
+ */
 #define RaiseError(msg, phrasem, errtype)                       \
   do {                                                          \
     err("%s: %s: l.%d: %s", __FILE__, __func__, __LINE__, msg); \
@@ -39,11 +48,25 @@ char end_type = 0;
     return false;                                               \
   } while(0)
 
+/**
+ * @brief Queue error raiser.
+ *
+ * This macro raises specialized Queue error(when it returns NULL pointer).
+ * @param phrasem     Target memory.
+ */
 #define RaiseQueueError(phrasem)                                \
   do {                                                          \
     RaiseError("queue error", phrasem, ErrorType_Internal);     \
   } while(0)
 
+/**
+ * @brief Secure Queue getter.
+ *
+ * This function will call RemoveFromQueue. And if it returns NULL,
+ * it will raise the queue error (with macro RaiseQueueError).
+ * @param phrasem       Target memory.
+ * @returns phrasem reached
+ */
 #define CheckQueue(phrasem) RemoveFromQueue(); if(phrasem == NULL) { RaiseQueueError(phrasem); }
 
 /*---------------------------- CLEAR --------------------------------*/
