@@ -369,6 +369,7 @@ bool VariableDefinitionParse()
     // semantics - initialize to zero
   }
   // =
+  #warning odkdy je = keyword demente?
   else if((s->table == TokenType_Operator) && matchesKeyword(s, "="))
   {
     // get expression
@@ -657,6 +658,11 @@ bool GlobalLineParse()
   }
   // function definition
   else if(matchesKeyword(p, "function"))
+  {
+
+  }
+  // function definition
+  else if(matchesKeyword(p, "scope"))
   {
 
   }
