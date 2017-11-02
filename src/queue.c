@@ -123,6 +123,7 @@ Phrasem RemoveFromQueue()
       debug("Queue: waiting for data.");
     #endif
     pthread_mutex_lock(&ReadEnabled);
+    #warning prepis to uz debile
     if(finished) return END_PTR;
   }
 

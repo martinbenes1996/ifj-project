@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 	*/
 
 	// error log
-	if(getErrorCode() != OK)
+	if(getErrorType() != ErrorType_Ok)
 	{
 		err("%s. Line: %d\n", getErrorMessage(), getErrorLine());
 	}
