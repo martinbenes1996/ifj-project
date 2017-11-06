@@ -733,14 +733,18 @@ bool CycleParse()
     return false;
   }
 
+  // keyword then
   CheckKeyword("then");
-
   // LF
   CheckSeparator();
 
   // cycle body
   BlockParse();
 
+  // keyword cycle
+  CheckKeyword("cycle");
+  // LF
+  CheckSeparator();
 
   return true;
 }
