@@ -7,3 +7,9 @@ bool Sem_VariableDefined(long functionId, const char * varname)
   (void)varname;
   return true;
 }
+
+bool Sem_FunctionDefined(const char * funcname)
+{
+  (void)funcname;
+  return true;
+}
