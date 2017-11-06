@@ -167,11 +167,21 @@ bool matchesKeyword(Phrasem p, const char * kw)
  * @brief   Parses symbol to variable.
  *
  * This function will get the parameter, it will check, if it is symbol,
- * then it retypes it to variable and saves to symbol table.
+ * then it retypes it to variable.
  * @param p       Phrasem with variable.
  * @returns True, if success, false otherwise.
  */
 bool VariableParse(Phrasem p);
+
+/**
+ * @brief   Parses symbol to function.
+ *
+ * This function will get the parameter, it will check, if it is symbol,
+ * then it retypes it to function.
+ * @param p       Phrasem with function.
+ * @returns True, if success, false otherwise.
+ */
+bool FunctionParse(Phrasem p);
 
 /**
  * @brief   Checks, if phrasem is datatype keyword.
@@ -340,8 +350,26 @@ bool VariableParse(Phrasem p)
 
   // retyping
   p->table = TokenType_Variable;
-  // write to symbol table
-  // ...
+  return true;
+}
+
+bool FunctionParse(Phrasem p)
+{
+  #ifdef PARSER_DEBUG
+    debug("Function parse.");
+  #endif
+  if(p == NULL)
+  {
+    RaiseExpectedError("function", p);
+  }
+
+  if(p->table != TokenType_Symbol)
+  {
+    RaiseExpectedError("function name", p);
+  }
+
+  // retyping
+  p->table = TokenType_Function;
   return true;
 }
 
@@ -674,6 +702,22 @@ bool FunctionDeclarationParse()
 
   // keyword function
   CheckKeyword("function");
+
+  // function name
+  Phrasem funcname = CheckQueue(funcname);
+  if( !FunctionParse(funcname) ) return false;
+
+  // operator (
+  CheckOperator("(");
+
+  // parameters declaration
+  // ...
+
+  // operator )
+  CheckOperator(")");
+
+  // LF
+  CheckSeparator();
 
   return true;
 }
