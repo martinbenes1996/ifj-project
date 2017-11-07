@@ -25,11 +25,7 @@
 pthread_t sc;
 long function_id; /**< Id of actual function (for symbol table). */
 
-#define END_IF 0x01
-#define END_SCOPE 0x02
-#define END_FUNCTION 0x04
-#define END_LOOP 0x08
-char end_type = 0;
+bool end = false; /**< Set to true, if keyword end reached. */
 
 /*-------------------------- ERROR MACROS --------------------------------*/
 /**
@@ -402,11 +398,18 @@ bool LogicParse()
     debug("Expression parse.");
   #endif
 
-  ExpressionParse();
+  if(!ExpressionParse())
+  {
+    // error
+  }
 
   // parse the sign
-
-  ExpressionParse();
+  // ...
+  
+  if(!ExpressionParse())
+  {
+      // error
+  }
 
   return true;
 }
@@ -607,6 +610,7 @@ bool BlockParse()
       else if(matchesKeyword(p, "end"))
       {
         ReturnToQueue(p);
+        end = true;
         return true;
       }
       // condition
@@ -691,7 +695,7 @@ bool BlockParse()
   #endif
 
   free(p);
-  return BlockParse();
+  return true;
 }
 
 bool FunctionDeclarationParse()
@@ -728,10 +732,7 @@ bool CycleParse()
     debug("Cycle parse.");
   #endif
 
-  if(!LogicParse())
-  {
-    return false;
-  }
+  if(!LogicParse()) return false;
 
   // keyword then
   CheckKeyword("then");
@@ -739,13 +740,13 @@ bool CycleParse()
   CheckSeparator();
 
   // cycle body
-  BlockParse();
+  do {
+    if(!BlockParse()) return false;
+  } while(!end);
 
-  // keyword cycle
-  CheckKeyword("cycle");
-  // LF
-  CheckSeparator();
+  if(!EndCycleParse()) return false;
 
+  end = false;
   return true;
 }
 
@@ -755,6 +756,34 @@ bool FunctionDefinitionParse()
     debug("Function definition parse.");
   #endif
 
+  // function name
+  Phrasem funcname = CheckQueue(funcname);
+  if( !FunctionParse(funcname) ) return false;
+
+  // operator (
+  CheckOperator("(");
+
+  // parameters declaration
+  // ...
+
+  // operator )
+  CheckOperator(")");
+
+  // LF
+  CheckSeparator();
+
+  // check symbol table
+  // in the semantics
+  // ...
+
+  CheckKeyword("begin");
+
+  do {
+      if(!BlockParse()) return false;
+  } while(!end);
+
+  // end function
+  if(!EndFunctionParse()) return false;
 
 
   return true;
@@ -775,6 +804,7 @@ bool EndFunctionParse()
   // separator
   CheckSeparator();
 
+  end = false;
   return true;
 }
 
@@ -793,6 +823,7 @@ bool EndIfParse()
   // separator
   CheckSeparator();
 
+  end = false;
   return true;
 }
 
@@ -808,6 +839,7 @@ bool EndCycleParse()
   // separator
   CheckSeparator();
 
+  end = false;
   return true;
 }
 
@@ -826,6 +858,7 @@ bool EndScopeParse()
   // separator
   CheckSeparator();
 
+  end = false;
   return true;
 }
 
