@@ -49,6 +49,8 @@
     //#define SCANNER_DEBUG /* Lexical analysis debug. */
     //#define PARSER_DEBUG /* Syntactic analysis debug. */
     //#define STACK_DEBUG /* Stack debug. */
+    //#define PEDANT_DEBUG /* Semantic analysis debug. */
+    //#define GENERATOR_DEBUG /* Code generator debug. */
 
 	  /*add your own*/
 

@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 
+#include "types.h"
+
 /**
  * @brief     Returns, weather the variable was defined in function, or not.
  *
@@ -23,5 +25,15 @@ bool Sem_VariableDefined(long functionId, const char * varname);
  * @returns   True if defined. False if not.
  */
 bool Sem_FunctionDefined(const char * funcname);
+
+/**
+ * @brief     Pushes operand/operator to stack.
+ *
+ * This function pushes the given phrasem to stack, which is
+ * then distributed to generator.
+ * @param p         Phrasem being pushed.
+ * @returns True, if success. False otherwise.
+ */
+bool Sem_HandleOperand(Phrasem p);
 
 #endif // PEDANT_H
