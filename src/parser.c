@@ -23,7 +23,7 @@
 #include "tables.h"
 
 pthread_t sc;
-long function_id; /**< Id of actual function (for symbol table). */
+long function_id = -1; /**< Id of actual function (for symbol table). */
 
 bool end = false; /**< Set to true, if keyword end reached. */
 
@@ -125,7 +125,13 @@ bool end = false; /**< Set to true, if keyword end reached. */
  * @param phrasem       Target memory.
  * @returns phrasem reached
  */
-#define CheckQueue(phrasem) RemoveFromQueue(); if(phrasem == NULL) { RaiseQueueError(phrasem); }
+#define CheckQueue(phrasem) RemoveFromQueue();  \
+      if(phrasem == NULL) {                     \
+        if(!ScannerIsScanning()) {              \
+          return false;                         \
+        }                                       \
+        RaiseQueueError(phrasem);               \
+      }
 
 /*---------------------------- CLEAR --------------------------------*/
 /**
@@ -158,7 +164,13 @@ bool matchesKeyword(Phrasem p, const char * kw)
   return (p->table == TokenType_Keyword) && (p->d.index == isKeyword(kw));
 }
 
-/*-------------------------- LOW LEVEL PARSER FUNCTIONS --------------------*/
+/** @} */
+/*-----------------------------------------------------------*/
+/** @addtogroup Lowlevel_parsers
+ * Syntax parser help functions.
+ * @{
+ */
+
 /**
  * @brief   Parses symbol to variable.
  *
@@ -203,7 +215,12 @@ bool ExpressionParse();
  */
 bool LogicParse();
 
-/*------------------ HIGH LEVEL PARSER FUNCTIONS ---------------------------*/
+/** @} */
+/*-----------------------------------------------------------*/
+/** @addtogroup Highlevel_parsers
+ * Syntax parser functions.
+ * @{
+ */
 
 /**
  * @brief   Parses variable definition.
@@ -264,6 +281,14 @@ bool FunctionDeclarationParse();
 bool FunctionDefinitionParse();
 
 /**
+ * @brief   Parses scope.
+ *
+ * This function will parse the scope block (main).
+ * @returns True if success. False otherwise.
+ */
+bool ScopeParse();
+
+/**
  * @brief   Parses line/block with no prejustice.
  *
  * This function will parse the line/block inside the function and is
@@ -289,7 +314,42 @@ bool GlobalBlockParse();
  */
 bool CycleParse();
 
+/** @} */
+/*----------------------------------------------------*/
+/** @addtogroup End_parsers
+ * Parsers of end lines.
+ * @{
+ */
 
+/**
+ * @brief   Parses end function.
+ *
+ * @returns True if success. False otherwise.
+ */
+bool EndFunctionParse();
+
+/**
+ * @brief   Parses end scope.
+ *
+ * @returns True if success. False otherwise.
+ */
+bool EndScopeParse();
+
+/**
+ * @brief   Parses end if.
+ *
+ * @returns True if success. False otherwise.
+ */
+bool EndIfParse();
+
+/**
+ * @brief   Parses end cycle.
+ *
+ * @returns True if success. False otherwise.
+ */
+bool EndCycleParse();
+
+/** @} */
 /*----------------------------- MAIN RUN ---------------------------*/
 
 bool RunParser()
@@ -405,12 +465,87 @@ bool LogicParse()
 
   // parse the sign
   // ...
-  
+
   if(!ExpressionParse())
   {
       // error
   }
 
+  return true;
+}
+
+/*--------------------- ENDER FUNCTIONS -------------------*/
+
+bool EndFunctionParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("End function parse.");
+  #endif
+
+  // keyword end
+  CheckKeyword("end");
+
+  // keyword function
+  CheckKeyword("function");
+
+  // separator
+  CheckSeparator();
+
+  end = false;
+  return true;
+}
+
+bool EndIfParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("End function parse.");
+  #endif
+
+  // keyword end
+  CheckKeyword("end");
+
+  // keyword if
+  CheckKeyword("if");
+
+  // separator
+  CheckSeparator();
+
+  end = false;
+  return true;
+}
+
+bool EndCycleParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("End function parse.");
+  #endif
+
+  // keyword loop
+  CheckKeyword("loop");
+
+  // separator
+  CheckSeparator();
+
+  end = false;
+  return true;
+}
+
+bool EndScopeParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("End function parse.");
+  #endif
+
+  // keyword end
+  CheckKeyword("end");
+
+  // keyword scope
+  CheckKeyword("scope");
+
+  // separator
+  CheckSeparator();
+
+  end = false;
   return true;
 }
 
@@ -789,76 +924,27 @@ bool FunctionDefinitionParse()
   return true;
 }
 
-bool EndFunctionParse()
+bool ScopeParse()
 {
-  #ifdef PARSER_DEBUG
-    debug("End function parse.");
-  #endif
+  if(function_id != -1)
+  {
+    EndParser("Parser: GlobalBlockParse: nested functions not supported", -1, ErrorType_Internal);
+    return false;
+  }
 
-  // keyword end
-  CheckKeyword("end");
-
-  // keyword function
-  CheckKeyword("function");
-
-  // separator
+  // LF
   CheckSeparator();
 
-  end = false;
-  return true;
-}
+  // keyword begin
+  CheckKeyword("begin");
 
-bool EndIfParse()
-{
-  #ifdef PARSER_DEBUG
-    debug("End function parse.");
-  #endif
+  do {
+    if(!BlockParse()) return false;
+  } while(!end);
 
-  // keyword end
-  CheckKeyword("end");
+  // end scope parse
+  EndScopeParse();
 
-  // keyword if
-  CheckKeyword("if");
-
-  // separator
-  CheckSeparator();
-
-  end = false;
-  return true;
-}
-
-bool EndCycleParse()
-{
-  #ifdef PARSER_DEBUG
-    debug("End function parse.");
-  #endif
-
-  // keyword loop
-  CheckKeyword("loop");
-
-  // separator
-  CheckSeparator();
-
-  end = false;
-  return true;
-}
-
-bool EndScopeParse()
-{
-  #ifdef PARSER_DEBUG
-    debug("End function parse.");
-  #endif
-
-  // keyword end
-  CheckKeyword("end");
-
-  // keyword scope
-  CheckKeyword("scope");
-
-  // separator
-  CheckSeparator();
-
-  end = false;
   return true;
 }
 
@@ -882,17 +968,17 @@ bool GlobalBlockParse()
   // function declaration
   if(matchesKeyword(p, "declare"))
   {
-
+    FunctionDeclarationParse();
   }
   // function definition
   else if(matchesKeyword(p, "function"))
   {
-
+    FunctionDefinitionParse();
   }
   // function definition
   else if(matchesKeyword(p, "scope"))
   {
-
+    ScopeParse();
   }
   // error (global not supported)
   else
@@ -904,17 +990,16 @@ bool GlobalBlockParse()
   // body of function
   do {
     if(!BlockParse()) return false;
-  } while(end_type == 0);
+  } while(!end);
 
   // end function
   Phrasem q = CheckQueue(q);
-  if( !EndFunctionParse(q) )
+  if(!EndFunctionParse(q))
   {
     RaiseExpectedError("end of function", q);
   }
 
   return true;
-
 }
 
 /*---------------------------- CLEAR --------------------------------*/

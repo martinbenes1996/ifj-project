@@ -18,6 +18,7 @@
 #include "io.h"
 #include "queue.h"
 #include "scanner.h"
+#include "tables.h"
 #include "types.h"
 
 
@@ -46,8 +47,8 @@ void EndScanner(const char * msg, ErrorType errtype)
       debug("End Scanner.");
     #endif
   }
-  FinishConnectionToQueue();
   isscanning = false;
+  FinishConnectionToQueue();
 }
 
 
@@ -288,6 +289,55 @@ void *InitScanner(void * v /*not used*/)
   #endif
 
   int input;
+
+  //********** TO DELETE ************//
+  /*
+  Phrasem phr = malloc( sizeof(struct phrasem_data) );
+  if( phr == NULL )
+  {
+    EndScanner("Scanner: InitScanner: couldn't allocate memory", ErrorType_Internal);
+    return NULL;
+  }
+  phr->table = TokenType_Keyword;
+  phr->d.index = isKeyword("declare");
+  phr->line = 1;
+  AddToQueue(phr);
+
+  phr = malloc( sizeof(struct phrasem_data) );
+  if( phr == NULL )
+  {
+    EndScanner("Scanner: InitScanner: couldn't allocate memory", ErrorType_Internal);
+    return NULL;
+  }
+  phr->table = TokenType_Keyword;
+  phr->d.index = isKeyword("function");
+  phr->line = 2;
+  AddToQueue(phr);
+
+  phr = malloc( sizeof(struct phrasem_data) );
+  if( phr == NULL )
+  {
+    EndScanner("Scanner: InitScanner: couldn't allocate memory", ErrorType_Internal);
+    return NULL;
+  }
+  phr->table = TokenType_Symbol;
+  phr->d.str = "f";
+  phr->line = 3;
+  AddToQueue(phr);
+
+  phr = malloc( sizeof(struct phrasem_data) );
+  if( phr == NULL )
+  {
+    EndScanner("Scanner: InitScanner: couldn't allocate memory", ErrorType_Internal);
+    return NULL;
+  }
+  phr->table = TokenType_Operator;
+  phr->d.index = isOperator("(");
+  phr->line = 4;
+  AddToQueue(phr);
+  */
+  //**********************************//
+
   while(!done)
   {
     // outer error
@@ -295,6 +345,12 @@ void *InitScanner(void * v /*not used*/)
 
     // reading
     input = getByte();
+    if(input == EOF)
+    {
+      done = true;
+      continue;
+    }
+    
     Phrasem phr = malloc( sizeof(struct phrasem_data) );
     if( phr == NULL )
     {
