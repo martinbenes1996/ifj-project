@@ -730,7 +730,7 @@ void *InitScanner(void * v /*not used*/)
 
     //AddToQueue(phr);
   }
-// #undefinde RaiseError, ALLOC_PHRASEM;
+// #undef RaiseError, ALLOC_PHRASEM;
   EndScanner(NULL, ErrorType_Ok);
   return NULL;
 }
