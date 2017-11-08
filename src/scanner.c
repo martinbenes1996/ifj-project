@@ -455,8 +455,8 @@ bool getNumber(){
   bool end = false;
   double result = 0;
   int order = 1;
-  double resultE = 0;
-  int mocninca = 1;
+  //double resultE = 0;
+  //int mocninca = 1;
 
   while(!end){
     input = getByte();
@@ -548,8 +548,8 @@ bool getNumber(){
 
       case 5:
         if ((input >= '0') && (input <= '9')) {
-          resultE = result * pow(2, input*mocnina);
-          mocnina *= 10;
+          //resultE = result * pow(2, input*mocnina);
+         // mocnina *= 10;
           break;
         }
 
@@ -730,7 +730,7 @@ void *InitScanner(void * v /*not used*/)
 
     //AddToQueue(phr);
   }
-
+// #undefinde RaiseError, ALLOC_PHRASEM;
   EndScanner(NULL, ErrorType_Ok);
   return NULL;
 }
