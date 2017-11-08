@@ -73,7 +73,7 @@ void EndScanner(const char * msg, ErrorType errtype)
 
 #define ALLOC_PHRASEM(id)                                               \
   Phrasem id = malloc(sizeof(struct phrasem_data));                     \
-  if (id == NULL) RaiseError("allocation error", ErrorType_Internal) 
+  if (id == NULL) RaiseError("allocation error", ErrorType_Internal)
 
 
 
@@ -117,7 +117,7 @@ bool getComment() {
         RaiseError("unknown state in comment", ErrorType_Syntax);
 
 
-        
+
     }
 
   }
@@ -147,7 +147,7 @@ bool getOperator() {
 
       case 0:
         if ( input == '<' ) {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax); 
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
           state = 1;
         }
         else if ( input == '>') {
@@ -166,19 +166,19 @@ bool getOperator() {
         }
 
         else if (input == '-') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax); 
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
           end = true;
         }
 
         else if (input == '*') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax); 
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
           end = true;
         }
 
         else if (input == '\\') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax); 
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
           end = true;
-        } 
+        }
 
         else RaiseError("parsing not possible", ErrorType_Syntax);
 
@@ -187,12 +187,12 @@ bool getOperator() {
 
       case 1:
         if ( input == '>') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax); 
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
           end = true;
         }
 
         else if (input == '=') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax); 
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
           end = true;
         }
         else {
@@ -203,7 +203,7 @@ bool getOperator() {
 
       case 2:
         if ( input == '=') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax); 
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
           end = true;
         }
 
@@ -218,15 +218,15 @@ bool getOperator() {
 
     }
 
-   
+
     char * p = GetBuffer();
     if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
 
-         
+
     long x = getOperatorId(p);
     free(p);
 
-    if ( x == -1) RaiseError("constant table allocation error", ErrorType_Internal); 
+    if ( x == -1) RaiseError("constant table allocation error", ErrorType_Internal);
 
     ALLOC_PHRASEM(phr);
     phr->table = TokenType_Constant;
@@ -239,7 +239,7 @@ bool getOperator() {
 
     if( !AddToQueue(phr) ) RaiseError ("queue allocation error", ErrorType_Internal);
 
-    
+
   }
   return true;
 
@@ -274,7 +274,7 @@ bool getString() {
 
       case 2:
         if (input == '"') {
-   
+
           char * p = GetBuffer();
           if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
 
@@ -282,7 +282,7 @@ bool getString() {
           du.svalue = p;
           int x = constInsert(DataType_String, du);
 
-          if ( x == -1) RaiseError("constant table allocation error", ErrorType_Internal); 
+          if ( x == -1) RaiseError("constant table allocation error", ErrorType_Internal);
 
           ALLOC_PHRASEM(phr);
           phr->table = TokenType_Constant;
@@ -295,41 +295,38 @@ bool getString() {
 
           if( !AddToQueue(phr) ) RaiseError ("queue allocation error", ErrorType_Internal);
 
-
-
-          
-          end = true; 
-          break; 
+          end = true;
+          break;
         }
         else if (input == EOF)  RaiseError("parsing not possible", ErrorType_Syntax);
-        else if (input != '\\') { 
+        else if (input != '\\') {
           if( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
-          break; 
+          break;
         }
         else { state = 3; break; }
 
       case 3:
         if (input == 'n') {
-          if( !AddToBuffer('\n') ) RaiseError("parsing not possible", ErrorType_Syntax); 
-          
-          state = 2; break; 
+          if( !AddToBuffer('\n') ) RaiseError("parsing not possible", ErrorType_Syntax);
+
+          state = 2; break;
         }
 
         else if (input == 't') {
-         if ( !AddToBuffer('\t') ) RaiseError("parsing not possible", ErrorType_Syntax); 
-         state = 2; 
-         break; 
+         if ( !AddToBuffer('\t') ) RaiseError("parsing not possible", ErrorType_Syntax);
+         state = 2;
+         break;
         }
 
-        else if (input == '"') { 
-          if( !AddToBuffer ('"') ) RaiseError("parsing not possible", ErrorType_Syntax); 
-          state = 2; 
-          break; 
+        else if (input == '"') {
+          if( !AddToBuffer ('"') ) RaiseError("parsing not possible", ErrorType_Syntax);
+          state = 2;
+          break;
         }
 
-        else if (input == '\\') { 
-          if( !AddToBuffer('\\') ) RaiseError("parsing not possible", ErrorType_Syntax); 
-          state = 2; 
+        else if (input == '\\') {
+          if( !AddToBuffer('\\') ) RaiseError("parsing not possible", ErrorType_Syntax);
+          state = 2;
           break;
         }
 
@@ -351,13 +348,13 @@ bool getString() {
           break;
         }
         else RaiseError("parsing not possible", ErrorType_Syntax);
-      
-      default: 
+
+      default:
         RaiseError("parsing not possible", ErrorType_Syntax);
   }
 
   return true;
- 
+
 
 }
 
@@ -386,7 +383,7 @@ bool getIdentifier(){
 
       // other letters
       case 1:
-       
+
         if (((input >= 'A') && (input <= 'Z'))
               || ((input >= 'a') && (input <= 'z'))
               || ((input >= '0') && (input <= '9'))
@@ -402,8 +399,8 @@ bool getIdentifier(){
 
           char * p = GetBuffer();
           if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
-          
-          int id = isKeyword(p); 
+
+          int id = isKeyword(p);
           if ( id != -1) {
             free(p);
 
@@ -421,7 +418,7 @@ bool getIdentifier(){
           }
 
           else {
-            
+
 
             ALLOC_PHRASEM(phr);
             phr->table = TokenType_Symbol;
@@ -581,54 +578,6 @@ void *InitScanner(void * v /*not used*/)
 
   int input;
 
-  //********** TO DELETE ************//
-  /*
-  Phrasem phr = malloc( sizeof(struct phrasem_data) );
-  if( phr == NULL )
-  {
-    EndScanner("Scanner: InitScanner: couldn't allocate memory", ErrorType_Internal);
-    return NULL;
-  }
-  phr->table = TokenType_Keyword;
-  phr->d.index = isKeyword("declare");
-  phr->line = 1;
-  AddToQueue(phr);
-
-  phr = malloc( sizeof(struct phrasem_data) );
-  if( phr == NULL )
-  {
-    EndScanner("Scanner: InitScanner: couldn't allocate memory", ErrorType_Internal);
-    return NULL;
-  }
-  phr->table = TokenType_Keyword;
-  phr->d.index = isKeyword("function");
-  phr->line = 2;
-  AddToQueue(phr);
-
-  phr = malloc( sizeof(struct phrasem_data) );
-  if( phr == NULL )
-  {
-    EndScanner("Scanner: InitScanner: couldn't allocate memory", ErrorType_Internal);
-    return NULL;
-  }
-  phr->table = TokenType_Symbol;
-  phr->d.str = "f";
-  phr->line = 3;
-  AddToQueue(phr);
-
-  phr = malloc( sizeof(struct phrasem_data) );
-  if( phr == NULL )
-  {
-    EndScanner("Scanner: InitScanner: couldn't allocate memory", ErrorType_Internal);
-    return NULL;
-  }
-  phr->table = TokenType_Operator;
-  phr->d.index = isOperator("(");
-  phr->line = 4;
-  AddToQueue(phr);
-  */
-  //**********************************//
-
   while(!done)
   {
     // outer error
@@ -641,6 +590,8 @@ void *InitScanner(void * v /*not used*/)
       done = true;
       continue;
     }
+
+    if((input == ' ') || (input == '\t')) continue;
 
     Phrasem phr = malloc( sizeof(struct phrasem_data) );
     if( phr == NULL )
@@ -697,13 +648,18 @@ void *InitScanner(void * v /*not used*/)
       }
     }
 
- 
-    else if ((input == '<')||(input == '>')||(input == '=')||(input == '+')||(input == '-')||( input == '*')
-      ||( input == '\\' )) {
+
+    else if ( (input == '<')
+            ||(input == '>')
+            ||(input == '=')
+            ||(input == '+')
+            ||(input == '-')
+            ||(input == '*')   // viz types.h l.43 - 62
+            ||(input == '\\')) {
       returnByte(input);
       getOperator();
     }
- 
+
 
     else if (((input >= 'A') && (input <= 'Z'))
           || ((input >= 'a') && (input <= 'z'))
@@ -711,7 +667,7 @@ void *InitScanner(void * v /*not used*/)
       returnByte(input);
       getIdentifier();
     }
-    
+
 /*
     else if ((input >= '0') && (input <= '9')) {
       returnByte(input);
