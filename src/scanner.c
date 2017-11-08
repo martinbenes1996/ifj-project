@@ -512,7 +512,7 @@ bool getNumber(){
           order++;
           break;
         }
-            
+
         else {
           returnByte(input);
           end = true;
@@ -555,14 +555,14 @@ bool getNumber(){
           end = true;
           break;
         }
-        
+
       case 6:
         if ((input >= '0') && (input <= '9')) {
 
         }
 
-    }  
-  }    
+    }
+  }
   return true;
 }
 
@@ -604,7 +604,16 @@ void *InitScanner(void * v /*not used*/)
 
 
 
-    if (input == '\n') { line += 1;}
+    if (input == '\n') {
+      line += 1;
+      ALLOC_PHRASEM(phr);
+      phr->table = TokenType_Separator;
+      phr->d.str = NULL;
+      #ifdef SCANNER_DEBUG
+        PrintPhrasem(phr);
+      #endif
+      if( !AddToQueue(phr) ) RaiseError("queue error", ErrorType_Internal);
+    }
 
     else if (input == '!') {
       returnByte(input);
@@ -628,11 +637,11 @@ void *InitScanner(void * v /*not used*/)
         char * p = GetBuffer();
         if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
 
-         
+
         long x = getOperatorId(p);
         free(p);
 
-        if ( x == -1) RaiseError("constant table allocation error", ErrorType_Internal); 
+        if ( x == -1) RaiseError("constant table allocation error", ErrorType_Internal);
 
         ALLOC_PHRASEM(phr);
         phr->table = TokenType_Constant;

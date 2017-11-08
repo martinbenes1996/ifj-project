@@ -942,9 +942,6 @@ bool ScopeParse()
   // LF
   CheckSeparator();
 
-  // keyword begin
-  CheckKeyword("begin");
-
   do {
     if(!BlockParse()) return false;
   } while(!end);
@@ -975,17 +972,17 @@ bool GlobalBlockParse()
   // function declaration
   if(matchesKeyword(p, "declare"))
   {
-    FunctionDeclarationParse();
+    if(!FunctionDeclarationParse()) return false;
   }
   // function definition
   else if(matchesKeyword(p, "function"))
   {
-    FunctionDefinitionParse();
+    if(!FunctionDefinitionParse()) return false;
   }
   // function definition
   else if(matchesKeyword(p, "scope"))
   {
-    ScopeParse();
+    if(!ScopeParse()) return false;
   }
   // error (global not supported)
   else
