@@ -72,7 +72,7 @@ bool getComment() {
     switch (state) {
       case 0:
         if ( input == '~') {state = 2; break;}
-        elseif (input == ''') {state = 1; break;}
+        elseif (input == '\'') {state = 1; break;}
         else goto ErrorLabel;
 
       case 1:
