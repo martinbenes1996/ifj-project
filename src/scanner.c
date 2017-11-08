@@ -382,16 +382,19 @@ void *InitScanner(void * v /*not used*/)
 
 
     if (input == '\n') { line += 1;}
-
+/*
     else if (input == '!') {
       returnByte(input);
       getString();
     }
-
+*/
+/*
     else if ( input == '\'' ) {
       returnByte(input);
       getComment();
     }
+  */
+  /*
     else if (input == '/') {
       input = getByte();
       if (input == '/') {returnByte('~'); getComment();}
@@ -404,24 +407,28 @@ void *InitScanner(void * v /*not used*/)
 
       }
     }
+    */
+    /*
     else if ((input == '<')||(input == '>')||(input == '=')||(input == '+')||(input == '-')||( input == '*')
       ||( input == '\\' )) {
       returnByte(input);
       getOperator();
     }
-
+    */
+/*
     else if (((input >= 'A') && (input <= 'Z'))
           || ((input >= 'a') && (input <= 'z'))
           || (input == '_')) {
       returnByte(input);
       getIdentifier();
     }
-
+    */
+/*
     else if ((input >= '0') && (input <= '9')) {
       returnByte(input);
       getNumber();
     }
-
+*/
     else RaiseError("unknown symbol", ErrorType_Syntax);
 
     //phr->d.index = input;
