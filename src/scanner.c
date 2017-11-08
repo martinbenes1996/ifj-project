@@ -467,8 +467,8 @@ bool getNumber(){
   bool end = false;
   double result = 0;
   int order = 1;
-  //double resultE = 0;
-  //int mocninca = 1;
+  double resultE = 0;
+  double res = 0;
 
   while(!end){
     input = getByte();
@@ -560,21 +560,40 @@ bool getNumber(){
 
       case 5:
         if ((input >= '0') && (input <= '9')) {
-          //resultE = result * pow(2, input*mocnina);
-         // mocnina *= 10;
+          resultE = resultE*10 + input;
           break;
         }
 
         else {
+          state = 7;
           returnByte(input);
-          end = true;
           break;
         }
 
       case 6:
         if ((input >= '0') && (input <= '9')) {
+          resultE = resultE*10 + input;
+          break;
 
         }
+
+        else {
+          state = 8;
+          returnByte(input);
+          break;
+        }
+
+      case 7:
+        res = result * pow(2, resultE);
+        if( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+        end = true;
+        break;
+
+      case 8:
+        res = result * pow(2, -resultE);
+        if( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+        end = true;
+        break;
 
     }
   }
