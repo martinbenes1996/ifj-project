@@ -222,6 +222,4 @@ typedef struct stack
 /** @} */
 /*--------------------------------------------------*/
 
-#define END_PTR (void *)1
-
 #endif // TYPES_H

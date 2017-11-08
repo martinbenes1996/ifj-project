@@ -30,7 +30,7 @@ int isKeyword(const char * word);
 
 /*-----------------------------------------------------------*/
 
-                //KEYWORD TABLE FUNCTIONS
+                //OPERATOR TABLE FUNCTIONS
 
 /**
  * @brief   Operator finder.
@@ -41,7 +41,7 @@ int isKeyword(const char * word);
  * @param word    Unknown Word.
  * @returns Operator code or -1.
  */
-int isKeyword(const char * word);
+long getOperatorId(const char * word);
 
 /*-----------------------------------------------------------*/
 

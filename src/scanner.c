@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "buffer.h"
 #include "err.h"
 #include "io.h"
 #include "queue.h"
@@ -50,6 +51,21 @@ void EndScanner(const char * msg, ErrorType errtype)
   isscanning = false;
   FinishConnectionToQueue();
 }
+
+/**
+ * @brief  Error raiser.
+ *
+ * This macro writes debug info to err function. It also calls EndScanner
+ * and returns false from a function, where it is used.
+ * @param msg         Message to write.
+ * @param errtype     Type of error.
+ */
+#define RaiseError(msg, errtype)                                \
+  do {                                                          \
+    err("%s: %s: l.%d: %s", __FILE__, __func__, __LINE__, msg); \
+    EndScanner(msg, errtype);                                   \
+    return false;                                               \
+  } while(0)
 
 
 // extern bool AddToBuffer(char c);
@@ -225,27 +241,28 @@ bool getString() {
     return false;
 
 }
+*/
 
 bool getIdentifier(){
 	int state = 0;
  	int input;
   bool end = false;
 
-  while(!end) {
+  do {
   	input = getByte();
 
   	switch (state) {
       // first letter
       case 0:
 	  		if ( (input == '_')
-          || (input >= 'A') && (input <= 'Z')
-          || (input >= 'a') && (input <= 'z') )
+          || ((input >= 'A') && (input <= 'Z'))
+          || ((input >= 'a') && (input <= 'z')) )
         {
-          AddToBuffer(input);
+          if( !AddToBuffer(input) ) RaiseError("buffer allocation failed", ErrorType_Internal);
           state = 1;
           break;
         }
-	      else goto ErrorLabel;
+	      else RaiseError("parsing not possible", ErrorType_Syntax);
 
       // other letters
       case 1:
@@ -256,29 +273,31 @@ bool getIdentifier(){
           break;
         }
 
-			  else if ((input >= 'A') && (input <= 'Z')
-              || (input >= 'a') && (input <= 'z')
-              || (input >= '0') && (input <= '9')
+			  else if (((input >= 'A') && (input <= 'Z'))
+              || ((input >= 'a') && (input <= 'z'))
+              || ((input >= '0') && (input <= '9'))
               || (input == '_'))
         {
           AddToBuffer(input);
           break;
         }
-			  else goto ErrorLabel;
+			  else RaiseError("parsing not possible", ErrorType_Syntax);
 
       // bad state
       default:
-        goto ErrorLabel;
+        RaiseError("parsing not possible", ErrorType_Syntax);
+    }
+  } while(!end);
 
 	return true;
-
-	ErrorLabel:
-    	EndScanner("Scanner: getString: Syntax Error!", ErrorType_Syntax);
-    	return false;
-
 }
 
-*/
+bool getNumber()
+{
+  return true;
+}
+
+
 
 void *InitScanner(void * v /*not used*/)
 {
@@ -360,7 +379,7 @@ void *InitScanner(void * v /*not used*/)
 
     // here will be lexical analysis ----------------------------------
 
-   /*
+
 
     if (input == '\n') { line += 1;}
 
@@ -378,31 +397,42 @@ void *InitScanner(void * v /*not used*/)
       if (input == '/') {returnByte('~'); getComment();}
       else {
         returnByte(input);
-        // zjistit z tabulky operatoru
+
+        // tady volat asi funkci
+        long op_id = getOperatorId("/");
+        // neco udelas...
 
       }
     }
     else if ((input == '<')||(input == '>')||(input == '=')||(input == '+')||(input == '-')||( input == '*')
-       ||( input == '\\' )) {
+      ||( input == '\\' )) {
       returnByte(input);
       getOperator();
     }
 
-    else if ((input >= 'A') && (input <= 'Z') || (input >= 'a') && (input <= 'z') || (input == '_')) {
-		returnByte(input);
-		getIdentifier();
+    else if (((input >= 'A') && (input <= 'Z'))
+          || ((input >= 'a') && (input <= 'z'))
+          || (input == '_')) {
+      returnByte(input);
+      getIdentifier();
     }
-    */
 
-    phr->d.index = input;
-    phr->table = TokenType_Constant;
-    phr->line = 1;
+    else if ((input >= '0') && (input <= '9')) {
+      returnByte(input);
+      getNumber();
+    }
 
-    #ifdef SCANNER_DEBUG
-      PrintPhrasem(phr);
-    #endif
+    else RaiseError("unknown symbol", ErrorType_Syntax);
 
-    AddToQueue(phr);
+    //phr->d.index = input;
+    //phr->table = TokenType_Constant;
+    //phr->line = 1;
+
+    //#ifdef SCANNER_DEBUG
+    //  PrintPhrasem(phr);
+    //#endif
+
+    //AddToQueue(phr);
   }
 
   EndScanner(NULL, ErrorType_Ok);

@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "buffer.h"
 #include "err.h"
 #include "io.h"
 #include "parser.h"
