@@ -180,6 +180,21 @@ bool getOperator() {
           end = true;
         }
 
+        else if (input == '(') {
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          end = true;
+        }
+
+        else if (input == ')') {
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          end = true;
+        }
+
+        else if (input == ',') {
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          end = true;
+        }
+        
         else RaiseError("parsing not possible", ErrorType_Syntax);
 
         break;
@@ -654,8 +669,11 @@ void *InitScanner(void * v /*not used*/)
             ||(input == '=')
             ||(input == '+')
             ||(input == '-')
-            ||(input == '*')   // viz types.h l.43 - 62
-            ||(input == '\\')) {
+            ||(input == '*')   
+            ||(input == '\\')
+            ||(input == '(')
+            ||(input == ')')
+            ||(input == ',')) {
       returnByte(input);
       getOperator();
     }
