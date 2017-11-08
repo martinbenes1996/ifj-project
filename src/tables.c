@@ -45,6 +45,23 @@ int isKeyword(const char * word)
     return index;
 }
 
+/*-----------------------------------------------------------*/
+
+              //OPERATOR TABLE FUNCTIONS
+
+// operator array (to look up)
+
+#define TABLE_ERROR -1
+long getOperatorId(const char * word)
+{
+  if(word == NULL) return TABLE_ERROR;
+
+  // look up
+
+  return 1;
+
+}
+#undef TABLE_ERROR
 
 /*************************************************************/
 
@@ -167,5 +184,3 @@ bool constTableResize(void)
 
     Need to know more information about interaction requirements.
 */
-
-/*-----------------------------------------------------------*/

@@ -37,6 +37,7 @@ volatile QueueTail tail = NULL; /**< Tail of the queue. */
 bool isValid() { return (head == NULL && tail == NULL)
                      || (head != NULL && tail != NULL); }
 bool isEmpty() { return head == NULL && tail == NULL; }
+extern bool ScannerIsScanning();
 
 bool finished = false; /**< True, if scanner ended. */
 pthread_mutex_t ReadEnabled;
@@ -46,7 +47,6 @@ pthread_mutex_t ReadEnabled;
  */
 void FinishConnectionToQueue()
 {
-  finished = true;
   pthread_mutex_unlock(&ReadEnabled);
   #ifdef QUEUE_DEBUG
     debug("Connection to Queue finished.");
@@ -118,13 +118,12 @@ Phrasem RemoveFromQueue()
   // control
   if(isEmpty())
   {
-    if(finished) return END_PTR;
+    if(!ScannerIsScanning()) return NULL;
     #ifdef QUEUE_DEBUG
       debug("Queue: waiting for data.");
     #endif
     pthread_mutex_lock(&ReadEnabled);
-    #warning prepis to uz debile
-    if(finished) return END_PTR;
+    if(!ScannerIsScanning()) return NULL;
   }
 
   if(!isValid()) return NULL;

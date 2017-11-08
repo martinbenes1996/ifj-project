@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "buffer.h"
 #include "err.h"
 #include "io.h"
 #include "parser.h"
@@ -23,13 +24,9 @@
 #include "tables.h"
 
 pthread_t sc;
-long function_id; /**< Id of actual function (for symbol table). */
+long function_id = -1; /**< Id of actual function (for symbol table). */
 
-#define END_IF 0x01
-#define END_SCOPE 0x02
-#define END_FUNCTION 0x04
-#define END_LOOP 0x08
-char end_type = 0;
+bool end = false; /**< Set to true, if keyword end reached. */
 
 /*-------------------------- ERROR MACROS --------------------------------*/
 /**
@@ -44,7 +41,8 @@ char end_type = 0;
 #define RaiseError(msg, phrasem, errtype)                       \
   do {                                                          \
     err("%s: %s: l.%d: %s", __FILE__, __func__, __LINE__, msg); \
-    EndParser(msg, phrasem->line, errtype);                     \
+    EndParser(msg, phrasem ->line, errtype);                    \
+    free(phrasem);                                              \
     return false;                                               \
   } while(0)
 
@@ -60,6 +58,67 @@ char end_type = 0;
   } while(0)
 
 /**
+ * @brief -expected- error raiser.
+ *
+ * This macro raises specialized error -what expected-.
+ * @param what        Token expected (in quotes)
+ * @param phrasem     Target memory.
+ */
+#define RaiseExpectedError(what, phrasem)                       \
+  do {                                                          \
+    RaiseError(what " expected", phrasem, ErrorType_Syntax);    \
+  } while(0)
+
+/**
+ * @brief checks separator in the queue
+ *
+ * This macro raises specialized error -separator expected-.
+ * @param phrasem     Target memory.
+ */
+#define CheckSeparator()                                      \
+  do {                                                        \
+    Phrasem p = CheckQueue(p);                                \
+    if(!isSeparator(p))                                       \
+    {                                                         \
+      RaiseExpectedError("separator", p);                     \
+    }                                                         \
+    free(p);                                                  \
+  } while(0)
+
+/**
+ * @brief checks operator in the queue
+ *
+ * This macro checks, if there is operator in the queue.
+ * It raises error, if it isn't.
+ * @param op          Operator.
+ */
+#define CheckOperator(op)                                     \
+  do {                                                        \
+    Phrasem p = CheckQueue(p);                                \
+    if(!isOperator(p, op))                                    \
+    {                                                         \
+      RaiseExpectedError("operator \'" op "\'", p);           \
+    }                                                         \
+    free(p);                                                  \
+  } while(0)
+
+/**
+ * @brief checks separator in the queue
+ *
+ * This macro raises specialized error -separator expected-.
+ * @param phrasem     Target memory.
+ */
+#define CheckKeyword(kw)                                      \
+  do {                                                        \
+    Phrasem p = CheckQueue(p);                                \
+    if(!matchesKeyword(p, kw))                                \
+    {                                                         \
+      RaiseExpectedError("keyword \'" kw "\'", p);            \
+    }                                                         \
+    free(p);                                                  \
+  } while(0)
+
+/**
  * @brief Secure Queue getter.
  *
  * This function will call RemoveFromQueue. And if it returns NULL,
@@ -67,9 +126,42 @@ char end_type = 0;
  * @param phrasem       Target memory.
  * @returns phrasem reached
  */
-#define CheckQueue(phrasem) RemoveFromQueue(); if(phrasem == NULL) { RaiseQueueError(phrasem); }
+#define CheckQueue(phrasem) RemoveFromQueue();  \
+      if(phrasem == NULL) {                     \
+        if(!ScannerIsScanning()) {              \
+          return false;                         \
+        }                                       \
+        RaiseQueueError(phrasem);               \
+      }
 
-/*---------------------------- CLEAR --------------------------------*/
+/*----------------------------------------------------------------*/
+/** @addtogroup Parser_tools
+ * Parser tools.
+ * @{
+ */
+
+/*------------- CONDITION SIMPLIFIERS -------------*/
+bool isOperator(Phrasem p, const char * op)
+{
+  (void)op;
+  return (p->table == TokenType_Operator) /*&& (p->d.index == getOperatorId(op))*/;
+}
+
+bool isSeparator(Phrasem p)
+{
+  return p->table == TokenType_Separator;
+}
+
+
+
+bool matchesKeyword(Phrasem p, const char * kw)
+{
+  return (p->table == TokenType_Keyword) && (p->d.index == isKeyword(kw));
+}
+
+/*-------------------- CLEAR ----------------------*/
+
+
 /**
  * @brief   Ends parser.
  *
@@ -80,30 +172,32 @@ char end_type = 0;
  */
 void EndParser(const char * msg, int line, ErrorType errtype);
 
-/*------------------------ CONDITION SIMPLIFIERS ---------------------*/
+/** @} */
+/*-----------------------------------------------------------*/
+/** @addtogroup Lowlevel_parsers
+ * Syntax parser help functions.
+ * @{
+ */
 
-bool isOperator(Phrasem p, const char * op)
-{
-  (void)op;
-  return (p->table == TokenType_Operator) /*&& (p->d.index == getOperatorId(op))*/;
-}
-
-bool matchesKeyword(Phrasem p, const char * op)
-{
-  (void)op;
-  return (p->table == TokenType_Keyword) && (p->d.index == isKeyword(op));
-}
-
-/*-------------------------- LOW LEVEL PARSER FUNCTIONS --------------------*/
 /**
  * @brief   Parses symbol to variable.
  *
  * This function will get the parameter, it will check, if it is symbol,
- * then it retypes it to variable and saves to symbol table.
+ * then it retypes it to variable.
  * @param p       Phrasem with variable.
  * @returns True, if success, false otherwise.
  */
 bool VariableParse(Phrasem p);
+
+/**
+ * @brief   Parses symbol to function.
+ *
+ * This function will get the parameter, it will check, if it is symbol,
+ * then it retypes it to function.
+ * @param p       Phrasem with function.
+ * @returns True, if success, false otherwise.
+ */
+bool FunctionParse(Phrasem p);
 
 /**
  * @brief   Checks, if phrasem is datatype keyword.
@@ -114,22 +208,6 @@ bool VariableParse(Phrasem p);
 bool DataTypeParse(Phrasem p);
 
 /**
- * @brief   Checks, if phrasem is open bracket.
- *
- * @param p       Phrasem being checked.
- * @returns True, if success. False otherwise.
- */
-bool OpenBracketParse(Phrasem p);
-
-/**
- * @brief   Checks, if phrasem is close bracket.
- *
- * @param p       Phrasem being checked.
- * @returns True, if success. False otherwise.
- */
-bool CloseBracketParse(Phrasem p);
-
-/**
  * @brief   Parses expression.
  *
  * This function reads queue and parses input expression.
@@ -137,7 +215,20 @@ bool CloseBracketParse(Phrasem p);
  */
 bool ExpressionParse();
 
-/*------------------ HIGH LEVEL PARSER FUNCTIONS ---------------------------*/
+/**
+ * @brief   Parses condition.
+ *
+ * This function will parse the condition inside loop and if statement.
+ * @returns True, if success. False otherwise.
+ */
+bool LogicParse();
+
+/** @} */
+/*-----------------------------------------------------------*/
+/** @addtogroup Highlevel_parsers
+ * Syntax parser functions.
+ * @{
+ */
 
 /**
  * @brief   Parses variable definition.
@@ -198,13 +289,21 @@ bool FunctionDeclarationParse();
 bool FunctionDefinitionParse();
 
 /**
+ * @brief   Parses scope.
+ *
+ * This function will parse the scope block (main).
+ * @returns True if success. False otherwise.
+ */
+bool ScopeParse();
+
+/**
  * @brief   Parses line/block with no prejustice.
  *
  * This function will parse the line/block inside the function and is
  * main state machine, which divides lines into parse functions.
  * @returns True, if line/block ended well. False otherwise.
  */
-bool LineParse();
+bool BlockParse();
 
 /**
  * @brief   Parses global lines/blocks.
@@ -213,8 +312,52 @@ bool LineParse();
  * to symbol table.
  * @returns True, if success. False otherwise.
  */
-bool GlobalLineParse();
+bool GlobalBlockParse();
 
+/**
+ * @brief   Parses cycle.
+ *
+ * This function will parse the cycle.
+ * @returns True, if success. False otherwise.
+ */
+bool CycleParse();
+
+/** @} */
+/*----------------------------------------------------*/
+/** @addtogroup End_parsers
+ * Parsers of end lines.
+ * @{
+ */
+
+/**
+ * @brief   Parses end function.
+ *
+ * @returns True if success. False otherwise.
+ */
+bool EndFunctionParse();
+
+/**
+ * @brief   Parses end scope.
+ *
+ * @returns True if success. False otherwise.
+ */
+bool EndScopeParse();
+
+/**
+ * @brief   Parses end if.
+ *
+ * @returns True if success. False otherwise.
+ */
+bool EndIfParse();
+
+/**
+ * @brief   Parses end cycle.
+ *
+ * @returns True if success. False otherwise.
+ */
+bool EndCycleParse();
+
+/** @} */
 /*----------------------------- MAIN RUN ---------------------------*/
 
 bool RunParser()
@@ -231,7 +374,7 @@ bool RunParser()
   // reading cycle
   while(ScannerIsScanning())
   {
-    if(!GlobalLineParse())
+    if(!GlobalBlockParse())
     {
         // error
     }
@@ -261,18 +404,36 @@ bool VariableParse(Phrasem p)
   #endif
   if(p == NULL)
   {
-    RaiseError("variable expected", p, ErrorType_Syntax);
+    RaiseExpectedError("variable", p);
   }
 
   if(p->table != TokenType_Symbol)
   {
-    RaiseError("variable name expected", p, ErrorType_Internal);
+    RaiseExpectedError("variable name", p);
   }
 
   // retyping
   p->table = TokenType_Variable;
-  // write to symbol table
-  // ...
+  return true;
+}
+
+bool FunctionParse(Phrasem p)
+{
+  #ifdef PARSER_DEBUG
+    debug("Function parse.");
+  #endif
+  if(p == NULL)
+  {
+    RaiseExpectedError("function", p);
+  }
+
+  if(p->table != TokenType_Symbol)
+  {
+    RaiseExpectedError("function name", p);
+  }
+
+  // retyping
+  p->table = TokenType_Function;
   return true;
 }
 
@@ -288,32 +449,6 @@ bool DataTypeParse(Phrasem p)
   return (matchesKeyword(p, "integer") || matchesKeyword(p, "double") || matchesKeyword(p, "string"));
 }
 
-bool OpenBracketParse(Phrasem p)
-{
-  if(p == NULL) {
-    RaiseError("NULL pointer recieved", p, ErrorType_Internal);
-  }
-  if(!isOperator(p, "(")) return false;
-
-  free(p);
-  return true;
-}
-
-bool CloseBracketParse(Phrasem p)
-{
-  if(p == NULL) {
-    RaiseError("NULL pointer recieved", p, ErrorType_Internal);
-  }
-
-  if(!isOperator(p, ")"))
-  {
-    RaiseError("\')\' expected", p, ErrorType_Syntax);
-  }
-
-  free(p);
-  return true;
-}
-
 bool ExpressionParse()
 {
   #ifdef PARSER_DEBUG
@@ -322,6 +457,103 @@ bool ExpressionParse()
 
   // parsing expression
 
+  return true;
+}
+
+bool LogicParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("Expression parse.");
+  #endif
+
+  if(!ExpressionParse())
+  {
+    // error
+  }
+
+  // parse the sign
+  // ...
+
+  if(!ExpressionParse())
+  {
+      // error
+  }
+
+  return true;
+}
+
+/*--------------------- ENDER FUNCTIONS -------------------*/
+
+bool EndFunctionParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("End function parse.");
+  #endif
+
+  // keyword end
+  CheckKeyword("end");
+
+  // keyword function
+  CheckKeyword("function");
+
+  // separator
+  CheckSeparator();
+
+  end = false;
+  return true;
+}
+
+bool EndIfParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("End function parse.");
+  #endif
+
+  // keyword end
+  CheckKeyword("end");
+
+  // keyword if
+  CheckKeyword("if");
+
+  // separator
+  CheckSeparator();
+
+  end = false;
+  return true;
+}
+
+bool EndCycleParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("End function parse.");
+  #endif
+
+  // keyword loop
+  CheckKeyword("loop");
+
+  // separator
+  CheckSeparator();
+
+  end = false;
+  return true;
+}
+
+bool EndScopeParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("End function parse.");
+  #endif
+
+  // keyword end
+  CheckKeyword("end");
+
+  // keyword scope
+  CheckKeyword("scope");
+
+  // separator
+  CheckSeparator();
+
+  end = false;
   return true;
 }
 
@@ -340,37 +572,30 @@ bool VariableDefinitionParse()
 
   if(!VariableParse(p))
   {
-    RaiseError("variable expected", p, ErrorType_Syntax);
+    RaiseExpectedError("variable", p);
   }
 
   // getting keyword 'as'
-  Phrasem q = CheckQueue(q);
-
-  if(!matchesKeyword(q, "as"))
-  {
-    RaiseError("keyword \'as\' expected", q, ErrorType_Syntax);
-  }
-  free(q);
+  CheckKeyword("as");
 
   // getting datatype keyword
   Phrasem r = CheckQueue(r);
 
   if(!DataTypeParse(r))
   {
-    RaiseError("datatype keyword expected", r, ErrorType_Syntax);
+    RaiseExpectedError("datatype keyword", r);
   }
 
   // getting LF/=
   Phrasem s = CheckQueue(s);
 
   // LF
-  if(s->table == TokenType_Separator)
+  if( isSeparator(s) )
   {
     // semantics - initialize to zero
   }
   // =
-  #warning odkdy je = keyword demente?
-  else if((s->table == TokenType_Operator) && matchesKeyword(s, "="))
+  else if(isOperator(s, "="))
   {
     // get expression
     if(!ExpressionParse())
@@ -379,13 +604,7 @@ bool VariableDefinitionParse()
     }
 
     // getting LF
-    Phrasem t = CheckQueue(t);
-
-    if(t->table != TokenType_Separator)
-    {
-      // error
-    }
-    free(t);
+    CheckSeparator();
 
   }
   else
@@ -415,16 +634,10 @@ bool InputParse()
   }
 
   // control of previous definition
-  Sem_VariableDefined(sc, p->d.str);
+  if( !P_VariableDefined(sc, p->d.str)) return false;
 
   // LF
-  Phrasem q = CheckQueue(q);
-
-  if(q->table != TokenType_Separator)
-  {
-    RaiseError("separator expected", q, ErrorType_Internal);
-  }
-  free(q);
+  CheckSeparator();
 
   // semantics call
   return true;
@@ -446,11 +659,12 @@ bool PrintParse(bool first)
   {
     Phrasem q = CheckQueue(q);
 
-    if(q->table == TokenType_Separator)
+    if( isSeparator(q) )
     {
       free(q);
       return true;
     }
+
     else
     {
       if(!ReturnToQueue(q)) RaiseQueueError(q);
@@ -461,15 +675,7 @@ bool PrintParse(bool first)
   }
 
   // ;
-  Phrasem p = CheckQueue(p);
-
-  // error
-  if(!isOperator(p, ";"))
-  {
-    return false;
-  }
-
-  free(p);
+  CheckOperator(";");
 
   // recursive call of the same function
   return PrintParse(false);
@@ -477,6 +683,9 @@ bool PrintParse(bool first)
 
 bool FunctionArgumentsParse()
 {
+  #ifdef PARSER_DEBUG
+    debug("Arguments parse.");
+  #endif
   if(!ExpressionParse()) return false;
 
   Phrasem p = CheckQueue(p);
@@ -494,46 +703,44 @@ bool FunctionArgumentsParse()
 
 bool SymbolParse(Phrasem p)
 {
+  #ifdef PARSER_DEBUG
+    debug("Symbol parse.");
+  #endif
 
-  if(/*isFunction(p->d.str)*/1)
-  {
-    Phrasem q = RemoveFromQueue();
-    if(!OpenBracketParse(q)) {
-      EndParser("Parser: SymbolParse: \'(\' token expected", p->line, ErrorType_Syntax);
-      return false;
-    }
-    free(q);
-
-    if(!FunctionArgumentsParse()) return false;
-
-    Phrasem r = RemoveFromQueue();
-    if(!CloseBracketParse(q)) {
-      EndParser("Parser: SymbolParse: \')\' token expected", p->line, ErrorType_Syntax);
-      return false;
-    }
-    free(r);
-
-    Phrasem s = RemoveFromQueue();
-    if(s) {
-      EndParser("Parser: SymbolParse: \')\' token expected", p->line, ErrorType_Syntax);
-      return false;
-    }
-  }
-  else if(/*isVariable(p->d.str, function_id)*/1)
+  if( P_VariableDefined(function_id, p->d.str) )
   {
     // assignment
+  }
+  else if( P_FunctionDefined(p->d.str) )
+  {
+    // '(' token
+    CheckOperator("(");
+
+    // arguments
+    if(!FunctionArgumentsParse()) return false;
+
+    // ')' token
+    CheckOperator(")");
+
+    // LF
+    CheckSeparator();
+
+  }
+  else
+  {
+    // raise semantic error
   }
 
   return true;
 }
 
-bool LineParse()
+bool BlockParse()
 {
   #ifdef PARSER_DEBUG
-    debug("Line parse.");
+    debug("Block parse.");
   #endif
-  Phrasem p = CheckQueue(p);
 
+  Phrasem p = CheckQueue(p);
   switch(p->table)
   {
     case TokenType_Keyword:
@@ -542,21 +749,12 @@ bool LineParse()
       {
         return VariableDefinitionParse();
       }
-      // function declaration
-      else if(matchesKeyword(p, "declare"))
-      {
-      }
-      // function definition
-      else if(matchesKeyword(p, "function"))
-      {
-      }
-      // main
-      else if(matchesKeyword(p, "scope"))
-      {
-      }
       // end
       else if(matchesKeyword(p, "end"))
       {
+        ReturnToQueue(p);
+        end = true;
+        return true;
       }
       // condition
       else if(matchesKeyword(p, "if"))
@@ -584,10 +782,25 @@ bool LineParse()
       else if(matchesKeyword(p, "return"))
       {
       }
+      // function declaration
+      else if(matchesKeyword(p, "declare"))
+      {
+        RaiseError("declaring function inside function", p, ErrorType_Syntax);
+      }
+      // function definition
+      else if(matchesKeyword(p, "function"))
+      {
+        RaiseError("defining function inside function", p, ErrorType_Syntax);
+      }
+      // main
+      else if(matchesKeyword(p, "scope"))
+      {
+        RaiseError("defining scope inside function", p, ErrorType_Syntax);
+      }
       // error
       else
       {
-        EndParser("Parser: LineParse: unknown keyword", p->line, ErrorType_Syntax);
+        RaiseError("unknown keyword", p, ErrorType_Syntax);
         free(p);
         return false;
       }
@@ -596,7 +809,7 @@ bool LineParse()
     case TokenType_Constant:
     // operator
     case TokenType_Operator:
-      EndParser("Parser: LineParse: line beginning with constant", p->line, ErrorType_Syntax);
+      EndParser("Parser: BlockParse: line beginning with constant", p->line, ErrorType_Syntax);
       free(p);
       return false;
 
@@ -630,19 +843,128 @@ bool LineParse()
 
 bool FunctionDeclarationParse()
 {
+  #ifdef PARSER_DEBUG
+    debug("Declaration parse.");
+  #endif
+
+  // keyword function
+  CheckKeyword("function");
+
+  // function name
+  Phrasem funcname = CheckQueue(funcname);
+  if( !FunctionParse(funcname) ) return false;
+
+  // operator (
+  CheckOperator("(");
+
+  // parameters declaration
+  // ...
+
+  // operator )
+  CheckOperator(")");
+
+  // LF
+  CheckSeparator();
+
+  return true;
+}
+
+bool CycleParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("Cycle parse.");
+  #endif
+
+  if(!LogicParse()) return false;
+
+  // keyword then
+  CheckKeyword("then");
+  // LF
+  CheckSeparator();
+
+  // cycle body
+  do {
+    if(!BlockParse()) return false;
+  } while(!end);
+
+  if(!EndCycleParse()) return false;
+
+  end = false;
   return true;
 }
 
 bool FunctionDefinitionParse()
 {
+  #ifdef PARSER_DEBUG
+    debug("Function definition parse.");
+  #endif
+
+  // function name
+  Phrasem funcname = CheckQueue(funcname);
+  if( !FunctionParse(funcname) ) return false;
+
+  // operator (
+  CheckOperator("(");
+
+  // parameters declaration
+  // ...
+
+  // operator )
+  CheckOperator(")");
+
+  // LF
+  CheckSeparator();
+
+  // check symbol table
+  // in the semantics
+  // ...
+
+  CheckKeyword("begin");
+
+  do {
+      if(!BlockParse()) return false;
+  } while(!end);
+
+  // end function
+  if(!EndFunctionParse()) return false;
+
+
   return true;
 }
 
-bool GlobalLineParse()
+bool ScopeParse()
 {
   if(function_id != -1)
   {
-    EndParser("Parser: GlobalLineParse: nested functions not supported", -1, ErrorType_Internal);
+    EndParser("Parser: GlobalBlockParse: nested functions not supported", -1, ErrorType_Internal);
+    return false;
+  }
+
+  // LF
+  CheckSeparator();
+
+  // keyword begin
+  CheckKeyword("begin");
+
+  do {
+    if(!BlockParse()) return false;
+  } while(!end);
+
+  // end scope parse
+  EndScopeParse();
+
+  return true;
+}
+
+bool GlobalBlockParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("Global block parse.");
+  #endif
+
+  if(function_id != -1)
+  {
+    EndParser("Parser: GlobalBlockParse: nested functions not supported", -1, ErrorType_Internal);
     return false;
   }
 
@@ -654,28 +976,38 @@ bool GlobalLineParse()
   // function declaration
   if(matchesKeyword(p, "declare"))
   {
-
+    FunctionDeclarationParse();
   }
   // function definition
   else if(matchesKeyword(p, "function"))
   {
-
+    FunctionDefinitionParse();
   }
   // function definition
   else if(matchesKeyword(p, "scope"))
   {
-
+    ScopeParse();
   }
   // error (global not supported)
-  else RaiseError("syntax error on global level", p, ErrorType_Syntax);
-
+  else
+  {
+    RaiseError("syntax error on global level", p, ErrorType_Syntax);
+  }
   free(p);
 
+  // body of function
   do {
-    if(!LineParse()) return false;
-  } while(end_type == 0);
-  return (end_type == END_FUNCTION);
+    if(!BlockParse()) return false;
+  } while(!end);
 
+  // end function
+  Phrasem q = CheckQueue(q);
+  if(!EndFunctionParse(q))
+  {
+    RaiseExpectedError("end of function", q);
+  }
+
+  return true;
 }
 
 /*---------------------------- CLEAR --------------------------------*/

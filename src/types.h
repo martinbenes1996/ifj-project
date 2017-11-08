@@ -156,7 +156,7 @@ typedef struct phrasem_data
  */
 inline void PrintPhrasem(Phrasem p)
 {
-  if(p != NULL) debug("Phrasem: %d %d", TokenTypeToString(p->table), p->d.index);
+  if(p != NULL) debug("Phrasem: %s %d", TokenTypeToString(p->table), p->d.index);
 }
 
 /** @} */
