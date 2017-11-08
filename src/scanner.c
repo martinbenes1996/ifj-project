@@ -9,6 +9,7 @@
  */
 
 #include <ctype.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -448,8 +449,123 @@ bool getIdentifier(){
 	return true;
 }
 
-bool getNumber()
-{
+bool getNumber(){
+  int state = 0;
+  int input;
+  bool end = false;
+  double result = 0;
+  int order = 1;
+  double resultE = 0;
+  int mocninca = 1;
+
+  while(!end){
+    input = getByte();
+    switch (state) {
+
+      case 0:
+        if ((input >= '0') && (input <= '9')) {
+          result = result*10 + input-'0';
+          state = 1;
+          break;
+        }
+
+        else {
+          RaiseError("parsing not possible", ErrorType_Syntax);
+        }
+
+      case 1:
+        if ((input >= '0') && (input <= '9')) {
+          result = result*10 + input-'0';
+          break;
+        }
+
+        else if ( input == '.') {
+          state = 2;
+          break;
+        }
+
+        else if ((input == 'e') || (input == 'E')) {
+          state = 4;
+          break;
+        }
+
+        else {
+          returnByte(input);
+          end = true;
+          break;
+        }
+
+      case 2:
+        if ((input >= '0') && (input <= '9')) {
+          result = result + (input - '0')/pow(10,order);
+          order++;
+          state = 3;
+          break;
+        }
+
+        else {
+          returnByte(input);
+          end = true;
+          break;
+        }
+
+      case 3:
+        if ((input >= '0') && (input <= '9')) {
+          result = result + (input - '0')/pow(10,order);
+          order++;
+          break;
+        }
+            
+        else {
+          returnByte(input);
+          end = true;
+          break;
+        }
+
+      case 4:
+        if (input == '+') {
+          state = 5;
+          break;
+        }
+
+        else if ((input >= '0') && (input <= '9'))
+        {
+          returnByte(input);
+          state = 5;
+          break;
+        }
+
+        else if (input == '-') {
+          state = 6;
+          break;
+        }
+
+        else {
+          returnByte(input);
+          end = true;
+          break;
+        }
+
+      case 5:
+        if ((input >= '0') && (input <= '9')) {
+          resultE = result * pow(2, input*mocnina);
+          mocnina *= 10;
+          break;
+        }
+
+        else {
+          returnByte(input);
+          end = true;
+          break;
+        }
+        
+      case 6:
+        if ((input >= '0') && (input <= '9')) {
+
+        }
+
+    }  
+  }    
   return true;
 }
 
@@ -557,9 +673,26 @@ void *InitScanner(void * v /*not used*/)
       else {
         returnByte(input);
 
-        // tady volat asi funkci
-       // long op_id = getOperatorId("/");
-        // neco udelas...
+        // AddToQueue '/' as operator
+        char * p = GetBuffer();
+        if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
+
+         
+        long x = getOperatorId(p);
+        free(p);
+
+        if ( x == -1) RaiseError("constant table allocation error", ErrorType_Internal); 
+
+        ALLOC_PHRASEM(phr);
+        phr->table = TokenType_Constant;
+        phr->d.index = x;
+        phr->line = line;
+
+        #ifdef SCANNER_DEBUG
+          PrintPhrasem(phr);
+        #endif
+
+        if( !AddToQueue(phr) ) RaiseError ("queue allocation error", ErrorType_Internal);
 
       }
     }
