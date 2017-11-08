@@ -585,13 +585,13 @@ bool getNumber(){
 
       case 7:
         res = result * pow(2, resultE);
-        if( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+        if( !AddToBuffer(res) ) RaiseError("parsing not possible", ErrorType_Syntax);
         end = true;
         break;
 
       case 8:
         res = result * pow(2, -resultE);
-        if( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+        if( !AddToBuffer(res) ) RaiseError("parsing not possible", ErrorType_Syntax);
         end = true;
         break;
 
