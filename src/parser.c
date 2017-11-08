@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "buffer.h"
 #include "err.h"
 #include "io.h"
 #include "parser.h"
@@ -133,19 +134,13 @@ bool end = false; /**< Set to true, if keyword end reached. */
         RaiseQueueError(phrasem);               \
       }
 
-/*---------------------------- CLEAR --------------------------------*/
-/**
- * @brief   Ends parser.
- *
- * This function ends scanner, and it will sets the error message to print,
- * if it is NULL, it will end well. It also deallocates queue and symbol table.
- * @param msg       Message to print.
- * @param errtype   Error type.
+/*----------------------------------------------------------------*/
+/** @addtogroup Parser_tools
+ * Parser tools.
+ * @{
  */
-void EndParser(const char * msg, int line, ErrorType errtype);
 
-/*------------------------ CONDITION SIMPLIFIERS ---------------------*/
-
+/*------------- CONDITION SIMPLIFIERS -------------*/
 bool isOperator(Phrasem p, const char * op)
 {
   (void)op;
@@ -163,6 +158,19 @@ bool matchesKeyword(Phrasem p, const char * kw)
 {
   return (p->table == TokenType_Keyword) && (p->d.index == isKeyword(kw));
 }
+
+/*-------------------- CLEAR ----------------------*/
+
+
+/**
+ * @brief   Ends parser.
+ *
+ * This function ends scanner, and it will sets the error message to print,
+ * if it is NULL, it will end well. It also deallocates queue and symbol table.
+ * @param msg       Message to print.
+ * @param errtype   Error type.
+ */
+void EndParser(const char * msg, int line, ErrorType errtype);
 
 /** @} */
 /*-----------------------------------------------------------*/
@@ -626,7 +634,7 @@ bool InputParse()
   }
 
   // control of previous definition
-  Sem_VariableDefined(sc, p->d.str);
+  if( !P_VariableDefined(sc, p->d.str)) return false;
 
   // LF
   CheckSeparator();
@@ -699,11 +707,11 @@ bool SymbolParse(Phrasem p)
     debug("Symbol parse.");
   #endif
 
-  if( Sem_VariableDefined(function_id, p->d.str) )
+  if( P_VariableDefined(function_id, p->d.str) )
   {
     // assignment
   }
-  else if( Sem_FunctionDefined(p->d.str) )
+  else if( P_FunctionDefined(p->d.str) )
   {
     // '(' token
     CheckOperator("(");

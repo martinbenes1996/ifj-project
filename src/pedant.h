@@ -14,7 +14,7 @@
  * @param varname         Name of the variable.
  * @returns   True if defined. False if not.
  */
-bool Sem_VariableDefined(long functionId, const char * varname);
+bool P_VariableDefined(long functionId, const char * varname);
 
 /**
  * @brief     Returns, weather the function was defined, or not.
@@ -24,7 +24,7 @@ bool Sem_VariableDefined(long functionId, const char * varname);
  * @param varname         Name of the function.
  * @returns   True if defined. False if not.
  */
-bool Sem_FunctionDefined(const char * funcname);
+bool P_FunctionDefined(const char * funcname);
 
 /**
  * @brief     Pushes operand/operator to stack.
@@ -34,6 +34,6 @@ bool Sem_FunctionDefined(const char * funcname);
  * @param p         Phrasem being pushed.
  * @returns True, if success. False otherwise.
  */
-bool Sem_HandleOperand(Phrasem p);
+bool P_HandleOperand(Phrasem p);
 
 #endif // PEDANT_H

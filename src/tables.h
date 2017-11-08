@@ -28,6 +28,20 @@
  */
 int isKeyword(const char * word);
 
+/*-----------------------------------------------------------*/
+
+                //KEYWORD TABLE FUNCTIONS
+
+/**
+ * @brief   Operator finder.
+ *
+ * This function matches given word with operators.
+ * Returns -1 if word is not a operator, otherwise
+ * returns operator code (array index)
+ * @param word    Unknown Word.
+ * @returns Operator code or -1.
+ */
+int isKeyword(const char * word);
 
 /*-----------------------------------------------------------*/
 

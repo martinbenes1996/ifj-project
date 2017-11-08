@@ -350,7 +350,7 @@ void *InitScanner(void * v /*not used*/)
       done = true;
       continue;
     }
-    
+
     Phrasem phr = malloc( sizeof(struct phrasem_data) );
     if( phr == NULL )
     {

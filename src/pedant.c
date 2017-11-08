@@ -5,7 +5,7 @@
 
 static Stack s = NULL;
 
-bool Sem_VariableDefined(long functionId, const char * varname)
+bool P_VariableDefined(long functionId, const char * varname)
 {
   #ifdef PEDANT_DEBUG
     debug("Pedant, Variable Defined?");
@@ -16,7 +16,7 @@ bool Sem_VariableDefined(long functionId, const char * varname)
   return true;
 }
 
-bool Sem_FunctionDefined(const char * funcname)
+bool P_FunctionDefined(const char * funcname)
 {
   #ifdef PEDANT_DEBUG
     debug("Pedant, Function Defined?");
@@ -25,7 +25,7 @@ bool Sem_FunctionDefined(const char * funcname)
   return true;
 }
 
-bool Sem_HandleOperand(Phrasem p)
+bool P_HandleOperand(Phrasem p)
 {
   if(p == NULL)
   {
