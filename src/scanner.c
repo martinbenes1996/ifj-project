@@ -64,8 +64,16 @@ void EndScanner(const char * msg, ErrorType errtype)
   do {                                                          \
     err("%s: %s: l.%d: %s", __FILE__, __func__, __LINE__, msg); \
     EndScanner(msg, errtype);                                   \
+    char * p = GetBuffer();                                     \
+    if (p != NULL) free(p);                                     \
     return false;                                               \
   } while(0)
+
+
+#define ALLOC_PHRASEM(id)                                               \
+  Phrasem id = malloc(sizeof(struct phrasem_data));                     \
+  if (id == NULL) RaiseError("allocation error", ErrorType_Internal) 
+
 
 
 // extern bool AddToBuffer(char c);
@@ -77,7 +85,7 @@ void EndScanner(const char * msg, ErrorType errtype)
  * return true if everything is allright in other way - false.
  */
 
-/*
+
 bool getComment() {
   int state = 0;
   int input;
@@ -89,8 +97,8 @@ bool getComment() {
     switch (state) {
       case 0:
         if ( input == '~') {state = 2; break;}
-        elseif (input == '\'') {state = 1; break;}
-        else goto ErrorLabel;
+        else if (input == '\'') {state = 1; break;}
+        else RaiseError("parsing not possible", ErrorType_Syntax);
 
       case 1:
         if ( input != '\n') {break;}
@@ -104,20 +112,20 @@ bool getComment() {
         if (input != '/') {state = 2; break;}
         else {end = true; break;}
 
+      default:
+        RaiseError("unknown state in comment", ErrorType_Syntax);
 
 
-      return true;
-      ErrorLabel:
-        EndScanner("Scanner: getString: Syntax Error!", ErrorType_Syntax);
-        return false;
-
+        
     }
 
   }
 
+  return true;
+
 }
 
-*/
+
 
 
 /**
@@ -125,7 +133,7 @@ bool getComment() {
  * return true if everything is allright in other way - false
  */
 
-/*
+
 bool getOperator() {
   int state = 0;
   int input;
@@ -137,46 +145,106 @@ bool getOperator() {
     switch (state) {
 
       case 0:
-        if ( input == '<' ) {AddToBuffer(input); state = 1; break;}
-        else if ( input == '>') {AddToBuffer(input); state = 2; break;}
-        else if (input == '=') {AddToBuffer(input); end = true; break;}
-        else if (input == '+') {AddToBuffer(input); end = true; break;}
-        else if (input == '-') {AddToBuffer(input); end = true; break;}
-        else if (input == '*') {AddToBuffer(input); end = true; break;}
-        else if (input == '/') {AddToBuffer(input); end = true; break;}
-        else if (input == '\\') {AddToBuffer(input); end = true; break;}
+        if ( input == '<' ) {
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax); 
+          state = 1;
+        }
+        else if ( input == '>') {
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          state = 2;
+        }
 
-        else goto ErrorLabel;
+        else if (input == '=') {
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          end = true;
+        }
+
+        else if (input == '+') {
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          end = true;
+        }
+
+        else if (input == '-') {
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax); 
+          end = true;
+        }
+
+        else if (input == '*') {
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax); 
+          end = true;
+        }
+
+        else if (input == '\\') {
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax); 
+          end = true;
+        } 
+
+        else RaiseError("parsing not possible", ErrorType_Syntax);
+
+        break;
 
 
       case 1:
-        if ( input == '>') {AddToBuffer(input); end = true; break;}
-        else if (input == '=') {AddToBuffer(input); end = true; break;}
+        if ( input == '>') {
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax); 
+          end = true;
+        }
+
+        else if (input == '=') {
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax); 
+          end = true;
+        }
         else {
           returnByte(input);
           end = true;
-          break;
         }
+        break;
 
       case 2:
-        if ( input == '=') {AddToBuffer(input); end = true; break;}
+        if ( input == '=') {
+          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax); 
+          end = true;
+        }
+
         else {
           returnByte(input);
           end = true;
-          break;
         }
+        break;
+
       default:
-        goto ErrorLabel;
+        RaiseError("parsing not possible", ErrorType_Syntax);
 
     }
+
+   
+    char * p = GetBuffer();
+    if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
+
+         
+    long x = getOperatorId(p);
+    free(p);
+
+    if ( x == -1) RaiseError("constant table allocation error", ErrorType_Internal); 
+
+    ALLOC_PHRASEM(phr);
+    phr->table = TokenType_Constant;
+    phr->d.index = x;
+    phr->line = line;
+
+    #ifdef SCANNER_DEBUG
+      PrintPhrasem(phr);
+    #endif
+
+    if( !AddToQueue(phr) ) RaiseError ("queue allocation error", ErrorType_Internal);
+
+    
+  }
   return true;
-  ErrorLabel:
-    EndScanner("Scanner: getString: Syntax Error!", ErrorType_Syntax);
-    return false;
 
 }
 
-*/
+
 
 
 /**
@@ -184,7 +252,7 @@ bool getOperator() {
  * return true if everything is ok in otherway -false
  */
 
-/*
+
 bool getString() {
   int state = 0;
   int input;
@@ -197,51 +265,101 @@ bool getString() {
 
       case 0:
         if (input == '!') {state = 1; break;}
-        else goto ErrorLabel;
+        else  RaiseError("parsing not possible", ErrorType_Syntax);
 
       case 1:
         if (input == '"') {state = 2; break;}
-        else goto ErrorLabel;
+        else RaiseError("parsing not possible", ErrorType_Syntax);
 
       case 2:
-        if (input == '"') { end = true; break; }
-        else if (input == EOF) goto ErrorLabel;
-        else if (input != '\\') { AddToBuffer(input); break; }
+        if (input == '"') {
+   
+          char * p = GetBuffer();
+          if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
+
+          DataUnion du;
+          du.svalue = p;
+          int x = constInsert(DataType_String, du);
+
+          if ( x == -1) RaiseError("constant table allocation error", ErrorType_Internal); 
+
+          ALLOC_PHRASEM(phr);
+          phr->table = TokenType_Constant;
+          phr->d.index = x;
+          phr->line = line;
+
+          #ifdef SCANNER_DEBUG
+            PrintPhrasem(phr);
+          #endif
+
+          if( !AddToQueue(phr) ) RaiseError ("queue allocation error", ErrorType_Internal);
+
+
+
+          
+          end = true; 
+          break; 
+        }
+        else if (input == EOF)  RaiseError("parsing not possible", ErrorType_Syntax);
+        else if (input != '\\') { 
+          if( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          break; 
+        }
         else { state = 3; break; }
 
       case 3:
-        if (input == 'n') { AddToBuffer('\n'); state = 2; break; }
-        else if (input == 't') { AddToBuffer('\t'); state = 2; break; }
-        else if (input == '"') { AddToBuffer ('"'); state = 2; break; }
-        else if (input == '\\') { AddToBuffer('\\'); state = 2; break; }
+        if (input == 'n') {
+          if( !AddToBuffer('\n') ) RaiseError("parsing not possible", ErrorType_Syntax); 
+          
+          state = 2; break; 
+        }
+
+        else if (input == 't') {
+         if ( !AddToBuffer('\t') ) RaiseError("parsing not possible", ErrorType_Syntax); 
+         state = 2; 
+         break; 
+        }
+
+        else if (input == '"') { 
+          if( !AddToBuffer ('"') ) RaiseError("parsing not possible", ErrorType_Syntax); 
+          state = 2; 
+          break; 
+        }
+
+        else if (input == '\\') { 
+          if( !AddToBuffer('\\') ) RaiseError("parsing not possible", ErrorType_Syntax); 
+          state = 2; 
+          break;
+        }
+
         else if (isdigit(input)) { asciival += 100*(input - '0'); state = 4; break; }
 
-        else goto ErrorLabel;
+        else RaiseError("parsing not possible", ErrorType_Syntax);
 
       case 4:
         if(isdigit(input)) { asciival += 10*(input-'0'); state = 5; break;}
-        else goto ErrorLabel;
+        else RaiseError("parsing not possible", ErrorType_Syntax);
 
       case 5:
         if(isdigit(input))
         {
           asciival += input-'0';
-          if(asciival > 255) goto ErrorLabel;
-          AddToBuffer(asciival);
+          if(asciival > 255) RaiseError("parsing not possible", ErrorType_Syntax);
+          if ( !AddToBuffer(asciival) ) RaiseError("parsing not possible", ErrorType_Syntax);
           state = 2;
           break;
         }
-        else goto ErrorLabel;
+        else RaiseError("parsing not possible", ErrorType_Syntax);
+      
+      default: 
+        RaiseError("parsing not possible", ErrorType_Syntax);
   }
 
   return true;
-  // i know it is pigstyle, but Martin typed it.
-  ErrorLabel:
-    EndScanner("Scanner: getString: Syntax Error!", ErrorType_Syntax);
-    return false;
+ 
 
 }
-*/
+
 
 bool getIdentifier(){
 	int state = 0;
@@ -262,26 +380,64 @@ bool getIdentifier(){
           state = 1;
           break;
         }
+
 	      else RaiseError("parsing not possible", ErrorType_Syntax);
 
       // other letters
       case 1:
-        if ((input == '\n')|| (input == EOF))
-        {
-          returnByte(input);
-          end = true;
-          break;
-        }
-
-			  else if (((input >= 'A') && (input <= 'Z'))
+       
+        if (((input >= 'A') && (input <= 'Z'))
               || ((input >= 'a') && (input <= 'z'))
               || ((input >= '0') && (input <= '9'))
               || (input == '_'))
         {
-          AddToBuffer(input);
+          if( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+
           break;
         }
-			  else RaiseError("parsing not possible", ErrorType_Syntax);
+
+			  else {
+          returnByte(input);
+
+          char * p = GetBuffer();
+          if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
+          
+          int id = isKeyword(p); 
+          if ( id != -1) {
+            free(p);
+
+            ALLOC_PHRASEM(phr);
+            phr->table = TokenType_Keyword;
+            phr->d.index = id;
+            phr->line = line;
+
+            // DEBUG
+            #ifdef SCANNER_DEBUG
+              PrintPhrasem(phr);
+            #endif
+
+            if( !AddToQueue(phr) ) RaiseError("queue allocation error", ErrorType_Internal);
+          }
+
+          else {
+            
+
+            ALLOC_PHRASEM(phr);
+            phr->table = TokenType_Symbol;
+            phr->d.str = p;
+            phr->line = line;
+
+             // DEBUG
+            #ifdef SCANNER_DEBUG
+              PrintPhrasem(phr);
+            #endif
+
+            if( !AddToQueue(phr) ) RaiseError ("queue allocation error", ErrorType_Internal);
+          }
+
+          end = true;
+          break;
+        }
 
       // bad state
       default:
@@ -382,19 +538,19 @@ void *InitScanner(void * v /*not used*/)
 
 
     if (input == '\n') { line += 1;}
-/*
+
     else if (input == '!') {
       returnByte(input);
       getString();
     }
-*/
-/*
+
+
     else if ( input == '\'' ) {
       returnByte(input);
       getComment();
     }
-  */
-  /*
+
+
     else if (input == '/') {
       input = getByte();
       if (input == '/') {returnByte('~'); getComment();}
@@ -402,27 +558,27 @@ void *InitScanner(void * v /*not used*/)
         returnByte(input);
 
         // tady volat asi funkci
-        long op_id = getOperatorId("/");
+       // long op_id = getOperatorId("/");
         // neco udelas...
 
       }
     }
-    */
-    /*
+
+ 
     else if ((input == '<')||(input == '>')||(input == '=')||(input == '+')||(input == '-')||( input == '*')
       ||( input == '\\' )) {
       returnByte(input);
       getOperator();
     }
-    */
-/*
+ 
+
     else if (((input >= 'A') && (input <= 'Z'))
           || ((input >= 'a') && (input <= 'z'))
           || (input == '_')) {
       returnByte(input);
       getIdentifier();
     }
-    */
+    
 /*
     else if ((input >= '0') && (input <= '9')) {
       returnByte(input);
