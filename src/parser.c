@@ -578,7 +578,7 @@ bool ExpressionParse()
             // ...
 
             //x is operation from array [top of stack][number of operator in token]
-            x = ExprParseArray[ExprOnTopOfEPStack()][p->d.index];
+            x = ExprParseArray[ExprOnTopOfEPStack()][op_i];
             if(x == '<')
             {
                 if(LookEAheadEPStack())         //E correction  <E+ ...

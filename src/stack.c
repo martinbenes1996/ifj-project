@@ -162,7 +162,7 @@ char PopFromEPStack()
   }
 
   // moving the head
-  EPStack.first = it;
+  EPStack.first = EPStack.first->next;
   EPStack.itemCount--;
 
   // getting the data
@@ -195,7 +195,7 @@ bool LookTripleAheadEPStack(char x1, char x2, char x3)
     if( EPStack.first->data == x1 &&
         EPStack.first->next->data == x2 &&
         EPStack.first->next->next->data == x3 &&
-        EPStack.first->next->next->next->data == '<')
+        EPStack.first->next->next->next->data == op_les)
     {
         return true;
     }
@@ -211,7 +211,7 @@ bool LookOneAheadEPStack(char x1)
     if(EPStack.itemCount < 2) return false;
     //peeking into stack
     if( EPStack.first->data == x1 &&
-        EPStack.first->next->data == '<')
+        EPStack.first->next->data == op_les)
     {
         return true;
     }
@@ -255,9 +255,9 @@ bool LookEndAheadEPStack()
 
     if(EPStack.itemCount < 1) return false;
     //peeking into stack
-    if((EPStack.first->data == 'E' &&
-        EPStack.first->next->data == '$') ||
-        EPStack.first->data == '$'          )
+    if((EPStack.first->data == op_E &&
+        EPStack.first->next->data == op_$) ||
+        EPStack.first->data == op_$          )
     {
         return true;
     }
