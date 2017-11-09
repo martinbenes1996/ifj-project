@@ -660,6 +660,13 @@ void *InitScanner(void * v /*not used*/)
     input = getByte();
     if(input == EOF)
     {
+
+      ALLOC_PHRASEM(phr);
+      phr->table = TokenType_EOF;
+      #ifdef SCANNER_DEBUG
+        PrintPhrasem(phr);
+      #endif
+      if( !AddToQueue(phr) ) RaiseError("queue error", ErrorType_Internal);
       done = true;
       continue;
     }
@@ -675,18 +682,9 @@ void *InitScanner(void * v /*not used*/)
 
     // here will be lexical analysis ----------------------------------
 
-    if (input == EOF) {
-      ALLOC_PHRASEM(phr);
-      phr->table = TokenType_EOF;
-      #ifdef SCANNER_DEBUG
-        PrintPhrasem(phr);
-      #endif
-      if( !AddToQueue(phr) ) RaiseError("queue error", ErrorType_Internal);
-      done = true;
 
-    }
 
-    else if (input == '\n') {
+    if (input == '\n') {
       line += 1;
       ALLOC_PHRASEM(phr);
       phr->table = TokenType_Separator;
