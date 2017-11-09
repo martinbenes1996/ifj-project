@@ -461,6 +461,7 @@ bool getIdentifier(){
 	return true;
 }
 
+
 bool getNumber(){
   int state = 0;
   int input;
@@ -582,24 +583,62 @@ bool getNumber(){
           returnByte(input);
           break;
         }
-
+//TODO
       case 7:
         res = result * pow(2, resultE);
-        if( !AddToBuffer(res) ) RaiseError("parsing not possible", ErrorType_Syntax);
+            
+
+        DataUnion dataU;
+        dataU.dvalue = res;
+        int z = constInsert(TokenType_Constant, dataU);
+
+        if ( z == -1) RaiseError("constant table allocation error", ErrorType_Internal);
+
+        ALLOC_PHRASEM(phr);
+        phr->table = TokenType_Constant;
+        phr->d.index = z;
+        phr->line = line;
+
+        #ifdef SCANNER_DEBUG
+          PrintPhrasem(phr);
+        #endif
+
+        if( !AddToQueue(phr) ) RaiseError ("queue allocation error", ErrorType_Internal);
+        
+
         end = true;
         break;
 
       case 8:
         res = result * pow(2, -resultE);
-        if( !AddToBuffer(res) ) RaiseError("parsing not possible", ErrorType_Syntax);
+
+        DataUnion uni;
+        uni.dvalue = res;
+        int y = constInsert(TokenType_Constant, uni);
+
+        if ( y == -1) RaiseError("constant table allocation error", ErrorType_Internal);
+
+        ALLOC_PHRASEM(p);
+        p->table = TokenType_Constant;
+        p->d.index = y;
+        p->line = line;
+
+        #ifdef SCANNER_DEBUG
+          PrintPhrasem(p);
+        #endif
+
+        if( !AddToQueue(p) ) RaiseError ("queue allocation error", ErrorType_Internal);
+
         end = true;
         break;
+//TODO
+      default:
+        RaiseError("parsing not possible", ErrorType_Syntax);
 
     }
   }
   return true;
 }
-
 
 
 void *InitScanner(void * v /*not used*/)
@@ -621,6 +660,13 @@ void *InitScanner(void * v /*not used*/)
     input = getByte();
     if(input == EOF)
     {
+
+      ALLOC_PHRASEM(phr);
+      phr->table = TokenType_EOF;
+      #ifdef SCANNER_DEBUG
+        PrintPhrasem(phr);
+      #endif
+      if( !AddToQueue(phr) ) RaiseError("queue error", ErrorType_Internal);
       done = true;
       continue;
     }
