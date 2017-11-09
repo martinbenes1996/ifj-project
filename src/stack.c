@@ -218,6 +218,35 @@ bool LookOneAheadEPStack(char x1)
     return false;
 }
 
+bool LookEAheadEPStack()
+{
+    #ifdef STACK_DEBUG
+        debug("EPStack Looks one ahead.");
+    #endif
+
+    if(EPStack.itemCount < 2) return false;
+    //peeking into stack
+    if( EPStack.first->data == op_E)
+    {
+        return true;
+    }
+    return false;
+}
+
+char ExprOnTopOfEPStack()
+{
+    #ifdef STACK_DEBUG
+        debug("EPStack Looks one ahead.");
+    #endif
+
+    //peeking into stack
+    if( EPStack.first->data == op_E)
+    {
+        return EPStack.first->next->data;
+    }
+    return EPStack.first->data;
+}
+
 bool LookEndAheadEPStack()
 {
     #ifdef STACK_DEBUG

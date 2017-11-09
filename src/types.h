@@ -48,9 +48,10 @@ typedef enum{
     DivDouble,  // /
     OpenBracket,  // (   OH YES OPERATOR SYMBOLS
     CloseBracket, // )
-    i,          // Expression analysis symbols
-    $,
-    E,
+    op_i,          // Expression analysis symbols
+    op_$,
+    op_E,
+    op_les,
 
     Equal,      // =    PRIORITY 4
     Nequal,     // <>

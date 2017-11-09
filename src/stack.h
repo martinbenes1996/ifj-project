@@ -88,6 +88,18 @@ bool LookTripleAheadEPStack(char x1, char x2, char x3);
 bool LookOneAheadEPStack(char x1);
 
 /**
+ * @brief     Compares top item on the stack with op_E.
+ * @returns            True, if success. Fail otherwise.
+ */
+bool LookEAheadEPStack();
+
+/**
+ * @brief     gets symbol from top of the stack, ignores E.
+ * @returns            Returns character from top.
+ */
+char ExprOnTopOfEPStack();
+
+/**
  * @brief     Finds out if the expression successfuly ended.
  * @returns            True, if end. Fail otherwise.
  */
