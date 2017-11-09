@@ -49,7 +49,13 @@ int isKeyword(const char * word)
 
               //OPERATOR TABLE FUNCTIONS
 
-// operator array (to look up)
+/**
+ * @brief   Operator table.
+ *
+ * This array contains list af all possible operators.
+ * DO NOT CHANGE THE ORDER OF THINGS IN IT!!
+ */
+const char operators[13][3] = {"+", "-", "\\", "*", "/", "(", ")", "=", "<>", "<", "<=", ">", ">=",};
 
 #define TABLE_ERROR -1
 long getOperatorId(const char * word)
