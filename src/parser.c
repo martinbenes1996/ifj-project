@@ -465,7 +465,7 @@ int decodeToken(...)
     PopFromEPStack();               \
     PopFromEPStack();               \
     PopFromEPStack();               \
-    PushOntoEPStack('E');           \
+    PushOntoEPStack(op_E);           \
   } while(0)
 
 // can be shortened
@@ -551,7 +551,7 @@ bool ExpressionParse()
 /* ( */ {'<', '<', '<', '<', '<', '<', '=', '<', '#'},
 /* ) */ {'>', '>', '>', '>', '>', '#', '>', '#', '>'},
 /* i */ {'>', '>', '>', '>', '>', '#', '>', '#', '>'},
-/* $ */ {'<', '<', '<', '<', '<', '<', '#', '<', '#'},
+/* $ */ {'<', '<', '<', '<', '<', '<', '#', '<', '>'},      //mozna v posledni kolonce '#'
     };
 
     char x;
@@ -587,15 +587,16 @@ bool ExpressionParse()
                     PushOntoEPStack(op_les);    //<
                     PushOntoEPStack(op_E);      //E
                     PushOntoEPStack(op_i);      //i ... i: operand
-                    //p = CheckQueue(p);
+
                 }
                 else
                 {
                     PushOntoEPStack(op_les);  // <
                     PushOntoEPStack(op_i);    // i: operand
-                    //p = CheckQueue(p);
+
                 }
                 PushOntoStack(returnStack, p);      //pushing operand on stack
+                //p = CheckQueue(p);
             }
             else if(x == '#')
             {
@@ -616,15 +617,16 @@ bool ExpressionParse()
                     PushOntoEPStack(op_les);    //<
                     PushOntoEPStack(op_E);      //E
                     PushOntoEPStack(p->d.index);//operator
-                    //p = CheckQueue(p);
+
                 }
                 else
                 {
                     PushOntoEPStack(op_les);        //<
                     PushOntoEPStack(p->d.index);    //operator
-                    //p = CheckQueue(p);
+
                 }
                 PushOntoStack(temporaryOpStack, p); //pushing operator on temp stack
+                //p = CheckQueue(p);
             }
             else if(x == '>')
             {
@@ -632,6 +634,7 @@ bool ExpressionParse()
                 pom = checkEPRules(returnStack, temporaryOpStack);
                 if(pom == 1)
                 {
+                    //p = CheckQueue(p);
                     continue;       //successfuly managed to execute a rule
                 }
                 else if(pom == 0)

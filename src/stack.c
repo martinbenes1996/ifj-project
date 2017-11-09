@@ -93,7 +93,7 @@ Phrasem PopFromStack(Stack st)
   }
 
   // moving the head
-  st->first = it;
+  st->first = st->first->next;
 
   // getting the data
   Phrasem p = it->data;
