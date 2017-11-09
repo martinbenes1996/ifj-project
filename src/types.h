@@ -164,16 +164,16 @@ inline void PrintPhrasem(Phrasem p)
 typedef struct exprParserItem
 {
     char data;
-    struct ExprParserItem * next;
+    struct exprParserItem * next;
 } ExprParserItem;
 
 typedef struct exprParserStack
 {
     int itemCount;
-    ExprParserItem * first;
+    struct exprParserItem * first;
 } ExprParserStack;
 
-ExprParserStack EPStack = {.itemCount = 0, .first = NULL};
+//ExprParserStack EPStack = {.itemCount = 0, .first = NULL};
 
 /** @} */
 /*--------------------------------------------------*/
