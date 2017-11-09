@@ -116,7 +116,7 @@ void ClearStack(Stack st)
 
 
 /*--------------------------------EXPRESSION PARSE STACK-----------------------------*/
-
+ExprParserStack EPStack = {.itemCount = 0, .first = NULL};
 void InitEPStack()
 {
   // initialization
@@ -127,7 +127,7 @@ void InitEPStack()
 bool PushOntoEPStack(char data)
 {
   // allocation
-  ExprParserItem * it = malloc(sizeof(struct ExprParserItem));
+  ExprParserItem * it = malloc(sizeof(ExprParserItem));
   if(it == NULL)
   {
     EndStack("EPStack: PushOntoEPStack: couldn't allocate memory", ErrorType_Internal);
@@ -177,7 +177,7 @@ char PopFromEPStack()
 void ClearEPStack()
 {
   char p;
-  while((p = PopFromStack(st)) != -1) {}
+  while((p = PopFromEPStack()) != -1) {}
   EPStack.itemCount = 0;
   EndStack(NULL, ErrorType_Ok);
 }
