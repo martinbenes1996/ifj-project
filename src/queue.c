@@ -41,6 +41,7 @@ extern bool ScannerIsScanning();
 
 bool finished = false; /**< True, if scanner ended. */
 pthread_mutex_t ReadEnabled;
+pthread_mutex_t QueueEdit;
 
 /**
  * @brief   Queue is filled.
@@ -62,6 +63,7 @@ void InitQueue()
   // init lock
   pthread_mutex_init(&ReadEnabled, NULL);
   pthread_mutex_lock(&ReadEnabled);
+  pthread_mutex_init(&QueueEdit, NULL);
 
   // fill
   finished = false;
@@ -71,6 +73,8 @@ void InitQueue()
 
 bool AddToQueue(Phrasem data)
 {
+  //pthread_mutex_lock(&QueueEdit);
+
   // control
 	if(data == NULL) return false;
   if(!isValid()) return false;
@@ -103,6 +107,7 @@ bool AddToQueue(Phrasem data)
     #endif
   }
 
+  //pthread_mutex_unlock(&QueueEdit);
   return true;
 }
 
@@ -115,6 +120,7 @@ Phrasem RemoveFromQueue()
     return p;
   }
 
+  //pthread_mutex_lock(&QueueEdit);
   // control
   if(isEmpty())
   {
@@ -122,8 +128,10 @@ Phrasem RemoveFromQueue()
     #ifdef QUEUE_DEBUG
       debug("Queue: waiting for data.");
     #endif
+    //pthread_mutex_unlock(&QueueEdit);
     pthread_mutex_lock(&ReadEnabled);
     if(!ScannerIsScanning()) return NULL;
+    //pthread_mutex_lock(&QueueEdit);
   }
 
   if(!isValid()) return NULL;
@@ -145,6 +153,7 @@ Phrasem RemoveFromQueue()
 
   // dealloc memory and return data
 	free(p);
+  //pthread_mutex_unlock(&QueueEdit);
   return d;
 }
 
@@ -158,6 +167,7 @@ bool ReturnToQueue(Phrasem p)
 
 void ClearQueue()
 {
+  //pthread_mutex_lock(&QueueEdit);
   #ifdef QUEUE_DEBUG
     debug("Queue: clearing the queue.");
   #endif
@@ -178,6 +188,7 @@ void ClearQueue()
     free(qi);
 	}
   tail = NULL;
+  //pthread_mutex_unlock(&QueueEdit);
 }
 
 void PrintQueue()

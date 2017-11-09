@@ -156,7 +156,25 @@ typedef struct phrasem_data
  */
 inline void PrintPhrasem(Phrasem p)
 {
-  if(p != NULL) debug("Phrasem: %s %d", TokenTypeToString(p->table), p->d.index);
+  if(p == NULL) return;
+  switch(p->table)
+  {
+    case TokenType_Constant:
+    case TokenType_Operator:
+    case TokenType_Keyword:
+    case TokenType_Variable:
+    case TokenType_Function:
+      debug("Phrasem [%s %d]", TokenTypeToString(p->table), p->d.index);
+      break;
+    case TokenType_Symbol:
+      debug("Phrasem [%s \"%s\"]", TokenTypeToString(p->table), p->d.str);
+      break;
+    case TokenType_Separator:
+      debug("Phrasem [%s]", TokenTypeToString(p->table));
+      break;
+    default:
+      break;
+  }
 }
 
 /** @} */
