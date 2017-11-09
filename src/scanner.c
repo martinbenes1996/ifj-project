@@ -194,7 +194,7 @@ bool getOperator() {
           if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
           end = true;
         }
-        
+
         else RaiseError("parsing not possible", ErrorType_Syntax);
 
         break;
@@ -586,11 +586,11 @@ bool getNumber(){
 //TODO
       case 7:
         res = result * pow(2, resultE);
-            
+
 
         DataUnion dataU;
         dataU.dvalue = res;
-        int z = constInsert(TokenType_Constant, dataU);
+        int z = constInsert(DataType_Double, dataU);
 
         if ( z == -1) RaiseError("constant table allocation error", ErrorType_Internal);
 
@@ -604,7 +604,7 @@ bool getNumber(){
         #endif
 
         if( !AddToQueue(phr) ) RaiseError ("queue allocation error", ErrorType_Internal);
-        
+
 
         end = true;
         break;
@@ -614,7 +614,7 @@ bool getNumber(){
 
         DataUnion uni;
         uni.dvalue = res;
-        int y = constInsert(TokenType_Constant, uni);
+        int y = constInsert(DataType_Double, uni);
 
         if ( y == -1) RaiseError("constant table allocation error", ErrorType_Internal);
 
@@ -743,7 +743,7 @@ void *InitScanner(void * v /*not used*/)
             ||(input == '=')
             ||(input == '+')
             ||(input == '-')
-            ||(input == '*')   
+            ||(input == '*')
             ||(input == '\\')
             ||(input == '(')
             ||(input == ')')
