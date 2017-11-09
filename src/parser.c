@@ -576,7 +576,7 @@ bool ExpressionParse()
 
             //x is operation from array [top of stack][number of operator in token]
             x = ExprParseArray[ExprOnTopOfEPStack()][p->d.index];
-            if()
+            //if()
             PushOntoStack(returnStack, p);
         }
         else if(p->table == TokenType_Operator)
