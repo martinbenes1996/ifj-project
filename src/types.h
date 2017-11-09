@@ -191,7 +191,7 @@ typedef struct exprParserStack
     struct exprParserItem * first;
 } ExprParserStack;
 
-//ExprParserStack EPStack = {.itemCount = 0, .first = NULL};
+
 
 /** @} */
 /*--------------------------------------------------*/

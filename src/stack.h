@@ -43,11 +43,13 @@ Phrasem PopFromStack(Stack);
 void ClearStack(Stack);
 
 
-/** @}*/
-#endif // STACK_H
+
 
 
 /*----------------------------EXPRESSION_PARSER_STACK---------------------*/
+
+
+
 /**
  * @brief     Initialises EPstack.
  */
@@ -92,5 +94,6 @@ bool LookOneAheadEPStack(char x1);
 bool LookEndAheadEPStack();
 
 
-
+/** @}*/
+#endif // STACK_H
 

@@ -116,7 +116,9 @@ void ClearStack(Stack st)
 
 
 /*--------------------------------EXPRESSION PARSE STACK-----------------------------*/
+
 ExprParserStack EPStack = {.itemCount = 0, .first = NULL};
+
 void InitEPStack()
 {
   // initialization
