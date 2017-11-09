@@ -186,6 +186,11 @@ void ClearEPStack()
 
 bool LookTripleAheadEPStack(char x1, char x2, char x3)
 {
+    #ifdef STACK_DEBUG
+        debug("EPStack Looks triple ahead.");
+    #endif
+
+    if(EPStack.itemCount < 4) return false;
     //peeking into stack
     if( EPStack.first->data == x1 &&
         EPStack.first->next->data == x2 &&
@@ -199,6 +204,11 @@ bool LookTripleAheadEPStack(char x1, char x2, char x3)
 
 bool LookOneAheadEPStack(char x1)
 {
+    #ifdef STACK_DEBUG
+        debug("EPStack Looks one ahead.");
+    #endif
+
+    if(EPStack.itemCount < 2) return false;
     //peeking into stack
     if( EPStack.first->data == x1 &&
         EPStack.first->next->data == '<')
@@ -210,6 +220,11 @@ bool LookOneAheadEPStack(char x1)
 
 bool LookEndAheadEPStack()
 {
+    #ifdef STACK_DEBUG
+        debug("EPStack looks for end.");
+    #endif
+
+    if(EPStack.itemCount < 1) return false;
     //peeking into stack
     if((EPStack.first->data == 'E' &&
         EPStack.first->next->data == '$') ||

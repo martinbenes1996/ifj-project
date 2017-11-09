@@ -41,24 +41,25 @@ typedef enum{
  * This enum contains list of all possible operators.
  */
 typedef enum{
-  Mul,        // *    PRIORITY 1
-  DivDouble,  // /
+    Add,        // +    PRIORITY 3
+    Sub,        // -
+    DivInt,     // '\'  PRIORITY 2
+    Mul,        // *    PRIORITY 1
+    DivDouble,  // /
+    OpenBracket,  // (   OH YES OPERATOR SYMBOLS
+    CloseBracket, // )
+    i,          // Expression analysis symbols
+    $,
+    E,
 
-  DivInt,     // '\'  PRIORITY 2
+    Equal,      // =    PRIORITY 4
+    Nequal,     // <>
+    Lesser,     // <
+    LesserEq,   // <=
+    Bigger,     // >
+    BiggerEq,    // >=
 
-  Add,        // +    PRIORITY 3
-  Sub,        // -
-
-  Equal,      // =    PRIORITY 4
-  Nequal,     // <>
-  Lesser,     // <
-  LesserEq,   // <=
-  Bigger,     // >
-  BiggerEq,    // >=
-
-  OpenBracket,  // (   NOT OPERATOR SYMBOLS
-  CloseBracket, // )
-  Comma,        // ,
+    Comma,        // ,
 } Operators;
 
 /**
