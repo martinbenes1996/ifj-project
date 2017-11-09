@@ -460,7 +460,7 @@ bool getIdentifier(){
 
 	return true;
 }
-/*
+
 
 bool getNumber(){
   int state = 0;
@@ -586,15 +586,11 @@ bool getNumber(){
 //TODO
       case 7:
         res = result * pow(2, resultE);
-        if( !AddToBuffer(res) ) RaiseError("parsing not possible", ErrorType_Syntax);
-
-
-        char * p = GetBuffer();
-        if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
+            
 
         DataUnion dataU;
-        dataU.dvalue = (double) p;
-        int z = constInsert(DataType_Constant, dataU);
+        dataU.dvalue = res;
+        int z = constInsert(TokenType_Constant, dataU);
 
         if ( z == -1) RaiseError("constant table allocation error", ErrorType_Internal);
 
@@ -615,28 +611,23 @@ bool getNumber(){
 
       case 8:
         res = result * pow(2, -resultE);
-        if( !AddToBuffer(res) ) RaiseError("parsing not possible", ErrorType_Syntax);
 
-
-        char * p = GetBuffer();
-        if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
-
-        DataUnion dataU;
-        dataU.dvalue = p;
-        int y = constInsert(DataType_Constant, dataU);
+        DataUnion uni;
+        uni.dvalue = res;
+        int y = constInsert(TokenType_Constant, uni);
 
         if ( y == -1) RaiseError("constant table allocation error", ErrorType_Internal);
 
-        ALLOC_PHRASEM(phr);
-        phr->table = TokenType_Constant;
-        phr->d.index = y;
-        phr->line = line;
+        ALLOC_PHRASEM(p);
+        p->table = TokenType_Constant;
+        p->d.index = y;
+        p->line = line;
 
         #ifdef SCANNER_DEBUG
-          PrintPhrasem(phr);
+          PrintPhrasem(p);
         #endif
 
-        if( !AddToQueue(phr) ) RaiseError ("queue allocation error", ErrorType_Internal);
+        if( !AddToQueue(p) ) RaiseError ("queue allocation error", ErrorType_Internal);
 
         end = true;
         break;
@@ -649,7 +640,6 @@ bool getNumber(){
   return true;
 }
 
-*/
 
 void *InitScanner(void * v /*not used*/)
 {
@@ -685,9 +675,18 @@ void *InitScanner(void * v /*not used*/)
 
     // here will be lexical analysis ----------------------------------
 
+    if (input == EOF) {
+      ALLOC_PHRASEM(phr);
+      phr->table = TokenType_EOF;
+      #ifdef SCANNER_DEBUG
+        PrintPhrasem(phr);
+      #endif
+      if( !AddToQueue(phr) ) RaiseError("queue error", ErrorType_Internal);
+      done = true;
 
+    }
 
-    if (input == '\n') {
+    else if (input == '\n') {
       line += 1;
       ALLOC_PHRASEM(phr);
       phr->table = TokenType_Separator;
