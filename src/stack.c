@@ -217,13 +217,6 @@ bool LookEndAheadEPStack()
     }
     return false;
 }
-/*
-PopFromEPStack();
-        PopFromEPStack();
-        PopFromEPStack();
-        PopFromEPStack();
-        PushOntoEPStack('E');
-*/
 
 
 

@@ -486,6 +486,14 @@ bool ExpressionParse()
 /* $ */ {'<', '<', '<', '<', '<', '<', '#', '<', '<', '<', '<', '<', '<', '<', '<', '<', '#'},
     };
 
+    /* ve funkcich overeni pravidel
+    PopFromEPStack();
+        PopFromEPStack();
+        PopFromEPStack();
+        PopFromEPStack();
+        PushOntoEPStack('E');
+    */
+
     //get token hopefully
     //Phrasem p = CheckQueue(p);
 
