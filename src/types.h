@@ -115,7 +115,8 @@ typedef enum{
   TokenType_Symbol, // for lexical - in syntax, it will be changed to variable/function
   TokenType_Variable,
   TokenType_Function,
-  TokenType_Separator
+  TokenType_Separator,
+  TokenType_EOF
 } TokenType;
 inline const char * TokenTypeToString(TokenType tt)
 {
