@@ -178,6 +178,21 @@ inline void PrintPhrasem(Phrasem p)
   }
 }
 
+
+typedef struct exprParserItem
+{
+    char data;
+    struct ExprParserItem * next;
+} ExprParserItem;
+
+typedef struct exprParserStack
+{
+    int itemCount;
+    ExprParserItem * first;
+} ExprParserStack;
+
+ExprParserStack EPStack = {.itemCount = 0, .first = NULL};
+
 /** @} */
 /*--------------------------------------------------*/
 /** @addtogroup Public_types

@@ -116,112 +116,107 @@ void ClearStack(Stack st)
 
 
 /*--------------------------------EXPRESSION PARSE STACK-----------------------------*/
-#ifdef OPRAVA
 
-Stack InitStack()
+void InitEPStack()
 {
-  // allocation
-  Stack st = malloc(sizeof(struct stack));
-  if(st == NULL) return NULL;
-
   // initialization
-  st->first = NULL;
-  return st;
+  EPStack.first = NULL;
+  return;
 }
 
-void EndStack(const char * msg, ErrorType errtype)
+bool PushOntoEPStack(char data)
 {
-  // error
-  if(msg != NULL)
-  {
-    #ifdef STACK_DEBUG
-      debug(msg);
-    #endif
-    setErrorType(errtype);
-    setErrorMessage(msg);
-  }
-  // ok
-  else
-  {
-    #ifdef STACK_DEBUG
-      debug("End Stack.");
-    #endif
-  }
-}
-
-bool PushOntoStack(Stack st, Phrasem data)
-{
-  // control
-  if(st == NULL)
-  {
-    EndStack("Stack: PushOntoStack: recieved NULL pointer", ErrorType_Internal);
-    return false;
-  }
-
   // allocation
-  StackItem * it = malloc(sizeof(struct stack_item));
+  ExprParserItem * it = malloc(sizeof(struct ExprParserItem));
   if(it == NULL)
   {
-    EndStack("Stack: PushOntoStack: couldn't allocate memory", ErrorType_Internal);
+    EndStack("EPStack: PushOntoEPStack: couldn't allocate memory", ErrorType_Internal);
     return false;
   }
 
   // filling up
   it->data = data;
-  it->next = st->first;
+  it->next = EPStack.first;
+  EPStack.itemCount++;
 
   // moving pointer
-  st->first = it;
+  EPStack.first = it;
   #ifdef STACK_DEBUG
-    debug("Stack recieved an item.");
+    debug("EPStack recieved an item.");
   #endif
   return true;
 }
 
-Phrasem PopFromStack(Stack st)
+char PopFromEPStack()
 {
-  // control
-  if(st == NULL)
-  {
-    EndStack("Stack: PopFromStack: recieved NULL pointer", ErrorType_Internal);
-    return NULL;
-  }
-
   // selecting the first
-  StackItem * it = st->first;
+  ExprParserItem * it = EPStack.first;
   if(it == NULL)
   {
     #ifdef STACK_DEBUG
-      debug("PopFromStack: empty stack");
+      debug("PopFromEPStack: empty EPstack");
     #endif
-    return NULL;
+    return -1;
   }
 
   // moving the head
-  st->first = it;
+  EPStack.first = it;
+  EPStack.itemCount--;
 
   // getting the data
-  Phrasem p = it->data;
+  char p = it->data;
 
   // free the item, return data
   free(it);
   #ifdef STACK_DEBUG
-    debug("Stack popped an item.");
+    debug("EPStack popped an item.");
   #endif
   return p;
 }
 
-void ClearStack(Stack st)
+void ClearEPStack()
 {
-  Phrasem p;
-  while((p = PopFromStack(st)) != NULL) { free(p); }
-  free(st);
+  char p;
+  while((p = PopFromStack(st)) != -1) {}
+  EPStack.itemCount = 0;
   EndStack(NULL, ErrorType_Ok);
 }
 
+bool LookTripleAheadEPStack(char x1, char x2, char x3)
+{
+    //peeking into stack
+    if( EPStack.first->data == x1 &&
+        EPStack.first->next->data == x2 &&
+        EPStack.first->next->next->data == x3 &&
+        EPStack.first->next->next->next->data == '<')
+    {
+        return true;
+    }
+    return false;
+}
 
+bool LookOneAheadEPStack(char x1)
+{
+    //peeking into stack
+    if( EPStack.first->data == x1 &&
+        EPStack.first->next->data == '<')
+    {
+        return true;
+    }
+    return false;
+}
 
-#endif
+bool LookEndAheadEPStack()
+{
+    //peeking into stack
+    if((EPStack.first->data == 'E' &&
+        EPStack.first->next->data == '$') ||
+        EPStack.first->data == '$'          )
+    {
+        return true;
+    }
+    return false;
+}
 
 
 
