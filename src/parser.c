@@ -526,9 +526,6 @@ int checkEPRules(Stack returnStack, Stack temporaryOpStack)
 }
 
 
-
-// Tahle funkce bude komplikovana, budu potrebovat spoustu pomocnych funkci a specialni zasobniky.
-// Snad to nezruinuje tenhle krasne vypadajici kod.
 bool ExpressionParse()
 {
   #ifdef PARSER_DEBUG
@@ -558,14 +555,20 @@ bool ExpressionParse()
     };
 
     char x;
+    short int endExprParsing = 0;
+    long int tempIndex;
+    TokenType tempType;
+    bool failure = false;
     Phrasem p;//pozdeji zrusit
+
     PushOntoEPStack(op_$);     //start of the stack
 
     //get token hopefully
     //Phrasem p = CheckQueue(p);
 
-    while(1)
+    do
     {
+        //token is operand
         if(p->table == TokenType_Symbol || p->table == TokenType_Constant)
         {
             //if symbol ...
@@ -576,9 +579,31 @@ bool ExpressionParse()
 
             //x is operation from array [top of stack][number of operator in token]
             x = ExprParseArray[ExprOnTopOfEPStack()][p->d.index];
-            //if()
-            PushOntoStack(returnStack, p);
+            if(x == '<')
+            {
+                if(LookEAheadEPStack())         //E correction  <E+ ...
+                {
+                    PopFromEPStack();           //E
+                    PushOntoEPStack(op_les);    //<
+                    PushOntoEPStack(op_E);      //E
+                    PushOntoEPStack(op_i);      //i ... i: operand
+                    //p = CheckQueue(p);
+                }
+                else
+                {
+                    PushOntoEPStack(op_les);  // <
+                    PushOntoEPStack(op_i);    // i: operand
+                    //p = CheckQueue(p);
+                }
+                PushOntoStack(returnStack, p);      //pushing operand on stack
+            }
+            else if(x == '#')
+            {
+                failure = true;
+            }
+
         }
+        //token is operator
         else if(p->table == TokenType_Operator)
         {
             //x is operation from array [top of stack][number of operator in token]
@@ -597,10 +622,9 @@ bool ExpressionParse()
                 {
                     PushOntoEPStack(op_les);        //<
                     PushOntoEPStack(p->d.index);    //operator
-                    PushOntoStack(temporaryOpStack, p);
                     //p = CheckQueue(p);
                 }
-
+                PushOntoStack(temporaryOpStack, p); //pushing operator on temp stack
             }
             else if(x == '>')
             {
@@ -612,11 +636,15 @@ bool ExpressionParse()
                 }
                 else if(pom == 0)
                 {
-                    //chyba
+                    //correct ending or a failure
+                    if(p->table == TokenType_Operator && p->d.index == op_$)
+                        endExprParsing = 1;
+                    else failure = true;
                 }
                 else    // pom == -1
                 {
                     //chybove hlaseni
+                    failure = true;
                 }
             }
             else if(x == '=')
@@ -628,19 +656,30 @@ bool ExpressionParse()
             else    // x == '#'
             {
                 //chybove hlaseni
+                failure = true;
             }
         }
         else    //it is not my symbol
         {
-            //vratit token do fronty a vyprazdnit zasobnik + ukoncit
+            //setting token to ending type to empty the EPstack
+            tempIndex = p->d.index;
+            tempType = p->table;
+            p->d.index = op_$;
+            p->table = TokenType_Operator;
         }
-    }
+        if((endExprParsing || failure) && p->d.index == op_$)
+        {   //restoring tokens value and ending analysis
+            p->d.index = tempIndex;
+            p->table = tempType;
+            //vratit token do fronty
+        }
+    }while(!endExprParsing && !failure);
 
 
 
 
 
-    return true;
+    return !failure;
 }
 
 bool LogicParse()
