@@ -21,6 +21,7 @@
 #include "queue.h"
 #include "scanner.h"
 #include "tables.h"
+#include "stack.h"
 
 pthread_t sc;
 long function_id = -1; /**< Id of actual function (for symbol table). */
@@ -448,6 +449,7 @@ bool DataTypeParse(Phrasem p)
   return (matchesKeyword(p, "integer") || matchesKeyword(p, "double") || matchesKeyword(p, "string"));
 }
 
+
 /*-----------------expression parse----------------------------*/
 
 /*
@@ -457,6 +459,74 @@ int decodeToken(...)
 }
 */
 
+#define MODIFY_STACK()              \
+  do {                              \
+    PopFromEPStack();               \
+    PopFromEPStack();               \
+    PopFromEPStack();               \
+    PopFromEPStack();               \
+    PushOntoEPStack('E');           \
+  } while(0)
+
+// can be shortened
+//tries to perform stack modifications based on rules (called when '>')
+int checkEPRules(Stack returnStack, Stack temporaryOpStack)
+{
+    #ifdef PARSER_DEBUG
+        debug("EP: checkEPRules: executing reduction rules.");
+    #endif
+
+    if(LookTripleAheadEPStack(op_E, Add, op_E))
+    {
+        MODIFY_STACK();
+        PushOntoStack(returnStack, PopFromStack(temporaryOpStack)); //it should pop an operator
+        return 1;
+    }
+    else if(LookTripleAheadEPStack(op_E, Sub, op_E))
+    {
+        MODIFY_STACK();
+        PushOntoStack(returnStack, PopFromStack(temporaryOpStack));
+        return 1;
+    }
+    else if(LookTripleAheadEPStack(op_E, DivInt, op_E))
+    {
+        MODIFY_STACK();
+        PushOntoStack(returnStack, PopFromStack(temporaryOpStack));
+        return 1;
+    }
+    else if(LookTripleAheadEPStack(op_E, Mul, op_E))
+    {
+        MODIFY_STACK();
+        PushOntoStack(returnStack, PopFromStack(temporaryOpStack));
+        return 1;
+    }
+    else if(LookTripleAheadEPStack(op_E, DivDouble, op_E))
+    {
+        MODIFY_STACK();
+        PushOntoStack(returnStack, PopFromStack(temporaryOpStack));
+        return 1;
+    }
+    else if(LookTripleAheadEPStack(OpenBracket, op_E, CloseBracket))
+    {
+        MODIFY_STACK();
+        return 1;
+    }
+    else if(LookOneAheadEPStack(op_i))
+    {
+        PopFromEPStack();
+        PopFromEPStack();
+        PushOntoEPStack(op_E);
+        return 1;
+    }
+    else if(LookEndAheadEPStack())
+    {
+        return 0;       //empty stack
+    }
+    else return -1;     //cannot find a rule and it is not the end of expression
+}
+
+
+
 // Tahle funkce bude komplikovana, budu potrebovat spoustu pomocnych funkci a specialni zasobniky.
 // Snad to nezruinuje tenhle krasne vypadajici kod.
 bool ExpressionParse()
@@ -465,37 +535,105 @@ bool ExpressionParse()
     debug("Expression parse.");
   #endif
 
-  char ExprParseArray[17][17] = {
-       // +    -    \    *    /    (    )    i    d    s    =   <>    <    <=   >   >=    $
-/* + */ {'>', '>', '<', '<', '<', '<', '>', '<', '<', '<', '>', '>', '>', '>', '>', '>', '>'},
-/* - */ {'>', '>', '<', '<', '<', '<', '>', '<', '<', '<', '>', '>', '>', '>', '>', '>', '>'},
-/* \ */ {'>', '>', '>', '<', '<', '<', '>', '<', '<', '<', '>', '>', '>', '>', '>', '>', '>'},
-/* * */ {'>', '>', '>', '>', '>', '<', '>', '<', '<', '<', '>', '>', '>', '>', '>', '>', '>'},
-/* / */ {'>', '>', '>', '>', '>', '<', '>', '<', '<', '<', '>', '>', '>', '>', '>', '>', '>'},
-/* ( */ {'<', '<', '<', '<', '<', '<', '=', '<', '<', '<', '<', '<', '<', '<', '<', '<', '#'},
-/* ) */ {'>', '>', '>', '>', '>', '#', '>', '#', '#', '#', '>', '>', '>', '>', '>', '>', '>'},
-/* i */ {'>', '>', '>', '>', '>', '#', '>', '#', '#', '#', '>', '>', '>', '>', '>', '>', '>'},
-/* d */ {'>', '>', '>', '>', '>', '#', '>', '#', '#', '#', '>', '>', '>', '>', '>', '>', '>'},
-/* s */ {'>', '>', '>', '>', '>', '#', '>', '#', '#', '#', '>', '>', '>', '>', '>', '>', '>'},
-/* = */ {'<', '<', '<', '<', '<', '<', '>', '<', '<', '<', '#', '#', '#', '#', '#', '#', '>'},
-/* <>*/ {'<', '<', '<', '<', '<', '<', '>', '<', '<', '<', '#', '#', '#', '#', '#', '#', '>'},
-/* < */ {'<', '<', '<', '<', '<', '<', '>', '<', '<', '<', '#', '#', '#', '#', '#', '#', '>'},
-/* <=*/ {'<', '<', '<', '<', '<', '<', '>', '<', '<', '<', '#', '#', '#', '#', '#', '#', '>'},
-/* > */ {'<', '<', '<', '<', '<', '<', '>', '<', '<', '<', '#', '#', '#', '#', '#', '#', '>'},
-/* >=*/ {'<', '<', '<', '<', '<', '<', '>', '<', '<', '<', '#', '#', '#', '#', '#', '#', '>'},
-/* $ */ {'<', '<', '<', '<', '<', '<', '#', '<', '<', '<', '<', '<', '<', '<', '<', '<', '#'},
+  //creating a stack that will be given to pedant for semantical EP analysis
+  Stack returnStack = NULL;
+  returnStack = InitStack();
+
+  //creating a stack for storing operator tokens
+  Stack temporaryOpStack = NULL;
+  temporaryOpStack = InitStack();
+
+  //determines what to do for every input
+  char ExprParseArray[9][9] = {
+       // +    -    \    *    /    (    )    i    $
+/* + */ {'>', '>', '<', '<', '<', '<', '>', '<', '>'},
+/* - */ {'>', '>', '<', '<', '<', '<', '>', '<', '>'},
+/* \ */ {'>', '>', '>', '<', '<', '<', '>', '<', '>'},
+/* * */ {'>', '>', '>', '>', '>', '<', '>', '<', '>'},
+/* / */ {'>', '>', '>', '>', '>', '<', '>', '<', '>'},
+/* ( */ {'<', '<', '<', '<', '<', '<', '=', '<', '#'},
+/* ) */ {'>', '>', '>', '>', '>', '#', '>', '#', '>'},
+/* i */ {'>', '>', '>', '>', '>', '#', '>', '#', '>'},
+/* $ */ {'<', '<', '<', '<', '<', '<', '#', '<', '#'},
     };
 
-    /* ve funkcich overeni pravidel
-    PopFromEPStack();
-        PopFromEPStack();
-        PopFromEPStack();
-        PopFromEPStack();
-        PushOntoEPStack('E');
-    */
+    char x;
+    Phrasem p;//pozdeji zrusit
+    PushOntoEPStack(op_$);     //start of the stack
 
     //get token hopefully
     //Phrasem p = CheckQueue(p);
+
+    while(1)
+    {
+        if(p->table == TokenType_Symbol || p->table == TokenType_Constant)
+        {
+            //if symbol ...
+            //zeptat se symtable, jestli je to fce nebo prom
+            // + zavolat variable/fce parser
+            //pokud je to fce -> chyba (mozne rozsireni)
+            // ...
+            PushOntoStack(returnStack, p);
+        }
+        else if(p->table == TokenType_Operator)
+        {
+            //x is operation from array [top of stack][number of operator in token]
+            x = ExprParseArray[ExprOnTopOfEPStack()][p->d.index];
+            if(x == '<')
+            {
+                if(LookEAheadEPStack())         //E correction  <E+ ...
+                {
+                    PopFromEPStack();           //E
+                    PushOntoEPStack(op_les);    //<
+                    PushOntoEPStack(op_E);      //E
+                    PushOntoEPStack(p->d.index);//operator
+                    //p = CheckQueue(p);
+                }
+                else
+                {
+                    PushOntoEPStack(op_les);        //<
+                    PushOntoEPStack(p->d.index);    //operator
+                    PushOntoStack(temporaryOpStack, p);
+                    //p = CheckQueue(p);
+                }
+
+            }
+            else if(x == '>')
+            {
+                int pom;
+                pom = checkEPRules(returnStack, temporaryOpStack);
+                if(pom == 1)
+                {
+                    continue;       //successfuly managed to execute a rule
+                }
+                else if(pom == 0)
+                {
+                    //chyba
+                }
+                else    // pom == -1
+                {
+                    //chybove hlaseni
+                }
+            }
+            else if(x == '=')
+            {
+                PushOntoEPStack(p->d.index);
+                PushOntoStack(temporaryOpStack, p);
+                //p = CheckQueue(p);
+            }
+            else    // x == '#'
+            {
+                //chybove hlaseni
+            }
+        }
+        else    //it is not my symbol
+        {
+            //vratit token do fronty a vyprazdnit zasobnik + ukoncit
+        }
+    }
+
+
+
 
 
     return true;
