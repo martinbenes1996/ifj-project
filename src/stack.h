@@ -45,3 +45,52 @@ void ClearStack(Stack);
 
 /** @}*/
 #endif // STACK_H
+
+
+/*----------------------------EXPRESSION_PARSER_STACK---------------------*/
+/**
+ * @brief     Initialises EPstack.
+ */
+void InitEPStack();
+
+/**
+ * @brief     Pushes data onto stack.
+ * @param data         Data to be pushed.
+ * @returns            True, if success. Fail otherwise.
+ */
+bool PushOntoEPStack(char data);
+
+/**
+ * @brief     Pops dat from stack.
+ * @returns            Character or -1.
+ */
+char PopFromEPStack();
+
+/**
+ * @brief     Clears stack.
+ */
+void ClearEPStack();
+
+/**
+ * @brief     Compares top three items on the stack with parametres (x1 top, x3 under it).
+ * @param x1, x2, x3         Top three items on the stack.
+ * @returns            True, if success. Fail otherwise.
+ */
+bool LookTripleAheadEPStack(char x1, char x2, char x3);
+
+/**
+ * @brief     Compares top item on the stack with parametres.
+ * @param x1         Top item on the stack.
+ * @returns            True, if success. Fail otherwise.
+ */
+bool LookOneAheadEPStack(char x1);
+
+/**
+ * @brief     Finds out if the expression successfuly ended.
+ * @returns            True, if end. Fail otherwise.
+ */
+bool LookEndAheadEPStack();
+
+
+
+

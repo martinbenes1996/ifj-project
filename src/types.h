@@ -159,6 +159,21 @@ inline void PrintPhrasem(Phrasem p)
   if(p != NULL) debug("Phrasem: %s %d", TokenTypeToString(p->table), p->d.index);
 }
 
+
+typedef struct exprParserItem
+{
+    char data;
+    struct ExprParserItem * next;
+} ExprParserItem;
+
+typedef struct exprParserStack
+{
+    int itemCount;
+    ExprParserItem * first;
+} ExprParserStack;
+
+ExprParserStack EPStack = {.itemCount = 0, .first = NULL};
+
 /** @} */
 /*--------------------------------------------------*/
 /** @addtogroup Public_types
