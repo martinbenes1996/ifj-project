@@ -1,6 +1,7 @@
 
 #include "generator.h"
 #include "io.h"
+#include "types.h"
 
 bool Send(Stack s)
 {
@@ -9,6 +10,12 @@ bool Send(Stack s)
   #endif
 
   (void)s;
+  return true;
+}
+
+bool HandlePhrasem(Phrasem p)
+{
+  (void)p;
   return true;
 }
 
@@ -76,6 +83,14 @@ void G_Logic()
 }
 
 void G_Expression()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate expression");
+  #endif
+
+}
+
+void G_RelativeOperator()
 {
   #ifdef GENERATOR_DEBUG
     debug("Generate expression");

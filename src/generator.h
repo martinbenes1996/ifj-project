@@ -19,7 +19,16 @@
  * @param s         Stack with expression.
  * @returns True, if success. False otherwise.
  */
-bool Send(Stack s);
+bool SendStack(Stack s);
+
+/**
+ * @brief   Gives phrasem.
+ *
+ * This function gives phrasem to generator.
+ * @param p         Phrasem.
+ * @returns True if success. False otherwise.
+ */
+bool HandlePhrasem(Phrasem p);
 
 /** @} */
 /*-----------------------------------------------------------*/
@@ -51,6 +60,9 @@ void G_Logic();
 
 /** @brief Announces expression to generator. */
 void G_Expression();
+
+/** @brief Announces expression to generator. */
+void G_RelativeOperator();
 
 /** @} */
 /*-----------------------------------------------------------*/

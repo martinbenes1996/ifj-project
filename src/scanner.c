@@ -23,7 +23,6 @@
 #include "tables.h"
 #include "types.h"
 
-
 bool done = false;
 int line = 1;
 
@@ -71,13 +70,21 @@ void EndScanner(const char * msg, ErrorType errtype)
   } while(0)
 
 
+/**
+ * @brief  Alloc error raiser.
+ */
+#define RaiseAllocError() RaiseError("bad allocation", ErrorType_Internal);
+
+/**
+ * @brief SAfe buffer saver.
+ */
+#define SaveToBuffer(c) if(!AddToBuffer(c)) { RaiseAllocError(); }
+
+
 #define ALLOC_PHRASEM(id)                                               \
   Phrasem id = malloc(sizeof(struct phrasem_data));                     \
   if (id == NULL) RaiseError("allocation error", ErrorType_Internal)
 
-
-
-// extern bool AddToBuffer(char c);
 
 /**
  * @brief function for comment
@@ -85,8 +92,6 @@ void EndScanner(const char * msg, ErrorType errtype)
  * This function recognizes if this a line or block comment
  * return true if everything is allright in other way - false.
  */
-
-
 bool getComment() {
   int state = 0;
   int input;
@@ -99,7 +104,7 @@ bool getComment() {
       case 0:
         if ( input == '~') {state = 2; break;}
         else if (input == '\'') {state = 1; break;}
-        else RaiseError("parsing not possible", ErrorType_Syntax);
+        else RaiseError("bad internal state", ErrorType_Internal);
 
       case 1:
         if ( input != '\n') {break;}
@@ -115,26 +120,16 @@ bool getComment() {
 
       default:
         RaiseError("unknown state in comment", ErrorType_Syntax);
-
-
-
     }
-
   }
-
   return true;
-
 }
-
-
 
 
 /**
  * @brief the function can recognize if this is an operator and save it to buffer
  * return true if everything is allright in other way - false
  */
-
-
 bool getOperator() {
   int state = 0;
   int input;
@@ -147,56 +142,54 @@ bool getOperator() {
 
       case 0:
         if ( input == '<' ) {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          SaveToBuffer(input);
           state = 1;
         }
         else if ( input == '>') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          SaveToBuffer(input);
           state = 2;
         }
 
         else if (input == '=') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          SaveToBuffer(input);
           end = true;
         }
 
         else if (input == '+') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          SaveToBuffer(input);
           end = true;
         }
 
         else if (input == '-') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          SaveToBuffer(input);
           end = true;
         }
 
         else if (input == '*') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          SaveToBuffer(input);
           end = true;
         }
 
         else if (input == '\\') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          SaveToBuffer(input);
           end = true;
         }
 
         else if (input == '(') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          SaveToBuffer(input);
           end = true;
         }
 
         else if (input == ')') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          SaveToBuffer(input);
           end = true;
         }
 
         else if (input == ',') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          SaveToBuffer(input);
           end = true;
         }
-
-        else RaiseError("parsing not possible", ErrorType_Syntax);
-
+        else RaiseError("not a operator", ErrorType_Syntax);
         break;
 
 
@@ -229,7 +222,7 @@ bool getOperator() {
         break;
 
       default:
-        RaiseError("parsing not possible", ErrorType_Syntax);
+        RaiseError("unknown state", ErrorType_Internal);
 
     }
 
@@ -241,7 +234,7 @@ bool getOperator() {
     long x = getOperatorId(p);
     free(p);
 
-    if ( x == -1) RaiseError("constant table allocation error", ErrorType_Internal);
+    if ( x == -1) RaiseError("constant table error", ErrorType_Internal);
 
     ALLOC_PHRASEM(phr);
     phr->table = TokenType_Constant;
@@ -281,11 +274,11 @@ bool getString() {
 
       case 0:
         if (input == '!') {state = 1; break;}
-        else  RaiseError("parsing not possible", ErrorType_Syntax);
+        else RaiseError("bad internal state", ErrorType_Internal);
 
       case 1:
         if (input == '"') {state = 2; break;}
-        else RaiseError("parsing not possible", ErrorType_Syntax);
+        else RaiseError("bad internal state", ErrorType_Internal);
 
       case 2:
         if (input == '"') {
@@ -313,64 +306,70 @@ bool getString() {
           end = true;
           break;
         }
-        else if (input == EOF)  RaiseError("parsing not possible", ErrorType_Syntax);
+        else if (input == EOF)  RaiseError("string not ended", ErrorType_Syntax);
         else if (input != '\\') {
-          if( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          SaveToBuffer(input);
           break;
         }
         else { state = 3; break; }
 
       case 3:
+        // process \n
         if (input == 'n') {
-          if( !AddToBuffer('\n') ) RaiseError("parsing not possible", ErrorType_Syntax);
-
-          state = 2; break;
+          SaveToBuffer('\n');
+          state = 2;
         }
-
+        // process \t
         else if (input == 't') {
-         if ( !AddToBuffer('\t') ) RaiseError("parsing not possible", ErrorType_Syntax);
-         state = 2;
-         break;
+          SaveToBuffer('\t')
+          state = 2;
         }
-
+        // process /"
         else if (input == '"') {
-          if( !AddToBuffer ('"') ) RaiseError("parsing not possible", ErrorType_Syntax);
+          SaveToBuffer('"')
           state = 2;
           break;
         }
-
+        // process \<backslash>
         else if (input == '\\') {
-          if( !AddToBuffer('\\') ) RaiseError("parsing not possible", ErrorType_Syntax);
+          SaveToBuffer('\\');
           state = 2;
-          break;
         }
+        // number (first of \xxx)
+        else if (isdigit(input)) {
+          asciival += 100*(input - '0');
+          state = 4;
+        }
+        else RaiseError("bad internal state", ErrorType_Syntax);
 
-        else if (isdigit(input)) { asciival += 100*(input - '0'); state = 4; break; }
-
-        else RaiseError("parsing not possible", ErrorType_Syntax);
-
+        break;
+      // second digit of \xxx
       case 4:
-        if(isdigit(input)) { asciival += 10*(input-'0'); state = 5; break;}
-        else RaiseError("parsing not possible", ErrorType_Syntax);
+        if(isdigit(input))
+        {
+          asciival += 10*(input-'0');
+          state = 5;
+        }
+        else RaiseError("not valid escape sequence", ErrorType_Syntax);
 
+        break;
+      // third digit
       case 5:
         if(isdigit(input))
         {
           asciival += input-'0';
-          if(asciival > 255) RaiseError("parsing not possible", ErrorType_Syntax);
-          if ( !AddToBuffer(asciival) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          if((asciival > 255) && (asciival < 1)) RaiseError("not valid escape sequence", ErrorType_Syntax);
+          SaveToBuffer(asciival);
           state = 2;
           break;
         }
-        else RaiseError("parsing not possible", ErrorType_Syntax);
+        else RaiseError("not valid escape sequence", ErrorType_Syntax);
 
       default:
-        RaiseError("parsing not possible", ErrorType_Syntax);
+        RaiseError("bad internal state", ErrorType_Syntax);
   }
 
   return true;
-
-
 }
 
 
@@ -389,12 +388,12 @@ bool getIdentifier(){
           || ((input >= 'A') && (input <= 'Z'))
           || ((input >= 'a') && (input <= 'z')) )
         {
-          if( !AddToBuffer(input) ) RaiseError("buffer allocation failed", ErrorType_Internal);
+          SaveToBuffer(input);
           state = 1;
           break;
         }
 
-	      else RaiseError("parsing not possible", ErrorType_Syntax);
+	      else RaiseError("bad internal state", ErrorType_Internal);
 
       // other letters
       case 1:
@@ -404,17 +403,16 @@ bool getIdentifier(){
               || ((input >= '0') && (input <= '9'))
               || (input == '_'))
         {
-          if( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
-
+          SaveToBuffer(input);
           break;
         }
-
 			  else {
           returnByte(input);
 
           char * p = GetBuffer();
           if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
 
+          // keyword parse
           int id = isKeyword(p);
           if ( id != -1) {
             free(p);
@@ -432,9 +430,8 @@ bool getIdentifier(){
             if( !AddToQueue(phr) ) RaiseError("queue allocation error", ErrorType_Internal);
           }
 
+          // identifier parse
           else {
-
-
             ALLOC_PHRASEM(phr);
             phr->table = TokenType_Symbol;
             phr->d.str = p;
@@ -447,9 +444,9 @@ bool getIdentifier(){
 
             if( !AddToQueue(phr) ) RaiseError ("queue allocation error", ErrorType_Internal);
           }
-
           end = true;
           break;
+
         }
 
       // bad state
@@ -463,105 +460,110 @@ bool getIdentifier(){
 
 
 bool getNumber(){
-  int state = 0;
-  int input;
-  bool end = false;
-  double result = 0;
-  int order = 1;
-  double resultE = 0;
-  double res = 0;
+  int state = 0; // state of the machine
+  // integer
+  double result = 0; // result of integers
+  // double
+  int order = 1; // iterator of exponent
+  double exponent = 0; // result of the exponent
 
+  bool end = false;
+  int input;
   while(!end){
     input = getByte();
     switch (state) {
 
       case 0:
-        if ((input >= '0') && (input <= '9')) {
-          result = result*10 + input-'0';
+        if (isdigit(input)) {
+          result = input-'0';
           state = 1;
           break;
         }
-
         else {
-          RaiseError("parsing not possible", ErrorType_Syntax);
+          RaiseError("bad internal state", ErrorType_Internal);
         }
 
       case 1:
-        if ((input >= '0') && (input <= '9')) {
+        if (isdigit(input)) {
           result = result*10 + input-'0';
-          break;
         }
 
         else if ( input == '.') {
           state = 2;
-          break;
         }
 
         else if ((input == 'e') || (input == 'E')) {
           state = 4;
-          break;
         }
 
         else {
           returnByte(input);
-          end = true;
-          break;
+          state = 12;
         }
 
+        break;
+
       case 2:
-        if ((input >= '0') && (input <= '9')) {
+        if (isdigit(input)) {
           result = result + (input - '0')/pow(10,order);
           order++;
           state = 3;
-          break;
         }
 
         else {
-          returnByte(input);
-          end = true;
-          break;
+          RaiseError("digit expected", ErrorType_Syntax);
         }
+
+        break;
 
       case 3:
-        if ((input >= '0') && (input <= '9')) {
+        if (isdigit(input)) {
           result = result + (input - '0')/pow(10,order);
           order++;
-          break;
         }
 
         else {
           returnByte(input);
-          end = true;
-          break;
+          state = 11;
         }
+        break;
 
+      // right after E/e
       case 4:
         if (input == '+') {
           state = 5;
-          break;
         }
 
-        else if ((input >= '0') && (input <= '9'))
+        else if (isdigit(input))
         {
           returnByte(input);
           state = 5;
-          break;
         }
 
         else if (input == '-') {
           state = 6;
+        }
+
+        else {
+          RaiseError("digit expected", ErrorType_Syntax);
+        }
+
+        break;
+
+      // positive exponent, first digit
+      case 5:
+        if (isdigit(input)) {
+          exponent = exponent*10 + input;
           break;
         }
 
         else {
-          returnByte(input);
-          end = true;
-          break;
+          RaiseError("digit expected", ErrorType_Syntax);
         }
-
-      case 5:
-        if ((input >= '0') && (input <= '9')) {
-          resultE = resultE*10 + input;
+      // positive exponent, other digits
+      case 9:
+        if (isdigit(input)) {
+          exponent = exponent*10 + input;
           break;
         }
 
@@ -571,69 +573,131 @@ bool getNumber(){
           break;
         }
 
+      // negative exponent, first digit
       case 6:
-        if ((input >= '0') && (input <= '9')) {
-          resultE = resultE*10 + input;
+        if (isdigit(input)) {
+          exponent = exponent*10 + input;
           break;
+        }
 
+        else {
+          RaiseError("digit expected", ErrorType_Syntax);
+        }
+      // negative exponent, other digits
+      case 10:
+        if (isdigit(input)) {
+          exponent = exponent*10 + input;
         }
 
         else {
           state = 8;
           returnByte(input);
-          break;
         }
-//TODO
+        break;
+
+      // double process XeY
       case 7:
-        res = result * pow(2, resultE);
+        do {
+          result *= pow(2, exponent);
 
+          DataUnion uni;
+          uni.dvalue = result;
+          int i = constInsert(DataType_Double, uni);
 
-        DataUnion dataU;
-        dataU.dvalue = res;
-        int z = constInsert(DataType_Double, dataU);
+          if ( i == -1) RaiseError("constant table allocation error", ErrorType_Internal);
 
-        if ( z == -1) RaiseError("constant table allocation error", ErrorType_Internal);
+          ALLOC_PHRASEM(p);
+          p->table = TokenType_Constant;
+          p->d.index = i;
+          p->line = line;
 
-        ALLOC_PHRASEM(phr);
-        phr->table = TokenType_Constant;
-        phr->d.index = z;
-        phr->line = line;
+          #ifdef SCANNER_DEBUG
+            PrintPhrasem(p);
+          #endif
 
-        #ifdef SCANNER_DEBUG
-          PrintPhrasem(phr);
-        #endif
+          if( !AddToQueue(p) ) RaiseError ("queue allocation error", ErrorType_Internal);
 
-        if( !AddToQueue(phr) ) RaiseError ("queue allocation error", ErrorType_Internal);
-
-
+        } while(0);
         end = true;
         break;
 
+      // double process Xe-Y
       case 8:
-        res = result * pow(2, -resultE);
+        do {
+          result *= pow(2, -exponent);
 
-        DataUnion uni;
-        uni.dvalue = res;
-        int y = constInsert(DataType_Double, uni);
+          DataUnion uni;
+          uni.dvalue = result;
+          int i = constInsert(DataType_Double, uni);
 
-        if ( y == -1) RaiseError("constant table allocation error", ErrorType_Internal);
+          if ( i == -1) RaiseError("constant table allocation error", ErrorType_Internal);
 
-        ALLOC_PHRASEM(p);
-        p->table = TokenType_Constant;
-        p->d.index = y;
-        p->line = line;
+          ALLOC_PHRASEM(p);
+          p->table = TokenType_Constant;
+          p->d.index = i;
+          p->line = line;
 
-        #ifdef SCANNER_DEBUG
-          PrintPhrasem(p);
-        #endif
+          #ifdef SCANNER_DEBUG
+            PrintPhrasem(p);
+          #endif
 
-        if( !AddToQueue(p) ) RaiseError ("queue allocation error", ErrorType_Internal);
+          if( !AddToQueue(p) ) RaiseError ("queue allocation error", ErrorType_Internal);
 
+        } while(0);
         end = true;
         break;
-//TODO
+
+      // double process X.Y
+      case 11:
+        do {
+          DataUnion uni;
+          uni.dvalue = result;
+          int i = constInsert(DataType_Double, uni);
+
+          if ( i == -1) RaiseError("constant table allocation error", ErrorType_Internal);
+
+          ALLOC_PHRASEM(p);
+          p->table = TokenType_Constant;
+          p->d.index = i;
+          p->line = line;
+
+          #ifdef SCANNER_DEBUG
+            PrintPhrasem(p);
+          #endif
+
+          if( !AddToQueue(p) ) RaiseError ("queue allocation error", ErrorType_Internal);
+
+        } while(0);
+        end = true;
+        break;
+
+      // integer process
+      case 12:
+        do {
+          DataUnion uni;
+          uni.ivalue = (int)result;
+          int i = constInsert(DataType_Integer, uni);
+
+          if ( i == -1) RaiseError("constant table allocation error", ErrorType_Internal);
+
+          ALLOC_PHRASEM(p);
+          p->table = TokenType_Constant;
+          p->d.index = i;
+          p->line = line;
+
+          #ifdef SCANNER_DEBUG
+            PrintPhrasem(p);
+          #endif
+
+          if( !AddToQueue(p) ) RaiseError ("queue allocation error", ErrorType_Internal);
+
+        } while(0);
+        end = true;
+        break;
+
+      // error state
       default:
-        RaiseError("parsing not possible", ErrorType_Syntax);
+        RaiseError("bad internal state", ErrorType_Internal);
 
     }
   }

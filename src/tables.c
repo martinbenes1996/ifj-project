@@ -184,6 +184,13 @@ bool constTableResize(void)
     return true;
 }
 
+int constInsert(DataType type, DataUnion uni)
+{
+  (void)type;
+  (void)uni;
+  return 1;
+}
+
 /*TO DO:
     finding
     adding + resizing controll
