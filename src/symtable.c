@@ -73,7 +73,6 @@ typedef struct symbolTable{
     size_t numberOfParameters;
     struct paramFce *firstParam;
     SymbolTableFrame *variables;
-    struct symbolTable * next;
 } SymbolTable;
 /**
  * @brief   Structure representing stack made by function frames.
@@ -82,11 +81,22 @@ typedef struct symbolTable{
  */
 typedef struct symbolTableStack{
     SymbolTable * first;
-    size_t count;
+    size_t count;               // DESTROY
 } SymbolTableStack;
 
-//initialisation of symbol table stack
-static SymbolTableStack symtableStack = {.first = NULL, .count = 0};
+/**
+ * @brief   Structure representing hash table consisting of functions.
+ *
+ * This structure contains informations about declared functions.
+ */
+typedef struct functionHashTable{
+    size_t arr_size;
+    size_t count;
+    SymbolTable ** arr;
+} FunctionHashTable;
+
+//initialisation of function table
+static FunctionHashTable functionTable = {.arr_size = 0, .count = 0, .arr = NULL};
 
 
 
@@ -106,6 +116,10 @@ static SymbolTableStack symtableStack = {.first = NULL, .count = 0};
 #define STARTING_CHUNK 10   //size of initialised arrays
 #define PORTION_OF_TABLE 2  //when should table resize (count > arr_size/PORTION_OF_TABLE)
 #define RESIZE_RATE 2       //how much should it resize
+
+#define STARTING_CHUNK_FUNCTIONS 10   //size of initialised arrays
+#define PORTION_OF_TABLE_FUNCTIONS 2  //when should table resize (count > arr_size/PORTION_OF_TABLE)
+#define RESIZE_RATE_FUNCTIONS 2       //how much should it resize
 
 #endif
 
@@ -261,6 +275,35 @@ int varInsert(const char * name)
     return ;
 }*/
                 /*-----HASH FUNCTIONS-----*/
+
+unsigned int hashFunctionCentral(const char * name)
+{
+    unsigned int hashNumber;
+
+    if(name == NULL)
+    {
+        EndHash("Hash: hashFunctionCentral: pointer to NULL as a name of function", ErrorType_Internal);
+        return 0;
+    }
+
+    hashNumber = hashFunction(name) % functionTable.arr_size;
+
+    //maximal number of rehashes is the size of table -1
+    for(size_t i = 0; i < (functionTable.arr_size - 1) ;++i)
+    {
+        //not found or found an empty spot to save function
+        if(functionTable.arr[hashNumber] == NULL)
+            return hashNumber;
+        //found a record
+        else if(strcmp(functionTable.arr[hashNumber]->name, name) == 0)
+            return hashNumber;
+        //found a different record -> continues finding
+        else
+            hashNumber = rehashFunction(hashNumber) % functionTable.arr_size;
+    }
+    //table cant be full, it hopefully resizes automatically so it should not reach this
+    return hashNumber;
+}
 
 unsigned int hashCentral(SymbolTableFrame * frame, const char * name)
 {
@@ -538,85 +581,279 @@ bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type
 */
 
 
-/*-----------------------------------------------------------*/
+/*----------------------------------------------------------------------------------------------*/
 
-                    //STACK FUNCTIONS
+                    //FUNCTION TABLE FUNCTIONS
 
-    /*WILL ADD MORE WHEN I REALISE WHAT YOU WANT FROM ME*/
 
-/**
- * @brief   Searches for a function in a stack.
- *
- * Returns NULL when unsuccessful or pointer to function frame
- * @param functionName  name of the function
- * @returns pointer/NULL.
- */
-SymbolTable * findFunction(char * name)
+
+/*----------------------------------------------------------------------------------------------*/
+
+SymbolTable ** functionTableInit(size_t size)
 {
-    SymbolTable * pom = symtableStack.first;
+    SymbolTable ** array = NULL;
 
-    while(pom != NULL)
+    //allocation of the table
+    if( (array = malloc(sizeof(SymbolTable *) * size)) != NULL)
     {
-        if(!strcmp(pom->name, name)) return pom;
-        pom = pom->next;
+        //initialisation of the table
+        for(size_t i = 0;i < size;++i)
+            array[i] = NULL;
     }
-    return NULL;
-}
-
-/**
- * @brief   Inserts a function symbol table onto stack.
- *
- * This function creates a symbol table and initialises it.
- * Returns false when unsuccessful or true
- * @param functionName  name of the function
- * @returns True/false.
- */
-bool pushOntoSymtableStack(char * functionName)
-{
-    //there cannot be two functions with the same name
-    if(findFunction(functionName) != NULL) return false;
-
-    SymbolTable *symtable;
-    symtable = malloc(sizeof(SymbolTable));
-    if(symtable == NULL)
+    else
     {
-        EndHash("Symtable stack: pushOntoSymtableStack: could not allocate memory", ErrorType_Internal);
-        return false;
+        EndHash("functionTable: functionTableInit: could not allocate memory", ErrorType_Internal);
+        return NULL;
     }
-
-    //initialising symbol table of a function --------------------------
-    symtable->type = DataType_Unknown;
-    symtable->firstParam = NULL;
-    symtable->numberOfParameters = 0;
-
-    //allocating memory for a function name
-    symtable->name = malloc(sizeof(char) * strlen(functionName) + sizeof(char));
-    if(symtable->name == NULL)
-    {
-        EndHash("Symtable stack: pushOntoSymtableStack: could not allocate memory for a symbol name",
-                                                                                    ErrorType_Internal);
-        return false;
-    }
-    strcpy(symtable->name, functionName);
-
-    //initialising hash table of variables
-    symtable->variables = frameInit(STARTING_CHUNK);
-    if(symtable->variables == NULL)
-    {
-        EndHash("Symtable stack: pushOntoSymtableStack: could not initialise frame", ErrorType_Internal);
-        return false;
-    }
-
-    //connecting stack -------------------------------------------------
-    symtable->next = symtableStack.first;
-    symtableStack.first = symtable;
-    symtableStack.count++;
 
     #ifdef SYMTABLE_DEBUG
-        debug("Frame was created and pushed onto a symtable stack.");
+        debug("New array of functions has been initialised.");
+    #endif
+    return array;
+}
+
+SymbolTable * functionFrameInit()
+{
+    SymbolTable * frame = NULL;
+
+    if( (frame = malloc(sizeof(SymbolTable))) != NULL)
+    {
+        //initialisation of the frame
+        frame->firstParam = NULL;
+        frame->name = NULL;
+        frame->variables = frameInit(STARTING_CHUNK);
+        frame->numberOfParameters = 0;
+        frame->type = DataType_Unknown;
+    }
+    else
+    {
+        EndHash("functionTable: functionFrameInit: could not allocate memory", ErrorType_Internal);
+        return NULL;
+    }
+
+    #ifdef SYMTABLE_DEBUG
+        debug("New function has been initialised.");
+    #endif
+    return array;
+}
+
+void functionTableFree(size_t size)
+{
+    if(functionTable->arr == NULL) return;
+
+    //frees functions in table
+    for(size_t i = 0;i < size;++i)
+        functionFrameFree(functionTable.arr[i]);
+
+    //destroys function table
+    free(functionTable.arr);
+
+    #ifdef SYMTABLE_DEBUG
+        debug("Function table was freed.");
+    #endif
+    return;
+}
+
+void functionFrameFree(SymbolTable * frame)
+{
+    if(frame == NULL) return;
+
+    //freeing the list of parametres
+    while(frame->firstParam != NULL)
+    {
+        paramFce * pom = frame->firstParam;
+        frame->firstParam = frame->firstParam->nextParam;
+        free(pom->name);
+        free(pom);
+    }
+
+    //freeing name and variable table
+    free(frame->name);
+    frameFree(variables);
+
+    //destroys a frame
+    free(frame);
+
+    #ifdef SYMTABLE_DEBUG
+        debug("Function frame was freed.");
+    #endif
+    return;
+}
+
+SymbolTableFrame * functionTableResize(size_t newsize, SymbolTable ** array2)
+{
+    SymbolTable ** array = NULL;
+    unsigned int hashNumber;
+    size_t oldSize = functionTable.arr_size;
+    functionTable.arr_size = newsize;
+
+    if(array2 == NULL) return NULL;
+
+    if((array = functionTableInit(newsize)) != NULL)
+    {
+        //going through all functions in table and copying function pointers
+        for(size_t i=0;i < oldSize;++i)
+        {
+            /*computes a new hash in a new frame*/
+            if(array2[i] == NULL) continue;
+            hashNumber = hashFunctionCentral(array2[i]->name);
+
+            array[hashNumber] = array2[i];
+            array2[i] = NULL;
+        }
+        //destroys old table
+        functionTableFree(oldSize);
+    }
+    else
+    {
+        EndHash("Function Frame: functionTableResize: could not resize table", ErrorType_Internal);
+    }
+
+    #ifdef SYMTABLE_DEBUG
+        debug("Function table was resized.");
+    #endif
+    return array;
+}
+
+SymbolTable * FindFunction(const char * name)
+{
+    //not allocated array
+    if(functionTable->arr_size == 0) return NULL;
+
+    size_t hashNumber;
+
+    if(name == NULL) return NULL;
+    hashNumber = hashFunctionCentral(name);
+
+    if(functionTable->arr[hashNumber] == NULL) return NULL; //not found
+        else return functionTable->arr[hashNumber];         //found
+
+    return functionTable->arr[hashNumber];
+}
+
+bool AddFunction(const char * name)
+{
+    //initialisation when used for the first time
+    if(functionTable->arr_size == 0) functionTableInit(STARTING_CHUNK_FUNCTIONS);
+
+    if(name == NULL)
+    {
+        EndHash("FunctionTable: AddFunction: name of symbol is NULL", ErrorType_Internal);
+        return false;
+    }
+
+    SymbolTable * function = NULL;
+    size_t hashNumber;
+
+    hashNumber = hashFunctionCentral(name);
+
+    if(functionTable->arr[hashNumber] == NULL) //not found -> can be added
+    {
+        functionTable->arr[hashNumber] = functionFrameInit();
+
+        if((functionTable->arr[hashNumber]->name = malloc(sizeof(char) * strlen(name)
+                                                    + sizeof(char))) != NULL)
+        {
+            strcpy(frame->arr[hashNumber].name, name);
+        }
+            else
+            {
+                EndHash("SymTabFrame: frameAddSymbol: could not allocate memory for symbol name",
+                                    ErrorType_Internal);
+                return false;
+            }
+    }
+        else return false; //found -> cant be added
+
+    //increase the amount of symbols in table and resizes if needed
+    frame->count++;
+    if(frame->count > frame->arr_size/PORTION_OF_TABLE)
+        *pframe = frameResize(RESIZE_RATE * frame->arr_size, frame);
+
+    #ifdef SYMTABLE_DEBUG
+        debug("New symbol added into frame.");
     #endif
     return true;
 }
+
+bool frameAddSymbolType(SymbolTableFrame * frame, const char * name, DataType type)
+{
+    struct variable * var;
+    var = frameFindSymbol(frame, name);
+    if(var == NULL) return false;   //symbol not found
+
+    if(var->type == DataType_Unknown)   //if symbol type has not been set yet, do it
+        var->type = type;
+    else return false;  //cannot retype symbol
+
+    #ifdef SYMTABLE_DEBUG
+        debug("Symbol type was added.");
+    #endif
+    return true;
+}
+/*MIGHT NOT BE NEEDED, SYMBOLS DONT NEED VALUE
+bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type, DataUnion value)
+{
+    struct variable * var = NULL;
+
+    //cannot change value if there is no symbol
+//if((var = frameFind(frame, name)) == NULL) return false;
+    (void *)name;
+    (void *)frame;
+    //types must be same
+    if(var->type != type) return false;
+
+    //Changes the value
+    if(type == DataType_Integer || type == DataType_Function)
+        var->value.ivalue = value.ivalue;
+    else if(type == DataType_Double)
+        var->value.dvalue = value.dvalue;
+    else
+        var->value.svalue = value.svalue;
+
+    return true;
+}
+*/
+
+
+/*-----------------------------------------------------------*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * @brief   Sets datatype of a function symbol on top of the stack.
  *
@@ -836,6 +1073,89 @@ void clearSymtableStack()
 
 
 #ifdef skladka
+
+
+
+    /*WILL ADD MORE WHEN I REALISE WHAT YOU WANT FROM ME*/
+
+/**
+ * @brief   Searches for a function in a stack.
+ *
+ * Returns NULL when unsuccessful or pointer to function frame
+ * @param functionName  name of the function
+ * @returns pointer/NULL.
+ */
+SymbolTable * findFunction(char * name)
+{
+    SymbolTable * pom = symtableStack.first;
+
+    while(pom != NULL)
+    {
+        if(!strcmp(pom->name, name)) return pom;
+        pom = pom->next;
+    }
+    return NULL;
+}
+
+/**
+ * @brief   Inserts a function symbol table onto stack.
+ *
+ * This function creates a symbol table and initialises it.
+ * Returns false when unsuccessful or true
+ * @param functionName  name of the function
+ * @returns True/false.
+ */
+bool pushOntoSymtableStack(char * functionName)
+{
+    //there cannot be two functions with the same name
+    if(findFunction(functionName) != NULL) return false;
+
+    SymbolTable *symtable;
+    symtable = malloc(sizeof(SymbolTable));
+    if(symtable == NULL)
+    {
+        EndHash("Symtable stack: pushOntoSymtableStack: could not allocate memory", ErrorType_Internal);
+        return false;
+    }
+
+    //initialising symbol table of a function --------------------------
+    symtable->type = DataType_Unknown;
+    symtable->firstParam = NULL;
+    symtable->numberOfParameters = 0;
+
+    //allocating memory for a function name
+    symtable->name = malloc(sizeof(char) * strlen(functionName) + sizeof(char));
+    if(symtable->name == NULL)
+    {
+        EndHash("Symtable stack: pushOntoSymtableStack: could not allocate memory for a symbol name",
+                                                                                    ErrorType_Internal);
+        return false;
+    }
+    strcpy(symtable->name, functionName);
+
+    //initialising hash table of variables
+    symtable->variables = frameInit(STARTING_CHUNK);
+    if(symtable->variables == NULL)
+    {
+        EndHash("Symtable stack: pushOntoSymtableStack: could not initialise frame", ErrorType_Internal);
+        return false;
+    }
+
+    //connecting stack -------------------------------------------------
+    symtable->next = symtableStack.first;
+    symtableStack.first = symtable;
+    symtableStack.count++;
+
+    #ifdef SYMTABLE_DEBUG
+        debug("Frame was created and pushed onto a symtable stack.");
+    #endif
+    return true;
+}
+
+
+
+
+
 /*************************************************************/
 
                     //FUNCTION TABLE
