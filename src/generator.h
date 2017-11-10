@@ -46,6 +46,12 @@ void G_Print();
 /** @brief Announces input command to generator. */
 void G_Input();
 
+/** @brief Announces logic to generator. */
+void G_Logic();
+
+/** @brief Announces expression to generator. */
+void G_Expression();
+
 /** @} */
 /*-----------------------------------------------------------*/
 

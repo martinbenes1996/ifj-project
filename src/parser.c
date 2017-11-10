@@ -15,6 +15,7 @@
 #include <unistd.h>
 
 #include "err.h"
+#include "generator.h"
 #include "io.h"
 #include "parser.h"
 #include "pedant.h"
@@ -694,6 +695,10 @@ bool LogicParse()
     debug("Expression parse.");
   #endif
 
+  // announce generator the condition
+  G_Logic();
+
+  G_Expression();
   if(!ExpressionParse())
   {
     // error
@@ -730,6 +735,7 @@ bool LogicParse()
     // error
   }
 
+  G_Expression();
   if(!ExpressionParse())
   {
       // error

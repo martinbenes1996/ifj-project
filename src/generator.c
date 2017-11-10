@@ -63,5 +63,22 @@ void G_Input()
     debug("Generate input");
   #endif
 
-  
+
+}
+
+void G_Logic()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate logic");
+  #endif
+
+
+}
+
+void G_Expression()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate expression");
+  #endif
+
 }
