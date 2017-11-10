@@ -555,16 +555,17 @@ bool ExpressionParse()
     };
 
     char x;
+    bool tokenChanged = false;
     short int endExprParsing = 0;
     long int tempIndex;
     TokenType tempType;
     bool failure = false;
-    Phrasem p;//pozdeji zrusit
+    //Phrasem p;//pozdeji zrusit
 
     PushOntoEPStack(op_$);     //start of the stack
 
     //get token hopefully
-    //Phrasem p = CheckQueue(p);
+    Phrasem p = CheckQueue(p);
 
     do
     {
@@ -578,7 +579,7 @@ bool ExpressionParse()
             // ...
 
             //x is operation from array [top of stack][number of operator in token]
-            x = ExprParseArray[ExprOnTopOfEPStack()][op_i];
+            x = ExprParseArray[(int)ExprOnTopOfEPStack()][op_i];
             if(x == '<')
             {
                 if(LookEAheadEPStack())         //E correction  <E+ ...
@@ -608,7 +609,7 @@ bool ExpressionParse()
         else if(p->table == TokenType_Operator)
         {
             //x is operation from array [top of stack][number of operator in token]
-            x = ExprParseArray[ExprOnTopOfEPStack()][p->d.index];
+            x = ExprParseArray[(int)ExprOnTopOfEPStack()][p->d.index];
             if(x == '<')
             {
                 if(LookEAheadEPStack())         //E correction  <E+ ...
@@ -670,8 +671,9 @@ bool ExpressionParse()
             tempType = p->table;
             p->d.index = op_$;
             p->table = TokenType_Operator;
+            tokenChanged = true;
         }
-        if((endExprParsing || failure) && p->d.index == op_$)
+        if((endExprParsing || failure) && tokenChanged)
         {   //restoring tokens value and ending analysis
             p->d.index = tempIndex;
             p->table = tempType;
@@ -680,7 +682,9 @@ bool ExpressionParse()
     }while(!endExprParsing && !failure);
 
 
-
+    //poslat stack dale
+    ClearStack(temporaryOpStack);   //should be empty. If its not -> error.
+    ClearEPStack();                 //destroying EPStack
 
 
     return !failure;
