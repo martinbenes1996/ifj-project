@@ -506,7 +506,7 @@ int checkEPRules(Stack returnStack, Stack temporaryOpStack)
         PushOntoStack(returnStack, PopFromStack(temporaryOpStack));
         return 1;
     }
-    else if(LookTripleAheadEPStack(OpenBracket, op_E, CloseBracket))
+    else if(LookTripleAheadEPStack(CloseBracket, op_E, OpenBracket))
     {
         MODIFY_STACK();
         return 1;
@@ -625,7 +625,8 @@ bool ExpressionParse()
                     PushOntoEPStack(p->d.index);    //operator
 
                 }
-                PushOntoStack(temporaryOpStack, p); //pushing operator on temp stack
+                if(p->d.index != 5 && p->d.index != 6)
+                    PushOntoStack(temporaryOpStack, p); //pushing operator (not brackets) on temp stack
                 //p = CheckQueue(p);
             }
             else if(x == '>')
@@ -653,7 +654,7 @@ bool ExpressionParse()
             else if(x == '=')
             {
                 PushOntoEPStack(p->d.index);
-                PushOntoStack(temporaryOpStack, p);
+                //PushOntoStack(temporaryOpStack, p);   not for brackets!
                 //p = CheckQueue(p);
             }
             else    // x == '#'
