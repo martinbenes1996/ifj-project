@@ -17,12 +17,12 @@
 #include <string.h>
 #include <stdbool.h>
 
-    /*Work in progress, read with caution.*/
+
 
 /*----------------------------------------------------------------*/
 
 
-                //VARIABLE TABLE DATA - may be useless
+                    //VARIABLE DATA
 
 /**
  * @brief   Structure representing a variable (+ functions but i dont want to rename everything).
@@ -36,7 +36,7 @@ struct variable{
 };
 /*-----------------------------------------------------------*/
 
-                //STACK OF FRAMES DATA
+                //SYMBOL TABLE DATA
 
 /**
  * @brief   Structure representing a hash table of variables of a function.
@@ -53,16 +53,6 @@ typedef struct symbolTableFrame{
 } SymbolTableFrame;
 
 /**
- * @brief   Structure representing type and name of parametres.
- *
- * List.
- */
-struct paramFce{
-    DataType type;
-    char * name;        //do i need to know name of the parameter?
-    struct paramFce *nextParam;
-};
-/**
  * @brief   Structure representing a function frame.
  *
  * This structure contains type, name and parametres of a function.
@@ -74,15 +64,6 @@ typedef struct symbolTable{
     struct paramFce *firstParam;
     SymbolTableFrame *variables;
 } SymbolTable;
-/**
- * @brief   Structure representing stack made by function frames.
- *
- * This structure contains informations about declared functions.
- */
-typedef struct symbolTableStack{
-    SymbolTable * first;
-    size_t count;               // DESTROY
-} SymbolTableStack;
 
 /**
  * @brief   Structure representing hash table consisting of functions.
@@ -583,9 +564,24 @@ bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type
 
 /*----------------------------------------------------------------------------------------------*/
 
+                    //FUNCTION TABLE DECLARATIONS
+
+SymbolTable ** functionTableInit(size_t size);
+
+SymbolTable * functionFrameInit();
+
+void functionTableFree(size_t size);
+
+void functionFrameFree(SymbolTable * frame);
+
+void functionTableResize(size_t newsize, SymbolTable ** array2);
+
+SymbolTable * findFunction(const char * name);
+
+
                     //FUNCTION TABLE FUNCTIONS
 
-#ifdef fff
+
 
 /*----------------------------------------------------------------------------------------------*/
 
@@ -634,12 +630,12 @@ SymbolTable * functionFrameInit()
     #ifdef SYMTABLE_DEBUG
         debug("New function has been initialised.");
     #endif
-    return array;
+    return frame;
 }
 
 void functionTableFree(size_t size)
 {
-    if(functionTable->arr == NULL) return;
+    if(functionTable.arr == NULL) return;
 
     //frees functions in table
     for(size_t i = 0;i < size;++i)
@@ -647,6 +643,10 @@ void functionTableFree(size_t size)
 
     //destroys function table
     free(functionTable.arr);
+
+    functionTable.arr_size = 0;
+    functionTable.count = 0;
+    functionTable.arr = NULL;
 
     #ifdef SYMTABLE_DEBUG
         debug("Function table was freed.");
@@ -661,7 +661,7 @@ void functionFrameFree(SymbolTable * frame)
     //freeing the list of parametres
     while(frame->firstParam != NULL)
     {
-        paramFce * pom = frame->firstParam;
+        struct paramFce * pom = frame->firstParam;
         frame->firstParam = frame->firstParam->nextParam;
         free(pom->name);
         free(pom);
@@ -669,7 +669,7 @@ void functionFrameFree(SymbolTable * frame)
 
     //freeing name and variable table
     free(frame->name);
-    frameFree(variables);
+    frameFree(frame->variables);
 
     //destroys a frame
     free(frame);
@@ -680,14 +680,14 @@ void functionFrameFree(SymbolTable * frame)
     return;
 }
 
-SymbolTableFrame * functionTableResize(size_t newsize, SymbolTable ** array2)
+void functionTableResize(size_t newsize, SymbolTable ** array2)
 {
     SymbolTable ** array = NULL;
     unsigned int hashNumber;
     size_t oldSize = functionTable.arr_size;
     functionTable.arr_size = newsize;
 
-    if(array2 == NULL) return NULL;
+    if(array2 == NULL) return;
 
     if((array = functionTableInit(newsize)) != NULL)
     {
@@ -708,33 +708,34 @@ SymbolTableFrame * functionTableResize(size_t newsize, SymbolTable ** array2)
     {
         EndHash("Function Frame: functionTableResize: could not resize table", ErrorType_Internal);
     }
+    functionTable.arr = array; //saves new array
 
     #ifdef SYMTABLE_DEBUG
         debug("Function table was resized.");
     #endif
-    return array;
+    return;
 }
 
-SymbolTable * FindFunction(const char * name)
+SymbolTable * findFunction(const char * name)
 {
     //not allocated array
-    if(functionTable->arr_size == 0) return NULL;
+    if(functionTable.arr_size == 0) return NULL;
 
     size_t hashNumber;
 
     if(name == NULL) return NULL;
     hashNumber = hashFunctionCentral(name);
 
-    if(functionTable->arr[hashNumber] == NULL) return NULL; //not found
-        else return functionTable->arr[hashNumber];         //found
+    if(functionTable.arr[hashNumber] == NULL) return NULL; //not found
+        else return functionTable.arr[hashNumber];         //found
 
-    return functionTable->arr[hashNumber];
+    return functionTable.arr[hashNumber];
 }
-/*
-bool AddFunction(const char * name)
+
+bool addFunction(const char * name)
 {
     //initialisation when used for the first time
-    if(functionTable->arr_size == 0) functionTableInit(STARTING_CHUNK_FUNCTIONS);
+    if(functionTable.arr_size == 0) functionTable.arr = functionTableInit(STARTING_CHUNK_FUNCTIONS);
 
     if(name == NULL)
     {
@@ -742,254 +743,317 @@ bool AddFunction(const char * name)
         return false;
     }
 
-    SymbolTable * function = NULL;
-    size_t hashNumber;
+    //increase the amount of symbols in table and resizes if needed
+    if((++functionTable.count) > functionTable.arr_size/PORTION_OF_TABLE_FUNCTIONS)
+        functionTableResize(RESIZE_RATE_FUNCTIONS * functionTable.arr_size, functionTable.arr);
 
+
+    size_t hashNumber;
     hashNumber = hashFunctionCentral(name);
 
-    if(functionTable->arr[hashNumber] == NULL) //not found -> can be added
+    if(functionTable.arr[hashNumber] == NULL) //not found -> can be added
     {
-        functionTable->arr[hashNumber] = functionFrameInit();
+        functionTable.arr[hashNumber] = functionFrameInit();
 
-        if((functionTable->arr[hashNumber]->name = malloc(sizeof(char) * strlen(name)
+        if((functionTable.arr[hashNumber]->name = malloc(sizeof(char) * strlen(name)
                                                     + sizeof(char))) != NULL)
         {
-            strcpy(frame->arr[hashNumber].name, name);
+            strcpy(functionTable.arr[hashNumber]->name, name);
         }
-            else
-            {
-                EndHash("SymTabFrame: frameAddSymbol: could not allocate memory for symbol name",
+        else
+        {
+            EndHash("FunctionTable: AddFunction: could not allocate memory for symbol name",
                                     ErrorType_Internal);
-                return false;
-            }
+            return false;
+        }
     }
         else return false; //found -> cant be added
 
-    //increase the amount of symbols in table and resizes if needed
-    frame->count++;
-    if(frame->count > frame->arr_size/PORTION_OF_TABLE)
-        *pframe = frameResize(RESIZE_RATE * frame->arr_size, frame);
-
     #ifdef SYMTABLE_DEBUG
-        debug("New symbol added into frame.");
+        debug("New function added into table.");
     #endif
     return true;
 }
-*/
-bool frameAddSymbolType(SymbolTableFrame * frame, const char * name, DataType type)
-{
-    struct variable * var;
-    var = frameFindSymbol(frame, name);
-    if(var == NULL) return false;   //symbol not found
 
-    if(var->type == DataType_Unknown)   //if symbol type has not been set yet, do it
-        var->type = type;
-    else return false;  //cannot retype symbol
-
-    #ifdef SYMTABLE_DEBUG
-        debug("Symbol type was added.");
-    #endif
-    return true;
-}
-/*MIGHT NOT BE NEEDED, SYMBOLS DONT NEED VALUE
-bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type, DataUnion value)
-{
-    struct variable * var = NULL;
-
-    //cannot change value if there is no symbol
-//if((var = frameFind(frame, name)) == NULL) return false;
-    (void *)name;
-    (void *)frame;
-    //types must be same
-    if(var->type != type) return false;
-
-    //Changes the value
-    if(type == DataType_Integer || type == DataType_Function)
-        var->value.ivalue = value.ivalue;
-    else if(type == DataType_Double)
-        var->value.dvalue = value.dvalue;
-    else
-        var->value.svalue = value.svalue;
-
-    return true;
-}
-*/
 
 
 /*-----------------------------------------------------------*/
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**
- * @brief   Sets datatype of a function symbol on top of the stack.
+ * @brief   Sets datatype of a function.
  *
  * Returns false when unsuccessful or true
- * @param type  type of the function
+ * @param functionName  name of the function
+ * @param type          type of the function
  * @returns True/false.
  */
-bool setFunctionType(DataType type)
+bool setFunctionType(const char * functionName, DataType type)
 {
-    if(symtableStack.first == NULL) return false;
-    symtableStack.first->type = type;
+    SymbolTable * function;
+    function = findFunction(functionName);
+    if(function == NULL)
+    {
+        //error?
+        return false;
+    }
+    else
+    {
+        function->type = type;
+    }
 
     #ifdef SYMTABLE_DEBUG
-        debug("Setting type of a function %s.", symtableStack.first->name);
+        debug("Setting type of a function %s.", functionName);
     #endif
     return true;
 }
 /**
- * @brief   finds a parameter of a function.
+ * @brief   Finds datatype of a function.
  *
- * Returns pointer to a parameter when successful or NULL
  * @param functionName  name of the function
- * @param paramName  name of the parameter
+ * @returns success -> DataType, failure -> datatype_unknown.
+ */
+DataType findFunctionType(const char * functionName)
+{
+    SymbolTable * function;
+    function = findFunction(functionName);
+    if(function == NULL)
+    {
+        //error?
+        return DataType_Unknown;
+    }
+
+    #ifdef SYMTABLE_DEBUG
+        debug("Finding type of a function %s.", functionName);
+    #endif
+    return function->type;
+}
+/**
+ * @brief   Finds number of parametres of a function.
+ *
+ * Returns 0 when unsuccessful or number (!Cannot detect if function exists!)
+ * @param functionName  name of the function
+ * @returns success -> number of parametres, failure -> 0.
+ */
+size_t findFunctionNumberOfParametres(const char * functionName)
+{
+    SymbolTable * function;
+    function = findFunction(functionName);
+    if(function == NULL)
+    {
+        //error?
+        return 0;
+    }
+
+    #ifdef SYMTABLE_DEBUG
+        debug("Finding number of parametres of a function %s.", functionName);
+    #endif
+    return function->numberOfParameters;
+}
+/**
+ * @brief   finds all parameters of a function.
+ *
+ * Returns pointer to a list of parameters or NULL
+ * @param functionName  name of the function
  * @returns pointer or NULL.
  */
-struct paramFce * findParameter(char * functionName, char * paramName)
+struct paramFce * findFunctionParameters(char * functionName)
 {
-    SymbolTable * pom;
-    pom = findFunction(functionName);
+    #ifdef SYMTABLE_DEBUG
+        debug("Looking for parametres");
+    #endif
 
-    struct paramFce * pom2 = pom->firstParam;
-    while(pom2 != NULL)
+    SymbolTable * function;
+    function = findFunction(functionName);
+    if(function == NULL)
     {
-        if(strcmp(pom2->name, paramName) == 0) return pom2;
-        pom2 = pom2->nextParam;
+        //error?
+        return NULL;
     }
-
-    return pom2;    //pom2 will be NULL here
+    return function->firstParam;
 }
-
 /**
- * @brief   Adds a parameter of a function on top of the stack.
+ * @brief   Counts list length.
+ *
+ * @param parametres  pointer to the list of parametres
+ * @returns number of parametres.
+ */
+size_t listLength(struct paramFce * parametres)
+{
+    size_t i = 0;
+
+    while(parametres != NULL)
+    {
+        i++;
+        parametres = parametres->nextParam;
+    }
+    return i;
+}
+/**
+ * @brief   Adds a parameter of a function and saves them as variables.
  *
  * Returns false when unsuccessful or true
- * @param name  name of the parameter
- * @param type  type of the parameter
+ * @param functionName  name of the function
+ * @param type          type of the parameter
  * @returns True/false.
  */
-//it is a list of parameters in order from the first added to the last
-bool addFunctionParameter(char * name, DataType type)
+bool addFunctionParameters(const char * functionName, struct paramFce * parametres)
 {
-    //function cannot have two parameters with same name
-    if(findParameter(symtableStack.first->name, name) != NULL) return false;
-
-    if(symtableStack.first == NULL) return false;
-
-    //allocation of a new list entity
-    struct paramFce ** pom = &symtableStack.first->firstParam;
-    while(*pom != NULL) pom = &(*pom)->nextParam;
-    *pom = malloc(sizeof(struct paramFce));
-    if(*pom == NULL)
+    SymbolTable * function;
+    function = findFunction(functionName);
+    if(function == NULL)
     {
-        EndHash("Symtable stack: addFunctionParameter: could not allocate memory", ErrorType_Internal);
+        //error?
         return false;
     }
-    //setting parameter info
-    (*pom)->nextParam = NULL;
-    (*pom)->type = type;
-    (*pom)->name = malloc(sizeof(char) * strlen(name) + sizeof(char));
-    if((*pom)->name == NULL)
+    else
     {
-        EndHash("Symtable stack: addFunctionParameter: could not allocate memory", ErrorType_Internal);
-        return false;
-    }
-    strcpy((*pom)->name, name);
+        if(function->firstParam != NULL) return false;
+        //inserts parametres into list
+        function->firstParam = parametres;
+        function->numberOfParameters = listLength(parametres);
 
-    symtableStack.first->numberOfParameters++;
+        //inserts parametres into variable array
+        struct paramFce * pom = function->firstParam;
+        while(pom != NULL)
+        {
+            if(!addVariable(function->name, pom->name)) return false;
+            if(!addVariableType(function->name, pom->name, pom->type)) return false;
+            pom = pom->nextParam;
+        }
+    }
 
     #ifdef SYMTABLE_DEBUG
-        debug("Adding parameter into function %s.", symtableStack.first->name);
+        debug("Adding parameters into function %s.", functionName);
     #endif
     return true;
 }
 /**
- * @brief   Adds a variable of a function (that is on top of the stack).
+ * @brief   Adds a variable into a  function.
  *
  * Returns false when unsuccessful or true
- * @param name  name of the variable
+ * @param functionName  name of the function
+ * @param name          name of the variable
  * @returns True/false.
  */
-bool addVariable(char * name)
+bool addVariable(const char * functionName, const char * name)
 {
-    if(symtableStack.first == NULL) return false;
+    SymbolTable * function;
+    function = findFunction(functionName);
+    if(function == NULL)
+    {
+        //error?
+        return false;
+    }
 
     #ifdef SYMTABLE_DEBUG
-        debug("Adding variable into function %s.", symtableStack.first->name);
+        debug("Adding variable into function %s.", functionName);
     #endif
 
-    return frameAddSymbol( &symtableStack.first->variables, name);
+    return frameAddSymbol( &function->variables, name);
 }
 /**
- * @brief   Adds a variable type (of a function on top of the stack).
+ * @brief   Adds a variable type.
  *
  * Returns false when unsuccessful or true
- * @param name  name of the variable
- * @param type  type of the variable
+ * @param functionName  name of the function
+ * @param name          name of the variable
+ * @param type          type of the variable
  * @returns True/false.
  */
-bool addVariableType(char * name, DataType type)
+bool addVariableType(const char * functionName, const char * name, DataType type)
 {
-    if(symtableStack.first == NULL) return false;
+    SymbolTable * function;
+    function = findFunction(functionName);
+    if(function == NULL)
+    {
+        //error?
+        return false;
+    }
 
     #ifdef SYMTABLE_DEBUG
-        debug("Adding the type of %s in function %s.", name, symtableStack.first->name);
+        debug("Adding the type of %s in function %s.", name, functionName);
     #endif
 
-    return frameAddSymbolType(symtableStack.first->variables, name, type);
+    return frameAddSymbolType(function->variables, name, type);
 }
 /**
- * @brief   Finds a variable in a function on top of the stack.
+ * @brief   Finds a variable type.
+ *
+ * @param functionName  name of the function
+ * @param name          name of the variable
+ * @returns success -> DataType, failure -> datatype_unknown.
+ */
+DataType findVariableType(const char * functionName, const char * name)
+{
+    SymbolTable * function;
+    function = findFunction(functionName);
+    if(function == NULL)
+    {
+        //error?
+        return DataType_Unknown;
+    }
+    struct variable * var;
+    var = frameFindSymbol(function->variables, name);
+    if(var == NULL)
+    {
+        //error?
+        return DataType_Unknown;
+    }
+
+    #ifdef SYMTABLE_DEBUG
+        debug("Finding the type of %s in function %s.", name, functionName);
+    #endif
+
+    return var->type;
+}
+/**
+ * @brief   Finds a variable in a function.
  *
  * Returns false when unsuccessful or true
- * @param name  name of the variable
+ * @param functionName  name of the function
+ * @param name          name of the variable
  * @returns True/false.
  */
-bool findVariable(char * name)
+bool findVariable(const char * functionName, const char * name)
 {
-    if(symtableStack.first == NULL) return false;
+    SymbolTable * function;
+    function = findFunction(functionName);
+    if(function == NULL)
+    {
+        //error?
+        return false;
+    }
 
     #ifdef SYMTABLE_DEBUG
         debug("Finding variable %s in function %s.", name, symtableStack.first->name);
     #endif
 
-    if( frameFindSymbol(symtableStack.first->variables, name) == NULL ) return false;
+    if( frameFindSymbol(function->variables, name) == NULL ) return false;
     return true;
 }
+/**
+ * @brief   Finds a function in the table.
+ *
+ * Returns false when unsuccessful or true
+ * @param functionName  name of the function
+ * @returns True/false.
+ */
+bool findFunctionInTable(const char * functionName)
+{
+    if(findFunction(functionName) == NULL) return false;
+        else return true;
+}
+
+
+
+
+
+
+
+
+#ifdef fff
+
 /**
  * @brief   Destroys parameters of a function.
  *
