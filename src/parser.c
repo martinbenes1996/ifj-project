@@ -700,7 +700,35 @@ bool LogicParse()
   }
 
   // parse the sign
-  // ...
+  Phrasem p = CheckQueue(p);
+  if( isOperator(p, "=") )
+  {
+    // =
+  }
+  else if( isOperator(p, "<") )
+  {
+    // <
+  }
+  else if( isOperator(p, ">") )
+  {
+    // >
+  }
+  else if( isOperator(p, "<>") )
+  {
+    // <>
+  }
+  else if( isOperator(p, "<=") )
+  {
+    // <=
+  }
+  else if( isOperator(p, ">=") )
+  {
+
+  }
+  else
+  {
+    // error
+  }
 
   if(!ExpressionParse())
   {
