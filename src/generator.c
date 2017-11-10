@@ -74,6 +74,7 @@ void G_FunctionCall()
     debug("Generate function call");
   #endif
 
+  AssignGState(State_FunctionCall);
 
 }
 
@@ -82,7 +83,7 @@ void G_Condition()
   #ifdef GENERATOR_DEBUG
     debug("Generate condition");
   #endif
-
+  AssignGState(State_Condition);
 
 }
 

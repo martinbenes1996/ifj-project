@@ -22,21 +22,21 @@
 typedef struct queue_item {
   Phrasem data; /**< Data of item. */
   struct queue_item * next; /**< Pointer to next item. */
-} * volatile QueueItem;
+} * QueueItem;
 
-typedef QueueItem QueueHead;
-typedef QueueItem QueueTail;
+typedef QueueItem volatile QueueHead;
+typedef QueueItem volatile QueueTail;
 
-Phrasem mem;
+Phrasem mem = NULL;
 
 /** @} */
 /*--------------------------------------------------*/
 
 volatile QueueHead head = NULL; /**< Head of the queue. */
 volatile QueueTail tail = NULL; /**< Tail of the queue. */
-bool isValid() { return (head == NULL && tail == NULL)
-                     || (head != NULL && tail != NULL); }
-bool isEmpty() { return head == NULL && tail == NULL; }
+bool isValid() { return ((head == NULL) && (tail == NULL))
+                     || ((head != NULL) && (tail != NULL)); }
+bool isEmpty() { return (head == NULL) && (tail == NULL); }
 extern bool ScannerIsScanning();
 
 bool finished = false; /**< True, if scanner ended. */
@@ -168,6 +168,8 @@ bool ReturnToQueue(Phrasem p)
 
 void ClearQueue()
 {
+  if(isEmpty()) return;
+
   pthread_mutex_lock(&QueueEdit);
   #ifdef QUEUE_DEBUG
     debug("Queue: clearing the queue.");
@@ -175,7 +177,6 @@ void ClearQueue()
 
   // control
   if(!isValid()) return;
-  if(isEmpty()) return;
 
   // clear cycle
 	while(head != NULL) {
