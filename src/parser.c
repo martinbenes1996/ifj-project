@@ -706,7 +706,9 @@ bool LogicParse()
   G_Logic();
 
   // left
+  debug("before expression");
   if(!ExpressionParse()) return false;
+  debug("after expression");
 
   // parse the sign
   G_RelativeOperator();
@@ -718,6 +720,9 @@ bool LogicParse()
   ||  isOperator(p, "<=")
   ||  isOperator(p, ">=") )
   {
+    #ifdef PARSER_DEBUG
+      PrintPhrasem(p);
+    #endif
     if(!HandlePhrasem(p)) return false;
   }
   else RaiseExpectedError("relation operator", p);
@@ -1005,7 +1010,7 @@ bool BlockParse()
       // condition
       else if(matchesKeyword(p, "if"))
       {
-
+        if(!ConditionParse()) return false;
       }
       // printing
       else if(matchesKeyword(p, "print"))
