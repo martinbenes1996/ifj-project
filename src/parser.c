@@ -323,6 +323,14 @@ bool GlobalBlockParse();
  */
 bool CycleParse();
 
+/**
+ * @brief   Parses condition.
+ *
+ * This function will parse the condition.
+ * @returns True, if success. False otherwise.
+ */
+bool ConditionParse();
+
 /** @} */
 /*----------------------------------------------------*/
 /** @addtogroup End_parsers
@@ -532,6 +540,7 @@ bool ExpressionParse()
   #ifdef PARSER_DEBUG
     debug("Expression parse.");
   #endif
+  G_Expression();
 
   //creating a stack that will be given to pedant for semantical EP analysis
   Stack returnStack = NULL;
@@ -692,54 +701,34 @@ bool ExpressionParse()
 bool LogicParse()
 {
   #ifdef PARSER_DEBUG
-    debug("Expression parse.");
+    debug("Logic parse.");
   #endif
-
-  // announce generator the condition
   G_Logic();
 
-  G_Expression();
-  if(!ExpressionParse())
-  {
-    // error
-  }
+  // left
+  debug("before expression");
+  if(!ExpressionParse()) return false;
+  debug("after expression");
 
   // parse the sign
+  G_RelativeOperator();
   Phrasem p = CheckQueue(p);
-  if( isOperator(p, "=") )
+  if( isOperator(p, "=")
+  ||  isOperator(p, "<")
+  ||  isOperator(p, ">")
+  ||  isOperator(p, "<>")
+  ||  isOperator(p, "<=")
+  ||  isOperator(p, ">=") )
   {
-    // =
+    #ifdef PARSER_DEBUG
+      PrintPhrasem(p);
+    #endif
+    if(!HandlePhrasem(p)) return false;
   }
-  else if( isOperator(p, "<") )
-  {
-    // <
-  }
-  else if( isOperator(p, ">") )
-  {
-    // >
-  }
-  else if( isOperator(p, "<>") )
-  {
-    // <>
-  }
-  else if( isOperator(p, "<=") )
-  {
-    // <=
-  }
-  else if( isOperator(p, ">=") )
-  {
+  else RaiseExpectedError("relation operator", p);
 
-  }
-  else
-  {
-    // error
-  }
-
-  G_Expression();
-  if(!ExpressionParse())
-  {
-      // error
-  }
+  // right
+  if(!ExpressionParse()) return false;
 
   return true;
 }
@@ -1021,6 +1010,7 @@ bool BlockParse()
       // condition
       else if(matchesKeyword(p, "if"))
       {
+        if(!ConditionParse()) return false;
       }
       // printing
       else if(matchesKeyword(p, "print"))
@@ -1146,13 +1136,33 @@ bool CycleParse()
 
   // cycle body
   do {
-    if(!BlockParse()) return false;
+    if(!BlockParse()) return ScannerIsScanning();
   } while(!end);
 
   if(!EndCycleParse()) return false;
 
   end = false;
   return true;
+}
+
+bool ConditionParse()
+{
+  G_Condition();
+  if(!LogicParse()) return false;
+
+  // keyword 'then'
+  CheckKeyword("then");
+
+  // LF
+  CheckSeparator();
+
+  while(1)
+  {
+    if(!BlockParse()) return ScannerIsScanning();
+  }
+
+  // end if
+  EndIfParse();
 }
 
 bool FunctionDefinitionParse()

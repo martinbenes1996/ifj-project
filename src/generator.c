@@ -1,6 +1,56 @@
 
+#include <stdlib.h>
+
 #include "generator.h"
 #include "io.h"
+#include "types.h"
+
+/*------------------ GENERATOR STACK ----------------------*/
+typedef enum
+{
+  State_Condition,
+  State_Cycle,
+  State_Assignment,
+  State_FunctionCall,
+  State_Input,
+  State_Print,
+  State_Expression,
+  State_RelativeOperator,
+  State_Empty
+} State;
+
+typedef struct stack_state
+{
+  State state;
+  struct stack_state * next;
+} * StackState;
+
+typedef struct genstack { StackState first; } GeneratorStack;
+static GeneratorStack mStack;
+
+bool AssignGState(State newstate)
+{
+  StackState newitem = malloc(sizeof(struct stack_state));
+  if(newitem == NULL) return false;
+
+  newitem->state = newstate;
+  newitem->next = mStack.first;
+  mStack.first = newitem;
+  return true;
+}
+void UnsignGState()
+{
+  StackState newitem = mStack.first;
+  if(newitem != NULL) mStack.first = mStack.first->next;
+  free(newitem);
+}
+State LookUpGState()
+{
+  StackState newitem = mStack.first;
+  if(newitem != NULL) return newitem->state;
+  else return State_Empty;
+}
+/*---------------------------------------------------------*/
 
 bool Send(Stack s)
 {
@@ -9,6 +59,12 @@ bool Send(Stack s)
   #endif
 
   (void)s;
+  return true;
+}
+
+bool HandlePhrasem(Phrasem p)
+{
+  (void)p;
   return true;
 }
 
@@ -76,6 +132,14 @@ void G_Logic()
 }
 
 void G_Expression()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate expression");
+  #endif
+
+}
+
+void G_RelativeOperator()
 {
   #ifdef GENERATOR_DEBUG
     debug("Generate expression");
