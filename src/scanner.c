@@ -824,12 +824,12 @@ void *InitScanner(void * v /*not used*/)
       getIdentifier();
     }
 
-/*
+
     else if ((input >= '0') && (input <= '9')) {
       returnByte(input);
       getNumber();
     }
-*/
+
     else RaiseError("unknown symbol", ErrorType_Syntax);
 
     //phr->d.index = input;
