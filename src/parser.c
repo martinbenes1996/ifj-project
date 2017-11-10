@@ -560,7 +560,6 @@ bool ExpressionParse()
     long int tempIndex;
     TokenType tempType;
     bool failure = false;
-    //Phrasem p;//pozdeji zrusit
 
     PushOntoEPStack(op_$);     //start of the stack
 
@@ -597,7 +596,7 @@ bool ExpressionParse()
 
                 }
                 PushOntoStack(returnStack, p);      //pushing operand on stack
-                //p = CheckQueue(p);
+                p = CheckQueue(p);
             }
             else if(x == '#')
             {
@@ -628,7 +627,7 @@ bool ExpressionParse()
                 }
                 if(p->d.index != 5 && p->d.index != 6)
                     PushOntoStack(temporaryOpStack, p); //pushing operator (not brackets) on temp stack
-                //p = CheckQueue(p);
+                p = CheckQueue(p);
             }
             else if(x == '>')
             {
@@ -656,7 +655,7 @@ bool ExpressionParse()
             {
                 PushOntoEPStack(p->d.index);
                 //PushOntoStack(temporaryOpStack, p);   not for brackets!
-                //p = CheckQueue(p);
+                p = CheckQueue(p);
             }
             else    // x == '#'
             {
@@ -681,11 +680,10 @@ bool ExpressionParse()
         }
     }while(!endExprParsing && !failure);
 
-
-    //poslat stack dale
     ClearStack(temporaryOpStack);   //should be empty. If its not -> error.
     ClearEPStack();                 //destroying EPStack
-
+    if(!TurnStack(returnStack)) return false;   //turning the stack
+    //poslat stack dale
 
     return !failure;
 }

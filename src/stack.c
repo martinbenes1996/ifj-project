@@ -106,6 +106,39 @@ Phrasem PopFromStack(Stack st)
   return p;
 }
 
+bool TurnStack(Stack st)
+{
+    #ifdef STACK_DEBUG
+        debug("Stack was turned.");
+    #endif
+
+    // control
+    if(st == NULL)
+    {
+        EndStack("Stack: PopFromStack: recieved NULL pointer", ErrorType_Internal);
+        return NULL;
+    }
+
+    Stack st2;
+    st2 = InitStack();
+    Phrasem pom = NULL;
+
+    //puts items from top of one stack to the bottom of another stack
+    while((pom = PopFromStack(st)) != NULL)
+        if(PushOntoStack(st2, pom) == false)
+        {
+            ClearStack(st);
+            ClearStack(st2);
+            return false;
+        }
+
+    // st -> new stack
+    ClearStack(st);
+    st = st2;
+
+    return true;
+}
+
 void ClearStack(Stack st)
 {
   Phrasem p;

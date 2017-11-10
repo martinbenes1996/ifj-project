@@ -36,6 +36,10 @@ bool PushOntoStack(Stack, Phrasem);
  */
 Phrasem PopFromStack(Stack);
 
+/**
+ * @brief     Turns the stack on its head.
+ */
+bool TurnStack(Stack st);
 
 /**
  * @brief     Clears all stack.
