@@ -585,7 +585,7 @@ bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type
 
                     //FUNCTION TABLE FUNCTIONS
 
-
+#ifdef fff
 
 /*----------------------------------------------------------------------------------------------*/
 
@@ -730,7 +730,7 @@ SymbolTable * FindFunction(const char * name)
 
     return functionTable->arr[hashNumber];
 }
-
+/*
 bool AddFunction(const char * name)
 {
     //initialisation when used for the first time
@@ -775,7 +775,7 @@ bool AddFunction(const char * name)
     #endif
     return true;
 }
-
+*/
 bool frameAddSymbolType(SymbolTableFrame * frame, const char * name, DataType type)
 {
     struct variable * var;
@@ -1307,4 +1307,5 @@ bool functionTableResize(void)
     findParametreType
     findParametreInd
 */
+#endif
 #endif
