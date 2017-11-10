@@ -50,6 +50,7 @@ void EndScanner(const char * msg, ErrorType errtype)
   }
   isscanning = false;
   FinishConnectionToQueue();
+  ClearQueue();
 }
 
 /**
@@ -722,14 +723,16 @@ void *InitScanner(void * v /*not used*/)
 
     // reading
     input = getByte();
+
+    // EOF
     if(input == EOF)
     {
-
       ALLOC_PHRASEM(phr);
       phr->table = TokenType_EOF;
       #ifdef SCANNER_DEBUG
         PrintPhrasem(phr);
       #endif
+      isscanning = false;
       if( !AddToQueue(phr) ) RaiseError("queue error", ErrorType_Internal);
       done = true;
       continue;
@@ -743,9 +746,6 @@ void *InitScanner(void * v /*not used*/)
       EndScanner("Scanner: InitScanner: couldn't allocate memory", ErrorType_Internal);
       return NULL;
     }
-
-    // here will be lexical analysis ----------------------------------
-
 
 
     if (input == '\n') {

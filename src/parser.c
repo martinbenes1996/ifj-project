@@ -172,6 +172,20 @@ bool matchesKeyword(Phrasem p, const char * kw)
  * @param errtype   Error type.
  */
 void EndParser(const char * msg, int line, ErrorType errtype);
+void EndRoutine()
+{
+  #ifdef PARSER_DEBUG
+    debug("Ending Parser.");
+  #endif
+  end = true;
+
+  // end second thread
+  AskScannerToEnd(); /**< Symetric end. */
+  pthread_join(sc, NULL);
+
+  // clear memory
+  //ClearTables();
+}
 
 /** @} */
 /*-----------------------------------------------------------*/
@@ -385,23 +399,14 @@ bool RunParser()
   {
     if(!GlobalBlockParse())
     {
-        // error
+      if(end) return false;
     }
 
     // something to do after each function
   }
 
-  // ending scanner
-  pthread_join(sc, NULL);
-
-  // to be removed-----
-  PrintQueue();
-  ClearQueue();
-  //------------------
-
-  EndParser(NULL, -1, ErrorType_Ok);
-
   // end
+  EndRoutine();
   return true;
 }
 
@@ -573,7 +578,7 @@ bool ExpressionParse()
 
     PushOntoEPStack(op_$);     //start of the stack
 
-    //get token hopefully
+    //get token hopefully - don't worry, you will
     Phrasem p = CheckQueue(p);
 
     do
@@ -695,6 +700,7 @@ bool ExpressionParse()
     if(!TurnStack(returnStack)) return false;   //turning the stack
     //poslat stack dale
 
+    if(failure) EndRoutine();
     return !failure;
 }
 
@@ -706,9 +712,7 @@ bool LogicParse()
   G_Logic();
 
   // left
-  debug("before expression");
   if(!ExpressionParse()) return false;
-  debug("after expression");
 
   // parse the sign
   G_RelativeOperator();
@@ -1147,6 +1151,10 @@ bool CycleParse()
 
 bool ConditionParse()
 {
+  #ifdef PARSER_DEBUG
+    debug("Condition parse.");
+  #endif
+
   G_Condition();
   if(!LogicParse()) return false;
 
@@ -1162,7 +1170,28 @@ bool ConditionParse()
   }
 
   // end if
-  EndIfParse();
+  if(!EndIfParse()) return false;
+
+  return true;
+}
+
+bool AssignmentParse()
+{
+  #ifdef PARSER_DEBUG
+  debug("Assignment parse.");
+  #endif
+  G_Assignment();
+
+  // =
+  CheckOperator("=");
+
+  // expression
+  if(!ExpressionParse()) return false;
+
+  // LF
+  CheckSeparator();
+
+  return true;
 }
 
 bool FunctionDefinitionParse()
@@ -1206,6 +1235,9 @@ bool FunctionDefinitionParse()
 
 bool ScopeParse()
 {
+  #ifdef PARSER_H
+    debug("Scope parse.");
+  #endif
   if(function_id != -1)
   {
     EndParser("Parser: GlobalBlockParse: nested functions not supported", -1, ErrorType_Internal);
@@ -1239,6 +1271,8 @@ bool GlobalBlockParse()
 
   // read function
   Phrasem p = CheckQueue(p);
+
+  if(p->table == TokenType_EOF) return false;
 
   if(p->table != TokenType_Keyword) RaiseError("syntax error on global level", p, ErrorType_Syntax);
 
@@ -1282,9 +1316,8 @@ bool GlobalBlockParse()
 /*---------------------------- CLEAR --------------------------------*/
 void EndParser(const char * msg, int line, ErrorType errtype)
 {
-  // end second thread
-  AskScannerToEnd(); /**< Symetric end. Better assymetric. */
-  pthread_join(sc, NULL);
+
+  EndRoutine();
 
   if(msg != NULL)
   {
@@ -1297,13 +1330,7 @@ void EndParser(const char * msg, int line, ErrorType errtype)
   }
   else
   {
-    #ifdef PARSER_DEBUG
-      debug("Ending Parser.");
-    #endif
     setErrorType(ErrorType_Ok);
     setErrorMessage("");
   }
-
-  ClearQueue();
-  //ClearTables();
 }
