@@ -615,7 +615,7 @@ bool ExpressionParse()
 
     do
     {
-    printstackEP();
+    //printstackEP();
         //token is operand
         if(p->table == TokenType_Symbol /*|| p->table == TokenType_Constant*/)
         {
