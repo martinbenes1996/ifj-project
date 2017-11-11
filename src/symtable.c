@@ -19,13 +19,13 @@
 
 
 
-/*----------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------*/
 
 
-                    //VARIABLE DATA
+//                          SYMBOL TABLE DATA
 
 /**
- * @brief   Structure representing a variable (+ functions but i dont want to rename everything).
+ * @brief   Structure representing a variable.
  *
  * This structure contains type, name and value of a variable.
  */
@@ -34,9 +34,6 @@ struct variable{
     char * name;
     //DataUnion value;
 };
-/*-----------------------------------------------------------*/
-
-                //SYMBOL TABLE DATA
 
 /**
  * @brief   Structure representing a hash table of variables of a function.
@@ -45,9 +42,7 @@ struct variable{
  * and variadic array of variables (identificators). Will resize automatically.
  */
 typedef struct symbolTableFrame{
-    //size_t functionIndex;
-    //struct symbolTableFrame * next;
-    size_t arr_size;    //array size
+    size_t arr_size;        //array size
     size_t count;           //number of entities in array
     struct variable arr[];
 } SymbolTableFrame;
@@ -55,7 +50,7 @@ typedef struct symbolTableFrame{
 /**
  * @brief   Structure representing a function frame.
  *
- * This structure contains type, name and parametres of a function.
+ * This structure contains type, name, variables and parametres of a function.
  */
 typedef struct symbolTable{
     DataType type;
@@ -76,7 +71,7 @@ typedef struct functionHashTable{
     SymbolTable ** arr;
 } FunctionHashTable;
 
-//initialisation of function table
+//function hash table
 static FunctionHashTable functionTable = {.arr_size = 0, .count = 0, .arr = NULL};
 
 
@@ -98,136 +93,39 @@ static FunctionHashTable functionTable = {.arr_size = 0, .count = 0, .arr = NULL
 #define PORTION_OF_TABLE 2  //when should table resize (count > arr_size/PORTION_OF_TABLE)
 #define RESIZE_RATE 2       //how much should it resize
 
-#define STARTING_CHUNK_FUNCTIONS 10   //size of initialised arrays
-#define PORTION_OF_TABLE_FUNCTIONS 2  //when should table resize (count > arr_size/PORTION_OF_TABLE)
+#define STARTING_CHUNK_FUNCTIONS 10   //size of initialised array of functions
+#define PORTION_OF_TABLE_FUNCTIONS 2  //when should function table resize (count > arr_size/PORTION_OF_TABLE_FUNCTIONS)
 #define RESIZE_RATE_FUNCTIONS 2       //how much should it resize
 
 #endif
 
-/**
- * @brief   Manages two hash functions.
- *
- * This function returns an index into hash table.
- * Has multiple purposes:
- *      For function find finds a record or returns
- *      an empty spot (symbol is not there).
- *      For function add finds a record or not.
- * @param frame  pointer to a frame
- * @param name   name of the symbol
- * @returns Index into hash table.
- */
+unsigned int hashFunctionCentral(const char * name, SymbolTable ** array, size_t arrSize);
+
 unsigned int hashCentral(SymbolTableFrame * frame, const char * name);
 
-/**
- * @brief   Rehash function - colision solver.
- *
- * This function finds another index for a name
- * in case of a colision (+3 linear probing).
- * @param index  an index into hash table
- * @returns A +3 number.
- */
 unsigned int rehashFunction(unsigned int index);
 
-/**
- * @brief   Main hash function.
- *
- * This function maps a string into a number.
- * Cannot deal with string containing NULL.
- * @param name  name string
- * @returns A number.
- */
 unsigned int hashFunction(const char * name);
 
-/**
- * @brief   Initialisation of hash symbol table.
- *
- * This function creates a frame and sets its size on 10.
- * Returns NULL when unsuccessful, otherwise
- * returns pointer to the structure.
- * @param size  size of the table
- * @returns Pointer to array of functions or NULL.
- */
 SymbolTableFrame * frameInit(size_t size);
 
-/**
- * @brief   Destruction of hash symbol table.
- *
- * This function frees memory of a frame.
- */
 void frameFree(SymbolTableFrame * frame);
 
-/**
- * @brief   Returns the number of entities in table.
- *
- * @param frame pointer to a frame
- * @returns Number of entities in table.
- */
 size_t frameEntityCount(SymbolTableFrame * frame);
 
-/**
- * @brief   Returns the size of a table.
- *
- * @param frame pointer to a frame
- * @returns Size of the table.
- */
 size_t frameTableSize(SymbolTableFrame * frame);
 
-/**
- * @brief   Resizes a table, deletes the old one.
-
- * Creates a new resized table from the previous one.
- * Returns NULL when unsuccessful + frame2 is unchanged,
- * returns pointer to a new table and frame2 is deleted when successful.
- * @param newsize   new size of the table
- * @param frame2    pointer to a source table
- * @returns Pointer to a new frame or NULL.
-*/
 SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2);
 
-/**
- * @brief   Finds variable with specified name.
-
- * Returns pointer to a variable or NULL
- * @param frame   pointer to a frame
- * @param name    name of the variable
- * @returns Pointer to a variable or NULL.
-*/
 struct variable * frameFindSymbol(SymbolTableFrame * frame, const char * name);
 
-/**
- * @brief   Adds variable into frame.
-
- * @param pframe  pointer to a pointer to a frame (frameResize needs it)
- * @param name    name of the variable
- * @returns True if successful, false if not.
-*/
 bool frameAddSymbol(SymbolTableFrame ** pframe, const char * name);
 
-/**
- * @brief   Changes value of a variable.
-
- * @param frame   pointer to a frame
- * @param name    name of the variable
- * @param type    type of the variable
- * @param value   new value of the variable
- * @returns True if successful, false if not.
-*/
-//bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type, DataUnion value);
-
-/**
- * @brief   Adds variable type.
-
- * @param frame   pointer to a frame
- * @param name    name of the variable
- * @param type    type of the variable
- * Types of symbols cannot be rewritten (atleast i think so)!
- * @returns True if successful, false if not.
-*/
 bool frameAddSymbolType(SymbolTableFrame * frame, const char * name, DataType type);
 
-/*-----------------------------------------------------------*/
+/*------------------------------------------------------------------------------*/
 
-                    //FUNCTION BODY
+//                          FUNCTION BODY
 
 
 //debug function
@@ -248,44 +146,62 @@ void EndHash(const char * msg, ErrorType errtype)
     #endif
   }
 }
-/*interface function
-int varInsert(const char * name)
-{
 
-
-    return ;
-}*/
                 /*-----HASH FUNCTIONS-----*/
 
-unsigned int hashFunctionCentral(const char * name)
+/**
+ * @brief   Manages two hash functions. (for hash table of functions)
+ *
+ * This function returns an index into hash table.
+ * Has multiple purposes:
+ *      For function find finds a record or returns
+ *      an empty spot (symbol is not there).
+ *      For function add finds a record or an empty spot for insertion.
+ * @param name      name of the function (that will be inserted)
+ * @param array     hash table of functions
+ * @param arrSize   size of the hash table
+ * @returns Index into hash table.
+ */
+unsigned int hashFunctionCentral(const char * name, SymbolTable ** array, size_t arrSize)
 {
     unsigned int hashNumber;
 
-    if(name == NULL)
+    if(name == NULL || array == NULL || arrSize == 0)
     {
         EndHash("Hash: hashFunctionCentral: pointer to NULL as a name of function", ErrorType_Internal);
         return 0;
     }
 
-    hashNumber = hashFunction(name) % functionTable.arr_size;
+    hashNumber = hashFunction(name) % arrSize;
 
     //maximal number of rehashes is the size of table -1
-    for(size_t i = 0; i < (functionTable.arr_size - 1) ;++i)
+    for(size_t i = 0; i < (arrSize - 1) ;++i)
     {
         //not found or found an empty spot to save function
-        if(functionTable.arr[hashNumber] == NULL)
+        if(array[hashNumber] == NULL)
             return hashNumber;
         //found a record
-        else if(strcmp(functionTable.arr[hashNumber]->name, name) == 0)
+        else if(strcmp(array[hashNumber]->name, name) == 0)
             return hashNumber;
         //found a different record -> continues finding
         else
-            hashNumber = rehashFunction(hashNumber) % functionTable.arr_size;
+            hashNumber = rehashFunction(hashNumber) % arrSize;
     }
     //table cant be full, it hopefully resizes automatically so it should not reach this
     return hashNumber;
 }
-
+/**
+ * @brief   Manages two hash functions. (for hash table of variables)
+ *
+ * This function returns an index into hash table.
+ * Has multiple purposes:
+ *      For function find finds a record or returns
+ *      an empty spot (symbol is not there).
+ *      For function add finds a record or an empty spot for insertion.
+ * @param frame  pointer to a frame
+ * @param name   name of the symbol
+ * @returns Index into hash table.
+ */
 unsigned int hashCentral(SymbolTableFrame * frame, const char * name)
 {
     unsigned int hashNumber;
@@ -314,12 +230,26 @@ unsigned int hashCentral(SymbolTableFrame * frame, const char * name)
     //table cant be full, it hopefully resizes automatically so it should not reach this
     return hashNumber;
 }
-
+/**
+ * @brief   Rehash function - colision solver.
+ *
+ * This function finds another index for a name
+ * in case of a colision (+3 linear probing).
+ * @param index  an index into hash table
+ * @returns A +3 number.
+ */
 unsigned int rehashFunction(unsigned int index)
 {
     return index + 3;
 }
-
+/**
+ * @brief   Main hash function.
+ *
+ * This function maps a string into a number.
+ * Cannot deal with string containing NULL.
+ * @param name  name string
+ * @returns A number.
+ */
 unsigned int hashFunction(const char * name)
 {
     unsigned int h=0;
@@ -330,8 +260,16 @@ unsigned int hashFunction(const char * name)
 
     return h;
 }
-/*-----------------------------------------------------------*/
-
+/*----------------------------------------------------------------------------------*/
+/**
+ * @brief   Initialisation of hash symbol table.
+ *
+ * This function creates a frame and sets its size on 10.
+ * Returns NULL when unsuccessful, otherwise
+ * returns pointer to the structure.
+ * @param size  size of the table
+ * @returns Pointer to array of functions or NULL.
+ */
 SymbolTableFrame * frameInit(size_t size)
 {
     SymbolTableFrame *frame = NULL;
@@ -363,7 +301,11 @@ SymbolTableFrame * frameInit(size_t size)
     #endif
     return frame;
 }
-
+/**
+ * @brief   Destruction of hash symbol table.
+ *
+ * This function frees memory of a frame.
+ */
 void frameFree(SymbolTableFrame * frame)
 {
     if(frame == NULL) return;
@@ -385,17 +327,36 @@ void frameFree(SymbolTableFrame * frame)
     #endif
     return;
 }
-
+/**
+ * @brief   Returns the size of a table.
+ *
+ * @param frame pointer to a frame
+ * @returns Size of the table.
+ */
 size_t frameTableSize(SymbolTableFrame * frame)
 {
     return frame->arr_size;
 }
-
+/**
+ * @brief   Returns the number of entities in table.
+ *
+ * @param frame pointer to a frame
+ * @returns Number of entities in table.
+ */
 size_t frameEntityCount(SymbolTableFrame * frame)
 {
     return frame->count;
 }
+/**
+ * @brief   Resizes a table, deletes the old one.
 
+ * Creates a new resized table from the previous one.
+ * Returns NULL when unsuccessful + frame2 is unchanged,
+ * returns pointer to a new table and frame2 is deleted when successful.
+ * @param newsize   new size of the table
+ * @param frame2    pointer to a source table
+ * @returns Pointer to a new frame or NULL.
+*/
 SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2)
 {
     SymbolTableFrame *frame = NULL;
@@ -469,7 +430,14 @@ SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2)
     #endif
     return frame;
 }
+/**
+ * @brief   Finds variable with specified name.
 
+ * Returns pointer to a variable or NULL
+ * @param frame   pointer to a frame
+ * @param name    name of the variable
+ * @returns Pointer to a variable or NULL.
+*/
 struct variable * frameFindSymbol(SymbolTableFrame * frame, const char * name)
 {
     size_t hashNumber;
@@ -482,7 +450,13 @@ struct variable * frameFindSymbol(SymbolTableFrame * frame, const char * name)
 
     return &frame->arr[hashNumber];
 }
+/**
+ * @brief   Adds variable into frame.
 
+ * @param pframe  pointer to a pointer to a frame (frameResize needs it)
+ * @param name    name of the variable
+ * @returns True if successful, false if not.
+*/
 bool frameAddSymbol(SymbolTableFrame ** pframe, const char * name)
 {
     SymbolTableFrame * frame = *pframe;
@@ -521,7 +495,15 @@ bool frameAddSymbol(SymbolTableFrame ** pframe, const char * name)
     #endif
     return true;
 }
+/**
+ * @brief   Adds variable type.
 
+ * @param frame   pointer to a frame
+ * @param name    name of the variable
+ * @param type    type of the variable
+ * Types of symbols cannot be rewritten (atleast i think so)!
+ * @returns True if successful, false if not.
+*/
 bool frameAddSymbolType(SymbolTableFrame * frame, const char * name, DataType type)
 {
     struct variable * var;
@@ -581,10 +563,17 @@ SymbolTable * findFunction(const char * name);
 
                     //FUNCTION TABLE FUNCTIONS
 
-
-
 /*----------------------------------------------------------------------------------------------*/
 
+/**
+ * @brief   Initialisation of hash symbol table for functions.
+ *
+ * This function initialises a function hash table.
+ * Returns NULL when unsuccessful, otherwise
+ * returns pointer to the structure.
+ * @param size      size of the table
+ * @returns Pointer to array of functions or NULL.
+ */
 SymbolTable ** functionTableInit(size_t size)
 {
     SymbolTable ** array = NULL;
@@ -595,6 +584,7 @@ SymbolTable ** functionTableInit(size_t size)
         //initialisation of the table
         for(size_t i = 0;i < size;++i)
             array[i] = NULL;
+        if(functionTable.arr_size == 0) functionTable.arr_size = size;
     }
     else
     {
@@ -607,7 +597,14 @@ SymbolTable ** functionTableInit(size_t size)
     #endif
     return array;
 }
-
+/**
+ * @brief   Initialisation of a function frame.
+ *
+ * This function initialises a function frame.
+ * Returns NULL when unsuccessful, otherwise
+ * returns pointer to the function frame.
+ * @returns Pointer to array of functions or NULL.
+ */
 SymbolTable * functionFrameInit()
 {
     SymbolTable * frame = NULL;
@@ -632,7 +629,11 @@ SymbolTable * functionFrameInit()
     #endif
     return frame;
 }
-
+/**
+ * @brief   Destruction of hash symbol table.
+ *
+ * This function frees memory of a function table and resets its values.
+ */
 void functionTableFree(size_t size)
 {
     if(functionTable.arr == NULL) return;
@@ -653,7 +654,11 @@ void functionTableFree(size_t size)
     #endif
     return;
 }
-
+/**
+ * @brief   Destruction of function frame.
+ *
+ * This function frees memory of a function frame.
+ */
 void functionFrameFree(SymbolTable * frame)
 {
     if(frame == NULL) return;
@@ -679,43 +684,57 @@ void functionFrameFree(SymbolTable * frame)
     #endif
     return;
 }
+/**
+ * @brief   Resizes a function hash table, deletes the old one.
 
+ * Creates a new resized table from the previous one.
+ * @param newsize   new size of the table
+ * @param array2    pointer to a source table
+*/
 void functionTableResize(size_t newsize, SymbolTable ** array2)
 {
     SymbolTable ** array = NULL;
     unsigned int hashNumber;
-    size_t oldSize = functionTable.arr_size;
-    functionTable.arr_size = newsize;
+    size_t count;
 
     if(array2 == NULL) return;
 
     if((array = functionTableInit(newsize)) != NULL)
     {
         //going through all functions in table and copying function pointers
-        for(size_t i=0;i < oldSize;++i)
+        for(size_t i=0;i < functionTable.arr_size;++i)
         {
             /*computes a new hash in a new frame*/
             if(array2[i] == NULL) continue;
-            hashNumber = hashFunctionCentral(array2[i]->name);
+            hashNumber = hashFunctionCentral(array2[i]->name, array, newsize);
 
             array[hashNumber] = array2[i];
             array2[i] = NULL;
         }
+        count = functionTable.count;
         //destroys old table
-        functionTableFree(oldSize);
+        functionTableFree(functionTable.arr_size);
+        functionTable.arr = array; //saves new array
+        functionTable.arr_size = newsize;
+        functionTable.count = count;
     }
     else
     {
         EndHash("Function Frame: functionTableResize: could not resize table", ErrorType_Internal);
     }
-    functionTable.arr = array; //saves new array
 
     #ifdef SYMTABLE_DEBUG
         debug("Function table was resized.");
     #endif
     return;
 }
+/**
+ * @brief   Finds a function in function table.
 
+ * Returns pointer to a function or NULL
+ * @param name    name of the function
+ * @returns Pointer to a function or NULL.
+*/
 SymbolTable * findFunction(const char * name)
 {
     //not allocated array
@@ -724,14 +743,19 @@ SymbolTable * findFunction(const char * name)
     size_t hashNumber;
 
     if(name == NULL) return NULL;
-    hashNumber = hashFunctionCentral(name);
+    hashNumber = hashFunctionCentral(name, functionTable.arr, functionTable.arr_size);
 
     if(functionTable.arr[hashNumber] == NULL) return NULL; //not found
         else return functionTable.arr[hashNumber];         //found
 
     return functionTable.arr[hashNumber];
 }
-
+/**
+ * @brief   Adds function into function hash table.
+ *
+ * @param name    name of the function
+ * @returns True if successful, false if not.
+*/
 bool addFunction(const char * name)
 {
     //initialisation when used for the first time
@@ -744,12 +768,12 @@ bool addFunction(const char * name)
     }
 
     //increase the amount of symbols in table and resizes if needed
-    if((++functionTable.count) > functionTable.arr_size/PORTION_OF_TABLE_FUNCTIONS)
+    if((functionTable.count + 1) > functionTable.arr_size/PORTION_OF_TABLE_FUNCTIONS)
         functionTableResize(RESIZE_RATE_FUNCTIONS * functionTable.arr_size, functionTable.arr);
 
 
     size_t hashNumber;
-    hashNumber = hashFunctionCentral(name);
+    hashNumber = hashFunctionCentral(name, functionTable.arr, functionTable.arr_size);
 
     if(functionTable.arr[hashNumber] == NULL) //not found -> can be added
     {
@@ -769,6 +793,8 @@ bool addFunction(const char * name)
     }
         else return false; //found -> cant be added
 
+    functionTable.count++;
+
     #ifdef SYMTABLE_DEBUG
         debug("New function added into table.");
     #endif
@@ -777,7 +803,7 @@ bool addFunction(const char * name)
 
 
 
-/*-----------------------------------------------------------*/
+/*---------------------------------------------------------------------------------------*/
 
 
 /**
@@ -1026,7 +1052,7 @@ bool findVariable(const char * functionName, const char * name)
     }
 
     #ifdef SYMTABLE_DEBUG
-        debug("Finding variable %s in function %s.", name, symtableStack.first->name);
+        debug("Finding variable %s in function %s.", name, functionName);
     #endif
 
     if( frameFindSymbol(function->variables, name) == NULL ) return false;
@@ -1044,15 +1070,75 @@ bool findFunctionInTable(const char * functionName)
     if(findFunction(functionName) == NULL) return false;
         else return true;
 }
+/**
+ * @brief   Frees the function table.
+ *
+ */
+void functionTableEnd()
+{
+    functionTableFree(functionTable.arr_size);
+}
+
+
+
+//----------------------------------------------------------------------------------------------
+//--------------------------TEST FUNCTIONS------------------------------------------------------
+
+void print(SymbolTableFrame * frame)
+{
+    printf("%d/%d\n\n", (int)frameEntityCount(frame), (int)frameTableSize(frame));
+
+    for(size_t i = 0;i<frameTableSize(frame);++i)
+    {
+        if(frame->arr[i].name == NULL) printf("- | ");
+        else printf("Symbol: %s, Type: %d | ", frame->arr[i].name, (int)frame->arr[i].type);
+    }
+    printf("\n");
+}
+void printfunction(void)
+{
+    int pocitadlo = 1;
+    struct paramFce * pom;
+
+    printf("\n\n------------Prochazim polem majicim %d polozek!--------------\n\n", (int)functionTable.count);
+    for(size_t i = 0;i < functionTable.arr_size;++i)
+    {
+        printf("%d. polozka:\n", (int)pocitadlo++);
+        if(functionTable.arr[i] == NULL) continue;
+        printf("Jmeno funkce: %s\n", functionTable.arr[i]->name);
+        printf("Typ funkce: %d\n", (int)functionTable.arr[i]->type);
+        printf("Pocet parametru funkce: %d\n", (int)functionTable.arr[i]->numberOfParameters);
+        pom = functionTable.arr[i]->firstParam;
+        while(pom != NULL)
+        {
+            printf(" - Jmeno param: %s\n", pom->name);
+            printf(" - Typ param: %d\n", (int)pom->type);
+            pom = pom->nextParam;
+        }
+        print(functionTable.arr[i]->variables);
+        printf("==========================================================================\n\n");
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
 
 
 
 
+#ifdef skladka
+
+/**
+ * @brief   Changes value of a variable.
+
+ * @param frame   pointer to a frame
+ * @param name    name of the variable
+ * @param type    type of the variable
+ * @param value   new value of the variable
+ * @returns True if successful, false if not.
+*/
+//bool frameChangeValue(SymbolTableFrame * frame, const char * name, DataType type, DataUnion value);
 
 
-
-
-#ifdef fff
 
 /**
  * @brief   Destroys parameters of a function.
@@ -1127,16 +1213,6 @@ void clearSymtableStack()
 
 
 
-
-
-
-
-
-
-
-
-
-#ifdef skladka
 
 
 
@@ -1371,5 +1447,5 @@ bool functionTableResize(void)
     findParametreType
     findParametreInd
 */
-#endif
+
 #endif
