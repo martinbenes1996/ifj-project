@@ -17,36 +17,123 @@
 #include <stdio.h>
 #include "types.h"
 
-                /*in the process of creation*/
-
-                /*DONE (interface):
-                    Operator table -> types.h
-                    Table of data types -> types.h
-                    Keyword table -> tables.h
-                    Constant table (almost) -> tables.h
-                    Table of all tables -> types.h
-
-                  TO BE DONE:
-                    Symbol table. -> symtable.h
-                */
-
-                /*Ksenia will give you only the symbol names*/
-
-
-/*-----------------------------------------------------------*/
-
-                //VARIABLE TABLE FUNCTIONS
 
 
 /**
- * @brief   Insert variable.
- *
- * This function inserts variable into array of variables and returns
- * an index into array of variable. (Hopefully)
- * @param name    Name of a variable.
- * @returns Array index. -1 if error
+ * @brief   Structure representing type and name of parametres.
+ *          Used for sending lists of parametres.
+ * List.
  */
-int varInsert(const char * name);
+struct paramFce{
+    DataType type;
+    char * name;
+    struct paramFce *nextParam;
+};
+
+/*-----------------------------------------------------------*/
+
+        //SYMBOL TABLE FUNCTIONS  !!!NOT TESTED!!!
+        //Do not use yet
+
+// -Odstranil jsem funkci VarInsert, pokud jste ji pouzili, zmente ji!
+
+
+
+/**
+ * @brief   Finds a variable in a function.
+ *
+ * Returns false when unsuccessful or true
+ * @param functionName  name of the function
+ * @param name          name of the variable
+ * @returns True/false.
+ */
+bool findVariable(const char * functionName, const char * name);
+/**
+ * @brief   Finds a variable type.
+ *
+ * @param functionName  name of the function
+ * @param name          name of the variable
+ * @returns success -> DataType, failure -> datatype_unknown.
+ */
+DataType findVariableType(const char * functionName, const char * name);
+/**
+ * @brief   Adds a variable type.
+ *
+ * Returns false when unsuccessful or true
+ * @param functionName  name of the function
+ * @param name          name of the variable
+ * @param type          type of the variable
+ * @returns True/false.
+ */
+bool addVariableType(const char * functionName, const char * name, DataType type);
+/**
+ * @brief   Adds a variable into a  function.
+ *
+ * Returns false when unsuccessful or true
+ * @param functionName  name of the function
+ * @param name          name of the variable
+ * @returns True/false.
+ */
+bool addVariable(const char * functionName, const char * name);
+/**
+ * @brief   Adds a parameter of a function and saves them as variables.
+ *
+ * Returns false when unsuccessful or true
+ * @param functionName  name of the function
+ * @param type          type of the parameter
+ * @returns True/false.
+ */
+bool addFunctionParameters(const char * functionName, struct paramFce * parametres);
+/**
+ * @brief   finds all parameters of a function.
+ *
+ * Returns pointer to a list of parameters or NULL
+ * @param functionName  name of the function
+ * @returns pointer or NULL.
+ */
+struct paramFce * findFunctionParameters(char * functionName);
+/**
+ * @brief   Finds number of parametres of a function.
+ *
+ * Returns 0 when unsuccessful or number (!Cannot detect if function exists!)
+ * @param functionName  name of the function
+ * @returns success -> number of parametres, failure -> 0.
+ */
+size_t findFunctionNumberOfParametres(const char * functionName);
+/**
+ * @brief   Finds datatype of a function.
+ *
+ * @param functionName  name of the function
+ * @returns success -> DataType, failure -> datatype_unknown.
+ */
+DataType findFunctionType(const char * functionName);
+/**
+ * @brief   Sets datatype of a function.
+ *
+ * Returns false when unsuccessful or true
+ * @param functionName  name of the function
+ * @param type          type of the function
+ * @returns True/false.
+ */
+bool setFunctionType(const char * functionName, DataType type);
+/**
+ * @brief   Finds a function in the table.
+ *
+ * Returns false when unsuccessful or true
+ * @param functionName  name of the function
+ * @returns True/false.
+ */
+bool findFunctionInTable(const char * functionName);
+/**
+ * @brief   Adds a function in the table.
+ *
+ * Returns false when unsuccessful or true
+ * @param name  name of the function
+ * @returns True/false.
+ */
+bool addFunction(const char * name);
+
+
 
 
 #endif
