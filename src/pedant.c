@@ -3,6 +3,9 @@
 #include "pedant.h"
 #include "stack.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
 static Stack s = NULL;
 
 bool P_VariableDefined(long functionId, const char * varname)
@@ -24,6 +27,18 @@ bool P_FunctionDefined(const char * funcname)
   (void)funcname;
   return true;
 }
+//Docasne
+void printfstack(Stack a)
+{printf("\nPRINTING STACK\n");
+    StackItem * pom = a->first;
+
+    while(pom != NULL)
+    {
+        if(pom->data->table == TokenType_Symbol) printf("%s\n", pom->data->d.str);
+            else printf("%d\n", pom->data->d.index);
+        pom = pom->next;
+    }
+}
 
 bool P_HandleOperand(Phrasem p)
 {
@@ -39,6 +54,7 @@ bool P_HandleOperand(Phrasem p)
 
   // how to control?
   if(!PushOntoStack(s, p)) return false;
+  printfstack(s);
 
   return true;
 }
