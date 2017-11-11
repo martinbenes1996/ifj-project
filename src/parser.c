@@ -879,7 +879,7 @@ bool VariableDefinitionParse()
   else if(isOperator(s, "="))
   {
     free(s);
-    
+
     // get expression
     if(!ExpressionParse())
     {
@@ -899,7 +899,7 @@ bool VariableDefinitionParse()
   // write to symbol table
   // semantics
 
-  return status;
+  return true;
 }
 
 bool InputParse()
@@ -936,6 +936,8 @@ bool PrintParse(bool first)
   // first parameter
   if(first)
   {
+    G_Print();
+    G_Expression();
     if(!ExpressionParse()) return false;
   }
   // non first print parameter (may not exist)
@@ -951,6 +953,8 @@ bool PrintParse(bool first)
 
     else
     {
+      G_Print();
+
       if(!ReturnToQueue(q)) RaiseQueueError(q);
 
       if(!ExpressionParse()) return false;
