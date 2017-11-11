@@ -86,8 +86,6 @@ static FunctionHashTable functionTable = {.arr_size = 0, .count = 0, .arr = NULL
 
                     //DECLARATIONS
 
-#ifndef NAMED_CONSTANTS
-#define NAMED_CONSTANTS
 
 #define STARTING_CHUNK 10   //size of initialised arrays
 #define PORTION_OF_TABLE 2  //when should table resize (count > arr_size/PORTION_OF_TABLE)
@@ -97,7 +95,6 @@ static FunctionHashTable functionTable = {.arr_size = 0, .count = 0, .arr = NULL
 #define PORTION_OF_TABLE_FUNCTIONS 2  //when should function table resize (count > arr_size/PORTION_OF_TABLE_FUNCTIONS)
 #define RESIZE_RATE_FUNCTIONS 2       //how much should it resize
 
-#endif
 
 unsigned int hashFunctionCentral(const char * name, SymbolTable ** array, size_t arrSize);
 

@@ -15,6 +15,7 @@
 #include <stdbool.h>
 #include "tables.h"
 #include "types.h"
+#include "err.h"
 
 
 /*-----------------------------------------------------------*/
@@ -49,22 +50,27 @@ int isKeyword(const char * word)
 
               //OPERATOR TABLE FUNCTIONS
 
+#define OPERATOR_ARRAY_SIZE 13
 /**
  * @brief   Operator table.
  *
  * This array contains list af all possible operators.
  * DO NOT CHANGE THE ORDER OF THINGS IN IT!!
  */
-const char operators[13][3] = {"+", "-", "\\", "*", "/", "(", ")", "=", "<>", "<", "<=", ">", ">=",};
+const char operators[OPERATOR_ARRAY_SIZE][3] = {"+", "-", "\\", "*", "/", "(", ")", "=", "<>", "<",
+                                                "<=", ">", ">=",};
 
+// returns -1 -> fail, index into array -> found
 #define TABLE_ERROR -1
 long getOperatorId(const char * word)
 {
-  if(word == NULL) return TABLE_ERROR;
+    if(word == NULL) return TABLE_ERROR;
 
-  // look up
+    int i = 0;
+    for(;i < OPERATOR_ARRAY_SIZE;++i)
+        if(!strcmp(operators[i], word)) return i;
 
-  return 1;
+  return -1;
 
 }
 #undef TABLE_ERROR
@@ -75,16 +81,13 @@ long getOperatorId(const char * word)
 
 /*************************************************************/
 
-        //CONSTANT TABLE DATA (not sure if public or private yet)
+//                  CONSTANT TABLE DATA
 
-#ifndef NAMED_CONSTANTS
-#define NAMED_CONSTANTS
 
-#define STARTING_CHUNK 10   //size of initialised arrays
-#define PORTION_OF_TABLE 2  //when should table resize (count > arr_size/PORTION_OF_TABLE)
-#define RESIZE_RATE 2       //how much should it resize
+#define STARTING_CHUNK_CONSTANTS 10   //size of initialised arrays
+#define RESIZE_RATE_CONSTANTS 30      //how much should it resize: +30
 
-#endif
+
 /**
  * @brief   Structure representing characteristics of constants.
  *
@@ -114,86 +117,232 @@ static ConstArray consttable = {.arr_size = 0, .count = 0, .arr = NULL};
 
                 //CONST TABLE FUNCTIONS
 
-                    //DECLARATIONS
+
+bool constTableResize(void);
 
 /*-----------------------------------------------------------*/
+
+                    //FUNCTION BODY
+
 /**
  * @brief   Initiation of table of constants.
  *
  * This function allocates table os a starting size.
  * @returns true -> ok, false -> error.
  */
-bool constTableInit(void);
-/**
- * @brief   Destroys table of constants.
- *
- * This function frees the whole table.
- */
-void constTableFree(void);
-/**
- * @brief   Reallocs array of constants.
- *
- * This function increases size of table of constants.
- * @returns true -> ok, false -> fail.
- */
-bool constTableResize(void);
-/*-----------------------------------------------------------*/
-
-                    //FUNCTION BODY - needs testing
-
 bool constTableInit(void)
 {
     //allocation of the table
-    if( (consttable.arr = malloc(STARTING_CHUNK * sizeof(struct constant)))  == NULL)
+    if( (consttable.arr = malloc(STARTING_CHUNK_CONSTANTS * sizeof(struct constant)))  == NULL)
     {
-        //error message
+        setErrorType(ErrorType_Internal);
+        setErrorMessage("constantTableInit: could not allocate memory");
         return false;
     }
-    consttable.arr_size = STARTING_CHUNK;
-    consttable.count = 0;
+    consttable.arr_size = STARTING_CHUNK_CONSTANTS;
+    consttable.count = 3;
 
-    for(size_t i = 0; i < consttable.arr_size ;++i)
+    // setting first three constants to 0, 0.0 and "" (empty string)
+    consttable.arr[0].type = DataType_Integer;
+    consttable.arr[0].data.ivalue = 0;
+    consttable.arr[1].type = DataType_Double;
+    consttable.arr[1].data.dvalue = 0.0;
+    consttable.arr[2].type = DataType_String;
+    if((consttable.arr[2].data.svalue = malloc(sizeof(char))) == NULL)
+    {
+        setErrorType(ErrorType_Internal);
+        setErrorMessage("constantTableInit: could not allocate memory");
+        return false;
+    }
+    else consttable.arr[2].data.svalue[0] = '\0';
+
+
+    for(size_t i = 3; i < consttable.arr_size ;++i)         //not necessary
     {
         consttable.arr[i].type = DataType_Unknown;
     }
 
     return true;
 }
-
+/**
+ * @brief   Destroys table of constants.
+ *
+ * This function frees the whole table.
+ */
 void constTableFree(void)
 {
+    // freeing strings of the constants
+    for(size_t i = 2;i < consttable.count;++i)
+    {
+        if(consttable.arr[i].type == DataType_String)
+            free(consttable.arr[i].data.svalue);
+    }
     consttable.arr_size = 0;
     consttable.count = 0;
+
+    //freeing array of constants
     free(consttable.arr);
 }
-
+/**
+ * @brief   Reallocs array of constants.
+ *
+ * This function increases size of table of constants.
+ * @returns true -> ok, false -> fail.
+ */
 bool constTableResize(void)
 {
-    if( (consttable.arr = realloc(consttable.arr, consttable.arr_size * RESIZE_RATE
+    if( (consttable.arr = realloc(consttable.arr, (consttable.arr_size + RESIZE_RATE_CONSTANTS)
                                                     * sizeof(struct constant)))  == NULL)
     {
-        //error message
+        setErrorType(ErrorType_Internal);
+        setErrorMessage("constantTableResize: could not allocate memory");
         return false;
     }
+    consttable.arr_size = consttable.arr_size * RESIZE_RATE_CONSTANTS;
 
-    //for(size_t i = 0;i < consttable.arr_size;++i)     incomplete, may not be needed
-        //consttable.arr[i]->type = DataType_Unknown;
+    return true;
+}
+/**
+ * @brief   Inserts a constant in the array.
+ *
+ * @param type      type of the constant
+ * @param uni       data of the constant
+ * @returns index into the array -> ok, -1 -> fail.
+ */
+int constInsert(DataType type, DataUnion uni)
+{
+    //adding constant into array
+    if(type == DataType_Integer)
+    {
+        consttable.arr[consttable.count].type = DataType_Integer;
+        consttable.arr[consttable.count].data.ivalue = uni.ivalue;
+    }
+    else if(type == DataType_Double)
+    {
+        consttable.arr[consttable.count].type = DataType_Double;
+        consttable.arr[consttable.count].data.dvalue = uni.dvalue;
+    }
+    else if(type == DataType_String)
+    {
+        consttable.arr[consttable.count].type = DataType_String;
+        if((consttable.arr[consttable.count].data.svalue = malloc(strlen(uni.svalue) * sizeof(char)
+                                                                    + sizeof(char))) == NULL)
+        {
+            setErrorType(ErrorType_Internal);
+            setErrorMessage("constantTableInsert: could not allocate memory");
+            return false;
+        }
+        strcpy(consttable.arr[consttable.count].data.svalue, uni.svalue);
+    }
+    consttable.count++;
 
-    consttable.arr_size = consttable.arr_size * RESIZE_RATE;
+    //resizing if needed
+    if(consttable.count == consttable.arr_size)
+        if(!constTableResize()) return -1;
+
+    return consttable.count-1;     //count is an index of first empty slot
+}
+/**
+ * @brief   Returns type of the constant on a given index.
+ *
+ * @param index     index into the array of constants
+ * @returns type of the constant -> ok, DtatType_Unknown -> fail.
+ */
+DataType findConstType(size_t index)
+{
+    if(index >= consttable.count) return DataType_Unknown;
+    return consttable.arr[index].type;
+}
+/**
+ * @brief   Returns integer value of the constant on a given index.
+ *
+ * @param index     index into the array of constants
+ * @returns ivalue of the constant -> ok, random number -> fail.
+ */
+int getIntConstValue(size_t index)
+{
+    return consttable.arr[index].data.ivalue;
+}
+/**
+ * @brief   Returns double value of the constant on a given index.
+ *
+ * @param index     index into the array of constants
+ * @returns dvalue of the constant -> ok, random number -> fail.
+ */
+double getDoubleConstValue(size_t index)
+{
+    return consttable.arr[index].data.dvalue;
+}
+/**
+ * @brief   Returns char pointer on the svalue of constant on a given index.
+ *
+ * @param index     index into the array of constants
+ * @returns char pointer on the string -> ok, random pointer -> fail.
+ */
+char * getStringConstValue(size_t index)
+{
+    return consttable.arr[index].data.svalue;
+}
+/**
+ * @brief   Returns index to default value for integer.
+ *
+ * @returns index to default value for integer.
+ */
+size_t getIntDefaultValue()
+{
+    return 0;
+}
+/**
+ * @brief   Returns index to default value for double.
+ *
+ * @returns index to default value for double.
+ */
+size_t getDoubleDefaultValue()
+{
+    return 1;
+}
+/**
+ * @brief   Returns index to default value for string.
+ *
+ * @returns index to default value for string.
+ */
+size_t getStringDefaultValue()
+{
+    return 2;
+}
+/**
+ * @brief   Changes the value of a constant on given index.
+ *          You have to know the type of constant before you use this. (constants cannot be retyped)
+ *
+ * @param index     index into the array of constants
+ * @param value     data union with value
+ * @returns true -> ok, false -> fail.
+ */
+bool changeConstValue(size_t index, DataUnion value)
+{
+    if(consttable.arr[index].type == DataType_Integer)
+    {
+        consttable.arr[index].data.ivalue = value.ivalue;
+    }
+    else if(consttable.arr[index].type == DataType_Double)
+    {
+        consttable.arr[index].data.dvalue = value.dvalue;
+    }
+    else if(consttable.arr[index].type == DataType_String)
+    {
+        free(consttable.arr[index].data.svalue);
+        consttable.arr[index].data.svalue = malloc(sizeof(char) * strlen(value.svalue) + sizeof(char));
+        if(consttable.arr[index].data.svalue == NULL)
+        {
+            setErrorType(ErrorType_Internal);
+            setErrorMessage("constantTable: ChangeValue: could not allocate memory");
+            return false;
+        }
+        strcpy(consttable.arr[index].data.svalue, value.svalue);
+        //consttable.arr[index].data.svalue = value.svalue;             <<-- if i should free pointers
+    }
+    else return false;
 
     return true;
 }
 
-int constInsert(DataType type, DataUnion uni)
-{
-  (void)type;
-  (void)uni;
-  return 1;
-}
-
-/*TO DO:
-    finding
-    adding + resizing controll
-
-    Need to know more information about interaction requirements.
-*/
