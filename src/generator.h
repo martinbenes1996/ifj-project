@@ -61,8 +61,8 @@ void G_Logic();
 /** @brief Announces expression to generator. */
 void G_Expression();
 
-/** @brief Announces expression to generator. */
-void G_RelativeOperator();
+/** @brief Announces variable declaration to generator. */
+void G_VariableDeclaration();
 
 /** @} */
 /*-----------------------------------------------------------*/

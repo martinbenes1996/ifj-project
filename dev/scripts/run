@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ -f ifj ]; then
+  ./ifj > tmp
+  echo "\n\n\n================ OUTPUT =================="
+  cat tmp
+else
+  echo "Compile first!"
+  exit
+fi

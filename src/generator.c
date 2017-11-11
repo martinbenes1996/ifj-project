@@ -1,56 +1,224 @@
 
 #include <stdlib.h>
 
+#include "functions.h"
 #include "generator.h"
 #include "io.h"
 #include "types.h"
 
-/*------------------ GENERATOR STACK ----------------------*/
+/*--------------------------------------------------*/
+/** @addtogroup Generator_types
+ * Types for generator.
+ * @{
+ */
+
+/*------- GENERATOR STATE STACK --------*/
+/**
+ * @brief   Types of generator states.
+ *
+ * Types of states, generator can coordinate
+ * throughout his inner state stack.
+ */
 typedef enum
 {
-  State_Condition,
-  State_Cycle,
-  State_Assignment,
-  State_FunctionCall,
-  State_Input,
-  State_Print,
-  State_Expression,
-  State_RelativeOperator,
-  State_Empty
-} State;
+  GState_Condition,
+  GState_Cycle,
+  GState_Assignment,
+  GState_FunctionCall,
+  GState_Input,
+  GState_Print,
+  GState_Expression,
+  GState_Logic,
+  GState_VariableDeclaration,
+  GState_Empty
+} GState;
 
-typedef struct stack_state
+/**
+ * @brief   Item in the generator state stack.
+ */
+typedef struct state_item
 {
-  State state;
-  struct stack_state * next;
-} * StackState;
+  GState state;               /**< State. */
+  struct state_item * next;   /**< Pointer to next. */
+} * StateItem;
 
-typedef struct genstack { StackState first; } GeneratorStack;
-static GeneratorStack mStack;
+/**
+ * @brief Generator inner state stack.
+ */
+typedef struct genstack
+{
+  StateItem first; /**< Pointer to first. */
+} GeneratorStack;
 
-bool AssignGState(State newstate)
-{
-  StackState newitem = malloc(sizeof(struct stack_state));
-  if(newitem == NULL) return false;
+/**
+ * @brief   Pushes new state.
+ *
+ * This function takes GState, makes an item from it (dynamically)
+ * and pushes it to inner GeneratorStack.
+ * @param newstate      New state.
+ * @returns False if fail. True otherwise.
+ */
+inline bool PushGState(GState newstate);
+/**
+ * @brief   Removes top state.
+ *
+ * This function deletes the most top GState from a GeneratorStack.
+ */
+inline void RemoveGState();
 
-  newitem->state = newstate;
-  newitem->next = mStack.first;
-  mStack.first = newitem;
-  return true;
-}
-void UnsignGState()
+/**
+ * @brief   Returns top state.
+ *
+ * This function returns the most top GState from a GeneratorStack.
+ * @returns GState on the top, or GState_Empty, if empty.
+ */
+inline GState LookUpGState();
+
+/**
+ * @brief   Removes and returns top state.
+ *
+ * This function removes the most top GState from a GeneratorStack
+ * and returns it.
+ * @returns GState on the top, or GState_Empty, if empty.
+ */
+inline GState PopGState();
+
+/**
+ * @brief   Clears state stack.
+ *
+ * This function clears whole GeneratorStack
+ * @returns GState on the top, or GState_Empty, if empty.
+ */
+inline void ClearGStates();
+
+/*-------------------- LABEL STACK ------------------------*/
+
+/**
+ * @brief   Item of the LabelStack.
+ */
+typedef struct label_item
 {
-  StackState newitem = mStack.first;
-  if(newitem != NULL) mStack.first = mStack.first->next;
-  free(newitem);
-}
-State LookUpGState()
+  const char * lbl;           /**< Name of the label. */
+  struct label_item * next;   /**< Pointer to next. */
+} * LabelItem;
+
+/**
+ * @brief   Stack of labels.
+ *
+ * This will be used to save the names of labels to jump onto
+ * in the future (after condition, cycle, else branch etc.)
+ */
+typedef struct labelstack
 {
-  StackState newitem = mStack.first;
-  if(newitem != NULL) return newitem->state;
-  else return State_Empty;
-}
+  LabelItem first;   /**< Pointer to first item. */
+} LabelStack;
+
+/**
+ * @brief   Pushes new label.
+ *
+ * This function will create (dynamically) new item and pushes
+ * it onto LabelStack.
+ * @param lbl     Name of the label.
+ * @returns True, if success. False otherwise.
+ */
+inline bool PushLabel(const char * lbl);
+
+/**
+ * @brief   Generates and returns new label.
+ *
+ * This function will generate new label name, pushes it
+ * onto stack and returns it.
+ * @returns Name of the label, or error.
+ */
+inline const char * GenerateLabel();
+
+/**
+ * @brief   Returns top label.
+ *
+ * This function will return the most top label on LabelStack.
+ * @returns Label, NULL if error.
+ */
+inline const char * LookUpLabel();
+
+/**
+ * @brief   Removes top label.
+ *
+ * This function will remove the most top label on Label Stack.
+ */
+inline void RemoveLabel();
+
+/**
+ * @brief   Returns and removes top label.
+ *
+ * This function will remove and return the most top label on Label Stack.
+ * @returns Label, NULL if error.
+ */
+inline const char * PopLabel();
+
+/**
+ * @brief   Clears label stack
+ *
+ * This function will remove all the labels in Label Stack.
+ */
+inline void ClearLabels();
+
+/** @} */
 /*---------------------------------------------------------*/
+
+/*----------- DATA ------------*/
+static GeneratorStack mStack;
+static LabelStack mLabels;
+/*-----------------------------*/
+
+static Phrasem mlogic;
+void GenerateCondition()
+{
+  if(isOperator(mlogic, "="))
+  {
+    // =
+    const char * aftercond = GenerateLabel();
+    out("JUMIFEQS %s", aftercond);
+  }
+  else if(isOperator(mlogic, "<>"))
+  {
+    // <>
+    const char * aftercond = GenerateLabel();
+    out("JUMIFNEQS %s", aftercond);
+  }
+  else if(isOperator(mlogic, ">"))
+  {
+    // <
+  }
+
+  else if(isOperator(mlogic, "<"))
+  {
+    // >
+  }
+  else if(isOperator(mlogic, ">="))
+  {
+    // <=
+  }
+  else
+  {
+    // >=
+  }
+
+  free(mlogic);
+  mlogic = NULL;
+}
+
+static const char * mtarget;
+void GenerateAssignment()
+{
+  out("POPS %s", mtarget);
+  mtarget = NULL;
+}
+void GenerateVariableDeclaration()
+{
+  out("DEFVAR %s", mtarget);
+  // do not free, assignment will follow
+}
+
 
 /*void GenerateArtim(s){
   bool end = false;
@@ -79,6 +247,7 @@ bool Send(Stack s)
   #ifdef GENERATOR_DEBUG
     debug("Send to Generator");
   #endif
+<<<<<<< HEAD
 
 
 //  if ( LookUpGState() == GState_Expression ) {
@@ -90,39 +259,71 @@ bool Send(Stack s)
 
 
 
+=======
+>>>>>>> e12d096b53c540f4da5bd6e65b19fb1685f42ea7
   (void)s;
+
+  // here will be stack process
+  // ...
+  // result will be on the data stack of result program (not in the variable)
+
+
+  PopGState();
+  // underneath
+  GState below = LookUpGState();
+  if( below == GState_Condition )
+  {
+    GenerateCondition();
+  }
+  else if( below == GState_Assignment )
+  {
+    GenerateAssignment();
+  }
   return true;
 }
 
 bool HandlePhrasem(Phrasem p)
 {
-  (void)p;
+  if(LookUpGState() == GState_Logic)
+  {
+    mlogic = p;
+  }
+  if(LookUpGState() == GState_VariableDeclaration)
+  {
+    mtarget = p->d.str;
+    free(p);
+    GenerateVariableDeclaration();
+  }
+
+
+  PopGState();
   return true;
 }
 
 void G_FunctionCall()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate function call");
+    debug("Generate function call.");
   #endif
 
-  AssignGState(State_FunctionCall);
+  PushGState(GState_FunctionCall);
 
 }
 
 void G_Condition()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate condition");
+    debug("Generate condition.");
   #endif
-  AssignGState(State_Condition);
+
+  PushGState(GState_Condition);
 
 }
 
 void G_Cycle()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate cycle");
+    debug("Generate cycle.");
   #endif
 
 
@@ -131,7 +332,7 @@ void G_Cycle()
 void G_Assignment()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate assignment");
+    debug("Generate assignment.");
   #endif
 
 
@@ -140,7 +341,7 @@ void G_Assignment()
 void G_Print()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate print");
+    debug("Generate print.");
   #endif
 
 
@@ -149,7 +350,7 @@ void G_Print()
 void G_Input()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate input");
+    debug("Generate input.");
   #endif
 
 
@@ -158,24 +359,171 @@ void G_Input()
 void G_Logic()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate logic");
+    debug("Generate logic.");
   #endif
-
+  PushGState(GState_Logic);
 
 }
 
 void G_Expression()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate expression");
+    debug("Generate expression.");
   #endif
+  PushGState(GState_Expression);
+}
+
+void G_VariableDeclaration()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate variable declaration.");
+  #endif
+
+  PushGState(GState_VariableDeclaration);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*-------------------- STATE STACK ---------------------------*/
+bool PushGState(GState newstate)
+{
+  // alloc
+  StateItem newitem = malloc(sizeof(struct state_item));
+  if(newitem == NULL) return false;
+
+  // filling up
+  newitem->state = newstate;
+  newitem->next = mStack.first;
+  // moving head
+  mStack.first = newitem;
+
+  return true;
+}
+
+GState LookUpGState()
+{
+  // look for item
+  StateItem readitem = mStack.first;
+
+  // empty
+  if(readitem == NULL) return GState_Empty;
+  // not empty
+  else return readitem->state;
+}
+
+void RemoveGState()
+{
+  // look for item
+  StateItem olditem = mStack.first;
+
+  // empty
+  if(olditem == NULL) return;
+  // not empty
+  mStack.first = mStack.first->next;
+  free(olditem);
+}
+
+GState PopGState()
+{
+  // look up
+  GState readitem = LookUpGState();
+  // remove
+  RemoveGState();
+
+  return readitem;
+}
+
+void ClearGStates()
+{
+  // clear
+  while(PopGState() != GState_Empty) { }
+}
+
+
+/*---------------- LABEL STACK ------------------*/
+
+bool PushLabel(const char * lbl)
+{
+  // alloc
+  LabelItem newitem = malloc(sizeof(struct label_item));
+  if(newitem == NULL) return false;
+
+  // fill up
+  newitem->lbl = lbl;
+  newitem->next = mLabels.first;
+  // moving head
+  mLabels.first = newitem;
+
+  return true;
+}
+
+const char * GenerateLabel()
+{
+  // TODO
+  // generate
+  //...
+  // neco = ??? funkce() ???
+  // dynamicka alokace
+
+  // if(!PushLabel(neco)) return NULL
+  return "var";
+}
+
+const char * LookUpLabel()
+{
+  // look up
+  LabelItem readitem = mLabels.first;
+
+  // empty
+  if(readitem == NULL) return NULL;
+  // not empty
+  return readitem->lbl;
+}
+
+void RemoveLabel()
+{
+  // look up
+  LabelItem olditem = mLabels.first;
+
+  // empty
+  if(olditem == NULL) return;
+  // not empty
+  mLabels.first = olditem->next;
+
+  // remove label first
+  // ...
+  free(olditem);
 
 }
 
-void G_RelativeOperator()
+const char * PopLabel()
 {
-  #ifdef GENERATOR_DEBUG
-    debug("Generate expression");
-  #endif
+  // look up
+  const char * lbl = LookUpLabel();
+  // remove
+  RemoveLabel();
 
+  return lbl;
+}
+
+void ClearLabels()
+{
+  // clear
+  while(PopLabel() != NULL) { }
 }

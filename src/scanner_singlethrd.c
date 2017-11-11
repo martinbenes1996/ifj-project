@@ -1,4 +1,3 @@
-
 /**
  * @file scanner
  * @authors xbenes49 xbolsh00 xkrato47 xpolan09
@@ -7,6 +6,8 @@
  *
  * This module implements Lexical Scanner.
  */
+
+#ifndef MULTITHREAD
 
 #include <ctype.h>
 #include <math.h>
@@ -19,20 +20,12 @@
 #include "err.h"
 #include "io.h"
 #include "queue.h"
-#include "scanner.h"
+#include "scanner_singlethrd.h"
 #include "tables.h"
 #include "types.h"
 
-#ifdef MULTITHREAD
-
 bool done = false;
 int line = 1;
-
-bool outer_error = false;
-void AskScannerToEnd() { outer_error = true; }
-
-static volatile bool isscanning = true;
-bool ScannerIsScanning() { return isscanning; }
 
 void EndScanner(const char * msg, ErrorType errtype)
 {
@@ -50,9 +43,6 @@ void EndScanner(const char * msg, ErrorType errtype)
       debug("End Scanner.");
     #endif
   }
-  isscanning = false;
-  FinishConnectionToQueue();
-  ClearQueue();
 }
 
 /**
@@ -69,7 +59,7 @@ void EndScanner(const char * msg, ErrorType errtype)
     EndScanner(msg, errtype);                                   \
     char * p = GetBuffer();                                     \
     if (p != NULL) free(p);                                     \
-    return false;                                               \
+    return NULL;                                                \
   } while(0)
 
 
@@ -89,6 +79,14 @@ void EndScanner(const char * msg, ErrorType errtype)
   if (id == NULL) RaiseError("allocation error", ErrorType_Internal)
 
 
+/*------------------------------------------------------------------------*/
+
+
+/*---- DATA ------*/
+Phrasem mem = NULL;
+/*----------------*/
+
+
 /**
  * @brief function for comment
  *
@@ -105,35 +103,36 @@ bool getComment() {
 
     switch (state) {
       case 0:
-        if ( input == '~') {state = 2; break;}
-        else if (input == '\'') {state = 1; break;}
+        if ( input == '~') { state = 2; break; }
+        else if (input == '\'') { state = 1; break; }
         else RaiseError("bad internal state", ErrorType_Internal);
 
       case 1:
-        if ( input != '\n') {break;}
-        else {end = true; break;}
+        if ( input != '\n') { break; }
+        else { end = true; break; }
 
       case 2:
-        if (input != '/') {break;}
-        else { state = 3; break;}
+        if (input != '/') { break; }
+        else { state = 3; break; }
 
       case 3:
-        if (input != '/') {state = 2; break;}
-        else {end = true; break;}
+        if (input != '/') { state = 2; break; }
+        else { end = true; break; }
 
       default:
-        RaiseError("unknown state in comment", ErrorType_Syntax);
+        EndScanner("unknown state in comment", ErrorType_Syntax);
+        end = true;
+        break;
     }
   }
   return true;
 }
 
-
 /**
  * @brief the function can recognize if this is an operator and save it to buffer
- * return true if everything is allright in other way - false
+ * return Phrasem if everything is alright in other way - NULL
  */
-bool getOperator() {
+Phrasem getOperator() {
   int state = 0;
   int input;
   bool end = false;
@@ -248,22 +247,14 @@ bool getOperator() {
     PrintPhrasem(phr);
   #endif
 
-  if( !AddToQueue(phr) ) RaiseError ("queue allocation error", ErrorType_Internal);
-
-  return true;
-
+  return phr;
 }
-
-
-
 
 /**
  * @brief The function can recognize if this is string and save it to buffer
  * return true if everything is ok in otherway -false
  */
-
-
-bool getString() {
+Phrasem getString() {
   int state = 0;
   int input;
   int asciival = 0;
@@ -302,10 +293,7 @@ bool getString() {
             PrintPhrasem(phr);
           #endif
 
-          if( !AddToQueue(phr) ) RaiseError ("queue allocation error", ErrorType_Internal);
-
-          end = true;
-          break;
+          return phr;
         }
         else if (input == EOF)  RaiseError("string not ended", ErrorType_Syntax);
         else if (input != '\\') {
@@ -369,15 +357,13 @@ bool getString() {
       default:
         RaiseError("bad internal state", ErrorType_Syntax);
   }
-
-  return true;
+  return NULL;
 }
 
 
-bool getIdentifier(){
+Phrasem getIdentifier(){
 	int state = 0;
  	int input;
-  bool end = false;
 
   do {
   	input = getByte();
@@ -428,7 +414,7 @@ bool getIdentifier(){
               PrintPhrasem(phr);
             #endif
 
-            if( !AddToQueue(phr) ) RaiseError("queue allocation error", ErrorType_Internal);
+            return phr;
           }
 
           // identifier parse
@@ -443,9 +429,8 @@ bool getIdentifier(){
               PrintPhrasem(phr);
             #endif
 
-            if( !AddToQueue(phr) ) RaiseError ("queue allocation error", ErrorType_Internal);
+            return phr;
           }
-          end = true;
           break;
 
         }
@@ -454,13 +439,11 @@ bool getIdentifier(){
       default:
         RaiseError("parsing not possible", ErrorType_Syntax);
     }
-  } while(!end);
-
-	return true;
+  } while(1);
+  return NULL;
 }
 
-
-bool getNumber(){
+Phrasem getNumber(){
   int state = 0; // state of the machine
   // integer
   double result = 0; // result of integers
@@ -468,9 +451,8 @@ bool getNumber(){
   int order = 1; // iterator of exponent
   double exponent = 0; // result of the exponent
 
-  bool end = false;
   int input;
-  while(!end){
+  while(1){
     input = getByte();
     switch (state) {
 
@@ -616,10 +598,9 @@ bool getNumber(){
             PrintPhrasem(p);
           #endif
 
-          if( !AddToQueue(p) ) RaiseError ("queue allocation error", ErrorType_Internal);
+          return p;
 
         } while(0);
-        end = true;
         break;
 
       // double process Xe-Y
@@ -642,11 +623,9 @@ bool getNumber(){
             PrintPhrasem(p);
           #endif
 
-          if( !AddToQueue(p) ) RaiseError ("queue allocation error", ErrorType_Internal);
+          return p;
 
         } while(0);
-        end = true;
-        break;
 
       // double process X.Y
       case 11:
@@ -666,11 +645,9 @@ bool getNumber(){
             PrintPhrasem(p);
           #endif
 
-          if( !AddToQueue(p) ) RaiseError ("queue allocation error", ErrorType_Internal);
+          return p;
 
         } while(0);
-        end = true;
-        break;
 
       // integer process
       case 12:
@@ -690,144 +667,151 @@ bool getNumber(){
             PrintPhrasem(p);
           #endif
 
-          if( !AddToQueue(p) ) RaiseError ("queue allocation error", ErrorType_Internal);
+          return p;
 
         } while(0);
-        end = true;
         break;
 
       // error state
       default:
         RaiseError("bad internal state", ErrorType_Internal);
-
     }
   }
+  return NULL;
+}
+
+
+
+Phrasem RemoveFromQueue()
+{
+  if(mem != NULL)
+  {
+    Phrasem p = mem;
+    mem = NULL;
+    return p;
+  }
+
+  // reading
+  int input;
+  loadAnother:
+  do {
+    input = getByte();
+
+  } while( (input != ' ') && (input != '\t') );
+
+  // EOF
+  if(input == EOF)
+  {
+    ALLOC_PHRASEM(phr);
+    phr->table = TokenType_EOF;
+
+    #ifdef SCANNER_DEBUG
+      PrintPhrasem(phr);
+    #endif
+
+    return phr;
+  }
+
+
+  if(input == '\n')
+  {
+    line += 1;
+    ALLOC_PHRASEM(phr);
+    phr->table = TokenType_Separator;
+    phr->d.str = NULL;
+    #ifdef SCANNER_DEBUG
+      PrintPhrasem(phr);
+    #endif
+    return phr;
+  }
+
+  else if (input == '!') {
+    returnByte(input);
+    return getString();
+  }
+
+  else if ( input == '\'' ) {
+    returnByte(input);
+    getComment();
+    goto loadAnother;
+  }
+
+  else if (input == '/') {
+    input = getByte();
+    if (input == '/')
+    {
+      returnByte('~');
+      getComment();
+      goto loadAnother;
+    }
+    else {
+      returnByte(input);
+
+      // AddToQueue '/' as operator
+      char * p = GetBuffer();
+      if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
+
+
+      long x = getOperatorId(p);
+      free(p);
+
+      if ( x == -1) RaiseError("constant table allocation error", ErrorType_Internal);
+
+      ALLOC_PHRASEM(phr);
+      phr->table = TokenType_Operator;
+      phr->d.index = x;
+      phr->line = line;
+
+      #ifdef SCANNER_DEBUG
+        PrintPhrasem(phr);
+      #endif
+
+      return phr;
+    }
+  }
+
+
+  else if ( (input == '<')
+          ||(input == '>')
+          ||(input == '=')
+          ||(input == '+')
+          ||(input == '-')
+          ||(input == '*')
+          ||(input == '\\')
+          ||(input == '(')
+          ||(input == ')')
+          ||(input == ',')) {
+    returnByte(input);
+    return getOperator();
+  }
+
+
+  else if (((input >= 'A') && (input <= 'Z'))
+        || ((input >= 'a') && (input <= 'z'))
+        || (input == '_')) {
+    returnByte(input);
+    return getIdentifier();
+  }
+
+
+  else if ((input >= '0') && (input <= '9')) {
+    returnByte(input);
+    return getNumber();
+  }
+
+  RaiseError("unknown symbol", ErrorType_Syntax);
+
+}
+
+
+bool ReturnToQueue(Phrasem p)
+{
+  if(mem != NULL) return false;
+
+  mem = p;
   return true;
 }
 
 
-void *InitScanner(void * v /*not used*/)
-{
-  (void)v; /* to avoid compiler warning */
-
-  #ifdef SCANNER_DEBUG
-    debug("Init Scanner.");
-  #endif
-
-  int input;
-
-  while(!done)
-  {
-    // outer error
-    if(outer_error) { EndScanner("", ErrorType_Ok); return NULL; }
-
-    // reading
-    input = getByte();
-
-    // EOF
-    if(input == EOF)
-    {
-      ALLOC_PHRASEM(phr);
-      phr->table = TokenType_EOF;
-      #ifdef SCANNER_DEBUG
-        PrintPhrasem(phr);
-      #endif
-      isscanning = false;
-      if( !AddToQueue(phr) ) RaiseError("queue error", ErrorType_Internal);
-      done = true;
-      continue;
-    }
-
-    if((input == ' ') || (input == '\t')) continue;
-
-    if (input == '\n') {
-      line += 1;
-      ALLOC_PHRASEM(phr);
-      phr->table = TokenType_Separator;
-      phr->d.str = NULL;
-      #ifdef SCANNER_DEBUG
-        PrintPhrasem(phr);
-      #endif
-      if( !AddToQueue(phr) ) RaiseError("queue error", ErrorType_Internal);
-    }
-
-    else if (input == '!') {
-      returnByte(input);
-      getString();
-    }
-
-
-    else if ( input == '\'' ) {
-      returnByte(input);
-      getComment();
-    }
-
-
-    else if (input == '/') {
-      input = getByte();
-      if (input == '/') {returnByte('~'); getComment();}
-      else {
-        returnByte(input);
-
-        // AddToQueue '/' as operator
-        char * p = GetBuffer();
-        if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
-
-
-        long x = getOperatorId(p);
-        free(p);
-
-        if ( x == -1) RaiseError("constant table allocation error", ErrorType_Internal);
-
-        ALLOC_PHRASEM(phr);
-        phr->table = TokenType_Operator;
-        phr->d.index = x;
-        phr->line = line;
-
-        #ifdef SCANNER_DEBUG
-          PrintPhrasem(phr);
-        #endif
-
-        if( !AddToQueue(phr) ) RaiseError ("queue allocation error", ErrorType_Internal);
-
-      }
-    }
-
-
-    else if ( (input == '<')
-            ||(input == '>')
-            ||(input == '=')
-            ||(input == '+')
-            ||(input == '-')
-            ||(input == '*')
-            ||(input == '\\')
-            ||(input == '(')
-            ||(input == ')')
-            ||(input == ',')) {
-      returnByte(input);
-      getOperator();
-    }
-
-
-    else if (((input >= 'A') && (input <= 'Z'))
-          || ((input >= 'a') && (input <= 'z'))
-          || (input == '_')) {
-      returnByte(input);
-      getIdentifier();
-    }
-
-
-    else if ((input >= '0') && (input <= '9')) {
-      returnByte(input);
-      getNumber();
-    }
-
-    else RaiseError("unknown symbol", ErrorType_Syntax);
-
-  }
-// #undef RaiseError, ALLOC_PHRASEM;
-  EndScanner(NULL, ErrorType_Ok);
-  return NULL;
-}
 
 #endif // MULTITHREAD

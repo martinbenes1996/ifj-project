@@ -15,6 +15,8 @@
 
 #include <stdbool.h>
 
+#ifdef MULTITHREAD
+
 /**
  * @brief    Scanner process status getter.
  *
@@ -39,5 +41,7 @@ void AskScannerToEnd();
  * @returns     NULL
  */
 void *InitScanner(void * v);
+
+#endif // MULTITHREAD
 
 #endif // SCANNER_H
