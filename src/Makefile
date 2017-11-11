@@ -7,7 +7,7 @@
 
 # compile settings
 cc = gcc
-defines = -DDEBUG_MODE #-DUSE_SYSLOG
+defines = -DDEBUG_MODE #-DUSE_SYSLOG -DMULTITHREAD
 linkings = -lpthread -lm
 flags = $(defines) -O2 -g -std=c99 -pedantic -Wall -Wextra
 
@@ -23,7 +23,7 @@ obj = $(src:.c=.o)
 #output settings
 output = ifj
 all: $(output)
-	
+
 ifneq ($(MAKECMDGOALS),clean)#$(filter $(MAKECMDGOALS), clean zip )
 ifneq ($(MAKECMDGOALS),zip)
 -include $(dep)
@@ -41,7 +41,7 @@ $(output) : $(obj)
 %.dep: %.c
 	@echo "Generating dependencies $@.";\
 	$(cc) $(flags) -MM $< -MF $@ && \
-	sed -i $@ -e 's_$*.o[ ]*:_$*.o $@: _'
+	sed -i $@ -e 's_$*.o[ ]*:_$*.o $@: _' 2> /dev/null
 
 
 # compiling

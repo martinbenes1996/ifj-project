@@ -5,6 +5,8 @@
 #include "io.h"
 #include "queue.h"
 
+#ifdef MULTITHREAD
+
 /*--------------------------------------------------*/
 /** @addtogroup Queue_types
  * Types used in Queue module.
@@ -210,3 +212,5 @@ void PrintQueue()
 	}
 
 }
+
+#endif // MULTITHREAD
