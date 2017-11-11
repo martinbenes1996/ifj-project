@@ -17,6 +17,8 @@
 #include "io.h"
 #include "parser.h"
 #include "types.h"
+#include "symtable.h"
+#include "tables.h"
 
 /*------------------------------------------------------*/
 /** @addtogroup main
@@ -62,6 +64,9 @@ int main(int argc, char *argv[])
 		debug("IFJ project started.");
 	#endif
 
+	//table initialisations
+	constTableInit();
+
 	// argument process
 	args_t a;
 	if(!processArguments(&a, argc, argv)) exit(1);
@@ -83,6 +88,8 @@ int main(int argc, char *argv[])
 	}
 
 	// final operations
+	constTableFree();       //free the table of constants
+	functionTableEnd();     //free the table of symbols
 	closeOut();
 	return getErrorCode();
 }
