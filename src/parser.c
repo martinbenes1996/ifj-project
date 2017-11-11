@@ -1264,7 +1264,7 @@ bool FunctionDefinitionParse()
 
 bool ScopeParse()
 {
-  #ifdef PARSER_H
+  #ifdef PARSER_DEBUG
     debug("Scope parse.");
   #endif
   if(function_id != -1)

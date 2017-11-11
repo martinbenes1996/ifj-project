@@ -697,7 +697,7 @@ Phrasem RemoveFromQueue()
   do {
     input = getByte();
 
-  } while( (input != ' ') && (input != '\t') );
+  } while( (input == ' ') || (input == '\t') );
 
   // EOF
   if(input == EOF)
