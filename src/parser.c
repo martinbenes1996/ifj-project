@@ -841,8 +841,6 @@ bool VariableDefinitionParse()
   #endif
   G_VariableDeclaration();
 
-  bool status = true;
-
   // getting symbol
   Phrasem p = CheckQueue(p);
 
@@ -880,6 +878,8 @@ bool VariableDefinitionParse()
   // =
   else if(isOperator(s, "="))
   {
+    free(s);
+    
     // get expression
     if(!ExpressionParse())
     {
