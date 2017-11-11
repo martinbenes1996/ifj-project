@@ -394,9 +394,13 @@ bool RunParser()
 
   if(bypass())
   {
-    Phrasem p = CheckQueue(p);
-    free(p);
-    return true;
+    while(1)
+    {
+      Phrasem p = CheckQueue(p);
+      if(p->table == TokenType_EOF) return true;
+      PrintPhrasem(p);
+      free(p);
+    }
   }
 
   # ifdef MULTITHREAD

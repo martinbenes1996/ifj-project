@@ -239,7 +239,7 @@ Phrasem getOperator() {
   if ( x == -1) RaiseError("constant table error", ErrorType_Internal);
 
   ALLOC_PHRASEM(phr);
-  phr->table = TokenType_Constant;
+  phr->table = TokenType_Operator;
   phr->d.index = x;
   phr->line = line;
 
