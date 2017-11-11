@@ -198,7 +198,7 @@ bool constTableResize(void)
         setErrorMessage("constantTableResize: could not allocate memory");
         return false;
     }
-    consttable.arr_size = consttable.arr_size * RESIZE_RATE_CONSTANTS;
+    consttable.arr_size = consttable.arr_size + RESIZE_RATE_CONSTANTS;
 
     return true;
 }
