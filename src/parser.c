@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "config.h"
 #include "err.h"
 #include "functions.h"
 #include "generator.h"
@@ -390,6 +391,13 @@ bool RunParser()
   #ifdef PARSER_DEBUG
     debug("Init Parser.");
   #endif
+
+  if(bypass())
+  {
+    Phrasem p = CheckQueue(p);
+    free(p);
+    return true;
+  }
 
   # ifdef MULTITHREAD
   InitQueue();
@@ -917,6 +925,8 @@ bool InputParse()
     debug("Input parse.");
   #endif
 
+  G_Input();
+
   // variable
   Phrasem p = CheckQueue(p);
 
@@ -928,6 +938,9 @@ bool InputParse()
 
   // control of previous definition
   if( !P_VariableDefined(sc, p->d.str)) return false;
+
+  HandlePhrasem(p);
+
 
   // LF
   CheckSeparator();
@@ -1318,6 +1331,7 @@ bool GlobalBlockParse()
   if(p->table == TokenType_EOF)
   {
     end = true;
+    free(p);
     return true;
   }
 
