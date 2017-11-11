@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "config.h"
 #include "err.h"
 #include "io.h"
 #include "parser.h"
@@ -34,15 +35,12 @@ void printHelp();
 /**
  * @brief 	Processes the arguments.
  *
- * This function processes the argc and argv from main into the structure,
- * which is sent as pointer in parameter. Returns true, if succeeded, or
- * false, if it fails.
- * @param a 			Structure to fill.
+ * This function processes the argc and argv from main into the config.
  * @param argc 		Number of arguments.
  * @param argv 		Argument pointer.
  * @returns 			True, if success, false otherwise.
  */
-bool processArguments(args_t* a, int argc, char *argv[]);
+bool processArguments(int argc, char *argv[]);
 
 /*-----------------------------------------------------*/
 
@@ -63,9 +61,8 @@ int main(int argc, char *argv[])
 	#endif
 
 	// argument process
-	args_t a;
-	if(!processArguments(&a, argc, argv)) exit(1);
-	if(a.help) { printHelp(); exit(0); }
+	if(!processArguments(argc, argv)) exit(1);
+	if(help()) { printHelp(); exit(0); }
 
 	RunParser();
 
@@ -90,20 +87,27 @@ int main(int argc, char *argv[])
 /** @}*/
 /*-----------------------------------------------------*/
 
-bool processArguments(args_t* a, int argc, char *argv[])
+bool processArguments(int argc, char *argv[])
 {
-
-	// defaults
-	a->help = false;
-
+	initConfig();
 	for(int i = 1; i < argc; i++)
 	{
 		// help
 		if( !strcmp(argv[i], "-h") || !strcmp(argv[i], "--help") )
 		{
-			a->help = true;
+			setHelp();
 			#ifdef ARGS_DEBUG
 				debug("Argument -h");
+			#endif
+			break;
+		}
+
+		// help
+		if( !strcmp(argv[i], "-b") || !strcmp(argv[i], "--bypass") )
+		{
+			setBypass();
+			#ifdef ARGS_DEBUG
+				debug("Argument -b");
 			#endif
 			break;
 		}
@@ -115,6 +119,10 @@ bool processArguments(args_t* a, int argc, char *argv[])
 			return false;
 		}
 	}
+
+	#ifdef CONFIG_DEBUG
+		printConfig();
+	#endif
 
 	return true;
 }

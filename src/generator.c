@@ -1,9 +1,11 @@
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "functions.h"
 #include "generator.h"
 #include "io.h"
+#include "stack.h"
 #include "types.h"
 
 /*--------------------------------------------------*/
@@ -170,6 +172,14 @@ static GeneratorStack mStack;
 static LabelStack mLabels;
 /*-----------------------------*/
 
+char * form = "blabla";
+const char * GenerateUniqueName()
+{
+  char * msg = malloc(sizeof(char)*10);
+  strcpy(msg, form);
+  return msg;
+}
+
 static Phrasem mlogic;
 void GenerateCondition()
 {
@@ -228,14 +238,63 @@ void GeneratePrint()
   // do not free, assignment will follow
 }
 
+void GenerateRead(Phrasem p) {
+  // this will go from symbol table
+  out("READ %s %s", p->d.str, "integer");
+}
+
+void GenerateAritm(Stack s)
+{
+  const char * result = GenerateUniqueName();
+  const char * tmp = GenerateUniqueName();
+  out("VARDEF %s", result);
+  out("VARDEF %s", tmp);
+
+  // first
+  Phrasem p = PopFromStack(s);
+  out("MOVE %s %s", result, p->d.str);
+  free(p);
+
+
+  while(1)
+  {
+
+    // second
+    Phrasem q = PopFromStack(s);
+    if(q == NULL) break;
+    out("MOVE %s %s", tmp, q->d.str);
+    free(q);
+
+    // operator
+    Phrasem operator = PopFromStack(s);
+    if (isOperator(operator, "+")) {
+      out("ADD %s %s %s", result, result, tmp);
+    }
+
+    else if (isOperator(operator, "-")) {
+      out("SUB %s %s %s", result, result, tmp);
+    }
+
+    else if (isOperator(operator, "*")) {
+      out("MUL %s %s %s", result, result, tmp);
+    }
+
+    else if (isOperator(operator, "/")) {
+      out("DIV %s %s %s", result, result, tmp);
+    } 
+  }
+
+  out("PUSHS %s", result);
+
+}
+
 bool Send(Stack s)
 {
   #ifdef GENERATOR_DEBUG
     debug("Send to Generator");
   #endif
 
-
-  (void)s;
+  GenerateAritm(s);
 
   // here will be stack process
   // ...
@@ -272,7 +331,9 @@ bool HandlePhrasem(Phrasem p)
     free(p);
     GenerateVariableDeclaration();
   }
-
+  if (LookUpGState() == GState_Input) {
+    GenerateRead(p);
+  }
 
   PopGState();
   return true;
@@ -330,7 +391,7 @@ void G_Input()
   #ifdef GENERATOR_DEBUG
     debug("Generate input.");
   #endif
-
+  PushGState(GState_Input);
 
 }
 

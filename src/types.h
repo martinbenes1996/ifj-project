@@ -211,6 +211,7 @@ typedef struct exprParserStack
 typedef struct
 {
   bool help; /**< Help parameter. */
+  bool bypass; /**< Bypass (only scanner). */
   /* will be added */
 } args_t;
 
