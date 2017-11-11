@@ -219,39 +219,12 @@ void GenerateVariableDeclaration()
   // do not free, assignment will follow
 }
 
-
-/*void GenerateArtim(s){
-  bool end = false;
-  const char * str = "x"
-
-
-  while (!end) {
-    Phrasem PopS1 = PopFromStack(s);
-    out(defvar, %s str);
-
-    PopS1 = PopFromStack(s);
-    out(defvar, %s str);
-
-    PopS1 = PopFromStack(s);
-    if (s == '+') out(add %s %s %s str str str);
-
-
-  }
-
-}
-
-*/
-
 bool Send(Stack s)
 {
   #ifdef GENERATOR_DEBUG
     debug("Send to Generator");
   #endif
 
-  //if ( LookUpGState() == GState_Expression ) {
-    //GenerateAritm(s)
-  //}
-  //out(defvar str);
 
   (void)s;
 
