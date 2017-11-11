@@ -55,7 +55,7 @@ bool P_HandleOperand(Phrasem p)
   // how to control?
   //if(!PushOntoStack(s, p)) return false;
   //printfstack(s);
-  printf("Token: %d\n", p->table);
+  //printf("Token: %d\n", p->table);
 
   return true;
 }
