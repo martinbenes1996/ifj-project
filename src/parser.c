@@ -592,7 +592,7 @@ bool ExpressionParse()
     char x;
     bool tokenChanged = false;
     short int endExprParsing = 0;
-    long int tempIndex;
+    PhrasemData tempIndex;
     TokenType tempType;
     bool failure = false;
 
@@ -701,7 +701,7 @@ bool ExpressionParse()
         else    //it is not my symbol
         {
             //setting token to ending type to empty the EPstack
-            tempIndex = p->d.index;
+            tempIndex = p->d;       //p->d.index;
             tempType = p->table;
             p->d.index = op_$;
             p->table = TokenType_Operator;
@@ -709,15 +709,15 @@ bool ExpressionParse()
         }
         if((endExprParsing || failure) && tokenChanged)
         {   //restoring tokens value and ending analysis
-            p->d.index = tempIndex;
+            p->d = tempIndex;
             p->table = tempType;
-            //vratit token do fronty
+            if(!ReturnToQueue(p)) failure = true;
         }
     }while(!endExprParsing && !failure);
 
     ClearStack(temporaryOpStack);   //should be empty. If its not -> error.
     ClearEPStack();                 //destroying EPStack
-    if(!TurnStack(returnStack)) return false;   //turning the stack
+    //if(!TurnStack(returnStack)) return false;   //turning the stack
     //poslat stack dale
 
     if(failure) EndRoutine();

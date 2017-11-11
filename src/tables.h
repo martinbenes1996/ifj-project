@@ -60,14 +60,85 @@ long getOperatorId(const char * word);
  * @returns array index.
  */
 int constInsert(DataType type, DataUnion uni);
-//dataUnion and dataType are in types.h
+
+/**
+ * @brief   Initiation of table of constants.
+ *
+ * This function allocates table os a starting size.
+ * @returns true -> ok, false -> error.
+ */
+bool constTableInit(void);
+
+/**
+ * @brief   Destroys table of constants.
+ *
+ * This function frees the whole table.
+ */
+void constTableFree(void);
+
+/**
+ * @brief   Returns type of the constant on a given index.
+ *
+ * @param index     index into the array of constants
+ * @returns type of the constant -> ok, DtatType_Unknown -> fail.
+ */
+DataType findConstType(size_t index);
+
+/**
+ * @brief   Returns integer value of the constant on a given index.
+ *
+ * @param index     index into the array of constants
+ * @returns ivalue of the constant -> ok, random number -> fail.
+ */
+int getIntConstValue(size_t index);
+
+/**
+ * @brief   Returns double value of the constant on a given index.
+ *
+ * @param index     index into the array of constants
+ * @returns dvalue of the constant -> ok, random number -> fail.
+ */
+double getDoubleConstValue(size_t index);
+
+/**
+ * @brief   Returns char pointer on the svalue of constant on a given index.
+ *
+ * @param index     index into the array of constants
+ * @returns char pointer on the string -> ok, random pointer -> fail.
+ */
+char * getStringConstValue(size_t index);
+
+/**
+ * @brief   Returns index to default value for integer.
+ *
+ * @returns index to default value for integer.
+ */
+size_t getIntDefaultValue();
+
+/**
+ * @brief   Returns index to default value for double.
+ *
+ * @returns index to default value for double.
+ */
+size_t getDoubleDefaultValue();
+
+/**
+ * @brief   Returns index to default value for string.
+ *
+ * @returns index to default value for string.
+ */
+size_t getStringDefaultValue();
+
+/**
+ * @brief   Changes the value of a constant on given index.
+ *          You have to know the type of constant before you use this. (constants cannot be retyped)
+ *
+ * @param index     index into the array of constants
+ * @param value     data union with value
+ * @returns true -> ok, false -> fail.
+ */
+bool changeConstValue(size_t index, DataUnion value);
 
 
-/*TO DO: (not needed for lexical analysis)
-    delete_array
-    delete_const   ?
-    find_value
-    find_type
-*/
 
 #endif //TABLES_H

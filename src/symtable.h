@@ -76,7 +76,10 @@ bool addVariableType(const char * functionName, const char * name, DataType type
  */
 bool addVariable(const char * functionName, const char * name);
 /**
- * @brief   Adds a parameter of a function and saves them as variables.
+ * @brief   Adds parameters of a function and saves them as variables.
+ *
+ *      DO NOT CHANGE THE LIST AFTER USING THIS FUNCTION (READ ONLY)
+ *  (FUNCTION DOES NOT COPY THE LIST, YOU SHOULD SET YOUR POINTER TO NULL)
  *
  * Returns false when unsuccessful or true
  * @param functionName  name of the function
@@ -86,6 +89,8 @@ bool addVariable(const char * functionName, const char * name);
 bool addFunctionParameters(const char * functionName, struct paramFce * parametres);
 /**
  * @brief   finds all parameters of a function.
+ *
+ * DO NOT DO ANYTHING WITH RECEIVED POINTER APART FROM READING FROM IT!
  *
  * Returns pointer to a list of parameters or NULL
  * @param functionName  name of the function
@@ -132,8 +137,19 @@ bool findFunctionInTable(const char * functionName);
  * @returns True/false.
  */
 bool addFunction(const char * name);
+/**
+ * @brief   Frees the function table.
+ *          Use in the end.
+ */
+void functionTableEnd();
 
 
 
+
+/**
+ * @brief   Prints the whole symtable.
+ *          Use for testing. (not sure if it will work like that :))
+ */
+void printfunction(void);
 
 #endif
