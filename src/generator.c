@@ -224,9 +224,9 @@ void GenerateVariableDeclaration()
   bool end = false;
   const char * str = "x"
 
-  
+
   while (!end) {
-    Phrasem PopS1 = PopFromStack(s); 
+    Phrasem PopS1 = PopFromStack(s);
     out(defvar, %s str);
 
     PopS1 = PopFromStack(s);
@@ -247,20 +247,12 @@ bool Send(Stack s)
   #ifdef GENERATOR_DEBUG
     debug("Send to Generator");
   #endif
-<<<<<<< HEAD
 
+  //if ( LookUpGState() == GState_Expression ) {
+    //GenerateAritm(s)
+  //}
+  //out(defvar str);
 
-//  if ( LookUpGState() == GState_Expression ) {
-//   GenerateAritm(s)
-
-//  }
-//    out(defvar str);
-
-
-
-
-=======
->>>>>>> e12d096b53c540f4da5bd6e65b19fb1685f42ea7
   (void)s;
 
   // here will be stack process
