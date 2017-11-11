@@ -606,9 +606,10 @@ bool ExpressionParse()
     Phrasem p = CheckQueue(p);
 
     do
-    {
+    {//printf("%d", p->table);
+    printstackEP();
         //token is operand
-        if(p->table == TokenType_Symbol || p->table == TokenType_Constant)
+        if(p->table == TokenType_Symbol /*|| p->table == TokenType_Constant*/)
         {
             //if symbol ...
             //zeptat se symtable, jestli je to fce nebo prom
@@ -619,7 +620,7 @@ bool ExpressionParse()
             //x is operation from array [top of stack][number of operator in token]
             x = ExprParseArray[(int)ExprOnTopOfEPStack()][op_i];
             if(x == '<')
-            {
+            {//printf("here");
                 if(LookEAheadEPStack())         //E correction  <E+ ...
                 {
                     PopFromEPStack();           //E
@@ -647,8 +648,8 @@ bool ExpressionParse()
         // token is operator
         // 7 is a magical constant -> index into array that determines the maximal value of operator
         // processed in this function (not logical operators)
-        // see tables.c operators[7][]
-        else if(p->table == TokenType_Operator && p->d.index < 7)
+        // see tables.c operators[9][]
+        else if(p->table == TokenType_Operator && p->d.index < 9)
         {
             //x is operation from array [top of stack][number of operator in token]
             x = ExprParseArray[(int)ExprOnTopOfEPStack()][p->d.index];

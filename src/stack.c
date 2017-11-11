@@ -6,7 +6,7 @@
 #include "stack.h"
 #include "types.h"
 
-
+//#define STACK_DEBUG
 /*--------------------------------------------------*/
 /** @addtogroup Stack_functions
  * Functions for interaction with stack.
@@ -152,6 +152,17 @@ void ClearStack(Stack st)
 
 ExprParserStack EPStack = {.itemCount = 0, .first = NULL};
 
+void printstackEP()
+{printf("\nPRINTING EP_STACK\n");
+    ExprParserItem * pom = EPStack.first;
+
+    while(pom != NULL)
+    {
+        printf("%d\n", pom->data);
+        pom = pom->next;
+    }
+}
+
 void InitEPStack()
 {
   // initialization
@@ -254,7 +265,7 @@ bool LookOneAheadEPStack(char x1)
 bool LookEAheadEPStack()
 {
     #ifdef STACK_DEBUG
-        debug("EPStack Looks one ahead.");
+        debug("EPStack Looks for E ahead.");
     #endif
 
     if(EPStack.itemCount < 2) return false;
@@ -269,7 +280,7 @@ bool LookEAheadEPStack()
 char ExprOnTopOfEPStack()
 {
     #ifdef STACK_DEBUG
-        debug("EPStack Looks one ahead.");
+        debug("EPStack Looks for a symbol on top of the stack.");
     #endif
 
     //peeking into stack
