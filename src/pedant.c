@@ -53,7 +53,7 @@ bool P_HandleOperand(Phrasem p)
   // ...
 
   // how to control?
-  if(!PushOntoStack(s, p)) return false;
+  //if(!PushOntoStack(s, p)) return false;
   //printfstack(s);
 
   return true;

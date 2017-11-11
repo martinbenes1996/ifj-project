@@ -614,7 +614,7 @@ bool ExpressionParse()
     Phrasem p = CheckQueue(p);
 
     do
-    {//printf("%d", p->table);
+    {
     printstackEP();
         //token is operand
         if(p->table == TokenType_Symbol /*|| p->table == TokenType_Constant*/)
@@ -628,7 +628,7 @@ bool ExpressionParse()
             //x is operation from array [top of stack][number of operator in token]
             x = ExprParseArray[(int)ExprOnTopOfEPStack()][op_i];
             if(x == '<')
-            {//printf("here");
+            {
                 if(LookEAheadEPStack())         //E correction  <E+ ...
                 {
                     PopFromEPStack();           //E
