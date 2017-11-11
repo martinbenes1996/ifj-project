@@ -15,12 +15,14 @@
 #include <unistd.h>
 
 #include "err.h"
+#include "functions.h"
 #include "generator.h"
 #include "io.h"
 #include "parser.h"
 #include "pedant.h"
 #include "queue.h"
 #include "scanner.h"
+#include "scanner_singlethrd.h"
 #include "tables.h"
 #include "stack.h"
 
@@ -119,6 +121,7 @@ bool end = false; /**< Set to true, if keyword end reached. */
     free(p);                                                  \
   } while(0)
 
+#ifdef MULTITHREAD
 /**
  * @brief Secure Queue getter.
  *
@@ -135,30 +138,27 @@ bool end = false; /**< Set to true, if keyword end reached. */
         RaiseQueueError(phrasem);               \
       }
 
+#else // single thread
+
+/**
+ * @brief Secure Queue getter.
+ *
+ * This function will call RemoveFromQueue. And if it returns NULL,
+ * it will raise the queue error (with macro RaiseQueueError).
+ * @param phrasem       Target memory.
+ * @returns phrasem reached
+ */
+#define CheckQueue(phrasem) RemoveFromQueue();  \
+      if(phrasem == NULL) {                     \
+        RaiseQueueError(phrasem);               \
+      }
+
+#endif // MULTITHREAD
 /*----------------------------------------------------------------*/
 /** @addtogroup Parser_tools
  * Parser tools.
  * @{
  */
-
-/*------------- CONDITION SIMPLIFIERS -------------*/
-bool isOperator(Phrasem p, const char * op)
-{
-  (void)op;
-  return (p->table == TokenType_Operator) /*&& (p->d.index == getOperatorId(op))*/;
-}
-
-bool isSeparator(Phrasem p)
-{
-  return p->table == TokenType_Separator;
-}
-
-
-
-bool matchesKeyword(Phrasem p, const char * kw)
-{
-  return (p->table == TokenType_Keyword) && (p->d.index == isKeyword(kw));
-}
 
 /*-------------------- CLEAR ----------------------*/
 
@@ -180,8 +180,10 @@ void EndRoutine()
   end = true;
 
   // end second thread
+  #ifdef MULTITHREAD
   AskScannerToEnd(); /**< Symetric end. */
   pthread_join(sc, NULL);
+  #endif // MULTITHREAD
 
   // clear memory
   //ClearTables();
@@ -389,6 +391,7 @@ bool RunParser()
     debug("Init Parser.");
   #endif
 
+  # ifdef MULTITHREAD
   InitQueue();
 
   // running scanner
@@ -402,8 +405,25 @@ bool RunParser()
       if(end) return false;
     }
 
+    if(end) break;
+
     // something to do after each function
   }
+  #else // SINGLETHREAD
+
+  // reading cycle
+  while(1)
+  {
+    if(!GlobalBlockParse())
+    {
+      if(end) return false;
+    }
+
+    if(end) break;
+
+    // something to do after each function
+  }
+  #endif
 
   // end
   EndRoutine();
@@ -715,7 +735,6 @@ bool LogicParse()
   if(!ExpressionParse()) return false;
 
   // parse the sign
-  G_RelativeOperator();
   Phrasem p = CheckQueue(p);
   if( isOperator(p, "=")
   ||  isOperator(p, "<")
@@ -727,6 +746,7 @@ bool LogicParse()
     #ifdef PARSER_DEBUG
       PrintPhrasem(p);
     #endif
+    // give to generator
     if(!HandlePhrasem(p)) return false;
   }
   else RaiseExpectedError("relation operator", p);
@@ -808,7 +828,7 @@ bool EndScopeParse()
   // separator
   CheckSeparator();
 
-  end = false;
+  end = true;
   return true;
 }
 
@@ -819,6 +839,7 @@ bool VariableDefinitionParse()
   #ifdef PARSER_DEBUG
     debug("Variable definition parse.");
   #endif
+  G_VariableDeclaration();
 
   bool status = true;
 
@@ -847,7 +868,14 @@ bool VariableDefinitionParse()
   // LF
   if( isSeparator(s) )
   {
-    // semantics - initialize to zero
+    // semantics - check if unique
+    HandlePhrasem(p);
+    //G_Assignment();
+    //G_Expression();
+
+    // generate phrasem with 0/!""/0.0
+    // return it to queue
+    // call ExpressionParse to send stack with 0 only
   }
   // =
   else if(isOperator(s, "="))
@@ -870,6 +898,7 @@ bool VariableDefinitionParse()
 
   // write to symbol table
   // semantics
+
   return status;
 }
 
@@ -1140,7 +1169,7 @@ bool CycleParse()
 
   // cycle body
   do {
-    if(!BlockParse()) return ScannerIsScanning();
+    if(!BlockParse()) return false;
   } while(!end);
 
   if(!EndCycleParse()) return false;
@@ -1166,7 +1195,7 @@ bool ConditionParse()
 
   while(1)
   {
-    if(!BlockParse()) return ScannerIsScanning();
+    if(!BlockParse()) return false;
   }
 
   // end if
@@ -1252,8 +1281,9 @@ bool ScopeParse()
   } while(!end);
 
   // end scope parse
-  EndScopeParse();
+  if(!EndScopeParse()) return false;
 
+  end = false;
   return true;
 }
 
@@ -1272,7 +1302,11 @@ bool GlobalBlockParse()
   // read function
   Phrasem p = CheckQueue(p);
 
-  if(p->table == TokenType_EOF) return false;
+  if(p->table == TokenType_EOF)
+  {
+    end = true;
+    return true;
+  }
 
   if(p->table != TokenType_Keyword) RaiseError("syntax error on global level", p, ErrorType_Syntax);
 
@@ -1290,6 +1324,8 @@ bool GlobalBlockParse()
   else if(matchesKeyword(p, "scope"))
   {
     if(!ScopeParse()) return false;
+
+    return true;
   }
   // error (global not supported)
   else

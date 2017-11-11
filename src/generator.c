@@ -1,6 +1,7 @@
 
 #include <stdlib.h>
 
+#include "functions.h"
 #include "generator.h"
 #include "io.h"
 #include "types.h"
@@ -27,7 +28,8 @@ typedef enum
   GState_Input,
   GState_Print,
   GState_Expression,
-  GState_RelativeOperator,
+  GState_Logic,
+  GState_VariableDeclaration,
   GState_Empty
 } GState;
 
@@ -168,26 +170,104 @@ static GeneratorStack mStack;
 static LabelStack mLabels;
 /*-----------------------------*/
 
+static Phrasem mlogic;
+void GenerateCondition()
+{
+  if(isOperator(mlogic, "="))
+  {
+    // =
+    const char * aftercond = GenerateLabel();
+    out("JUMIFEQS %s", aftercond);
+  }
+  else if(isOperator(mlogic, "<>"))
+  {
+    // <>
+    const char * aftercond = GenerateLabel();
+    out("JUMIFNEQS %s", aftercond);
+  }
+  else if(isOperator(mlogic, ">"))
+  {
+    // <
+  }
+
+  else if(isOperator(mlogic, "<"))
+  {
+    // >
+  }
+  else if(isOperator(mlogic, ">="))
+  {
+    // <=
+  }
+  else
+  {
+    // >=
+  }
+
+  free(mlogic);
+  mlogic = NULL;
+}
+
+static const char * mtarget;
+void GenerateAssignment()
+{
+  out("POPS %s", mtarget);
+  mtarget = NULL;
+}
+void GenerateVariableDeclaration()
+{
+  out("DEFVAR %s", mtarget);
+  // do not free, assignment will follow
+}
+
+
 bool Send(Stack s)
 {
   #ifdef GENERATOR_DEBUG
     debug("Send to Generator");
   #endif
-
   (void)s;
+
+  // here will be stack process
+  // ...
+  // result will be on the data stack of result program (not in the variable)
+
+
+  PopGState();
+  // underneath
+  GState below = LookUpGState();
+  if( below == GState_Condition )
+  {
+    GenerateCondition();
+  }
+  else if( below == GState_Assignment )
+  {
+    GenerateAssignment();
+  }
   return true;
 }
 
 bool HandlePhrasem(Phrasem p)
 {
-  (void)p;
+  if(LookUpGState() == GState_Logic)
+  {
+    mlogic = p;
+  }
+  if(LookUpGState() == GState_VariableDeclaration)
+  {
+    mtarget = p->d.str;
+    free(p);
+    GenerateVariableDeclaration();
+  }
+
+
+  PopGState();
   return true;
 }
 
 void G_FunctionCall()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate function call");
+    debug("Generate function call.");
   #endif
 
   PushGState(GState_FunctionCall);
@@ -197,8 +277,9 @@ void G_FunctionCall()
 void G_Condition()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate condition");
+    debug("Generate condition.");
   #endif
+
   PushGState(GState_Condition);
 
 }
@@ -206,7 +287,7 @@ void G_Condition()
 void G_Cycle()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate cycle");
+    debug("Generate cycle.");
   #endif
 
 
@@ -215,7 +296,7 @@ void G_Cycle()
 void G_Assignment()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate assignment");
+    debug("Generate assignment.");
   #endif
 
 
@@ -224,7 +305,7 @@ void G_Assignment()
 void G_Print()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate print");
+    debug("Generate print.");
   #endif
 
 
@@ -233,7 +314,7 @@ void G_Print()
 void G_Input()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate input");
+    debug("Generate input.");
   #endif
 
 
@@ -242,26 +323,27 @@ void G_Input()
 void G_Logic()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate logic");
+    debug("Generate logic.");
   #endif
-
+  PushGState(GState_Logic);
 
 }
 
 void G_Expression()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate expression");
+    debug("Generate expression.");
   #endif
-
+  PushGState(GState_Expression);
 }
 
-void G_RelativeOperator()
+void G_VariableDeclaration()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate expression");
+    debug("Generate variable declaration.");
   #endif
 
+  PushGState(GState_VariableDeclaration);
 }
 
 

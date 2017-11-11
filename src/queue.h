@@ -12,6 +12,8 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
+#ifdef MULTITHREAD
+
 #include <stdbool.h>
 
 #include "types.h"
@@ -58,5 +60,6 @@ void ClearQueue();
 void PrintQueue();
 
 
+#endif // MULTITHREAD
 
 #endif // QUEUE_H

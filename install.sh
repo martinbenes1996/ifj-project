@@ -19,11 +19,16 @@ install() {
   # install rebuild
   rm -f ~/bin/rebuild
   cp dev/scripts/rebuild ~/bin/
+
+  # install run
+  rm -f ~/bin/run
+  cp dev/scripts/run ~/bin/
 }
 
 uninstall() {
   rm -f ~/bin/build
   rm -f ~/bin/rebuild
+  rm -f ~/bin/run
 }
 
 if [ "$1" = "-i" ]; then
