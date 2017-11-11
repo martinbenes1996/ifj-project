@@ -6,7 +6,7 @@
 #include "stack.h"
 #include "types.h"
 
-//#define STACK_DEBUG
+#define STACK_DEBUG
 /*--------------------------------------------------*/
 /** @addtogroup Stack_functions
  * Functions for interaction with stack.

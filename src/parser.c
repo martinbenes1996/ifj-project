@@ -619,9 +619,9 @@ bool ExpressionParse()
 
     do
     {
-    //printstackEP();
+    printstackEP();
         //token is operand
-        if(p->table == TokenType_Symbol /*|| p->table == TokenType_Constant*/)
+        if(p->table == TokenType_Symbol || p->table == TokenType_Constant)
         {
             //if symbol ...
             //zeptat se symtable, jestli je to fce nebo prom
