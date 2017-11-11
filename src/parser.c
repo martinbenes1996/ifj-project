@@ -512,18 +512,22 @@ int decodeToken(...)
 
 // can be shortened
 //tries to perform stack modifications based on rules (called when '>')
-int checkEPRules(Stack returnStack, Stack temporaryOpStack)
+int checkEPRules(/*Stack returnStack, */Stack temporaryOpStack)
 {
     #ifdef PARSER_DEBUG
         debug("EP: checkEPRules: executing reduction rules.");
     #endif
 
-    if(LookTripleAheadEPStack(op_E, Add, op_E))
+    if(LookTripleAheadEPStack(op_E, Add, op_E)  ||
+       LookTripleAheadEPStack(op_E, Sub, op_E)  ||
+       LookTripleAheadEPStack(op_E, DivInt, op_E) ||
+       LookTripleAheadEPStack(op_E, Mul, op_E)  ||
+       LookTripleAheadEPStack(op_E, DivDouble, op_E))
     {
         MODIFY_STACK();
-        PushOntoStack(returnStack, PopFromStack(temporaryOpStack)); //it should pop an operator
+        P_HandleOperand(PopFromStack(temporaryOpStack)); //it should pop an operator
         return 1;
-    }
+    }/*
     else if(LookTripleAheadEPStack(op_E, Sub, op_E))
     {
         MODIFY_STACK();
@@ -547,7 +551,7 @@ int checkEPRules(Stack returnStack, Stack temporaryOpStack)
         MODIFY_STACK();
         PushOntoStack(returnStack, PopFromStack(temporaryOpStack));
         return 1;
-    }
+    }*/
     else if(LookTripleAheadEPStack(CloseBracket, op_E, OpenBracket))
     {
         MODIFY_STACK();
@@ -576,8 +580,8 @@ bool ExpressionParse()
   G_Expression();
 
   //creating a stack that will be given to pedant for semantical EP analysis
-  Stack returnStack = NULL;
-  returnStack = InitStack();
+  //Stack returnStack = NULL;
+  //returnStack = InitStack();
 
   //creating a stack for storing operator tokens
   Stack temporaryOpStack = NULL;
@@ -638,7 +642,8 @@ bool ExpressionParse()
                     PushOntoEPStack(op_i);    // i: operand
 
                 }
-                PushOntoStack(returnStack, p);      //pushing operand on stack
+                P_HandleOperand(p);
+                //PushOntoStack(returnStack, p);      //pushing operand on stack
                 p = CheckQueue(p);
             }
             else if(x == '#')
@@ -647,8 +652,11 @@ bool ExpressionParse()
             }
 
         }
-        //token is operator
-        else if(p->table == TokenType_Operator)
+        // token is operator
+        // 7 is a magical constant -> index into array that determines the maximal value of operator
+        // processed in this function (not logical operators)
+        // see tables.c operators[7][]
+        else if(p->table == TokenType_Operator && p->d.index < 7)
         {
             //x is operation from array [top of stack][number of operator in token]
             x = ExprParseArray[(int)ExprOnTopOfEPStack()][p->d.index];
@@ -675,7 +683,7 @@ bool ExpressionParse()
             else if(x == '>')
             {
                 int pom;
-                pom = checkEPRules(returnStack, temporaryOpStack);
+                pom = checkEPRules(/*returnStack, */temporaryOpStack);
                 if(pom == 1)
                 {
                     //p = CheckQueue(p);
