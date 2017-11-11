@@ -219,6 +219,15 @@ void GenerateVariableDeclaration()
   // do not free, assignment will follow
 }
 
+void GeneratePrint()
+{
+  const char *tmp = "var";
+  out("DEFVAR %s", tmp);
+  out("POPS %s", tmp);
+  out("WRITE %s", tmp);
+  // do not free, assignment will follow
+}
+
 bool Send(Stack s)
 {
   #ifdef GENERATOR_DEBUG
@@ -243,6 +252,10 @@ bool Send(Stack s)
   else if( below == GState_Assignment )
   {
     GenerateAssignment();
+  }
+  else if( below == GState_Print )
+  {
+    GeneratePrint();
   }
   return true;
 }
