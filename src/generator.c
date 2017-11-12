@@ -281,7 +281,7 @@ void GenerateAritm(Stack s)
 
     else if (isOperator(operator, "/")) {
       out("DIV %s %s %s", result, result, tmp);
-    } 
+    }
   }
 
   out("PUSHS %s", result);
@@ -364,6 +364,8 @@ void G_Cycle()
   #ifdef GENERATOR_DEBUG
     debug("Generate cycle.");
   #endif
+
+  PushGState(GState_Cycle);
 
 
 }

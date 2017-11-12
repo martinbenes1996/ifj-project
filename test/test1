@@ -1,10 +1,11 @@
 .IFJcode17
 CREATEFRAME
 DEFVAR TF@x
-MOVE TF@x int@5
+READ TF@x int
 PUSHS TF@x
-PUSHS int@7
-ADDS
-POPS TF@x
+PUSHS int@5
+LTS
+PUSHS bool@true
+JUMPIFEQS lala
 WRITE TF@x
-WRITE string@\010
+LABEL lala

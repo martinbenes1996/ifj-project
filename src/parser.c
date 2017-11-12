@@ -385,7 +385,7 @@ bool EndCycleParse();
 
 /** @} */
 /*----------------------------- MAIN RUN ---------------------------*/
-
+// if (x > 5) print(x)
 bool RunParser()
 {
   #ifdef PARSER_DEBUG
@@ -1163,6 +1163,7 @@ bool CycleParse()
   #ifdef PARSER_DEBUG
     debug("Cycle parse.");
   #endif
+  G_Cycle();
 
   if(!LogicParse()) return false;
 
