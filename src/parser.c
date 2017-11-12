@@ -514,7 +514,6 @@ int decodeToken(...)
     PushOntoEPStack(op_E);           \
   } while(0)
 
-// can be shortened
 //tries to perform stack modifications based on rules (called when '>')
 int checkEPRules(/*Stack returnStack, */Stack temporaryOpStack)
 {
@@ -522,50 +521,26 @@ int checkEPRules(/*Stack returnStack, */Stack temporaryOpStack)
         debug("EP: checkEPRules: executing reduction rules.");
     #endif
 
-    if(LookTripleAheadEPStack(op_E, Add, op_E)  ||
-       LookTripleAheadEPStack(op_E, Sub, op_E)  ||
-       LookTripleAheadEPStack(op_E, DivInt, op_E) ||
-       LookTripleAheadEPStack(op_E, Mul, op_E)  ||
-       LookTripleAheadEPStack(op_E, DivDouble, op_E))
-    {
-        MODIFY_STACK();
-        P_HandleOperand(PopFromStack(temporaryOpStack)); //it should pop an operator
-        return 1;
-    }/*
-    else if(LookTripleAheadEPStack(op_E, Sub, op_E))
-    {
-        MODIFY_STACK();
-        PushOntoStack(returnStack, PopFromStack(temporaryOpStack));
-        return 1;
-    }
-    else if(LookTripleAheadEPStack(op_E, DivInt, op_E))
-    {
-        MODIFY_STACK();
-        PushOntoStack(returnStack, PopFromStack(temporaryOpStack));
-        return 1;
-    }
-    else if(LookTripleAheadEPStack(op_E, Mul, op_E))
-    {
-        MODIFY_STACK();
-        PushOntoStack(returnStack, PopFromStack(temporaryOpStack));
-        return 1;
-    }
-    else if(LookTripleAheadEPStack(op_E, DivDouble, op_E))
-    {
-        MODIFY_STACK();
-        PushOntoStack(returnStack, PopFromStack(temporaryOpStack));
-        return 1;
-    }*/
-    else if(LookTripleAheadEPStack(CloseBracket, op_E, OpenBracket))
-    {
-        MODIFY_STACK();
-        return 1;
-    }
-    else if(LookOneAheadEPStack(op_i))
+    if(LookOneAheadEPStack(op_i))
     {
         PopFromEPStack();
         PopFromEPStack();
         PushOntoEPStack(op_E);
+        return 1;
+    }
+    else if(LookTripleAheadEPStack(op_E, Add, op_E)  ||
+            LookTripleAheadEPStack(op_E, Sub, op_E)  ||
+            LookTripleAheadEPStack(op_E, DivInt, op_E) ||
+            LookTripleAheadEPStack(op_E, Mul, op_E)  ||
+            LookTripleAheadEPStack(op_E, DivDouble, op_E))
+    {
+        MODIFY_STACK();
+        P_HandleOperand(PopFromStack(temporaryOpStack)); //it should pop an operator
+        return 1;
+    }
+    else if(LookTripleAheadEPStack(CloseBracket, op_E, OpenBracket))
+    {
+        MODIFY_STACK();
         return 1;
     }
     else if(LookEndAheadEPStack())
@@ -619,9 +594,9 @@ bool ExpressionParse()
 
     do
     {
-    //printstackEP();
+//printstackEP();   <<-- debug
         //token is operand
-        if(p->table == TokenType_Symbol /*|| p->table == TokenType_Constant*/)
+        if(p->table == TokenType_Symbol || p->table == TokenType_Constant)
         {
             //if symbol ...
             //zeptat se symtable, jestli je to fce nebo prom
@@ -691,7 +666,6 @@ bool ExpressionParse()
                 pom = checkEPRules(/*returnStack, */temporaryOpStack);
                 if(pom == 1)
                 {
-                    //p = CheckQueue(p);
                     continue;       //successfuly managed to execute a rule
                 }
                 else if(pom == 0)
@@ -710,7 +684,6 @@ bool ExpressionParse()
             else if(x == '=')
             {
                 PushOntoEPStack(p->d.index);
-                //PushOntoStack(temporaryOpStack, p);   not for brackets!
                 p = CheckQueue(p);
             }
             else    // x == '#'
@@ -734,12 +707,13 @@ bool ExpressionParse()
             p->table = tempType;
             if(!ReturnToQueue(p)) failure = true;
         }
+        // returns token for recovery after failure
+        if(failure == true && !tokenChanged) ReturnToQueue(p);
     }while(!endExprParsing && !failure);
 
     ClearStack(temporaryOpStack);   //should be empty. If its not -> error.
     ClearEPStack();                 //destroying EPStack
     //if(!TurnStack(returnStack)) return false;   //turning the stack
-    //poslat stack dale
 
     if(failure) EndRoutine();
     return !failure;

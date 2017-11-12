@@ -152,13 +152,35 @@ void ClearStack(Stack st)
 
 ExprParserStack EPStack = {.itemCount = 0, .first = NULL};
 
+//function for debuging expression parsing
 void printstackEP()
 {printf("\nPRINTING EP_STACK\n");
     ExprParserItem * pom = EPStack.first;
 
     while(pom != NULL)
     {
-        printf("%d\n", pom->data);
+        if(pom->data == 0)
+            printf("%s\n", "+");
+        else if(pom->data == 1)
+            printf("%s\n", "-");
+        else if(pom->data == 2)
+            printf("%s\n", "\\");
+        else if(pom->data == 3)
+            printf("%s\n", "*");
+        else if(pom->data == 4)
+            printf("%s\n", "/");
+        else if(pom->data == 5)
+            printf("%s\n", "(");
+        else if(pom->data == 6)
+            printf("%s\n", ")");
+        else if(pom->data == 7)
+            printf("%s\n", "i");
+        else if(pom->data == 8)
+            printf("%s\n", "$");
+        else if(pom->data == 9)
+            printf("%s\n", "E");
+        else if(pom->data == 10)
+            printf("%s\n", "<");
         pom = pom->next;
     }
 }
