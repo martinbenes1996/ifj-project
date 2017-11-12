@@ -373,6 +373,10 @@ bool getString() {
   return true;
 }
 
+/**
+ * @brief the function can recognize if this is an identifier or keyword and save it to buffer
+ * return true if everything is allright in other way - false
+ */
 
 bool getIdentifier(){
 	int state = 0;
@@ -459,6 +463,10 @@ bool getIdentifier(){
 	return true;
 }
 
+/**
+ * @brief the function can recognize if this is an number, also type of this number and save it to buffer
+ * return true if everything is allright in other way - false
+ */
 
 bool getNumber(){
   int state = 0; // state of the machine
@@ -705,6 +713,9 @@ bool getNumber(){
   return true;
 }
 
+/**
+ * @brief the function does initialization of scanner and definde what function should get this input.
+ */
 
 void *InitScanner(void * v /*not used*/)
 {
@@ -820,7 +831,7 @@ void *InitScanner(void * v /*not used*/)
     else RaiseError("unknown symbol", ErrorType_Syntax);
 
   }
-// #undef RaiseError, ALLOC_PHRASEM;
+
   EndScanner(NULL, ErrorType_Ok);
   return NULL;
 }
