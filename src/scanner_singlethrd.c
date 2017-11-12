@@ -748,12 +748,7 @@ Phrasem RemoveFromQueue()
       returnByte(input);
 
       // AddToQueue '/' as operator
-      char * p = GetBuffer();
-      if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
-
-
-      long x = getOperatorId(p);
-      free(p);
+      long x = getOperatorId("/");
 
       if ( x == -1) RaiseError("constant table allocation error", ErrorType_Internal);
 
