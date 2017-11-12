@@ -196,37 +196,39 @@ void GenerateLogic(Phrasem p)
   }
   else if(isOperator(p, ">"))
   {
-    // <
-    out("LTS");
+    // >
+    out("GTS");
 
   }
 
   else if(isOperator(p, "<"))
   {
-    // >
-    out("GTS");
+    // <
+    out("LTS");
   }
   else if(isOperator(p, ">="))
+  {
+    // >=
+    out("LTS");
+    out("NOTS");
+    
+  }
+  else
   {
     // <=
     out("GTS");
     out("NOTS");
   }
-  else
-  {
-    // >=
-    out("LTS");
-    out("NOTS");
-  }
 
-  free(mlogic);
-  mlogic = NULL;
+  free(p);
+ 
 }
 
 static const char * mtarget;
 void GenerateAssignment()
 {
   out("POPS %s", mtarget);
+  free((void*)mtarget);
   mtarget = NULL;
 }
 void GenerateVariableDeclaration()
@@ -256,7 +258,6 @@ void GenerateAritm(Stack s)
   Phrasem p = PopFromStack(s);
   out("PUSHS %s", p->d.str);
   free(p);
-
 
   while(1)
   {
@@ -307,11 +308,7 @@ bool Send(Stack s)
   PopGState();
   // underneath
   GState below = LookUpGState();
-  if( below == GState_Condition )
-  {
-    GenerateCondition();
-  }
-  else if( below == GState_Assignment )
+  if( below == GState_Assignment )
   {
     GenerateAssignment();
   }
