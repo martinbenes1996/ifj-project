@@ -182,8 +182,8 @@ const char * GenerateUniqueName()
 
 void GenerateLogic(Phrasem p)
 {
-  const char * aftercond = GenerateLabel(); 
-  
+  const char * aftercond = GenerateLabel();
+
   if(isOperator(p, "="))
   {
     // =
@@ -211,7 +211,7 @@ void GenerateLogic(Phrasem p)
     // >=
     out("LTS");
     out("NOTS");
-    
+
   }
   else
   {
@@ -221,20 +221,17 @@ void GenerateLogic(Phrasem p)
   }
 
   free(p);
- 
+
 }
 
-static const char * mtarget;
-void GenerateAssignment()
+void GenerateAssignment(Phrasem p)
 {
-  out("POPS %s", mtarget);
-  free((void*)mtarget);
-  mtarget = NULL;
+  out("POPS %s", p->d.str);
+  free(p);
 }
-void GenerateVariableDeclaration()
+void GenerateVariableDeclaration(Phrasem p)
 {
-  out("DEFVAR %s", mtarget);
-  // do not free, assignment will follow
+  out("DEFVAR %s", p->d.str);
 }
 
 void GeneratePrint()
@@ -243,7 +240,6 @@ void GeneratePrint()
   out("DEFVAR %s", tmp);
   out("POPS %s", tmp);
   out("WRITE %s", tmp);
-  // do not free, assignment will follow
 }
 
 void GenerateRead(Phrasem p) {
@@ -265,7 +261,7 @@ void GenerateAritm(Stack s)
     // second
     Phrasem q = PopFromStack(s);
     if(q == NULL) break;
-    // control of implicit conversion (if so, then pop again)   
+    // control of implicit conversion (if so, then pop again)
     out("PUSHS %s", q->d.str);
     free(q);
 
@@ -286,7 +282,7 @@ void GenerateAritm(Stack s)
 
     else if (isOperator(operator, "/")) {
       out("DIVS");
-    } 
+    }
   }
 
 
@@ -298,21 +294,14 @@ bool Send(Stack s)
     debug("Send to Generator");
   #endif
 
+  // incoming stack process
   GenerateAritm(s);
 
-  // here will be stack process
-  // ...
-  // result will be on the data stack of result program (not in the variable)
-
-
+  // state stack
   PopGState();
   // underneath
   GState below = LookUpGState();
-  if( below == GState_Assignment )
-  {
-    GenerateAssignment();
-  }
-  else if( below == GState_Print )
+  if( below == GState_Print )
   {
     GeneratePrint();
   }
@@ -321,18 +310,31 @@ bool Send(Stack s)
 
 bool HandlePhrasem(Phrasem p)
 {
-  if(LookUpGState() == GState_Logic)
+  /*-------- static part ------------*/
+
+  /*---------------------------------*/
+
+  // look to state stack
+  GState top = LookUpGState();
+  // logic
+  if(top == GState_Logic)
   {
     GenerateLogic(p);
   }
-  if(LookUpGState() == GState_VariableDeclaration)
+  // variable declaration
+  else if(top == GState_VariableDeclaration)
   {
-    mtarget = p->d.str;
-    free(p);
-    GenerateVariableDeclaration();
+    GenerateVariableDeclaration(p);
   }
-  if (LookUpGState() == GState_Input) {
+  // read
+  else if (top == GState_Input)
+  {
     GenerateRead(p);
+  }
+  // assignment
+  else if(top == GState_Assignment)
+  {
+    GenerateAssignment(p);
   }
 
   PopGState();
@@ -375,6 +377,8 @@ void G_Assignment()
   #ifdef GENERATOR_DEBUG
     debug("Generate assignment.");
   #endif
+
+  PushGState(GState_Assignment);
 
 
 }
@@ -423,6 +427,23 @@ void G_VariableDeclaration()
   PushGState(GState_VariableDeclaration);
 }
 
+void G_EndBlock()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate end.");
+  #endif
+
+}
+
+void InitGenerator()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Init generator.");
+  #endif
+
+  out(".IFJcode17");
+  out("CREATEFRAME");
+}
 
 
 

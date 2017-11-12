@@ -5,6 +5,22 @@
 
 #include "types.h"
 
+
+/*-----------------------------------------------------------*/
+/** @addtogroup Generator_main
+ * Main generator functions.
+ * @{
+ */
+
+/**
+ * @brief   Generator initializer.
+ *
+ * This function will initialize the inner structures of
+ * generator and will print the header of output file.
+ */
+void InitGenerator();
+
+/** @} */
 /*-----------------------------------------------------------*/
 /** @addtogroup Generator_handle
  * Data recievers.

@@ -2,6 +2,9 @@
 #define FUNCTIONS_H
 
 #include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "tables.h"
 #include "types.h"
 
@@ -33,6 +36,9 @@ inline bool isSeparator(Phrasem p);
  */
 inline bool matchesKeyword(Phrasem p, const char * kw);
 
+inline Phrasem duplicatePhrasem(Phrasem p);
+inline char * strdup(const char * str);
+
 
 
 
@@ -51,6 +57,45 @@ inline bool isSeparator(Phrasem p)
 inline bool matchesKeyword(Phrasem p, const char * kw)
 {
   return (p->table == TokenType_Keyword) && (p->d.index == isKeyword(kw));
+}
+
+inline char * strdup(const char * str)
+{
+  char * newstr = malloc(sizeof(char)*(strlen(str)+1));
+  if(newstr == NULL) return NULL;
+
+  strcpy(newstr, str);
+  return newstr;
+}
+
+inline Phrasem duplicatePhrasem(Phrasem p)
+{
+  Phrasem dup = malloc(sizeof(struct phrasem_data));
+  if(dup == NULL) return NULL;
+  //
+  dup->table = p->table;
+
+  switch(dup->table)
+  {
+    case TokenType_Separator:
+    case TokenType_EOF:
+      break;
+
+    // deep copy
+    case TokenType_Variable:
+    case TokenType_Function:
+    case TokenType_Symbol:
+      dup->d.str = strdup(p->d.str);
+      if(dup->d.str == NULL) { free(dup); return NULL; }
+      break;
+
+    case TokenType_Constant:
+    case TokenType_Operator:
+    case TokenType_Keyword:
+      dup->d.index = p->d.index;
+      break;
+  }
+  return dup;
 }
 
 #endif // FUNCTIONS_H

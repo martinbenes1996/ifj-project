@@ -403,6 +403,8 @@ bool RunParser()
     }
   }
 
+  InitGenerator();
+
   # ifdef MULTITHREAD
   InitQueue();
 
@@ -863,13 +865,19 @@ bool VariableDefinitionParse()
   if( isSeparator(s) )
   {
     // semantics - check if unique
-    HandlePhrasem(p);
-    //G_Assignment();
-    //G_Expression();
 
-    // generate phrasem with 0/!""/0.0
-    // return it to queue
-    // call ExpressionParse to send stack with 0 only
+    Phrasem q = duplicatePhrasem(p); // deep copy
+
+    // declare
+    HandlePhrasem(p);
+
+    // initialization
+    G_Assignment();
+    // s = generate phrasem with 0/!""/0.0 (from table)
+    // ReturnToQueue(s);
+    // if(!ExpressionParse()) return false;
+    // HandlePhrasem(q);
+
   }
   // =
   else if(isOperator(s, "="))
@@ -990,15 +998,30 @@ bool FunctionArgumentsParse()
   return true;
 }
 
-bool SymbolParse(Phrasem p)
+bool SymbolParse()
 {
   #ifdef PARSER_DEBUG
     debug("Symbol parse.");
   #endif
 
+  Phrasem p = CheckQueue(p);
+
   if( P_VariableDefined(function_id, p->d.str) )
   {
-    // assignment
+    G_Assignment();
+
+    // =
+    CheckOperator("=");
+
+    // expression
+    if(!ExpressionParse()) return false;
+
+    // LF
+    CheckSeparator();
+
+    // Generator
+    HandlePhrasem(p);
+
   }
   else if( P_FunctionDefined(p->d.str) )
   {
@@ -1091,36 +1114,33 @@ bool BlockParse()
       else
       {
         RaiseError("unknown keyword", p, ErrorType_Syntax);
-        free(p);
-        return false;
       }
       break;
+
     // constant
     case TokenType_Constant:
+      RaiseError("line beginning with constant", p, ErrorType_Syntax);
+
     // operator
     case TokenType_Operator:
-      EndParser("Parser: BlockParse: line beginning with constant", p->line, ErrorType_Syntax);
-      free(p);
-      return false;
+      RaiseError("line beginning with operator", p, ErrorType_Syntax);
 
     // empty line
     case TokenType_Separator:
       break;
+
     // assignment, function call
     case TokenType_Symbol:
-      break;
-    case TokenType_Variable:
-      // assignment
-      break;
-    case TokenType_Function:
-      // function call
-      break;
+      ReturnToQueue(p);
+      return SymbolParse();
 
+    // EOF
+    case TokenType_EOF:
+      RaiseError("EOF unexpected", p, ErrorType_Syntax);
 
+    // default
     default:
-      EndParser("Parser: Unknown token type", p->line, ErrorType_Syntax);
-      free(p);
-      return false;
+      RaiseError("unknown token type", p, ErrorType_Syntax);
   }
 
   #ifdef PARSER_DEBUG

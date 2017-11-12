@@ -131,6 +131,7 @@ inline const char * TokenTypeToString(TokenType tt)
     case TokenType_Function: return "Function";
     case TokenType_Variable: return "Variable";
     case TokenType_Separator: return "Separator";
+    case TokenType_EOF: return "End of file";
     default: return "Unknown TokenType!";
   }
 }
@@ -165,14 +166,15 @@ inline void PrintPhrasem(Phrasem p)
     case TokenType_Constant:
     case TokenType_Operator:
     case TokenType_Keyword:
-    case TokenType_Variable:
-    case TokenType_Function:
       debug("Phrasem [%s %d]", TokenTypeToString(p->table), p->d.index);
       break;
+    case TokenType_Variable:
+    case TokenType_Function:
     case TokenType_Symbol:
       debug("Phrasem [%s \"%s\"]", TokenTypeToString(p->table), p->d.str);
       break;
     case TokenType_Separator:
+    case TokenType_EOF:
       debug("Phrasem [%s]", TokenTypeToString(p->table));
       break;
     default:
