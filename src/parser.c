@@ -394,9 +394,13 @@ bool RunParser()
 
   if(bypass())
   {
-    Phrasem p = CheckQueue(p);
-    free(p);
-    return true;
+    while(1)
+    {
+      Phrasem p = CheckQueue(p);
+      if(p->table == TokenType_EOF) return true;
+      PrintPhrasem(p);
+      free(p);
+    }
   }
 
   # ifdef MULTITHREAD
@@ -510,7 +514,6 @@ int decodeToken(...)
     PushOntoEPStack(op_E);           \
   } while(0)
 
-// can be shortened
 //tries to perform stack modifications based on rules (called when '>')
 int checkEPRules(/*Stack returnStack, */Stack temporaryOpStack)
 {
@@ -518,50 +521,26 @@ int checkEPRules(/*Stack returnStack, */Stack temporaryOpStack)
         debug("EP: checkEPRules: executing reduction rules.");
     #endif
 
-    if(LookTripleAheadEPStack(op_E, Add, op_E)  ||
-       LookTripleAheadEPStack(op_E, Sub, op_E)  ||
-       LookTripleAheadEPStack(op_E, DivInt, op_E) ||
-       LookTripleAheadEPStack(op_E, Mul, op_E)  ||
-       LookTripleAheadEPStack(op_E, DivDouble, op_E))
-    {
-        MODIFY_STACK();
-        P_HandleOperand(PopFromStack(temporaryOpStack)); //it should pop an operator
-        return 1;
-    }/*
-    else if(LookTripleAheadEPStack(op_E, Sub, op_E))
-    {
-        MODIFY_STACK();
-        PushOntoStack(returnStack, PopFromStack(temporaryOpStack));
-        return 1;
-    }
-    else if(LookTripleAheadEPStack(op_E, DivInt, op_E))
-    {
-        MODIFY_STACK();
-        PushOntoStack(returnStack, PopFromStack(temporaryOpStack));
-        return 1;
-    }
-    else if(LookTripleAheadEPStack(op_E, Mul, op_E))
-    {
-        MODIFY_STACK();
-        PushOntoStack(returnStack, PopFromStack(temporaryOpStack));
-        return 1;
-    }
-    else if(LookTripleAheadEPStack(op_E, DivDouble, op_E))
-    {
-        MODIFY_STACK();
-        PushOntoStack(returnStack, PopFromStack(temporaryOpStack));
-        return 1;
-    }*/
-    else if(LookTripleAheadEPStack(CloseBracket, op_E, OpenBracket))
-    {
-        MODIFY_STACK();
-        return 1;
-    }
-    else if(LookOneAheadEPStack(op_i))
+    if(LookOneAheadEPStack(op_i))
     {
         PopFromEPStack();
         PopFromEPStack();
         PushOntoEPStack(op_E);
+        return 1;
+    }
+    else if(LookTripleAheadEPStack(op_E, Add, op_E)  ||
+            LookTripleAheadEPStack(op_E, Sub, op_E)  ||
+            LookTripleAheadEPStack(op_E, DivInt, op_E) ||
+            LookTripleAheadEPStack(op_E, Mul, op_E)  ||
+            LookTripleAheadEPStack(op_E, DivDouble, op_E))
+    {
+        MODIFY_STACK();
+        P_HandleOperand(PopFromStack(temporaryOpStack)); //it should pop an operator
+        return 1;
+    }
+    else if(LookTripleAheadEPStack(CloseBracket, op_E, OpenBracket))
+    {
+        MODIFY_STACK();
         return 1;
     }
     else if(LookEndAheadEPStack())
@@ -615,6 +594,7 @@ bool ExpressionParse()
 
     do
     {
+//printstackEP();   <<-- debug
         //token is operand
         if(p->table == TokenType_Symbol || p->table == TokenType_Constant)
         {
@@ -655,8 +635,8 @@ bool ExpressionParse()
         // token is operator
         // 7 is a magical constant -> index into array that determines the maximal value of operator
         // processed in this function (not logical operators)
-        // see tables.c operators[7][]
-        else if(p->table == TokenType_Operator && p->d.index < 7)
+        // see tables.c operators[9][]
+        else if(p->table == TokenType_Operator && p->d.index < 9)
         {
             //x is operation from array [top of stack][number of operator in token]
             x = ExprParseArray[(int)ExprOnTopOfEPStack()][p->d.index];
@@ -686,7 +666,6 @@ bool ExpressionParse()
                 pom = checkEPRules(/*returnStack, */temporaryOpStack);
                 if(pom == 1)
                 {
-                    //p = CheckQueue(p);
                     continue;       //successfuly managed to execute a rule
                 }
                 else if(pom == 0)
@@ -705,7 +684,6 @@ bool ExpressionParse()
             else if(x == '=')
             {
                 PushOntoEPStack(p->d.index);
-                //PushOntoStack(temporaryOpStack, p);   not for brackets!
                 p = CheckQueue(p);
             }
             else    // x == '#'
@@ -729,12 +707,13 @@ bool ExpressionParse()
             p->table = tempType;
             if(!ReturnToQueue(p)) failure = true;
         }
+        // returns token for recovery after failure
+        if(failure == true && !tokenChanged) ReturnToQueue(p);
     }while(!endExprParsing && !failure);
 
     ClearStack(temporaryOpStack);   //should be empty. If its not -> error.
     ClearEPStack();                 //destroying EPStack
     //if(!TurnStack(returnStack)) return false;   //turning the stack
-    //poslat stack dale
 
     if(failure) EndRoutine();
     return !failure;

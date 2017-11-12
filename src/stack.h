@@ -109,6 +109,7 @@ char ExprOnTopOfEPStack();
  */
 bool LookEndAheadEPStack();
 
+void printstackEP();
 
 /** @}*/
 #endif // STACK_H

@@ -6,7 +6,7 @@
 #include "stack.h"
 #include "types.h"
 
-
+//#define STACK_DEBUG
 /*--------------------------------------------------*/
 /** @addtogroup Stack_functions
  * Functions for interaction with stack.
@@ -152,6 +152,39 @@ void ClearStack(Stack st)
 
 ExprParserStack EPStack = {.itemCount = 0, .first = NULL};
 
+//function for debuging expression parsing
+void printstackEP()
+{printf("\nPRINTING EP_STACK\n");
+    ExprParserItem * pom = EPStack.first;
+
+    while(pom != NULL)
+    {
+        if(pom->data == 0)
+            printf("%s\n", "+");
+        else if(pom->data == 1)
+            printf("%s\n", "-");
+        else if(pom->data == 2)
+            printf("%s\n", "\\");
+        else if(pom->data == 3)
+            printf("%s\n", "*");
+        else if(pom->data == 4)
+            printf("%s\n", "/");
+        else if(pom->data == 5)
+            printf("%s\n", "(");
+        else if(pom->data == 6)
+            printf("%s\n", ")");
+        else if(pom->data == 7)
+            printf("%s\n", "i");
+        else if(pom->data == 8)
+            printf("%s\n", "$");
+        else if(pom->data == 9)
+            printf("%s\n", "E");
+        else if(pom->data == 10)
+            printf("%s\n", "<");
+        pom = pom->next;
+    }
+}
+
 void InitEPStack()
 {
   // initialization
@@ -254,7 +287,7 @@ bool LookOneAheadEPStack(char x1)
 bool LookEAheadEPStack()
 {
     #ifdef STACK_DEBUG
-        debug("EPStack Looks one ahead.");
+        debug("EPStack Looks for E ahead.");
     #endif
 
     if(EPStack.itemCount < 2) return false;
@@ -269,7 +302,7 @@ bool LookEAheadEPStack()
 char ExprOnTopOfEPStack()
 {
     #ifdef STACK_DEBUG
-        debug("EPStack Looks one ahead.");
+        debug("EPStack Looks for a symbol on top of the stack.");
     #endif
 
     //peeking into stack
