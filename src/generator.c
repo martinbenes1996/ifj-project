@@ -180,47 +180,55 @@ const char * GenerateUniqueName()
   return msg;
 }
 
-static Phrasem mlogic;
-void GenerateCondition()
+void GenerateLogic(Phrasem p)
 {
-  if(isOperator(mlogic, "="))
+  const char * aftercond = GenerateLabel(); 
+  
+  if(isOperator(p, "="))
   {
     // =
-    const char * aftercond = GenerateLabel();
     out("JUMIFEQS %s", aftercond);
   }
-  else if(isOperator(mlogic, "<>"))
+  else if(isOperator(p, "<>"))
   {
     // <>
-    const char * aftercond = GenerateLabel();
     out("JUMIFNEQS %s", aftercond);
   }
-  else if(isOperator(mlogic, ">"))
-  {
-    // <
-  }
-
-  else if(isOperator(mlogic, "<"))
+  else if(isOperator(p, ">"))
   {
     // >
+    out("GTS");
+
   }
-  else if(isOperator(mlogic, ">="))
+
+  else if(isOperator(p, "<"))
   {
-    // <=
+    // <
+    out("LTS");
+  }
+  else if(isOperator(p, ">="))
+  {
+    // >=
+    out("LTS");
+    out("NOTS");
+    
   }
   else
   {
-    // >=
+    // <=
+    out("GTS");
+    out("NOTS");
   }
 
-  free(mlogic);
-  mlogic = NULL;
+  free(p);
+ 
 }
 
 static const char * mtarget;
 void GenerateAssignment()
 {
   out("POPS %s", mtarget);
+  free((void*)mtarget);
   mtarget = NULL;
 }
 void GenerateVariableDeclaration()
@@ -245,16 +253,11 @@ void GenerateRead(Phrasem p) {
 
 void GenerateAritm(Stack s)
 {
-  const char * result = GenerateUniqueName();
-  const char * tmp = GenerateUniqueName();
-  out("VARDEF %s", result);
-  out("VARDEF %s", tmp);
 
   // first
   Phrasem p = PopFromStack(s);
-  out("MOVE %s %s", result, p->d.str);
+  out("PUSHS %s", p->d.str);
   free(p);
-
 
   while(1)
   {
@@ -262,29 +265,30 @@ void GenerateAritm(Stack s)
     // second
     Phrasem q = PopFromStack(s);
     if(q == NULL) break;
-    out("MOVE %s %s", tmp, q->d.str);
+    // control of implicit conversion (if so, then pop again)   
+    out("PUSHS %s", q->d.str);
     free(q);
 
     // operator
     Phrasem operator = PopFromStack(s);
+    // control of implicit conversion (if so, then pop again)
     if (isOperator(operator, "+")) {
-      out("ADD %s %s %s", result, result, tmp);
+      out("ADDS");
     }
 
     else if (isOperator(operator, "-")) {
-      out("SUB %s %s %s", result, result, tmp);
+      out("SUBS");
     }
 
     else if (isOperator(operator, "*")) {
-      out("MUL %s %s %s", result, result, tmp);
+      out("MULS");
     }
 
     else if (isOperator(operator, "/")) {
-      out("DIV %s %s %s", result, result, tmp);
-    }
+      out("DIVS");
+    } 
   }
 
-  out("PUSHS %s", result);
 
 }
 
@@ -304,11 +308,7 @@ bool Send(Stack s)
   PopGState();
   // underneath
   GState below = LookUpGState();
-  if( below == GState_Condition )
-  {
-    GenerateCondition();
-  }
-  else if( below == GState_Assignment )
+  if( below == GState_Assignment )
   {
     GenerateAssignment();
   }
@@ -323,7 +323,7 @@ bool HandlePhrasem(Phrasem p)
 {
   if(LookUpGState() == GState_Logic)
   {
-    mlogic = p;
+    GenerateLogic(p);
   }
   if(LookUpGState() == GState_VariableDeclaration)
   {

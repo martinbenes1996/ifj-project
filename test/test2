@@ -1,0 +1,10 @@
+.IFJcode17
+CREATEFRAME
+PUSHS int@5
+PUSHS int@6
+LTS
+PUSHS bool@true
+JUMPIFEQS lala
+WRITE string@mensi
+LABEL lala
+

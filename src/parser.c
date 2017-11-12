@@ -731,23 +731,24 @@ bool LogicParse()
 
   // parse the sign
   Phrasem p = CheckQueue(p);
-  if( isOperator(p, "=")
-  ||  isOperator(p, "<")
-  ||  isOperator(p, ">")
-  ||  isOperator(p, "<>")
-  ||  isOperator(p, "<=")
-  ||  isOperator(p, ">=") )
+  if( !isOperator(p, "=")
+  &&  !isOperator(p, "<")
+  &&  !isOperator(p, ">")
+  &&  !isOperator(p, "<>")
+  &&  !isOperator(p, "<=")
+  &&  !isOperator(p, ">=") )
   {
-    #ifdef PARSER_DEBUG
-      PrintPhrasem(p);
-    #endif
-    // give to generator
-    if(!HandlePhrasem(p)) return false;
+    RaiseExpectedError("relation operator", p);
   }
-  else RaiseExpectedError("relation operator", p);
 
   // right
   if(!ExpressionParse()) return false;
+
+  // sending logic operator
+  #ifdef PARSER_DEBUG
+    PrintPhrasem(p);
+  #endif
+  if(!HandlePhrasem(p)) return false;
 
   return true;
 }
