@@ -1177,10 +1177,14 @@ bool BlockParse()
       // cycle
       else if(matchesKeyword(p, "do"))
       {
+        CycleParse();
       }
       // end cycle
       else if(matchesKeyword(p, "loop"))
       {
+        ReturnToQueue(p);
+        end = true;
+        return true;
       }
       // function return
       else if(matchesKeyword(p, "return"))
@@ -1238,7 +1242,7 @@ bool BlockParse()
     PrintPhrasem(p);
   #endif
 
-  free(p);
+  freePhrasem(p);
   return true;
 }
 
@@ -1280,12 +1284,12 @@ bool CycleParse()
   #ifdef PARSER_DEBUG
     debug("Cycle parse.");
   #endif
-  G_Cycle();
 
   if(!LogicParse()) return false;
+  G_Cycle();
 
   // keyword then
-  CheckKeyword("then");
+  CheckKeyword("while");
   // LF
   CheckSeparator();
 
@@ -1324,8 +1328,6 @@ bool ConditionParse()
 
   // end if
   if(!EndIfParse()) return false;
-
-  G_EndBlock();
 
   return true;
 }

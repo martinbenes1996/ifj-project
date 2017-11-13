@@ -281,8 +281,6 @@ void GenerateAritm(Stack s)
       out("DIVS");
     }
   }
-
-
 }
 
 bool Send(Stack s)
@@ -362,6 +360,7 @@ void G_Cycle()
   #endif
 
   PushGState(GState_Cycle);
+  out("LABEL %s", GenerateLabel());
 
 
 }
