@@ -433,8 +433,9 @@ void G_EndBlock()
   }
   else if( up == GState_Cycle )
   {
+    const char * tmp = PopLabel();
     out("JUMP %s", PopLabel());
-    out("LABEL %s", PopLabel());
+    out("LABEL %s", tmp);
   }
 }
 
