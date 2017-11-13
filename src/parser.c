@@ -1285,8 +1285,9 @@ bool CycleParse()
     debug("Cycle parse.");
   #endif
 
-  if(!LogicParse()) return false;
   G_Cycle();
+  if(!LogicParse()) return false;
+
 
   // keyword then
   CheckKeyword("while");
