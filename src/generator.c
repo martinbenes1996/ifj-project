@@ -198,7 +198,7 @@ void GenerateLogic(Phrasem p)
   {
     // <
     out("LTS");
-    out("PUSHS 1");
+    out("PUSHS bool@true");
     out("JUMIFNEQS %s", aftercond);
   }
   else if(isOperator(p, ">="))
