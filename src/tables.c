@@ -148,13 +148,12 @@ bool constTableInit(void)
     consttable.arr[1].type = DataType_Double;
     consttable.arr[1].data.dvalue = 0.0;
     consttable.arr[2].type = DataType_String;
-    if((consttable.arr[2].data.svalue = malloc(sizeof(char))) == NULL)
+    if((consttable.arr[2].data.svalue = calloc(1, sizeof(char))) == NULL)
     {
         setErrorType(ErrorType_Internal);
         setErrorMessage("constantTableInit: could not allocate memory");
         return false;
     }
-    else consttable.arr[2].data.svalue[0] = '\0';
 
 
     for(size_t i = 3; i < consttable.arr_size ;++i)         //not necessary
@@ -345,4 +344,3 @@ bool changeConstValue(size_t index, DataUnion value)
 
     return true;
 }
-

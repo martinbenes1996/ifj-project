@@ -187,7 +187,7 @@ void EndRoutine()
   #endif // MULTITHREAD
 
   // clear memory
-  //ClearTables();
+  constTableFree();
 }
 
 /** @} */
@@ -385,7 +385,6 @@ bool EndCycleParse();
 
 /** @} */
 /*----------------------------- MAIN RUN ---------------------------*/
-// if (x > 5) print(x)
 bool RunParser()
 {
   #ifdef PARSER_DEBUG
@@ -403,41 +402,48 @@ bool RunParser()
     }
   }
 
+  constTableInit();
   InitGenerator();
 
-  # ifdef MULTITHREAD
-  InitQueue();
+  # ifdef MULTITHREAD // ---------------------------------
+        // queue init
+        InitQueue();
+        // running scanner
+        pthread_create(&sc, NULL, InitScanner, NULL);
 
-  // running scanner
-  pthread_create(&sc, NULL, InitScanner, NULL);
+        // reading cycle
+        while(ScannerIsScanning()) {
+          // each global line (function declaration, definition etc.)
+          if(!GlobalBlockParse()) {
+            // fail
+            if(end) {
+              EndRoutine();
+              return false;
+            }
+          }
 
-  // reading cycle
-  while(ScannerIsScanning())
-  {
-    if(!GlobalBlockParse())
-    {
-      if(end) return false;
-    }
+          // success
+          if(end) break;
+        }
 
-    if(end) break;
+  #else // SINGLETHREAD -----------------------------------
 
-    // something to do after each function
-  }
-  #else // SINGLETHREAD
+        // reading cycle
+        while(1) {
+          // each global line (function declaration, definition etc.)
+          if(!GlobalBlockParse()) {
+            // fail
+            if(end) {
+              EndRoutine();
+              return false;
+            }
+          }
+          // success
+          if(end) break;
 
-  // reading cycle
-  while(1)
-  {
-    if(!GlobalBlockParse())
-    {
-      if(end) return false;
-    }
-
-    if(end) break;
-
-    // something to do after each function
-  }
-  #endif
+          // something to do after each function
+        }
+  #endif  // --------------------------------------------
 
   // end
   EndRoutine();
