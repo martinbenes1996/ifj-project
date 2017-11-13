@@ -71,13 +71,6 @@ int main(int argc, char *argv[])
 	if(help()) { printHelp(); exit(0); }
 
 	RunParser();
-	
-	/*
-	// example of usage input
-	const int max = 100;
-	char buff[max];
-	while( getLine(stdin, buff, max) ) printf("%s\n", buff);
-	*/
 
 	// error log
 	if(getErrorType() != ErrorType_Ok)
@@ -86,8 +79,6 @@ int main(int argc, char *argv[])
 	}
 
 	// final operations
-	constTableFree();       //free the table of constants
-	functionTableEnd();     //free the table of symbols
 	closeOut();
 	return getErrorCode();
 }

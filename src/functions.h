@@ -39,7 +39,9 @@ inline bool matchesKeyword(Phrasem p, const char * kw);
 inline Phrasem duplicatePhrasem(Phrasem p);
 inline char * strdup(const char * str);
 
+inline void freePhrasem(Phrasem p);
 
+inline DataType getDataType(Phrasem p);
 
 
 
@@ -97,5 +99,29 @@ inline Phrasem duplicatePhrasem(Phrasem p)
   }
   return dup;
 }
+
+inline void freePhrasem(Phrasem p)
+{
+  switch(p->table)
+  {
+    case TokenType_Variable:
+    case TokenType_Function:
+    case TokenType_Symbol:
+      free((void *)p->d.str);
+      break;
+    default:
+      break;
+  }
+  free(p);
+}
+
+inline DataType getDataType(Phrasem p)
+{
+  if(matchesKeyword(p, "integer")) return DataType_Integer;
+  else if(matchesKeyword(p, "double")) return DataType_Double;
+  else if(matchesKeyword(p, "string")) return DataType_String;
+  else return DataType_Unknown;
+}
+
 
 #endif // FUNCTIONS_H

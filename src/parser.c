@@ -24,11 +24,30 @@
 #include "queue.h"
 #include "scanner.h"
 #include "scanner_singlethrd.h"
+#include "symtable.h"
 #include "tables.h"
 #include "stack.h"
 
+#ifdef MULTITHREAD
 pthread_t sc;
-long function_id = -1; /**< Id of actual function (for symbol table). */
+#endif
+
+char * mfunction; /**< Id of actual function (for symbol table). */
+bool setFunction(const char * f)
+{
+  if(f == NULL)
+  {
+    if(mfunction != NULL) free(mfunction);
+    mfunction = NULL;
+  }
+
+  if(mfunction != NULL) free(mfunction);
+  mfunction = malloc(sizeof(char)*(strlen(f) + 1));
+  if(mfunction == NULL) return false;
+
+  strcpy(mfunction, f);
+  return true;
+}
 
 bool end = false; /**< Set to true, if keyword end reached. */
 
@@ -187,7 +206,8 @@ void EndRoutine()
   #endif // MULTITHREAD
 
   // clear memory
-  constTableFree();
+  constTableFree();       //free the table of constants
+	functionTableEnd();     //free the table of symbols
 }
 
 /** @} */
@@ -447,6 +467,7 @@ bool RunParser()
 
   // end
   EndRoutine();
+  if(mfunction != NULL) return false;
   return true;
 }
 
@@ -592,7 +613,7 @@ bool ExpressionParse()
     bool tokenChanged = false;
     short int endExprParsing = 0;
     PhrasemData tempIndex;
-    TokenType tempType;
+    TokenType tempType = TokenType_EOF;
     bool failure = false;
 
     PushOntoEPStack(op_$);     //start of the stack
@@ -818,7 +839,7 @@ bool EndCycleParse()
 
   // generate end
   G_EndBlock();
-  
+
   end = false;
   return true;
 }
@@ -838,6 +859,8 @@ bool EndScopeParse()
   // separator
   CheckSeparator();
 
+  setFunction(NULL);
+
   end = true;
   return true;
 }
@@ -852,54 +875,95 @@ bool VariableDefinitionParse()
   G_VariableDeclaration();
 
   // getting symbol
-  Phrasem p = CheckQueue(p);
+  Phrasem var = CheckQueue(var);
 
-  if(!VariableParse(p))
+  if(!VariableParse(var))
   {
-    RaiseExpectedError("variable", p);
+    RaiseExpectedError("variable", var);
   }
 
   // getting keyword 'as'
   CheckKeyword("as");
 
   // getting datatype keyword
-  Phrasem r = CheckQueue(r);
+  Phrasem dt = CheckQueue(dt);
 
-  if(!DataTypeParse(r))
+  if(!DataTypeParse(dt))
   {
-    RaiseExpectedError("datatype keyword", r);
+    RaiseExpectedError("datatype keyword", dt);
+  }
+  DataType type = getDataType(dt);
+  if(type == DataType_Unknown)
+  {
+    freePhrasem(var);
+    RaiseError("unknown datatype", dt, ErrorType_Semantic1);
   }
 
   // getting LF/=
-  Phrasem s = CheckQueue(s);
+  Phrasem sep = CheckQueue(sep);
+
+  Phrasem dup = duplicatePhrasem(var); // deep copy
+  // declare
+  HandlePhrasem(var);
+
+  // semantics
+  if(!P_DefineNewVariable(mfunction, var, dt))
+  {
+    freePhrasem(dup);
+    return false;
+  }
+
+  G_Assignment();
 
   // LF
-  if( isSeparator(s) )
+  if( isSeparator(sep) )
   {
-    // semantics - check if unique
-
-    Phrasem q = duplicatePhrasem(p); // deep copy
-
-    // declare
-    HandlePhrasem(p);
 
     // initialization
-    G_Assignment();
-    // s = generate phrasem with 0/!""/0.0 (from table)
-    // ReturnToQueue(s);
-    // if(!ExpressionParse()) return false;
-    // HandlePhrasem(q);
+    Phrasem nul = malloc(sizeof(struct phrasem_data));
+    nul->table = TokenType_Constant;
+    switch(type)
+    {
+      case DataType_Double:
+        nul->d.index = getDoubleDefaultValue();
+        break;
+      case DataType_String:
+        nul->d.index = getStringDefaultValue();
+        break;
+      case DataType_Integer:
+        nul->d.index = getIntDefaultValue();
+        break;
+      default:
+        freePhrasem(sep);
+        freePhrasem(dup);
+        RaiseError("unknown datatype", nul, ErrorType_Semantic1);
+    }
+
+    PrintPhrasem(sep);
+    PrintPhrasem(nul);
+    ReturnToQueue(sep);         // return LF
+    ReturnToQueue(nul);         // return 0/0.0/!""
+
+
+    // process, send to generator
+    if(!ExpressionParse()) return false;
+
+    // LF (back, stop point for expressionparse)
+    CheckSeparator();
+
+    // association target
+    HandlePhrasem(dup);
 
   }
   // =
-  else if(isOperator(s, "="))
+  else if(isOperator(sep, "="))
   {
-    free(s);
+    freePhrasem(sep);
 
     // get expression
     if(!ExpressionParse())
     {
-      RaiseError("invalid expression", s, ErrorType_Syntax);
+      RaiseError("invalid expression", dup, ErrorType_Syntax);
     }
 
     // getting LF
@@ -908,12 +972,9 @@ bool VariableDefinitionParse()
   }
   else
   {
-    // error
+    freePhrasem(dup);
+    RaiseError("unexpected token", dup, ErrorType_Syntax);
   }
-  free(s);
-
-  // write to symbol table
-  // semantics
 
   return true;
 }
@@ -936,7 +997,7 @@ bool InputParse()
   }
 
   // control of previous definition
-  if( !P_VariableDefined(sc, p->d.str)) return false;
+  if( !P_VariableDefined(mfunction, p->d.str)) return false;
 
   HandlePhrasem(p);
 
@@ -1018,7 +1079,7 @@ bool SymbolParse()
 
   Phrasem p = CheckQueue(p);
 
-  if( P_VariableDefined(function_id, p->d.str) )
+  if( P_VariableDefined(mfunction, p->d.str) )
   {
     G_Assignment();
 
@@ -1176,6 +1237,9 @@ bool FunctionDeclarationParse()
   Phrasem funcname = CheckQueue(funcname);
   if( !FunctionParse(funcname) ) return false;
 
+  // nesting
+  if(mfunction != NULL) RaiseError("nested function declaration", funcname, ErrorType_Syntax);
+
   // operator (
   CheckOperator("(");
 
@@ -1187,6 +1251,8 @@ bool FunctionDeclarationParse()
 
   // LF
   CheckSeparator();
+
+
 
   return true;
 }
@@ -1271,6 +1337,12 @@ bool FunctionDefinitionParse()
   Phrasem funcname = CheckQueue(funcname);
   if( !FunctionParse(funcname) ) return false;
 
+  // nesting control
+  if(mfunction != NULL)
+  {
+    RaiseError("nested function definition", funcname, ErrorType_Syntax);
+  }
+
   // operator (
   CheckOperator("(");
 
@@ -1305,11 +1377,16 @@ bool ScopeParse()
   #ifdef PARSER_DEBUG
     debug("Scope parse.");
   #endif
-  if(function_id != -1)
+
+  // nesting
+  if(mfunction != NULL)
   {
     EndParser("Parser: GlobalBlockParse: nested functions not supported", -1, ErrorType_Internal);
     return false;
   }
+  // actualizing function
+  setFunction("scope");
+  P_DefineNewFunction(mfunction);
 
   // LF
   CheckSeparator();
@@ -1331,7 +1408,7 @@ bool GlobalBlockParse()
     debug("Global block parse.");
   #endif
 
-  if(function_id != -1)
+  if(mfunction != NULL)
   {
     EndParser("Parser: GlobalBlockParse: nested functions not supported", -1, ErrorType_Internal);
     return false;
@@ -1352,11 +1429,13 @@ bool GlobalBlockParse()
   // function declaration
   if(matchesKeyword(p, "declare"))
   {
+    ReturnToQueue(p);
     if(!FunctionDeclarationParse()) return false;
   }
   // function definition
   else if(matchesKeyword(p, "function"))
   {
+    ReturnToQueue(p);
     if(!FunctionDefinitionParse()) return false;
   }
   // function definition

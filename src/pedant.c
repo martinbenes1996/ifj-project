@@ -1,21 +1,78 @@
 
+#include "err.h"
+#include "functions.h"
 #include "io.h"
 #include "pedant.h"
 #include "stack.h"
+#include "symtable.h"
+#include "types.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-static Stack s = NULL;
+void EndPedant(const char * msg, long line, ErrorType errtype)
+{
+  #ifdef PEDANT_DEBUG
+    debug("Ending Pedant.");
+  #endif
 
-bool P_VariableDefined(long functionId, const char * varname)
+  if(msg != NULL)
+  {
+    #ifdef PEDANT_DEBUG
+      debug(msg);
+    #endif
+    setErrorType(errtype);
+    setErrorMessage(msg);
+    if(line != -1) setErrorLine(line);
+  }
+  else
+  {
+    setErrorType(ErrorType_Ok);
+    setErrorMessage("");
+  }
+}
+
+#define RaiseError(msg, phrasem, errtype)                       \
+  do {                                                          \
+    err("%s: %s: l.%d: %s", __FILE__, __func__, __LINE__, msg); \
+    EndPedant(msg, phrasem ->line, errtype);                    \
+    freePhrasem(phrasem);                                       \
+    return false;                                               \
+  } while(0)
+
+//static Stack s = NULL;
+
+bool P_VariableDefined(const char * funcname, const char * varname)
 {
   #ifdef PEDANT_DEBUG
     debug("Pedant, Variable Defined?");
   #endif
 
-  (void)functionId;
+  (void)funcname;
   (void)varname;
+  return true;
+}
+
+bool P_DefineNewVariable(const char * funcname, Phrasem varname, Phrasem datatype)
+{
+  #ifdef PEDANT_DEBUG
+    debug("Pedant, Define New Variable");
+  #endif
+
+  DataType type = getDataType(datatype);
+  if(type == DataType_Unknown)
+  {
+    freePhrasem(varname);
+    RaiseError("unknown datatype", datatype, ErrorType_Semantic1);
+  }
+  freePhrasem(datatype);
+
+  if(!addVariable(funcname, varname->d.str) || !addVariableType(funcname, varname->d.str, type))
+  {
+    RaiseError("alloc variable error", varname, ErrorType_Semantic1);
+  }
+
+  freePhrasem(varname);
   return true;
 }
 
@@ -27,6 +84,14 @@ bool P_FunctionDefined(const char * funcname)
   (void)funcname;
   return true;
 }
+bool P_DefineNewFunction(const char * funcname)
+{
+  #ifdef PEDANT_DEBUG
+    debug("Pedant, Define New Function.");
+  #endif
+  return addFunction(funcname);
+}
+
 //Docasne
 void printfstack(Stack a)
 {printf("\nPRINTING STACK\n");
@@ -35,7 +100,7 @@ void printfstack(Stack a)
     while(pom != NULL)
     {
         if(pom->data->table == TokenType_Symbol) printf("%s\n", pom->data->d.str);
-            else printf("%d\n", pom->data->d.index);
+            else printf("%ld\n", pom->data->d.index);
         pom = pom->next;
     }
 }
