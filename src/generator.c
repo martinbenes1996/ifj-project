@@ -172,41 +172,6 @@ static GeneratorStack mStack;
 static LabelStack mLabels;
 /*-----------------------------*/
 
-static char form[] = "$aaaaaa";
-void incrementForm(unsigned it)
-{
-
-  if(it >= strlen(form))
-  {
-    err("empty");
-    strcpy(form, "$aaaaaa");
-  }
-
-  // overflow
-
-  if(form[it] == 'z') form[it] = 'A';
-  else if(form[it] == 'Z' ) form[it] = '0';
-  else if(form[it] == '9' )
-  {
-    form[it++] = 'a';
-    incrementForm(it);
-  }
-
-  // increment
-  else
-  {
-    form[it]++;
-  }
-
-}
-const char * GenerateUniqueName()
-{
-  char * msg = malloc(sizeof(char)*8);
-  strcpy(msg, form);
-  incrementForm(1);
-  return msg;
-}
-
 void GenerateLogic(Phrasem p)
 {
   const char * aftercond = GenerateLabel();
@@ -225,26 +190,31 @@ void GenerateLogic(Phrasem p)
   {
     // >
     out("GTS");
-
+    out("PUSHS 1");
+    out("JUMIFEQS %s", aftercond);
   }
 
   else if(isOperator(p, "<"))
   {
     // <
     out("LTS");
+    out("PUSHS 1");
+    out("JUMIFEQS %s", aftercond);
   }
   else if(isOperator(p, ">="))
   {
     // >=
     out("LTS");
-    out("NOTS");
+    out("PUSHS 1");
+    out("JUMIFNEQS %s", aftercond);
 
   }
   else
   {
     // <=
     out("GTS");
-    out("NOTS");
+    out("PUSHS 1");
+    out("JUMIFNEQS %s", aftercond);
   }
 
   free(p);
@@ -569,16 +539,40 @@ bool PushLabel(const char * lbl)
   return true;
 }
 
+static char form[] = "$aaaaaa";
+void incrementForm(unsigned it)
+{
+
+  if(it >= strlen(form))
+  {
+    err("empty");
+    strcpy(form, "$aaaaaa");
+  }
+
+  // overflow
+
+  if(form[it] == 'z') form[it] = 'A';
+  else if(form[it] == 'Z' ) form[it] = '0';
+  else if(form[it] == '9' )
+  {
+    form[it++] = 'a';
+    incrementForm(it);
+  }
+
+  // increment
+  else
+  {
+    form[it]++;
+  }
+
+}
 const char * GenerateLabel()
 {
-  // TODO
-  // generate
-  //...
-  // neco = ??? funkce() ???
-  // dynamicka alokace
-
-  // if(!PushLabel(neco)) return NULL
-  return "var";
+  char * msg = malloc(sizeof(char)*8);
+  strcpy(msg, form);
+  PushLabel(msg);
+  incrementForm(1);
+  return msg;
 }
 
 const char * LookUpLabel()

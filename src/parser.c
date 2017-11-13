@@ -759,8 +759,11 @@ bool LogicParse()
   #endif
   G_Logic();
 
+  /*
   // left
   if(!ExpressionParse()) return false;
+  */
+  Phrasem q = CheckQueue(q);
 
   // parse the sign
   Phrasem p = CheckQueue(p);
@@ -773,9 +776,11 @@ bool LogicParse()
   {
     RaiseExpectedError("relation operator", p);
   }
-
+  /*
   // right
   if(!ExpressionParse()) return false;
+  */
+  Phrasem r = CheckQueue(r);
 
   // sending logic operator
   #ifdef PARSER_DEBUG
@@ -810,7 +815,7 @@ bool EndFunctionParse()
 bool EndIfParse()
 {
   #ifdef PARSER_DEBUG
-    debug("End function parse.");
+    debug("End if parse.");
   #endif
 
   // keyword end
@@ -832,7 +837,7 @@ bool EndIfParse()
 bool EndCycleParse()
 {
   #ifdef PARSER_DEBUG
-    debug("End function parse.");
+    debug("End cycle parse.");
   #endif
 
   // keyword loop
@@ -1319,6 +1324,8 @@ bool ConditionParse()
 
   // end if
   if(!EndIfParse()) return false;
+
+  G_EndBlock();
 
   return true;
 }
