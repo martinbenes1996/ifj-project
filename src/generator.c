@@ -179,19 +179,19 @@ void GenerateLogic(Phrasem p)
   if(isOperator(p, "="))
   {
     // =
-    out("JUMIFEQS %s", aftercond);
+    out("JUMIFNEQS %s", aftercond);
   }
   else if(isOperator(p, "<>"))
   {
     // <>
-    out("JUMIFNEQS %s", aftercond);
+    out("JUMIFEQS %s", aftercond);
   }
   else if(isOperator(p, ">"))
   {
     // >
     out("GTS");
     out("PUSHS bool@true");
-    out("JUMIFEQS %s", aftercond);
+    out("JUMIFNEQS %s", aftercond);
   }
 
   else if(isOperator(p, "<"))
@@ -199,14 +199,14 @@ void GenerateLogic(Phrasem p)
     // <
     out("LTS");
     out("PUSHS 1");
-    out("JUMIFEQS %s", aftercond);
+    out("JUMIFNEQS %s", aftercond);
   }
   else if(isOperator(p, ">="))
   {
     // >=
     out("LTS");
     out("PUSHS bool@true");
-    out("JUMIFNEQS %s", aftercond);
+    out("JUMIFEQS %s", aftercond);
 
   }
   else
@@ -214,7 +214,7 @@ void GenerateLogic(Phrasem p)
     // <=
     out("GTS");
     out("PUSHS bool@true");
-    out("JUMIFNEQS %s", aftercond);
+    out("JUMIFEQS %s", aftercond);
   }
 
   free(p);
