@@ -190,7 +190,7 @@ void GenerateLogic(Phrasem p)
   {
     // >
     out("GTS");
-    out("PUSHS 1");
+    out("PUSHS bool@true");
     out("JUMIFEQS %s", aftercond);
   }
 
@@ -205,7 +205,7 @@ void GenerateLogic(Phrasem p)
   {
     // >=
     out("LTS");
-    out("PUSHS 1");
+    out("PUSHS bool@true");
     out("JUMIFNEQS %s", aftercond);
 
   }
@@ -213,7 +213,7 @@ void GenerateLogic(Phrasem p)
   {
     // <=
     out("GTS");
-    out("PUSHS 1");
+    out("PUSHS bool@true");
     out("JUMIFNEQS %s", aftercond);
   }
 
