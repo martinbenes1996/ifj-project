@@ -36,7 +36,6 @@ void EndPedant(const char * msg, long line, ErrorType errtype)
   do {                                                          \
     err("%s: %s: l.%d: %s", __FILE__, __func__, __LINE__, msg); \
     EndPedant(msg, phrasem ->line, errtype);                    \
-    freePhrasem(phrasem);                                       \
     return false;                                               \
   } while(0)
 
@@ -49,10 +48,7 @@ bool P_VariableDefined(const char * funcname, Phrasem varname)
   #ifdef PEDANT_DEBUG
     debug("Pedant, Variable Defined?");
   #endif
-
-  (void)funcname;
-  (void)varname;
-  return true;
+  return findVariable(funcname, varname->d.str);
 }
 
 bool P_DefineNewVariable(const char * funcname, Phrasem varname, Phrasem datatype)
@@ -64,17 +60,14 @@ bool P_DefineNewVariable(const char * funcname, Phrasem varname, Phrasem datatyp
   DataType type = getDataType(datatype);
   if(type == DataType_Unknown)
   {
-    freePhrasem(varname);
     RaiseError("unknown datatype", datatype, ErrorType_Semantic1);
   }
-  freePhrasem(datatype);
 
   if(!addVariable(funcname, varname->d.str) || !addVariableType(funcname, varname->d.str, type))
   {
     RaiseError("alloc variable error", varname, ErrorType_Semantic1);
   }
 
-  freePhrasem(varname);
   return true;
 }
 

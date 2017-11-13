@@ -39,6 +39,7 @@ bool setFunction(const char * f)
   {
     if(mfunction != NULL) free(mfunction);
     mfunction = NULL;
+    return true;
   }
 
   if(mfunction != NULL) free(mfunction);
@@ -46,6 +47,10 @@ bool setFunction(const char * f)
   if(mfunction == NULL) return false;
 
   strcpy(mfunction, f);
+
+  #ifdef PARSER_DEBUG
+    debug("Function: %s", (mfunction!=NULL)?mfunction:"none");
+  #endif
   return true;
 }
 
@@ -65,7 +70,7 @@ bool end = false; /**< Set to true, if keyword end reached. */
   do {                                                          \
     err("%s: %s: l.%d: %s", __FILE__, __func__, __LINE__, msg); \
     EndParser(msg, phrasem ->line, errtype);                    \
-    free(phrasem);                                              \
+    freePhrasem(phrasem);                                       \
     return false;                                               \
   } while(0)
 
@@ -410,6 +415,7 @@ bool RunParser()
   #ifdef PARSER_DEBUG
     debug("Init Parser.");
   #endif
+  bool status = true;
 
   if(bypass())
   {
@@ -422,7 +428,7 @@ bool RunParser()
     }
   }
 
-  constTableInit();
+  if(!constTableInit()) return false;
   InitGenerator();
 
   # ifdef MULTITHREAD // ---------------------------------
@@ -453,10 +459,8 @@ bool RunParser()
           // each global line (function declaration, definition etc.)
           if(!GlobalBlockParse()) {
             // fail
-            if(end) {
-              EndRoutine();
-              return false;
-            }
+            status = false;
+            break;
           }
           // success
           if(end) break;
@@ -467,8 +471,8 @@ bool RunParser()
 
   // end
   EndRoutine();
-  if(mfunction != NULL) return false;
-  return true;
+  if(mfunction != NULL) { free(mfunction); return false; }
+  return status;
 }
 
 /*-------------------------- LOW LEVEL PARSER FUNCTIONS --------------------*/
@@ -847,7 +851,7 @@ bool EndCycleParse()
 bool EndScopeParse()
 {
   #ifdef PARSER_DEBUG
-    debug("End function parse.");
+    debug("End scope parse.");
   #endif
 
   // keyword end
@@ -899,23 +903,30 @@ bool VariableDefinitionParse()
     RaiseError("unknown datatype", dt, ErrorType_Semantic1);
   }
 
-  // getting LF/=
-  Phrasem sep = CheckQueue(sep);
-
   Phrasem dup = duplicatePhrasem(var); // deep copy
+
   // declare
-  HandlePhrasem(var);
+  HandlePhrasem(var);           /*<<== var destroyed */
+
+  if(P_VariableDefined(mfunction, dup))
+  {
+    freePhrasem(dt);
+    RaiseError("variable was already defined", dup, ErrorType_Semantic1);
+  }
 
   // semantics
-  if(!P_DefineNewVariable(mfunction, var, dt))
+  if(!P_DefineNewVariable(mfunction, dup, dt))
   {
-    freePhrasem(dup);
+    free(dup);
+    free(dt);
     return false;
   }
+  free(dt);
 
   G_Assignment();
 
-  // LF
+  // getting LF/=
+  Phrasem sep = CheckQueue(sep);
   if( isSeparator(sep) )
   {
 
@@ -939,6 +950,7 @@ bool VariableDefinitionParse()
         RaiseError("unknown datatype", nul, ErrorType_Semantic1);
     }
 
+    /*
     // volavka
     ReturnToQueue(sep);         // return LF
     ReturnToQueue(nul);         // return 0/0.0/!""
@@ -949,9 +961,11 @@ bool VariableDefinitionParse()
 
     // LF (back, stop point for expressionparse)
     CheckSeparator();
+    */
 
     // association target
-    HandlePhrasem(dup);
+    HandlePhrasem(dup);               /*<<== dup destroyed */
+
 
   }
   // =
@@ -1299,6 +1313,8 @@ bool ConditionParse()
   while(1)
   {
     if(!BlockParse()) return false;
+
+    if(end) break;
   }
 
   // end if
@@ -1380,7 +1396,7 @@ bool ScopeParse()
   // nesting
   if(mfunction != NULL)
   {
-    EndParser("Parser: GlobalBlockParse: nested functions not supported", -1, ErrorType_Internal);
+    EndParser("nested functions not supported", -1, ErrorType_Internal);
     return false;
   }
   // actualizing function
@@ -1406,6 +1422,7 @@ bool GlobalBlockParse()
   #ifdef PARSER_DEBUG
     debug("Global block parse.");
   #endif
+  bool status = true;
 
   if(mfunction != NULL)
   {
@@ -1416,61 +1433,29 @@ bool GlobalBlockParse()
   // read function
   Phrasem p = CheckQueue(p);
 
-  if(p->table == TokenType_EOF)
-  {
-    end = true;
-    free(p);
-    return true;
-  }
-
-  if(p->table != TokenType_Keyword) RaiseError("syntax error on global level", p, ErrorType_Syntax);
+  // EOF
+  if(p->table == TokenType_EOF) end = true;
+  // not a keyword
+  else if(p->table != TokenType_Keyword) RaiseError("syntax error on global level", p, ErrorType_Syntax);
 
   // function declaration
-  if(matchesKeyword(p, "declare"))
-  {
-    ReturnToQueue(p);
-    if(!FunctionDeclarationParse()) return false;
-  }
+  else if(matchesKeyword(p, "declare")) status = FunctionDeclarationParse();
   // function definition
-  else if(matchesKeyword(p, "function"))
-  {
-    ReturnToQueue(p);
-    if(!FunctionDefinitionParse()) return false;
-  }
+  else if(matchesKeyword(p, "function")) status = FunctionDefinitionParse();
   // function definition
-  else if(matchesKeyword(p, "scope"))
-  {
-    if(!ScopeParse()) return false;
-
-    return true;
-  }
+  else if(matchesKeyword(p, "scope")) status = ScopeParse();
   // error (global not supported)
-  else
-  {
-    RaiseError("syntax error on global level", p, ErrorType_Syntax);
-  }
-  free(p);
+  else RaiseError("syntax error on global level", p, ErrorType_Syntax);
 
-  // body of function
-  do {
-    if(!BlockParse()) return false;
-  } while(!end);
-
-  // end function
-  Phrasem q = CheckQueue(q);
-  if(!EndFunctionParse(q))
-  {
-    RaiseExpectedError("end of function", q);
-  }
-
-  return true;
+  freePhrasem(p);
+  return status;
 }
 
 /*---------------------------- CLEAR --------------------------------*/
 void EndParser(const char * msg, int line, ErrorType errtype)
 {
 
-  EndRoutine();
+  //EndRoutine();
 
   if(msg != NULL)
   {

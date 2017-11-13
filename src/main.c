@@ -63,9 +63,6 @@ int main(int argc, char *argv[])
 		debug("IFJ project started.");
 	#endif
 
-	//table initialisations
-	constTableInit();
-
 	// argument process
 	if(!processArguments(argc, argv)) exit(1);
 	if(help()) { printHelp(); exit(0); }
