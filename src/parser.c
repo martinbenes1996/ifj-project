@@ -939,8 +939,7 @@ bool VariableDefinitionParse()
         RaiseError("unknown datatype", nul, ErrorType_Semantic1);
     }
 
-    PrintPhrasem(sep);
-    PrintPhrasem(nul);
+    // volavka
     ReturnToQueue(sep);         // return LF
     ReturnToQueue(nul);         // return 0/0.0/!""
 
@@ -997,7 +996,7 @@ bool InputParse()
   }
 
   // control of previous definition
-  if( !P_VariableDefined(mfunction, p->d.str)) return false;
+  if( !P_VariableDefined(mfunction, p)) return false;
 
   HandlePhrasem(p);
 
@@ -1079,7 +1078,7 @@ bool SymbolParse()
 
   Phrasem p = CheckQueue(p);
 
-  if( P_VariableDefined(mfunction, p->d.str) )
+  if( P_VariableDefined(mfunction, p) )
   {
     G_Assignment();
 

@@ -40,9 +40,11 @@ void EndPedant(const char * msg, long line, ErrorType errtype)
     return false;                                               \
   } while(0)
 
-//static Stack s = NULL;
+/*------ DATA -------*/
+static Stack mstack = NULL;
+/*--------------------*/
 
-bool P_VariableDefined(const char * funcname, const char * varname)
+bool P_VariableDefined(const char * funcname, Phrasem varname)
 {
   #ifdef PEDANT_DEBUG
     debug("Pedant, Variable Defined?");
@@ -107,12 +109,23 @@ void printfstack(Stack a)
 
 bool P_HandleOperand(Phrasem p)
 {
+  #ifdef PEDANT_DEBUG
+    debug("Phrasem recieved by operand");
+    PrintPhrasem(p);
+  #endif
   if(p == NULL)
   {
     // error
     // ...
     return false;
   }
+
+  if(mstack == NULL)
+  {
+    mstack = InitStack();
+  }
+
+  //return PushOntoStack(mstack, p);
 
   // conversion infix->postfix here??
   // ...
