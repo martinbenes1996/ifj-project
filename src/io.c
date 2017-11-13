@@ -84,7 +84,7 @@ void debug(const char * str, ...)
   syslog(LOG_ERR, str, args);
   #endif
 
-  fprintf(stderr, "%s", BLUE);
+  fprintf(stderr, "%s", YELLOW);
   vfprintf(stderr, str, args);
   fprintf(stderr, "%s\n", RESET_COLOR);
   fflush(stderr);
