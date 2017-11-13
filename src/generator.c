@@ -426,7 +426,7 @@ void G_EndBlock()
     debug("Generate end.");
   #endif
 
-  GState up = LookUpGState();
+  GState up = PopGState();
   if( up == GState_Condition )
   {
     out("LABEL %s", PopLabel());
