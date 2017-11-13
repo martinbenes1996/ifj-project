@@ -15,6 +15,7 @@
 
 #include "config.h"
 #include "err.h"
+#include "generator.h"
 #include "io.h"
 #include "parser.h"
 #include "types.h"
@@ -70,7 +71,7 @@ int main(int argc, char *argv[])
 	if(help()) { printHelp(); exit(0); }
 
 	RunParser();
-
+	
 	/*
 	// example of usage input
 	const int max = 100;

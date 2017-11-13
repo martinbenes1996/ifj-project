@@ -172,11 +172,38 @@ static GeneratorStack mStack;
 static LabelStack mLabels;
 /*-----------------------------*/
 
-char * form = "blabla";
+static char form[] = "$aaaaaa";
+void incrementForm(unsigned it)
+{
+
+  if(it >= strlen(form))
+  {
+    err("empty");
+    strcpy(form, "$aaaaaa");
+  }
+
+  // overflow
+
+  if(form[it] == 'z') form[it] = 'A';
+  else if(form[it] == 'Z' ) form[it] = '0';
+  else if(form[it] == '9' )
+  {
+    form[it++] = 'a';
+    incrementForm(it);
+  }
+
+  // increment
+  else
+  {
+    form[it]++;
+  }
+
+}
 const char * GenerateUniqueName()
 {
-  char * msg = malloc(sizeof(char)*10);
+  char * msg = malloc(sizeof(char)*8);
   strcpy(msg, form);
+  incrementForm(1);
   return msg;
 }
 
@@ -310,9 +337,6 @@ bool Send(Stack s)
 
 bool HandlePhrasem(Phrasem p)
 {
-  /*-------- static part ------------*/
-
-  /*---------------------------------*/
 
   // look to state stack
   GState top = LookUpGState();
@@ -433,6 +457,16 @@ void G_EndBlock()
     debug("Generate end.");
   #endif
 
+  GState up = LookUpGState();
+  if( up == GState_Condition )
+  {
+    out("LABEL %s", PopLabel());
+  }
+  else if( up == GState_Cycle )
+  {
+    out("JUMP %s", PopLabel());
+    out("LABEL %s", PopLabel());
+  }
 }
 
 void InitGenerator()

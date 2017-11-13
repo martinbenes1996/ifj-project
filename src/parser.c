@@ -797,6 +797,9 @@ bool EndIfParse()
   // separator
   CheckSeparator();
 
+  // generate end
+  G_EndBlock();
+
   end = false;
   return true;
 }
@@ -813,6 +816,9 @@ bool EndCycleParse()
   // separator
   CheckSeparator();
 
+  // generate end
+  G_EndBlock();
+  
   end = false;
   return true;
 }

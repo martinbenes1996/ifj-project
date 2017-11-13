@@ -46,6 +46,8 @@ bool SendStack(Stack s);
  */
 bool HandlePhrasem(Phrasem p);
 
+const char * GenerateUniqueName();
+
 /** @} */
 /*-----------------------------------------------------------*/
 /** @addtogroup Announcers
@@ -79,6 +81,9 @@ void G_Expression();
 
 /** @brief Announces variable declaration to generator. */
 void G_VariableDeclaration();
+
+/** @brief Announces end of a block to generator. */
+void G_EndBlock();
 
 /** @} */
 /*-----------------------------------------------------------*/
