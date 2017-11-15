@@ -49,13 +49,6 @@ $(output) : $(obj)
 	@echo "Compiling $@.";\
 	$(cc) $(flags) $(defines) -c $< -o $@
 
-
-# zip
-.PHONY: zip
-zip:
-	@echo "Compressing and zipping.";\
-	tar -zcvf ../$(output).tar.gz $(src) $(head) Makefile > /dev/null
-
 # clean
 .PHONY: clean
 clean:

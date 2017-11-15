@@ -15,6 +15,7 @@ all:
 doc:
 	@echo "Generating documentation.";\
 	doxygen Doxyfile 2> /dev/null > /dev/null
+#pdflatex doc/main.tex
 
 # test
 .PHONY: test
@@ -31,8 +32,8 @@ help:
 # zip
 .PHONY: zip
 zip:
-	@printf "";\
-	cd ./src && make zip -s
+	@echo "Compressing and zipping.";\
+	tar -zcvf ifj.tar.gz src/*.c src/*.h Makefile README install.sh dev/* test/* > /dev/null
 
 # clean
 .PHONY: clean
@@ -40,4 +41,4 @@ clean:
 	@printf "";\
 	cd ./src && make clean -s
 	@echo "Cleaning project files.";\
-	rm -rf doc/* test/*.err test/*.out test/*.stderr test/*.stdout
+	rm -rf doc/html test/*.err test/*.out test/*.stderr test/*.stdout
