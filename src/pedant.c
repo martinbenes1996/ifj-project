@@ -325,6 +325,8 @@ bool ExpressionEnd()
 
     //retyping
     typeOfResult = RetypeRecursive(&where, &from);
+    if(typeOfResult == DataType_Unknown)
+        return false;
 
     //otoceni stacku
 

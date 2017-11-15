@@ -39,4 +39,12 @@ bool P_DefineNewFunction(const char * funcname);
  */
 bool P_HandleOperand(Phrasem p);
 
+/**
+ * @brief     Performs last actions with stack after expression parse.
+ *
+ * This function handles retyping of operands.
+ * @returns True, if success. False otherwise.
+ */
+bool ExpressionEnd();
+
 #endif // PEDANT_H
