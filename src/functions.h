@@ -140,7 +140,7 @@ inline void PrintPhrasem(Phrasem p)
       switch(index)
       {
         case DataType_Double:
-          debug("Phrasem [%s %f]", TokenTypeToString(p->table), getDoubleConstValue(index));
+          debug("Phrasem [%s %g]", TokenTypeToString(p->table), getDoubleConstValue(index));
           break;
         case DataType_Integer:
           debug("Phrasem [%s %d]", TokenTypeToString(p->table), getIntConstValue(index));

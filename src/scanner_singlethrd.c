@@ -315,7 +315,6 @@ Phrasem getString() {
         }
         else if (input == EOF)  RaiseError("string not ended", ErrorType_Syntax);
         else if (input != '\\') {
-          debug("Save to buffer: %c", input);
           SaveToBuffer(input);
         }
         else { state = 3; }
@@ -564,17 +563,18 @@ Phrasem getNumber(){
       // positive exponent, first digit
       case 5:
         if (isdigit(input)) {
-          exponent = exponent*10 + input;
-          break;
+          exponent = exponent*10 + (input - '0');
+          state = 9;
         }
 
         else {
           RaiseError("digit expected", ErrorType_Syntax);
         }
+        break;
       // positive exponent, other digits
       case 9:
         if (isdigit(input)) {
-          exponent = exponent*10 + input;
+          exponent = exponent*10 + (input - '0');
           break;
         }
 
@@ -587,13 +587,14 @@ Phrasem getNumber(){
       // negative exponent, first digit
       case 6:
         if (isdigit(input)) {
-          exponent = exponent*10 + input;
-          break;
+          exponent = exponent*10 + (input - '0');
+          state = 10;
         }
 
-        else {
-          RaiseError("digit expected", ErrorType_Syntax);
-        }
+        else RaiseError("digit expected", ErrorType_Syntax);
+
+        break;
+
       // negative exponent, other digits
       case 10:
         if (isdigit(input)) {
@@ -613,6 +614,10 @@ Phrasem getNumber(){
 
           DataUnion uni;
           uni.dvalue = result;
+          #ifdef SCANNER_DEBUG
+            debug("Read %f", result);
+          #endif
+
           int i = constInsert(DataType_Double, uni);
 
           if ( i == -1) RaiseError("constant table allocation error", ErrorType_Internal);
@@ -638,6 +643,10 @@ Phrasem getNumber(){
 
           DataUnion uni;
           uni.dvalue = result;
+          #ifdef SCANNER_DEBUG
+            debug("Read %f", result);
+          #endif
+
           int i = constInsert(DataType_Double, uni);
 
           if ( i == -1) RaiseError("constant table allocation error", ErrorType_Internal);
@@ -660,6 +669,10 @@ Phrasem getNumber(){
         do {
           DataUnion uni;
           uni.dvalue = result;
+          #ifdef SCANNER_DEBUG
+            debug("Read %f", result);
+          #endif
+
           int i = constInsert(DataType_Double, uni);
 
           if ( i == -1) RaiseError("constant table allocation error", ErrorType_Internal);
@@ -682,7 +695,10 @@ Phrasem getNumber(){
         do {
           DataUnion uni;
           uni.ivalue = (int)result;
-          
+          #ifdef SCANNER_DEBUG
+            debug("Read %d", (int)result);
+          #endif
+
           int i = constInsert(DataType_Integer, uni);
 
           if ( i == -1) RaiseError("constant table allocation error", ErrorType_Internal);

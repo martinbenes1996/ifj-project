@@ -16,6 +16,8 @@
 #include "tables.h"
 #include "types.h"
 #include "err.h"
+#include "io.h"
+#include "functions.h"
 
 
 /*-----------------------------------------------------------*/
@@ -223,9 +225,11 @@ int constInsert(DataType type, DataUnion uni)
     }
     else if(type == DataType_String)
     {
+
         consttable.arr[consttable.count].type = DataType_String;
         if((consttable.arr[consttable.count].data.svalue = malloc(strlen(uni.svalue) * sizeof(char)
                                                                     + sizeof(char))) == NULL)
+
         {
             setErrorType(ErrorType_Internal);
             setErrorMessage("constantTableInsert: could not allocate memory");
@@ -234,6 +238,8 @@ int constInsert(DataType type, DataUnion uni)
         strcpy(consttable.arr[consttable.count].data.svalue, uni.svalue);
     }
     consttable.count++;
+
+
 
     //resizing if needed
     if(consttable.count == consttable.arr_size)

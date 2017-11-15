@@ -417,6 +417,9 @@ bool RunParser()
   #endif
   bool status = true;
 
+  if(!constTableInit()) return false;
+  InitGenerator();
+
   if(bypass())
   {
     while(1)
@@ -427,9 +430,6 @@ bool RunParser()
       free(p);
     }
   }
-
-  if(!constTableInit()) return false;
-  InitGenerator();
 
   # ifdef MULTITHREAD // ---------------------------------
         // queue init
