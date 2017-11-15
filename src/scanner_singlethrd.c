@@ -18,6 +18,7 @@
 
 #include "buffer.h"
 #include "err.h"
+#include "functions.h"
 #include "io.h"
 #include "queue.h"
 #include "scanner_singlethrd.h"
@@ -94,6 +95,10 @@ Phrasem mem = NULL;
  * return true if everything is allright in other way - false.
  */
 bool getComment() {
+  #ifdef SCANNER_DEBUG
+    debug("Get Comment");
+  #endif
+
   int state = 0;
   int input;
   bool end = false;
@@ -133,6 +138,10 @@ bool getComment() {
  * return Phrasem if everything is alright in other way - NULL
  */
 Phrasem getOperator() {
+  #ifdef SCANNER_DEBUG
+    debug("Get Operator");
+  #endif
+
   int state = 0;
   int input;
   bool end = false;
@@ -255,22 +264,27 @@ Phrasem getOperator() {
  * return true if everything is ok in otherway -false
  */
 Phrasem getString() {
+  #ifdef SCANNER_DEBUG
+    debug("Get String");
+  #endif
   int state = 0;
   int input;
   int asciival = 0;
   bool end = false;
 
-  while(!end)
+  while(!end) {
     input = getByte();
     switch (state) {
 
       case 0:
-        if (input == '!') {state = 1; break;}
+        if (input == '!') { state = 1; }
         else RaiseError("bad internal state", ErrorType_Internal);
+        break;
 
       case 1:
-        if (input == '"') {state = 2; break;}
+        if (input == '"') { state = 2; }
         else RaiseError("bad internal state", ErrorType_Internal);
+        break;
 
       case 2:
         if (input == '"') {
@@ -278,10 +292,14 @@ Phrasem getString() {
           char * p = GetBuffer();
           if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
 
+          #ifdef SCANNER_DEBUG
+            debug("Got %s.", p);
+          #endif
+
           DataUnion du;
           du.svalue = p;
-          int x = constInsert(DataType_String, du);
 
+          int x = constInsert(DataType_String, du);
           if ( x == -1) RaiseError("constant table allocation error", ErrorType_Internal);
 
           ALLOC_PHRASEM(phr);
@@ -297,10 +315,11 @@ Phrasem getString() {
         }
         else if (input == EOF)  RaiseError("string not ended", ErrorType_Syntax);
         else if (input != '\\') {
+          debug("Save to buffer: %c", input);
           SaveToBuffer(input);
-          break;
         }
-        else { state = 3; break; }
+        else { state = 3; }
+        break;
 
       case 3:
         // process \n
@@ -356,12 +375,17 @@ Phrasem getString() {
 
       default:
         RaiseError("bad internal state", ErrorType_Syntax);
+    }
   }
   return NULL;
 }
 
 
 Phrasem getIdentifier(){
+  #ifdef SCANNER_DEBUG
+    debug("Get Identifier");
+  #endif
+
 	int state = 0;
  	int input;
 
@@ -444,6 +468,10 @@ Phrasem getIdentifier(){
 }
 
 Phrasem getNumber(){
+  #ifdef SCANNER_DEBUG
+    debug("Get Number");
+  #endif
+
   int state = 0; // state of the machine
   // integer
   double result = 0; // result of integers
@@ -654,6 +682,7 @@ Phrasem getNumber(){
         do {
           DataUnion uni;
           uni.ivalue = (int)result;
+          
           int i = constInsert(DataType_Integer, uni);
 
           if ( i == -1) RaiseError("constant table allocation error", ErrorType_Internal);
@@ -725,6 +754,7 @@ Phrasem RemoveFromQueue()
     return phr;
   }
 
+  // string
   else if (input == '!') {
     returnByte(input);
     return getString();
@@ -794,7 +824,7 @@ Phrasem RemoveFromQueue()
     return getNumber();
   }
 
-  RaiseError("unknown symbol", ErrorType_Syntax);
+  else RaiseError("unknown symbol", ErrorType_Syntax);
 
 }
 

@@ -1,5 +1,6 @@
 
 #include "config.h"
+#include "io.h"
 #include "types.h"
 
 args_t d;
@@ -29,7 +30,7 @@ bool bypass()
 
 void printConfig()
 {
-	printf( "---Config---\n"
+	out("---Config---\n"
 			"help:   %d  \n"
 			"bypass: %d  \n"
 			"------------\n", ((d.help)?1:0), ((d.bypass)?1:0));

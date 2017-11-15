@@ -13,7 +13,6 @@
 
 #include <stdbool.h>
 
-#include "io.h"
 
 /*--------------------------------------------------*/
 /** @addtogroup Symbol_types
@@ -154,33 +153,6 @@ typedef struct phrasem_data
 
   long line; /**< Line */
 }* Phrasem;
-/**
- * @brief   Debug function to print phrasem.
- * @param p       Phrasem to be printed.
- */
-inline void PrintPhrasem(Phrasem p)
-{
-  if(p == NULL) return;
-  switch(p->table)
-  {
-    case TokenType_Constant:
-    case TokenType_Operator:
-    case TokenType_Keyword:
-      debug("Phrasem [%s %d]", TokenTypeToString(p->table), p->d.index);
-      break;
-    case TokenType_Variable:
-    case TokenType_Function:
-    case TokenType_Symbol:
-      debug("Phrasem [%s \"%s\"]", TokenTypeToString(p->table), p->d.str);
-      break;
-    case TokenType_Separator:
-    case TokenType_EOF:
-      debug("Phrasem [%s]", TokenTypeToString(p->table));
-      break;
-    default:
-      break;
-  }
-}
 
 
 typedef struct exprParserItem

@@ -423,7 +423,7 @@ bool RunParser()
     {
       Phrasem p = CheckQueue(p);
       if(p->table == TokenType_EOF) return true;
-      PrintPhrasem(p);
+      //PrintPhrasem(p);
       free(p);
     }
   }
