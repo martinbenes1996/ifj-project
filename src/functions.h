@@ -102,6 +102,8 @@ inline Phrasem duplicatePhrasem(Phrasem p)
     case TokenType_Keyword:
       dup->d.index = p->d.index;
       break;
+    default:
+      break;
   }
   return dup;
 }

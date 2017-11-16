@@ -362,7 +362,38 @@ bool P_HandleOperand(Phrasem p)
 
 bool P_HandleTarget(Phrasem p)
 {
-  if( !Send(mstack) ) return false;
+  DataType target_dt = findVariableType(Config_getFunction(), p->d.str);
+  DataType source_dt = typeOfResult;
+
+
+  // same type
+  if(target_dt == source_dt)
+  {
+    if( !Send(mstack) ) return false;
+    if( !HandlePhrasem(p) ) return false;
+  }
+
+  // source double->int
+  else if((target_dt == DataType_Integer)
+       && (source_dt == DataType_Double))
+  {
+    if( !Send(mstack) ) return false;
+    G_TypeCast(TypeCast_Double2Int);
+    if( !HandlePhrasem(p) ) return false;
+  }
+
+  // source int->double
+  else if((target_dt == DataType_Double)
+       && (source_dt == DataType_Integer))
+  {
+    if( !Send(mstack) ) return false;
+    G_TypeCast(TypeCast_Int2Double);
+    if( !HandlePhrasem(p) ) return false;
+  }
+
+  // error
+  else RaiseError("incompatible type", p, ErrorType_Semantic2);
+
   if( !HandlePhrasem(p) ) return false;
 
   return true;

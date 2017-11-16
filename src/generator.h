@@ -83,6 +83,8 @@ void G_VariableDeclaration();
 /** @brief Announces end of a block to generator. */
 void G_EndBlock();
 
+void G_TypeCast(Table tc);
+
 /** @} */
 /*-----------------------------------------------------------*/
 

@@ -117,7 +117,10 @@ typedef enum{
   TokenType_Variable,
   TokenType_Function,
   TokenType_Separator,
-  TokenType_EOF
+  TokenType_EOF,
+
+  TypeCast_Int2Double,
+  TypeCast_Double2Int
 } TokenType;
 inline const char * TokenTypeToString(TokenType tt)
 {

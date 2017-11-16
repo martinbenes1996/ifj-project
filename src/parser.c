@@ -1368,6 +1368,7 @@ bool AssignmentParse()
   G_Assignment();
 
   Phrasem var = CheckQueue(var);
+  if(!VariableParse(var)) return false;
   if(!P_VariableDefined(var)) RaiseError("unknown variable", var, ErrorType_Semantic1);
 
   // =
@@ -1385,7 +1386,6 @@ bool AssignmentParse()
     return false;
   }
 
-  free(var);
   return true;
 }
 

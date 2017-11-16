@@ -325,10 +325,10 @@ bool Send(Stack s)
 {
   #ifdef GENERATOR_DEBUG
     debug("Send to Generator");
+    PrintStack(s);
   #endif
 
   // incoming stack process
-  PrintStack(s);
   GenerateAritm(s);
 
   // state stack
@@ -482,6 +482,25 @@ void G_EndBlock()
   }
 }
 
+void G_TypeCast(Table tc)
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate typecast.");
+  #endif
+
+  switch(tc)
+  {
+    case TypeCast_Int2Double:
+      out("INT2FLOATS");
+      break;
+    case TypeCast_Double2Int:
+      out("FLOAT2R2EINT");
+      break;
+    default:
+      break;
+  }
+}
+
 void InitGenerator()
 {
   #ifdef GENERATOR_DEBUG
@@ -532,6 +551,7 @@ char * GenerateName(Phrasem p)
           maxlen = 1 /*sign*/ + 53 /*mantissa - IEEE754*/ + 1 /*decimal point*/;
           namebuff = malloc(sizeof(char) * (6 /*float@*/ + maxlen + 1 /*end zero*/));
           if(namebuff == NULL) return NULL;
+          fprintf(stderr, "%g\n", getDoubleConstValue(p->d.index));
           sprintf(namebuff, "float@%g", getDoubleConstValue(p->d.index));
           return namebuff;
 
@@ -556,6 +576,7 @@ char * GenerateName(Phrasem p)
 
     default:
       // TODO
+      PrintPhrasem(p);
       return "TODO";
   }
 }
