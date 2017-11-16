@@ -118,10 +118,12 @@ bool getComment() {
 
       case 2:
         if (input != '/') { break; }
+        else if (input == EOF) RaiseError("expected \'//\' ", ErrorType_Syntax);
         else { state = 3; break; }
 
       case 3:
         if (input != '/') { state = 2; break; }
+        else if (input == EOF) RaiseError("expected \'//\' ", ErrorType_Syntax);
         else { end = true; break; }
 
       default:
