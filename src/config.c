@@ -6,6 +6,7 @@
 /*----------- DATA ------------*/
 args_t d;
 static char * mfunction = NULL;
+static long mline = 1;
 /*----------------------------*/
 
 void initConfig()
@@ -27,6 +28,11 @@ void printConfig()
 
 char * Config_getFunction() { return mfunction; }
 void Config_setFunction(char * f) { mfunction = f; }
+
+/*---------------------*/
+
+long Config_getLine() { return mline; }
+void Config_setLine(long line) { mline = line; }
 
 /*---------------------*/
 

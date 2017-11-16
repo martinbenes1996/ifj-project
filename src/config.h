@@ -57,6 +57,24 @@ char * Config_getFunction();
  */
 void Config_setFunction(char * func);
 
+/**
+ * @brief Get line
+ *
+ *This function returns the number of the line, which is being
+ *processed at the moment.
+ */
+
+ long Config_getLine();
+
+ /**
+  *@brief Sets the number of line.
+  *
+  *This function sets the line, which is being
+  *processed at the moment.
+  */
+
+  void Config_setLine(long);
+
 /*-------------- HELP --------------*/
 /**
  * @brief   Sets help flag.

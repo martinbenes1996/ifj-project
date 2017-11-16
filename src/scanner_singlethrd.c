@@ -17,6 +17,7 @@
 #include <string.h>
 
 #include "buffer.h"
+#include "config.h"
 #include "err.h"
 #include "functions.h"
 #include "io.h"
@@ -27,7 +28,6 @@
 #include "types.h"
 
 bool done = false;
-int line = 1;
 
 void EndScanner(const char * msg, ErrorType errtype)
 {
@@ -260,7 +260,6 @@ Phrasem getOperator() {
   ALLOC_PHRASEM(phr);
   phr->table = TokenType_Operator;
   phr->d.index = x;
-  phr->line = line;
 
   #ifdef SCANNER_DEBUG
     PrintPhrasem(phr);
@@ -311,7 +310,6 @@ Phrasem getString() {
           ALLOC_PHRASEM(phr);
           phr->table = TokenType_Constant;
           phr->d.index = x;
-          phr->line = line;
 
           #ifdef SCANNER_DEBUG
             PrintPhrasem(phr);
@@ -436,7 +434,6 @@ Phrasem getIdentifier(){
             ALLOC_PHRASEM(phr);
             phr->table = TokenType_Keyword;
             phr->d.index = id;
-            phr->line = line;
 
             // DEBUG
             #ifdef SCANNER_DEBUG
@@ -451,7 +448,6 @@ Phrasem getIdentifier(){
             ALLOC_PHRASEM(phr);
             phr->table = TokenType_Symbol;
             phr->d.str = CutBuffer(p);
-            phr->line = line;
 
              // DEBUG
             #ifdef SCANNER_DEBUG
@@ -629,7 +625,6 @@ Phrasem getNumber(){
           ALLOC_PHRASEM(p);
           p->table = TokenType_Constant;
           p->d.index = i;
-          p->line = line;
 
           #ifdef SCANNER_DEBUG
             PrintPhrasem(p);
@@ -656,7 +651,6 @@ Phrasem getNumber(){
           ALLOC_PHRASEM(p);
           p->table = TokenType_Constant;
           p->d.index = i;
-          p->line = line;
 
           #ifdef SCANNER_DEBUG
             PrintPhrasem(p);
@@ -680,7 +674,6 @@ Phrasem getNumber(){
           ALLOC_PHRASEM(p);
           p->table = TokenType_Constant;
           p->d.index = i;
-          p->line = line;
 
           #ifdef SCANNER_DEBUG
             PrintPhrasem(p);
@@ -704,7 +697,6 @@ Phrasem getNumber(){
           ALLOC_PHRASEM(p);
           p->table = TokenType_Constant;
           p->d.index = i;
-          p->line = line;
 
           #ifdef SCANNER_DEBUG
             PrintPhrasem(p);
@@ -730,8 +722,7 @@ Phrasem RemoveFromQueue()
   if(!meminit) { mem = InitStack(); meminit = true; }
 
   #ifdef SCANNER_DEBUG
-    debug("Get Phrasem.");
-    PrintStack(mem);
+    debug("\nGet Phrasem.");
   #endif
 
   Phrasem pom;
@@ -763,7 +754,7 @@ Phrasem RemoveFromQueue()
 
   if(input == '\n')
   {
-    line += 1;
+    Config_setLine(Config_getLine()+1);
     ALLOC_PHRASEM(phr);
     phr->table = TokenType_Separator;
     phr->d.str = NULL;
@@ -804,7 +795,6 @@ Phrasem RemoveFromQueue()
       ALLOC_PHRASEM(phr);
       phr->table = TokenType_Operator;
       phr->d.index = x;
-      phr->line = line;
 
       #ifdef SCANNER_DEBUG
         PrintPhrasem(phr);

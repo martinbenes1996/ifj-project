@@ -70,7 +70,7 @@ bool end = false; /**< Set to true, if keyword end reached. */
 #define RaiseError(msg, phrasem, errtype)                       \
   do {                                                          \
     err("%s: %s: l.%d: %s", __FILE__, __func__, __LINE__, msg); \
-    EndParser(msg, phrasem ->line, errtype);                    \
+    EndParser(msg, errtype);                                    \
     freePhrasem(phrasem);                                       \
     return false;                                               \
   } while(0)
@@ -83,7 +83,8 @@ bool end = false; /**< Set to true, if keyword end reached. */
  */
 #define RaiseQueueError(phrasem)                                \
   do {                                                          \
-    RaiseError("queue error", phrasem, ErrorType_Internal);     \
+    EndParser("queue error", ErrorType_Internal);               \
+    return false;                                               \
   } while(0)
 
 /**
@@ -197,7 +198,7 @@ bool end = false; /**< Set to true, if keyword end reached. */
  * @param msg       Message to print.
  * @param errtype   Error type.
  */
-void EndParser(const char * msg, int line, ErrorType errtype);
+void EndParser(const char * msg, ErrorType errtype);
 void EndRoutine()
 {
   #ifdef PARSER_DEBUG
@@ -782,7 +783,8 @@ bool LogicParse()
 
   // left
   if(!ExpressionParse()) return false;
-
+  P_MoveStackToGenerator();
+  
   //Phrasem q = CheckQueue(q); // foo
 
   // parse the sign
@@ -1125,22 +1127,6 @@ bool SymbolParse()
 
     if( !AssignmentParse() ) return false;
 
-    /*
-    G_Assignment();
-
-    // =
-    CheckOperator("=");
-
-    // expression
-    if(!ExpressionParse()) return false;
-
-    // LF
-    CheckSeparator();
-
-    // Generator
-    HandlePhrasem(p);
-    */
-
   }
   else if( P_FunctionDefined(p->d.str) )
   {
@@ -1157,10 +1143,7 @@ bool SymbolParse()
     CheckSeparator();
 
   }
-  else
-  {
-    // raise semantic error
-  }
+  else RaiseError("unknown symbol", p, ErrorType_Semantic1);
 
   return true;
 }
@@ -1444,7 +1427,7 @@ bool ScopeParse()
   // nesting
   if(Config_getFunction() != NULL)
   {
-    EndParser("nested functions not supported", -1, ErrorType_Internal);
+    EndParser("nested functions not supported", ErrorType_Internal);
     return false;
   }
   // actualizing function
@@ -1475,7 +1458,7 @@ bool GlobalBlockParse()
 
   if(Config_getFunction() != NULL)
   {
-    EndParser("Parser: GlobalBlockParse: nested functions not supported", -1, ErrorType_Internal);
+    EndParser("Parser: GlobalBlockParse: nested functions not supported", ErrorType_Internal);
     return false;
   }
 
@@ -1501,7 +1484,7 @@ bool GlobalBlockParse()
 }
 
 /*---------------------------- CLEAR --------------------------------*/
-void EndParser(const char * msg, int line, ErrorType errtype)
+void EndParser(const char * msg, ErrorType errtype)
 {
 
   //EndRoutine();
@@ -1513,7 +1496,7 @@ void EndParser(const char * msg, int line, ErrorType errtype)
     #endif
     setErrorType(errtype);
     setErrorMessage(msg);
-    if(line != -1) setErrorLine(line);
+    setErrorLine(Config_getLine());
   }
   else
   {

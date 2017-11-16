@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void EndPedant(const char * msg, long line, ErrorType errtype)
+void EndPedant(const char * msg, ErrorType errtype)
 {
   #ifdef PEDANT_DEBUG
     debug("Ending Pedant.");
@@ -25,7 +25,7 @@ void EndPedant(const char * msg, long line, ErrorType errtype)
     #endif
     setErrorType(errtype);
     setErrorMessage(msg);
-    if(line != -1) setErrorLine(line);
+    setErrorLine(Config_getLine());
   }
   else
   {
@@ -37,13 +37,15 @@ void EndPedant(const char * msg, long line, ErrorType errtype)
 #define RaiseError(msg, phrasem, errtype)                       \
   do {                                                          \
     err("%s: %s: l.%d: %s", __FILE__, __func__, __LINE__, msg); \
-    EndPedant(msg, phrasem ->line, errtype);                    \
+    EndPedant(msg, errtype);                                    \
     return false;                                               \
   } while(0)
 
 /*------ DATA -------*/
 static Stack mstack = NULL;
 static DataType typeOfResult;
+static DataType mdtmem = DataType_Unknown;      // memory of last stack datatype generated
+
 // how to control [if a+1 < c-6 then] ??
 //static Stack mstack2 = NULL;
 //static DataType typeOfResult2;
@@ -413,7 +415,38 @@ bool P_HandleTarget(Phrasem p)
   return true;
 }
 
+bool P_HandleCompareOperator(Phrasem p) {
+  DataType generated = mdtmem;
+  DataType waiting = typeOfResult;
+
+  if (generated == waiting) {
+    if (!Send(mstack)) return false;
+    if (!HandlePhrasem(p)) return false;
+    return true;
+  }
+
+  else if ((generated == DataType_Integer)&&(waiting == DataType_Double)) {
+    GenerateTypeCast(TypeCast_Int2Double);
+    if (!Send(mstack)) return false;
+    if (!HandlePhrasem(p)) return false;
+    return true;
+  }
+
+  else if((generated == DataType_Double)&&(waiting == DataType_Integer)) {
+    if(!Send(mstack)) return false;
+    GenerateTypeCast(TypeCast_Int2Double);
+    if(!HandlePhrasem(p)) return false;
+    return true;
+  }
+
+  else RaiseError("incompatible types", p, ErrorType_Semantic2);
+
+}
+
+
+
 bool P_MoveStackToGenerator()
 {
+  mdtmem = typeOfResult;
   return Send(mstack);
 }

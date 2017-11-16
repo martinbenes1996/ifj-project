@@ -155,7 +155,6 @@ typedef struct phrasem_data
   TokenType table; /**< Token type. */
   PhrasemData d; /**< Table line or pointer. */
 
-  long line; /**< Line */
 }* Phrasem;
 
 
