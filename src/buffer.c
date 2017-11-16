@@ -1,5 +1,6 @@
 
 #include <stdbool.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include "buffer.h"
 
@@ -19,7 +20,7 @@ char * GetBuffer()
   buf = NULL;
 
   max=iter = -1;
-  
+
   return svbuf;
 }
 
@@ -30,7 +31,7 @@ bool AddToBuffer(char c)
   #ifdef BUFFER_DEBUG
     debug("Adding to buffer.");
   #endif
-  
+
   if(buf==NULL)
   {
     #ifdef BUFFER_DEBUG
@@ -39,7 +40,7 @@ bool AddToBuffer(char c)
 
     // values at the beginning
     iter = 0;
-    max = 50;  
+    max = 50;
 
     buf = malloc((max+1) * sizeof(char));
     if (buf == NULL)
@@ -52,7 +53,7 @@ bool AddToBuffer(char c)
     buf = realloc(buf, max);
   }
 
-  buf[iter] = c;
+  buf[iter] = tolower(c);
   iter++;
 
   return true;

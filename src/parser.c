@@ -32,24 +32,25 @@
 pthread_t sc;
 #endif
 
-char * mfunction; /**< Id of actual function (for symbol table). */
 bool setFunction(const char * f)
 {
   if(f == NULL)
   {
-    if(mfunction != NULL) free(mfunction);
-    mfunction = NULL;
+    char * func = Config_getFunction();
+    if(func != NULL) free(func);
+    Config_setFunction(NULL);
     return true;
   }
 
-  if(mfunction != NULL) free(mfunction);
-  mfunction = malloc(sizeof(char)*(strlen(f) + 1));
+  if(Config_getFunction() != NULL) free( Config_getFunction() );
+  char * mfunction = malloc(sizeof(char)*(strlen(f) + 1));
   if(mfunction == NULL) return false;
 
   strcpy(mfunction, f);
+  Config_setFunction(mfunction);
 
   #ifdef PARSER_DEBUG
-    debug("Function: %s", (mfunction!=NULL)?mfunction:"none");
+    debug("Function: %s", (f!=NULL)?f:"none");
   #endif
   return true;
 }
@@ -373,6 +374,8 @@ bool CycleParse();
  */
 bool ConditionParse();
 
+bool AssignmentParse();
+
 /** @} */
 /*----------------------------------------------------*/
 /** @addtogroup End_parsers
@@ -471,7 +474,7 @@ bool RunParser()
 
   // end
   EndRoutine();
-  if(mfunction != NULL) { free(mfunction); return false; }
+  if(Config_getFunction() != NULL) { free(Config_getFunction()); return false; }
   return status;
 }
 
@@ -550,7 +553,7 @@ int decodeToken(...)
 //tries to perform stack modifications based on rules (called when '>')
 int checkEPRules(/*Stack returnStack, */Stack temporaryOpStack)
 {
-    #ifdef PARSER_DEBUG
+    #ifdef EXPRESSION_DEBUG
         debug("EP: checkEPRules: executing reduction rules.");
     #endif
 
@@ -631,7 +634,7 @@ bool ExpressionParse()
 
     while(!endExprParsing && !failure)
     {
-        #ifdef PARSER_DEBUG
+        #ifdef EXPRESSION_DEBUG
             printstackEP();   //<<-- debug
         #endif
 
@@ -930,14 +933,14 @@ bool VariableDefinitionParse()
   // declare
   HandlePhrasem(var);           /*<<== var destroyed */
 
-  if(P_VariableDefined(mfunction, dup))
+  if(P_VariableDefined(dup))
   {
     freePhrasem(dt);
     RaiseError("variable was already defined", dup, ErrorType_Semantic1);
   }
 
   // semantics
-  if(!P_DefineNewVariable(mfunction, dup, dt))
+  if(!P_DefineNewVariable(dup, dt))
   {
     free(dup);
     free(dt);
@@ -972,21 +975,20 @@ bool VariableDefinitionParse()
         RaiseError("unknown datatype", nul, ErrorType_Semantic1);
     }
 
-    /*
+
     // volavka
     ReturnToQueue(sep);         // return LF
     ReturnToQueue(nul);         // return 0/0.0/!""
-
 
     // process, send to generator
     if(!ExpressionParse()) return false;
 
     // LF (back, stop point for expressionparse)
     CheckSeparator();
-    */
+
 
     // association target
-    HandlePhrasem(dup);               /*<<== dup destroyed */
+    P_HandleTarget(dup);               /*<<== dup destroyed */
 
 
   }
@@ -1032,7 +1034,7 @@ bool InputParse()
   }
 
   // control of previous definition
-  if( !P_VariableDefined(mfunction, p)) return false;
+  if( !P_VariableDefined(p)) return false;
 
   HandlePhrasem(p);
 
@@ -1114,8 +1116,13 @@ bool SymbolParse()
 
   Phrasem p = CheckQueue(p);
 
-  if( P_VariableDefined(mfunction, p) )
+  if( P_VariableDefined(p) )
   {
+    ReturnToQueue(p);
+
+    if( !AssignmentParse() ) return false;
+
+    /*
     G_Assignment();
 
     // =
@@ -1129,6 +1136,7 @@ bool SymbolParse()
 
     // Generator
     HandlePhrasem(p);
+    */
 
   }
   else if( P_FunctionDefined(p->d.str) )
@@ -1277,7 +1285,7 @@ bool FunctionDeclarationParse()
   if( !FunctionParse(funcname) ) return false;
 
   // nesting
-  if(mfunction != NULL) RaiseError("nested function declaration", funcname, ErrorType_Syntax);
+  if(Config_getFunction() != NULL) RaiseError("nested function declaration", funcname, ErrorType_Syntax);
 
   // operator (
   CheckOperator("(");
@@ -1357,6 +1365,9 @@ bool AssignmentParse()
   #endif
   G_Assignment();
 
+  Phrasem var = CheckQueue(var);
+  if(!P_VariableDefined(var)) RaiseError("unknown variable", var, ErrorType_Semantic1);
+
   // =
   CheckOperator("=");
 
@@ -1366,6 +1377,13 @@ bool AssignmentParse()
   // LF
   CheckSeparator();
 
+  if(!P_HandleTarget(var))
+  {
+    free(var);
+    return false;
+  }
+
+  free(var);
   return true;
 }
 
@@ -1380,7 +1398,7 @@ bool FunctionDefinitionParse()
   if( !FunctionParse(funcname) ) return false;
 
   // nesting control
-  if(mfunction != NULL)
+  if(Config_getFunction() != NULL)
   {
     RaiseError("nested function definition", funcname, ErrorType_Syntax);
   }
@@ -1421,14 +1439,15 @@ bool ScopeParse()
   #endif
 
   // nesting
-  if(mfunction != NULL)
+  if(Config_getFunction() != NULL)
   {
     EndParser("nested functions not supported", -1, ErrorType_Internal);
     return false;
   }
   // actualizing function
   setFunction("scope");
-  P_DefineNewFunction(mfunction);
+  #warning parameters
+  P_DefineNewFunction(Config_getFunction());
 
   // LF
   CheckSeparator();
@@ -1451,7 +1470,7 @@ bool GlobalBlockParse()
   #endif
   bool status = true;
 
-  if(mfunction != NULL)
+  if(Config_getFunction() != NULL)
   {
     EndParser("Parser: GlobalBlockParse: nested functions not supported", -1, ErrorType_Internal);
     return false;

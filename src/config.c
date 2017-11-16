@@ -28,6 +28,10 @@ bool bypass()
 	return d.bypass;
 }
 
+static char * mfunction = NULL;
+char * Config_getFunction() { return mfunction; }
+void Config_setFunction(char * f) { mfunction = f; }
+
 void printConfig()
 {
 	out("---Config---\n"

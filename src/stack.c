@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "err.h"
+#include "functions.h"
 #include "io.h"
 #include "stack.h"
 #include "types.h"
@@ -149,13 +150,41 @@ void ClearStack(Stack st)
 }
 
 
+void PrintStack(Stack st)
+{
+  // control
+  if(st == NULL)
+  {
+    EndStack("Stack: PrintStack: recieved NULL pointer", ErrorType_Internal);
+    return;
+  }
+
+  // selecting the first
+  StackItem * it = st->first;
+  debug("---STACK---");
+  if(it == NULL)
+  {
+    debug("empty stack");
+  }
+  else
+  {
+    do {
+      PrintPhrasem(it->data);
+      it = it->next;
+    } while(it != NULL);
+  }
+  debug("-----------");
+}
+
+
 /*--------------------------------EXPRESSION PARSE STACK-----------------------------*/
 
 ExprParserStack EPStack = {.itemCount = 0, .first = NULL};
 
 //function for debuging expression parsing
 void printstackEP()
-{printf("\nPRINTING EP_STACK\n");
+{
+  printf("\nPRINTING EP_STACK\n");
     ExprParserItem * pom = EPStack.first;
 
     while(pom != NULL)

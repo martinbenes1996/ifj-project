@@ -281,7 +281,7 @@ void GenerateAritm(Stack s)
   #endif
 
   // first
-  Phrasem p = PopFromStack(s);
+  Phrasem p = PopFromStack(s); 
   out("PUSHS %s", p->d.str);
   free(p);
 
@@ -323,6 +323,7 @@ bool Send(Stack s)
   #endif
 
   // incoming stack process
+  PrintStack(s);
   GenerateAritm(s);
 
   // state stack

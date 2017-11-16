@@ -22,6 +22,7 @@
 #include "io.h"
 #include "queue.h"
 #include "scanner_singlethrd.h"
+#include "stack.h"
 #include "tables.h"
 #include "types.h"
 
@@ -84,7 +85,8 @@ void EndScanner(const char * msg, ErrorType errtype)
 
 
 /*---- DATA ------*/
-Phrasem mem = NULL;
+static Stack mem = NULL;
+static bool meminit = false;
 /*----------------*/
 
 
@@ -718,11 +720,18 @@ Phrasem getNumber(){
 
 Phrasem RemoveFromQueue()
 {
-  if(mem != NULL)
+  // stack init (if first)
+  if(!meminit) { mem = InitStack(); meminit = true; }
+
+  #ifdef SCANNER_DEBUG
+    debug("Get Phrasem.");
+    PrintStack(mem);
+  #endif
+
+  Phrasem pom;
+  if((pom = PopFromStack(mem)) != NULL)
   {
-    Phrasem p = mem;
-    mem = NULL;
-    return p;
+    return pom;
   }
 
   // reading
@@ -835,10 +844,12 @@ Phrasem RemoveFromQueue()
 
 bool ReturnToQueue(Phrasem p)
 {
-  if(mem != NULL) return false;
-
-  mem = p;
-  return true;
+  bool ret = PushOntoStack(mem, p);
+  #ifdef SCANNER_DEBUG
+    debug("return to queue");
+    PrintStack(mem);
+  #endif
+  return ret;
 }
 
 

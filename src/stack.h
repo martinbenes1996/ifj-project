@@ -46,6 +46,8 @@ bool TurnStack(Stack st);
  */
 void ClearStack(Stack);
 
+void PrintStack(Stack);
+
 
 
 
@@ -113,4 +115,3 @@ void printstackEP();
 
 /** @}*/
 #endif // STACK_H
-

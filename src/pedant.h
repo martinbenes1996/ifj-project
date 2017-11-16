@@ -14,7 +14,7 @@
  * @param varname         Name of the variable.
  * @returns   True if defined. False if not.
  */
-bool P_VariableDefined(const char * funcname, Phrasem varname);
+bool P_VariableDefined(Phrasem varname);
 
 /**
  * @brief     Returns, weather the function was defined, or not.
@@ -26,7 +26,7 @@ bool P_VariableDefined(const char * funcname, Phrasem varname);
  */
 bool P_FunctionDefined(const char * funcname);
 
-bool P_DefineNewVariable(const char * funcname, Phrasem varname, Phrasem datatype);
+bool P_DefineNewVariable(Phrasem varname, Phrasem datatype);
 bool P_DefineNewFunction(const char * funcname);
 
 /**
@@ -38,6 +38,7 @@ bool P_DefineNewFunction(const char * funcname);
  * @returns True, if success. False otherwise.
  */
 bool P_HandleOperand(Phrasem p);
+bool P_HandleTarget(Phrasem p);
 
 /**
  * @brief     Performs last actions with stack after expression parse.

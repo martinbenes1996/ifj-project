@@ -1,6 +1,8 @@
 
+#include "config.h"
 #include "err.h"
 #include "functions.h"
+#include "generator.h"
 #include "io.h"
 #include "pedant.h"
 #include "stack.h"
@@ -42,17 +44,20 @@ void EndPedant(const char * msg, long line, ErrorType errtype)
 /*------ DATA -------*/
 static Stack mstack = NULL;
 static DataType typeOfResult;
+// how to control [if a+1 < c-6 then] ??
+//static Stack mstack2 = NULL;
+//static DataType typeOfResult2;
 /*--------------------*/
 
-bool P_VariableDefined(const char * funcname, Phrasem varname)
+bool P_VariableDefined(Phrasem varname)
 {
   #ifdef PEDANT_DEBUG
     debug("Pedant, Variable Defined?");
   #endif
-  return findVariable(funcname, varname->d.str);
+  return findVariable(Config_getFunction(), varname->d.str);
 }
 
-bool P_DefineNewVariable(const char * funcname, Phrasem varname, Phrasem datatype)
+bool P_DefineNewVariable(Phrasem varname, Phrasem datatype)
 {
   #ifdef PEDANT_DEBUG
     debug("Pedant, Define New Variable");
@@ -64,7 +69,8 @@ bool P_DefineNewVariable(const char * funcname, Phrasem varname, Phrasem datatyp
     RaiseError("unknown datatype", datatype, ErrorType_Semantic1);
   }
 
-  if(!addVariable(funcname, varname->d.str) || !addVariableType(funcname, varname->d.str, type))
+  if(!addVariable(Config_getFunction(), varname->d.str)
+  || !addVariableType(Config_getFunction(), varname->d.str, type))
   {
     RaiseError("alloc variable error", varname, ErrorType_Semantic1);
   }
@@ -77,9 +83,9 @@ bool P_FunctionDefined(const char * funcname)
   #ifdef PEDANT_DEBUG
     debug("Pedant, Function Defined?");
   #endif
-  (void)funcname;
-  return true;
+  return findFunctionInTable(funcname);
 }
+
 bool P_DefineNewFunction(const char * funcname)
 {
   #ifdef PEDANT_DEBUG
@@ -351,15 +357,13 @@ bool P_HandleOperand(Phrasem p)
     mstack = InitStack();
   }
 
-  //return PushOntoStack(mstack, p);
+  return PushOntoStack(mstack, p);
+}
 
-  // conversion infix->postfix here??
-  // ...
-
-  // how to control?
-  //if(!PushOntoStack(s, p)) return false;
-  //printfstack(s);
-  //printf("Token: %d\n", p->table);
+bool P_HandleTarget(Phrasem p)
+{
+  if( !Send(mstack) ) return false;
+  if( !HandlePhrasem(p) ) return false;
 
   return true;
 }

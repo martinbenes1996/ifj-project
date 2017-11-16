@@ -11,6 +11,9 @@ bool help();
 void setBypass();
 bool bypass();
 
+char * Config_getFunction();
+void Config_setFunction(char *);
+
 void printConfig();
 
 

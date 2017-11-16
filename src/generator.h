@@ -35,7 +35,7 @@ void InitGenerator();
  * @param s         Stack with expression.
  * @returns True, if success. False otherwise.
  */
-bool SendStack(Stack s);
+bool Send(Stack s);
 
 /**
  * @brief   Gives phrasem.
@@ -45,8 +45,6 @@ bool SendStack(Stack s);
  * @returns True if success. False otherwise.
  */
 bool HandlePhrasem(Phrasem p);
-
-const char * GenerateUniqueName();
 
 /** @} */
 /*-----------------------------------------------------------*/

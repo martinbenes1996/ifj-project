@@ -147,7 +147,7 @@ inline void PrintPhrasem(Phrasem p)
           debug("Phrasem [%s int %ld->%d]", TokenTypeToString(p->table), p->d.index, getIntConstValue(p->d.index));
           break;
         case DataType_String:
-          debug("Phrasem [%s string %ld->%s]", TokenTypeToString(p->table), p->d.index, getStringConstValue(p->d.index));
+          debug("Phrasem [%s string %ld->\"%s\"]", TokenTypeToString(p->table), p->d.index, getStringConstValue(p->d.index));
           break;
         default:
           debug("Phrasem [%s UNKNOWN]", TokenTypeToString(p->table));
