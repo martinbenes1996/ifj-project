@@ -1,4 +1,5 @@
 
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -181,6 +182,8 @@ static GeneratorStack mStack;
 static LabelStack mLabels;
 /*-----------------------------*/
 
+char * GenerateName(Phrasem p);
+
 void GenerateLogic(Phrasem p)
 {
   #ifdef GENERATOR_DEBUG
@@ -281,8 +284,8 @@ void GenerateAritm(Stack s)
   #endif
 
   // first
-  Phrasem p = PopFromStack(s); 
-  out("PUSHS %s", p->d.str);
+  Phrasem p = PopFromStack(s);
+  out("PUSHS %s", GenerateName(p) );
   free(p);
 
   while(1)
@@ -292,7 +295,7 @@ void GenerateAritm(Stack s)
     Phrasem q = PopFromStack(s);
     if(q == NULL) break;
     // control of implicit conversion (if so, then pop again)
-    out("PUSHS %s", q->d.str);
+    out("PUSHS %s", GenerateName(q));
     free(q);
 
     // operator
@@ -500,8 +503,51 @@ void InitGenerator()
 
 
 
+static char * namebuff = NULL;
+char * GenerateName(Phrasem p)
+{
+  if(p == NULL) return NULL;
 
+  if(namebuff != NULL) free(namebuff);
 
+  DataType dt;
+  int maxlen;
+  switch(p->table)
+  {
+    case TokenType_Constant:
+      dt = findConstType(p->d.index);
+      switch(dt)
+      {
+        case DataType_Integer:
+          maxlen = 1/*sign*/ + (log10(getIntConstValue(p->d.index)) + 1) /*digits*/;
+          if(getIntConstValue(p->d.index) <= 0) maxlen = 1;
+          namebuff = malloc(sizeof(char) * (4/*int@*/ + maxlen + 1/*end zero*/));
+          sprintf(namebuff, "int@%d", getIntConstValue(p->d.index));
+          return namebuff;
+
+        case DataType_Double:
+          maxlen = 1 /*sign*/ + 53 /*mantissa - IEEE754*/ + 1 /*decimal point*/;
+          namebuff = malloc(sizeof(char) * (6 /*float@*/ + maxlen + 1/*end zero*/));
+          sprintf(namebuff, "float@%g", getDoubleConstValue(p->d.index));
+          return namebuff;
+
+        case DataType_String:
+          maxlen = strlen(getStringConstValue(p->d.index));
+          namebuff = malloc(sizeof(char) * (7/*string@*/ + maxlen + 1/*end zero*/));
+          sprintf(namebuff, "string@%s", getStringConstValue(p->d.index));
+          return namebuff;
+
+        case DataType_Unknown:
+          return "???";
+
+        default:
+          return "TODO";
+      }
+    default:
+      // TODO
+      return "TODO";
+  }
+}
 
 
 /*-------------------- STATE STACK ---------------------------*/

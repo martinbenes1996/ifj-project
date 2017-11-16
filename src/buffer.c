@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include "buffer.h"
+#include "io.h"
 
 static char *buf = NULL;
 static long iter = -1, max = -1;
@@ -53,8 +54,25 @@ bool AddToBuffer(char c)
     buf = realloc(buf, max);
   }
 
-  buf[iter] = tolower(c);
-  iter++;
+  c = tolower(c);
+
+  // ending 0
+  if( c == '\0' )
+  {
+    buf[iter] = c;
+    iter++;
+  }
+  // others
+  else if( (c <= 32) || (c == 35) || (c == 92))
+  {
+    buf[iter] = '\\';
+    iter++;
+    AddToBuffer((c/100) + '0');
+    AddToBuffer((c%100)/10 + '0');
+    AddToBuffer(c%10 + '0');
+  }
+  // regular symbol
+  else buf[iter++] = c;
 
   return true;
 }
