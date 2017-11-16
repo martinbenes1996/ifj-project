@@ -41,6 +41,7 @@ void EndPedant(const char * msg, long line, ErrorType errtype)
 
 /*------ DATA -------*/
 static Stack mstack = NULL;
+static DataType typeOfResult;
 /*--------------------*/
 
 bool P_VariableDefined(const char * funcname, Phrasem varname)
@@ -107,7 +108,7 @@ bool RetypeToDouble(StackItem ** where)
     //connect it to the list by using where:
     // newstackitem->next = (*where)->next;
     // *where = newstackitem;
-(void **) where;
+(void) where;
     return true;
 }
 
@@ -118,7 +119,7 @@ bool RetypeToInt(StackItem ** where)
     //connect it to the list by using where:
     // newstackitem->next = (*where)->next;
     // *where = newstackitem;
-(void **) where;
+(void) where;
     return true;
 }
 
@@ -321,7 +322,6 @@ bool ExpressionEnd()
     StackItem ** where = NULL;        //place where to put a retype token
     StackItem * from;                 //where in the stack i currently am
     from = mstack->first;
-    DataType typeOfResult;
 
     //retyping
     typeOfResult = RetypeRecursive(&where, &from);

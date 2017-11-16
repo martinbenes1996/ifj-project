@@ -35,6 +35,8 @@ typedef enum
   GState_Empty
 } GState;
 
+char * GStateToStr(GState st);
+
 /**
  * @brief   Item in the generator state stack.
  */
@@ -88,10 +90,17 @@ inline GState PopGState();
 /**
  * @brief   Clears state stack.
  *
- * This function clears whole GeneratorStack
+ * This function clears whole GeneratorStack.
  * @returns GState on the top, or GState_Empty, if empty.
  */
 inline void ClearGStates();
+
+/**
+ * @brief   Prints state stack.
+ *
+ * This function prints whole GeneratorStack.
+ */
+inline void PrintGStateStack();
 
 /*-------------------- LABEL STACK ------------------------*/
 
@@ -174,6 +183,10 @@ static LabelStack mLabels;
 
 void GenerateLogic(Phrasem p)
 {
+  #ifdef GENERATOR_DEBUG
+    debug("Generating logic.");
+  #endif
+
   const char * aftercond = GenerateLabel();
 
   if(isOperator(p, "="))
@@ -223,29 +236,49 @@ void GenerateLogic(Phrasem p)
 
 void GenerateAssignment(Phrasem p)
 {
+  #ifdef GENERATOR_DEBUG
+    debug("Generating assignment.");
+  #endif
+
   out("POPS %s", p->d.str);
   free(p);
 }
 void GenerateVariableDeclaration(Phrasem p)
 {
+  #ifdef GENERATOR_DEBUG
+    debug("Generating variable declaration.");
+  #endif
+
   out("DEFVAR %s", p->d.str);
 }
 
 void GeneratePrint()
 {
+  #ifdef GENERATOR_DEBUG
+    debug("Generating print.");
+  #endif
+
   const char *tmp = "var";
   out("DEFVAR %s", tmp);
   out("POPS %s", tmp);
   out("WRITE %s", tmp);
 }
 
-void GenerateRead(Phrasem p) {
+void GenerateRead(Phrasem p)
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generating read.");
+  #endif
+
   // this will go from symbol table
   out("READ %s %s", p->d.str, "integer");
 }
 
 void GenerateAritm(Stack s)
 {
+  #ifdef GENERATOR_DEBUG
+    debug("Generating arithmetics.");
+  #endif
 
   // first
   Phrasem p = PopFromStack(s);
@@ -305,6 +338,10 @@ bool Send(Stack s)
 
 bool HandlePhrasem(Phrasem p)
 {
+  #ifdef GENERATOR_DEBUG
+    debug("Handeling phrasem.");
+    PrintGStateStack();
+  #endif
 
   // look to state stack
   GState top = LookUpGState();
@@ -469,6 +506,10 @@ void InitGenerator()
 /*-------------------- STATE STACK ---------------------------*/
 bool PushGState(GState newstate)
 {
+  #ifdef GSTATE_STACK_DEBUG
+    debug("Push %s.", GStateToStr(newstate));
+  #endif
+
   // alloc
   StateItem newitem = malloc(sizeof(struct state_item));
   if(newitem == NULL) return false;
@@ -501,6 +542,9 @@ void RemoveGState()
   // empty
   if(olditem == NULL) return;
   // not empty
+  #ifdef GSTATE_STACK_DEBUG
+    debug("Remove %s.", GStateToStr(olditem->state));
+  #endif
   mStack.first = mStack.first->next;
   free(olditem);
 }
@@ -517,8 +561,44 @@ GState PopGState()
 
 void ClearGStates()
 {
+  #ifdef GSTATE_STACK_DEBUG
+    debug("Clear GState stack.");
+  #endif
   // clear
   while(PopGState() != GState_Empty) { }
+}
+
+void PrintGStateStack()
+{
+  StateItem it = mStack.first;
+  if(it == NULL) debug("empty stack");
+  else
+  {
+    debug("\n---GState Stack---");
+    do {
+      debug("| %s", GStateToStr(it->state));
+      it = it->next;
+    } while(it != NULL);
+    debug("------------------\n");
+  }
+}
+
+char * GStateToStr(GState st)
+{
+  switch(st)
+  {
+    case GState_Condition: return "GState_Condition";
+    case GState_Cycle: return "State_Cycle";
+    case GState_Assignment: return "GState_Assignment";
+    case GState_FunctionCall: return "GState_FunctionCall";
+    case GState_Input: return "GState_Input";
+    case GState_Print: return "GState_Print";
+    case GState_Expression: return "GState_Expression";
+    case GState_Logic: return "GState_Logic";
+    case GState_VariableDeclaration: return "GState_VariableDeclaration";
+    case GState_Empty: return "GState_Empty";
+    default: return "UNKNOWN STATE!";
+  }
 }
 
 

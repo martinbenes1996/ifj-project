@@ -759,13 +759,13 @@ bool ExpressionParse()
 
 
     //call pedant end function
-    if(!ExpressionEnd()) failure = true;
+    //if(!ExpressionEnd()) failure = true;
 
     ClearStack(temporaryOpStack);   //should be empty. If its not -> error.
     ClearEPStack();                 //destroying EPStack
     //if(!TurnStack(returnStack)) return false;   //turning the stack
 
-    if(failure) EndRoutine();
+    //if(failure) EndRoutine();
     return !failure;
 }
 
@@ -776,11 +776,11 @@ bool LogicParse()
   #endif
   G_Logic();
 
-/*
+
   // left
   if(!ExpressionParse()) return false;
-*/
-  Phrasem q = CheckQueue(q);
+
+  //Phrasem q = CheckQueue(q); // foo
 
   // parse the sign
   Phrasem p = CheckQueue(p);
@@ -793,11 +793,11 @@ bool LogicParse()
   {
     RaiseExpectedError("relation operator", p);
   }
-  /*
+
   // right
   if(!ExpressionParse()) return false;
-  */
-  Phrasem r = CheckQueue(r);
+
+  //Phrasem r = CheckQueue(r);  // foo
 
   // sending logic operator
   #ifdef PARSER_DEBUG
