@@ -987,7 +987,7 @@ bool VariableDefinitionParse()
     CheckSeparator();
 
 
-    // association target
+    // assignment target
     P_HandleTarget(dup);               /*<<== dup destroyed */
 
 
@@ -997,14 +997,16 @@ bool VariableDefinitionParse()
   {
     freePhrasem(sep);
 
+    G_Assignment();
+
     // get expression
-    if(!ExpressionParse())
-    {
-      RaiseError("invalid expression", dup, ErrorType_Syntax);
-    }
+    if(!ExpressionParse()) return false;
 
     // getting LF
     CheckSeparator();
+
+    // assignment target
+    P_HandleTarget(dup); // semantics
 
   }
   else

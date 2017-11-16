@@ -3,10 +3,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "config.h"
 #include "functions.h"
 #include "generator.h"
 #include "io.h"
 #include "stack.h"
+#include "symtable.h"
 #include "types.h"
 
 /*--------------------------------------------------*/
@@ -243,7 +245,7 @@ void GenerateAssignment(Phrasem p)
     debug("Generating assignment.");
   #endif
 
-  out("POPS %s", p->d.str);
+  out("POPS %s", GenerateName(p));
   free(p);
 }
 void GenerateVariableDeclaration(Phrasem p)
@@ -252,7 +254,7 @@ void GenerateVariableDeclaration(Phrasem p)
     debug("Generating variable declaration.");
   #endif
 
-  out("DEFVAR %s", p->d.str);
+  out("DEFVAR %s", GenerateName(p));
 }
 
 void GeneratePrint()
@@ -274,7 +276,7 @@ void GenerateRead(Phrasem p)
   #endif
 
   // this will go from symbol table
-  out("READ %s %s", p->d.str, "integer");
+  out("READ %s", GenerateName(p));
 }
 
 void GenerateAritm(Stack s)
@@ -521,28 +523,37 @@ char * GenerateName(Phrasem p)
         case DataType_Integer:
           maxlen = 1/*sign*/ + (log10(getIntConstValue(p->d.index)) + 1) /*digits*/;
           if(getIntConstValue(p->d.index) <= 0) maxlen = 1;
-          namebuff = malloc(sizeof(char) * (4/*int@*/ + maxlen + 1/*end zero*/));
+          namebuff = malloc(sizeof(char) * (4/*int@*/ + maxlen + 1 /*end zero*/));
+          if(namebuff == NULL) return NULL;
           sprintf(namebuff, "int@%d", getIntConstValue(p->d.index));
           return namebuff;
 
         case DataType_Double:
           maxlen = 1 /*sign*/ + 53 /*mantissa - IEEE754*/ + 1 /*decimal point*/;
-          namebuff = malloc(sizeof(char) * (6 /*float@*/ + maxlen + 1/*end zero*/));
+          namebuff = malloc(sizeof(char) * (6 /*float@*/ + maxlen + 1 /*end zero*/));
+          if(namebuff == NULL) return NULL;
           sprintf(namebuff, "float@%g", getDoubleConstValue(p->d.index));
           return namebuff;
 
         case DataType_String:
           maxlen = strlen(getStringConstValue(p->d.index));
-          namebuff = malloc(sizeof(char) * (7/*string@*/ + maxlen + 1/*end zero*/));
+          namebuff = malloc(sizeof(char) * (7/*string@*/ + maxlen + 1 /*end zero*/));
+          if(namebuff == NULL) return NULL;
           sprintf(namebuff, "string@%s", getStringConstValue(p->d.index));
           return namebuff;
-
-        case DataType_Unknown:
-          return "???";
 
         default:
           return "TODO";
       }
+
+    case TokenType_Variable:
+      dt = findVariableType(Config_getFunction(), p->d.str);
+
+      namebuff = malloc(sizeof(char) * (4/*LF@*/ + strlen(p->d.str) + 1 /*end zero*/));
+      if(namebuff == NULL) return NULL;
+      sprintf(namebuff, "LF@%s", p->d.str);
+      return namebuff;
+
     default:
       // TODO
       return "TODO";
