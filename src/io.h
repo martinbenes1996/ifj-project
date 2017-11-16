@@ -46,16 +46,16 @@
     //#define IO_DEBUG /* IO module debug. */
     //#define ARGS_DEBUG /* Arguments debug. */
     //#define QUEUE_DEBUG /* Scanner-Parser queue connection debug. */
-    #define SCANNER_DEBUG /* Lexical analysis debug. */
-    #define PARSER_DEBUG /* Syntactic analysis debug. */
+    //#define SCANNER_DEBUG /* Lexical analysis debug. */
+    //#define PARSER_DEBUG /* Syntactic analysis debug. */
     //#define STACK_DEBUG /* Stack debug. */
-    #define PEDANT_DEBUG /* Semantic analysis debug. */
-    #define GENERATOR_DEBUG /* Code generator debug. */
+    //#define PEDANT_DEBUG /* Semantic analysis debug. */
+    //#define GENERATOR_DEBUG /* Code generator debug. */
     //#define KEYWORD_TABLE_DEBUG /* Table of keywords debug. */
     //#define BUFFER_DEBUG /* Buffer debug. */
     //#define CONFIG_DEBUG /* Configuration module debug. */
     //#define CONSTANT_TABLE_DEBUG /* Table of constants debug. */
-    #define GSTATE_STACK_DEBUG /* Generator state stack debug. */
+    //#define GSTATE_STACK_DEBUG /* Generator state stack debug. */
     //#define EXPRESSION_DEBUG /* Expression parse stack debug. */
 
 	  /*add your own*/
