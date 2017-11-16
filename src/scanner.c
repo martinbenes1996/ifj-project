@@ -115,10 +115,12 @@ bool getComment() {
 
       case 2:
         if (input != '/') {break;}
+        else if (input == EOF) RaiseError("expected \'//\' before EOF", ErrorType_Internal);
         else { state = 3; break;}
 
       case 3:
         if (input != '/') {state = 2; break;}
+        else if (input == EOF) RaiseError("expected \'//\' before EOF", ErrorType_Internal);
         else {end = true; break;}
 
       default:
@@ -269,7 +271,7 @@ bool getString() {
   int asciival = 0;
   bool end = false;
 
-  while(!end)
+  while(!end) {
     input = getByte();
     switch (state) {
 
@@ -371,6 +373,7 @@ bool getString() {
   }
 
   return true;
+  }
 }
 
 /**
@@ -563,6 +566,7 @@ bool getNumber(){
       case 5:
         if (isdigit(input)) {
           exponent = exponent*10 + input;
+          state = 9;
           break;
         }
 
@@ -586,6 +590,7 @@ bool getNumber(){
       case 6:
         if (isdigit(input)) {
           exponent = exponent*10 + input;
+          state = 10;
           break;
         }
 
