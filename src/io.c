@@ -136,6 +136,9 @@ int getByte()
 {
   if(mem != -1)
   {
+    #ifdef IO_DEBUG
+      debug("Loose mem %d", mem);
+    #endif
     int ret = mem;
     mem = -1;
     return ret;
@@ -148,6 +151,9 @@ bool returnByte(char c)
   if(mem == -1)
   {
     mem = c;
+    #ifdef IO_DEBUG
+      debug("Return %d", c);
+    #endif
     return true;
   }
   else return false;

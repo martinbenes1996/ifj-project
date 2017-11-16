@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "err.h"
+#include "io.h"
 #include "stack.h"
 #include "types.h"
 
@@ -329,6 +330,3 @@ bool LookEndAheadEPStack()
     }
     return false;
 }
-
-
-

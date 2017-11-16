@@ -1,0 +1,81 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                         %
+%       This is documentation for the IFJ project.        %
+%                                                         %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%------------------------------------------------%
+%	    CONFIGURATION + IMPORTED PACKAGES        %
+%------------------------------------------------%
+\documentclass[12pt,a4paper,titlepage]{report}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\newcommand\HRule{\rule{\textwidth}{1,5pt}}
+
+%\usepackage{blindtext}   % text generator
+
+\begin{document}
+%-----------------------------------------%
+%	            TITLE PAGE                %
+%-----------------------------------------%
+\begin{titlepage}
+
+\begin{center}
+
+% Headings
+\textsc{\LARGE Brno University of technology}\\[1.5cm]
+
+\textsc{\large Faculty of Information Technology}\\[3cm]
+
+% Title - lines
+\HRule \\[0.5cm]
+{ \huge \bfseries IFJ project}\\[0.3cm]
+{ \Large \bfseries documentation}\\[0.4cm]
+{ \large \bfseries 2017}\\[0.2cm]
+\HRule \\[2cm]
+
+\end{center}
+
+
+\begin{tabular}[t]{@{}l@{\hspace{3pt}}p{.32\textwidth}@{}}
+Authors: \\
+& Martin Beneš \\
+& Ksenia Bolshakova \\
+& Petr Kratochvíl \\
+& Ondřej Polanský
+\end{tabular}
+
+\vfill\vfill\vfill  % Position the date 3/4 down the remaining page
+
+\begin{center}
+{\small\today} % Date
+\end{center}
+
+\newpage
+
+\end{titlepage}
+
+%-----------------------------------------%
+%	         TABLE OF CONTENTS            %
+%-----------------------------------------%
+
+\tableofcontents  % The table of contents
+\thispagestyle{empty}
+\newpage
+
+%\setcounter{page}{1}
+%\pagenumbering{arabic}
+
+\chapter*{first}
+\addcontentsline{toc}{chapter}{first1}
+    \section{Intro}
+    \Blindtext
+
+\chapter*{second}
+\addcontentsline{toc}{chapter}{second1}
+    \section{Intro}
+    \Blindtext
+
+
+\end{document}

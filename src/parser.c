@@ -417,19 +417,19 @@ bool RunParser()
   #endif
   bool status = true;
 
+  if(!constTableInit()) return false;
+  InitGenerator();
+
   if(bypass())
   {
     while(1)
     {
       Phrasem p = CheckQueue(p);
       if(p->table == TokenType_EOF) return true;
-      PrintPhrasem(p);
+      //PrintPhrasem(p);
       free(p);
     }
   }
-
-  if(!constTableInit()) return false;
-  InitGenerator();
 
   # ifdef MULTITHREAD // ---------------------------------
         // queue init
@@ -591,14 +591,6 @@ bool ExpressionParse()
   #endif
   G_Expression();
 
-  //creating a stack that will be given to pedant for semantical EP analysis
-  //Stack returnStack = NULL;
-  //returnStack = InitStack();
-
-  //creating a stack for storing operator tokens
-  Stack temporaryOpStack = NULL;
-  temporaryOpStack = InitStack();
-
   //determines what to do for every input
   char ExprParseArray[9][9] = {
        // +    -    \    *    /    (    )    i    $
@@ -620,14 +612,29 @@ bool ExpressionParse()
     TokenType tempType = TokenType_EOF;
     bool failure = false;
 
-    PushOntoEPStack(op_$);     //start of the stack
-
     //get token hopefully - don't worry, you will
     Phrasem p = CheckQueue(p);
 
-    do
+    //if the first token i get is wrong -> expression is empty -> error
+    if(p->table != TokenType_Symbol && p->table != TokenType_Constant &&
+      (p->table != TokenType_Operator || p->d.index > 9))
     {
-//printstackEP();   <<-- debug
+        RaiseError("Empty expression", p, ErrorType_Semantic1);
+        ReturnToQueue(p);
+        failure = true;
+    }
+
+    //creating a stack for storing operator tokens
+    Stack temporaryOpStack = NULL;
+    temporaryOpStack = InitStack();
+    PushOntoEPStack(op_$);     //start of the stack
+
+    while(!endExprParsing && !failure)
+    {
+        #ifdef PARSER_DEBUG
+            printstackEP();   //<<-- debug
+        #endif
+
         //token is operand
         if(p->table == TokenType_Symbol || p->table == TokenType_Constant)
         {
@@ -662,6 +669,7 @@ bool ExpressionParse()
             else if(x == '#')
             {
                 failure = true;
+                RaiseError("Expression error", p, ErrorType_Semantic1);
             }
 
         }
@@ -689,8 +697,9 @@ bool ExpressionParse()
                     PushOntoEPStack(p->d.index);    //operator
 
                 }
-                if(p->d.index != 5 && p->d.index != 6)
+                if(p->d.index != OpenBracket && p->d.index != CloseBracket)
                     PushOntoStack(temporaryOpStack, p); //pushing operator (not brackets) on temp stack
+                else freePhrasem(p);        //if token is a bracket, free it
                 p = CheckQueue(p);
             }
             else if(x == '>')
@@ -706,12 +715,16 @@ bool ExpressionParse()
                     //correct ending or a failure
                     if(p->table == TokenType_Operator && p->d.index == op_$)
                         endExprParsing = 1;
-                    else failure = true;
+                    else
+                    {
+                        failure = true;
+                        RaiseError("Expression error", p, ErrorType_Semantic1);
+                    }
                 }
-                else    // pom == -1
+                else    // pom == -1; cannot find a rule for reduction -> bad expression
                 {
-                    //chybove hlaseni
                     failure = true;
+                    RaiseError("Expression error", p, ErrorType_Semantic1);
                 }
             }
             else if(x == '=')
@@ -721,8 +734,8 @@ bool ExpressionParse()
             }
             else    // x == '#'
             {
-                //chybove hlaseni
                 failure = true;
+                RaiseError("Expression error", p, ErrorType_Semantic1);
             }
         }
         else    //it is not my symbol
@@ -742,7 +755,11 @@ bool ExpressionParse()
         }
         // returns token for recovery after failure
         if(failure == true && !tokenChanged) ReturnToQueue(p);
-    }while(!endExprParsing && !failure);
+    }
+
+
+    //call pedant end function
+    if(!ExpressionEnd()) failure = true;
 
     ClearStack(temporaryOpStack);   //should be empty. If its not -> error.
     ClearEPStack();                 //destroying EPStack
@@ -759,10 +776,10 @@ bool LogicParse()
   #endif
   G_Logic();
 
-  /*
+/*
   // left
   if(!ExpressionParse()) return false;
-  */
+*/
   Phrasem q = CheckQueue(q);
 
   // parse the sign

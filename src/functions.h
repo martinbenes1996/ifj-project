@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "io.h"
 #include "tables.h"
 #include "types.h"
 
@@ -43,6 +44,11 @@ inline void freePhrasem(Phrasem p);
 
 inline DataType getDataType(Phrasem p);
 
+/**
+ * @brief   Debug function to print phrasem.
+ * @param p       Phrasem to be printed.
+ */
+inline void PrintPhrasem(Phrasem p);
 
 
 /*------------------------------------------------*/
@@ -121,6 +127,50 @@ inline DataType getDataType(Phrasem p)
   else if(matchesKeyword(p, "double")) return DataType_Double;
   else if(matchesKeyword(p, "string")) return DataType_String;
   else return DataType_Unknown;
+}
+
+inline void PrintPhrasem(Phrasem p)
+{
+  if(p == NULL) return;
+  DataType type = findConstType(p->d.index);
+  switch(p->table)
+  {
+    case TokenType_Constant:
+
+      switch(type)
+      {
+        case DataType_Double:
+          debug("Phrasem [%s double %ld->%f]", TokenTypeToString(p->table), p->d.index, getDoubleConstValue(p->d.index));
+          break;
+        case DataType_Integer:
+
+          debug("Phrasem [%s int %ld->%d]", TokenTypeToString(p->table), p->d.index, getIntConstValue(p->d.index));
+          break;
+        case DataType_String:
+          debug("Phrasem [%s string %ld->%s]", TokenTypeToString(p->table), p->d.index, getStringConstValue(p->d.index));
+          break;
+        default:
+          debug("Phrasem [%s UNKNOWN]", TokenTypeToString(p->table));
+          break;
+      }
+
+      break;
+    case TokenType_Operator:
+    case TokenType_Keyword:
+      debug("Phrasem [%s %d]", TokenTypeToString(p->table), p->d.index);
+      break;
+    case TokenType_Variable:
+    case TokenType_Function:
+    case TokenType_Symbol:
+      debug("Phrasem [%s \"%s\"]", TokenTypeToString(p->table), p->d.str);
+      break;
+    case TokenType_Separator:
+    case TokenType_EOF:
+      debug("Phrasem [%s]", TokenTypeToString(p->table));
+      break;
+    default:
+      break;
+  }
 }
 
 
