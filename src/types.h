@@ -138,7 +138,7 @@ inline const char * TokenTypeToString(TokenType tt)
 typedef union
 {
   const char * str; /**< If phrasem id. */
-  long index; /**< If phrasem keyword, operator etc. */
+  int index; /**< If phrasem keyword, operator etc. */
 } PhrasemData;
 
 /**

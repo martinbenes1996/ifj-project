@@ -132,21 +132,22 @@ inline DataType getDataType(Phrasem p)
 inline void PrintPhrasem(Phrasem p)
 {
   if(p == NULL) return;
-  int index = findConstType(p->d.index);
+  DataType type = findConstType(p->d.index);
   switch(p->table)
   {
     case TokenType_Constant:
 
-      switch(index)
+      switch(type)
       {
         case DataType_Double:
-          debug("Phrasem [%s %g]", TokenTypeToString(p->table), getDoubleConstValue(index));
+          debug("Phrasem [%s double %ld->%f]", TokenTypeToString(p->table), p->d.index, getDoubleConstValue(p->d.index));
           break;
         case DataType_Integer:
-          debug("Phrasem [%s %d]", TokenTypeToString(p->table), getIntConstValue(index));
+
+          debug("Phrasem [%s int %ld->%d]", TokenTypeToString(p->table), p->d.index, getIntConstValue(p->d.index));
           break;
         case DataType_String:
-          debug("Phrasem [%s %s]", TokenTypeToString(p->table), getStringConstValue(index));
+          debug("Phrasem [%s string %ld->%s]", TokenTypeToString(p->table), p->d.index, getStringConstValue(p->d.index));
           break;
         default:
           debug("Phrasem [%s UNKNOWN]", TokenTypeToString(p->table));

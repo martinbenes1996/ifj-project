@@ -292,10 +292,6 @@ Phrasem getString() {
           char * p = GetBuffer();
           if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
 
-          #ifdef SCANNER_DEBUG
-            debug("Got %s.", p);
-          #endif
-
           DataUnion du;
           du.svalue = p;
 
@@ -610,13 +606,11 @@ Phrasem getNumber(){
       // double process XeY
       case 7:
         do {
+          returnByte(input);
           result *= pow(2, exponent);
 
           DataUnion uni;
           uni.dvalue = result;
-          #ifdef SCANNER_DEBUG
-            debug("Read %f", result);
-          #endif
 
           int i = constInsert(DataType_Double, uni);
 
@@ -634,18 +628,16 @@ Phrasem getNumber(){
           return p;
 
         } while(0);
-        break;
 
       // double process Xe-Y
       case 8:
         do {
+          returnByte(input);
+
           result *= pow(2, -exponent);
 
           DataUnion uni;
           uni.dvalue = result;
-          #ifdef SCANNER_DEBUG
-            debug("Read %f", result);
-          #endif
 
           int i = constInsert(DataType_Double, uni);
 
@@ -667,11 +659,9 @@ Phrasem getNumber(){
       // double process X.Y
       case 11:
         do {
+          returnByte(input);
           DataUnion uni;
           uni.dvalue = result;
-          #ifdef SCANNER_DEBUG
-            debug("Read %f", result);
-          #endif
 
           int i = constInsert(DataType_Double, uni);
 
@@ -693,11 +683,9 @@ Phrasem getNumber(){
       // integer process
       case 12:
         do {
+          returnByte(input);
           DataUnion uni;
           uni.ivalue = (int)result;
-          #ifdef SCANNER_DEBUG
-            debug("Read %d", (int)result);
-          #endif
 
           int i = constInsert(DataType_Integer, uni);
 
@@ -715,7 +703,6 @@ Phrasem getNumber(){
           return p;
 
         } while(0);
-        break;
 
       // error state
       default:
@@ -741,7 +728,6 @@ Phrasem RemoveFromQueue()
   loadAnother:
   do {
     input = getByte();
-
   } while( (input == ' ') || (input == '\t') );
 
   // EOF

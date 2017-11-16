@@ -215,17 +215,25 @@ int constInsert(DataType type, DataUnion uni)
     //adding constant into array
     if(type == DataType_Integer)
     {
+      #ifdef CONSTANT_TABLE_DEBUG
+        debug("Insert int %d to index %d", uni.ivalue, consttable.count);
+      #endif
         consttable.arr[consttable.count].type = DataType_Integer;
         consttable.arr[consttable.count].data.ivalue = uni.ivalue;
     }
     else if(type == DataType_Double)
     {
+      #ifdef CONSTANT_TABLE_DEBUG
+        debug("Insert double %f to index %d", uni.dvalue, consttable.count);
+      #endif
         consttable.arr[consttable.count].type = DataType_Double;
         consttable.arr[consttable.count].data.dvalue = uni.dvalue;
     }
     else if(type == DataType_String)
     {
-
+      #ifdef CONSTANT_TABLE_DEBUG
+        debug("Insert string %s to index %d", uni.svalue, consttable.count);
+      #endif
         consttable.arr[consttable.count].type = DataType_String;
         if((consttable.arr[consttable.count].data.svalue = malloc(strlen(uni.svalue) * sizeof(char)
                                                                     + sizeof(char))) == NULL)

@@ -95,7 +95,7 @@ void printfstack(Stack a)
     while(pom != NULL)
     {
         if(pom->data->table == TokenType_Symbol) printf("%s\n", pom->data->d.str);
-            else printf("%ld\n", pom->data->d.index);
+            else printf("%d\n", pom->data->d.index);
         pom = pom->next;
     }
 }
