@@ -1,9 +1,27 @@
+
+/**
+ * @file scanner_singlethrd.h
+ * @interface scanner_singlethrd
+ * @authors xbenes49 xbolsh00 xkrato47 xpolan09
+ * @date 16th november 2017
+ * @brief Scanner interface
+ *
+ * This interface enables interactions with scanner.
+ */
+
 #ifndef SCANNER_SINGLETHRD_H
 #define SCANNER_SINGLETHRD_H
 
 #include "types.h"
 
 #ifndef MULTITHREAD
+
+/*-----------------------------------------------------------*/
+/** @addtogroup Scanner
+ * Scanner functions.
+ * @{
+ */
+
 /**
  * @brief   Removes from given queue.
  *
@@ -20,8 +38,11 @@ Phrasem RemoveFromQueue();
  */
 bool ReturnToQueue(Phrasem p);
 
+/** @} */
+/*-----------------------------------------------------------*/
+
 #endif //MULTITHREAD
 
-inline void dontcallthisfunction() {} /*< it cant be blank*/
+inline void foo() {} /*< it cant be blank*/
 
 #endif // SCANNER_SINGLETHRD_H

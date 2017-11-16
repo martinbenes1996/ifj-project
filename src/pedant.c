@@ -365,6 +365,9 @@ bool P_HandleTarget(Phrasem p)
   DataType target_dt = findVariableType(Config_getFunction(), p->d.str);
   DataType source_dt = typeOfResult;
 
+  PrintDataType(target_dt);
+  PrintDataType(source_dt);
+
 
   // same type
   if(target_dt == source_dt)
@@ -378,7 +381,7 @@ bool P_HandleTarget(Phrasem p)
        && (source_dt == DataType_Double))
   {
     if( !Send(mstack) ) return false;
-    G_TypeCast(TypeCast_Double2Int);
+    GenerateTypeCast(TypeCast_Double2Int);
     if( !HandlePhrasem(p) ) return false;
   }
 
@@ -387,7 +390,7 @@ bool P_HandleTarget(Phrasem p)
        && (source_dt == DataType_Integer))
   {
     if( !Send(mstack) ) return false;
-    G_TypeCast(TypeCast_Int2Double);
+    GenerateTypeCast(TypeCast_Int2Double);
     if( !HandlePhrasem(p) ) return false;
   }
 

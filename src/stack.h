@@ -25,39 +25,56 @@ Stack InitStack();
 
 /**
  * @brief     Pushes data onto stack.
- * @param data         Data to be pushed.
- * @returns            True, if success. Fail otherwise.
+ * @param st      Stack to push onto.
+ * @param p       Phrasem to push.
+ * @returns True, if success. Fail otherwise.
  */
-bool PushOntoStack(Stack, Phrasem);
+bool PushOntoStack(Stack st, Phrasem p);
 
 /**
  * @brief     Pops from the stack.
- * @returns            Data being pushed. NULL if empty.
+ *
+ * This function pops top item (Phrasem) from the given stack and returns it.
+ * @param st      Given stack
+ * @returns Data (Phrasem) being popped. NULL if empty.
  */
-Phrasem PopFromStack(Stack);
+Phrasem PopFromStack(Stack st);
 
 /**
  * @brief     Turns the stack on its head.
+ *
+ * This function will turn the stack upside-down.
+ * @param st      Stack being turned.
+ * @returns True if success. False otherwise.
  */
 bool TurnStack(Stack st);
 
 /**
- * @brief     Clears all stack.
+ * @brief     Clears whole stack.
+ *
+ * This function will clear the stack and free all memory binded to it.
+ * @param st      Stack being freed.
  */
-void ClearStack(Stack);
+void ClearStack(Stack st);
 
+/**
+ * @brief     Prints stack.
+ */
 void PrintStack(Stack);
 
 
 
 
-
+/** @}*/
 /*----------------------------EXPRESSION_PARSER_STACK---------------------*/
-
+/** @addtogroup EPStack
+ * Expression Parse Stack functions.
+ * @{
+ */
 
 
 /**
- * @brief     Initialises EPstack.
+ * @brief     Initialises EPstack. It is stored inside (aka singleton)
  */
 void InitEPStack();
 
@@ -69,8 +86,8 @@ void InitEPStack();
 bool PushOntoEPStack(char data);
 
 /**
- * @brief     Pops dat from stack.
- * @returns            Character or -1.
+ * @brief     Pops data from the stack.
+ * @returns Character or -1 (error).
  */
 char PopFromEPStack();
 
@@ -114,4 +131,7 @@ bool LookEndAheadEPStack();
 void printstackEP();
 
 /** @}*/
+/*----------------------------------------------------------------------------*/
+
+
 #endif // STACK_H

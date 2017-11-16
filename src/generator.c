@@ -178,14 +178,46 @@ inline void ClearLabels();
 
 /** @} */
 /*---------------------------------------------------------*/
+/** @addtogroup Private_generators.
+ * Private generator functions.
+ * @{
+ */
+
+/**
+ * @brief   Label name generator.
+ *
+ * This function generates the name of the variable for IFJcode17.
+ * Do not save the given string. It is freed after next call of the function.
+ * @param p     Variable to generate.
+ * @returns Name
+ */
+char * GenerateName(Phrasem p);
+/**
+ * @brief   Clears generated name.
+ */
+void ClearGeneratedName();
+
+/** @} */
+/*---------------------------------------------------------*/
+
 
 /*----------- DATA ------------*/
 static GeneratorStack mStack;
 static LabelStack mLabels;
 /*-----------------------------*/
 
-char * GenerateName(Phrasem p);
+void InitGenerator()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Init generator.");
+  #endif
 
+  out(".IFJcode17");
+  out("CREATEFRAME");
+}
+
+
+/*------------------------------ CODE GENERATORS -----------------------------*/
 void GenerateLogic(Phrasem p)
 {
   #ifdef GENERATOR_DEBUG
@@ -321,6 +353,8 @@ void GenerateAritm(Stack s)
   }
 }
 
+/*------------------------------- RECIEVERS ----------------------------------*/
+
 bool Send(Stack s)
 {
   #ifdef GENERATOR_DEBUG
@@ -376,6 +410,9 @@ bool HandlePhrasem(Phrasem p)
   return true;
 }
 
+
+
+/*------------------------------ INDICATORS ----------------------------------*/
 void G_FunctionCall()
 {
   #ifdef GENERATOR_DEBUG
@@ -482,7 +519,17 @@ void G_EndBlock()
   }
 }
 
-void G_TypeCast(Table tc)
+
+
+
+
+
+
+
+
+/*----------------------------- PRIVATE GENERATORS ---------------------------*/
+
+void GenerateTypeCast(TokenType tc)
 {
   #ifdef GENERATOR_DEBUG
     debug("Generate typecast.");
@@ -501,30 +548,10 @@ void G_TypeCast(Table tc)
   }
 }
 
-void InitGenerator()
-{
-  #ifdef GENERATOR_DEBUG
-    debug("Init generator.");
-  #endif
-
-  out(".IFJcode17");
-  out("CREATEFRAME");
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*------------- DATA ---------------*/
 static char * namebuff = NULL;
+/*----------------------------------*/
+
 char * GenerateName(Phrasem p)
 {
   if(p == NULL) return NULL;
@@ -551,7 +578,6 @@ char * GenerateName(Phrasem p)
           maxlen = 1 /*sign*/ + 53 /*mantissa - IEEE754*/ + 1 /*decimal point*/;
           namebuff = malloc(sizeof(char) * (6 /*float@*/ + maxlen + 1 /*end zero*/));
           if(namebuff == NULL) return NULL;
-          fprintf(stderr, "%g\n", getDoubleConstValue(p->d.index));
           sprintf(namebuff, "float@%g", getDoubleConstValue(p->d.index));
           return namebuff;
 
@@ -581,8 +607,28 @@ char * GenerateName(Phrasem p)
   }
 }
 
+void ClearGeneratedName()
+{
+  if(namebuff != NULL)
+  {
+    free(namebuff);
+    namebuff = NULL;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
 
 /*-------------------- STATE STACK ---------------------------*/
+
 bool PushGState(GState newstate)
 {
   #ifdef GSTATE_STACK_DEBUG

@@ -1,3 +1,14 @@
+
+/**
+ * @file generator.h
+ * @interface generator
+ * @authors xbenes49 xbolsh00 xkrato47 xpolan09
+ * @date 6th november 2017
+ * @brief Generator interface
+ *
+ * This interface enables interactions with generator.
+ */
+
 #ifndef GENERATOR_H
 #define GENERATOR_H
 
@@ -83,7 +94,21 @@ void G_VariableDeclaration();
 /** @brief Announces end of a block to generator. */
 void G_EndBlock();
 
-void G_TypeCast(Table tc);
+/** @} */
+/*-----------------------------------------------------------*/
+/** @addtogroup Generators
+ * Generation impulses.
+ * @{
+ */
+
+/**
+ * @brief Generates typecast.
+ *
+ * This function will generate the code, which will typecast the top of
+ * the stack.
+ * @param tc    Type of typecast.
+ */
+void GenerateTypeCast(TokenType tc);
 
 /** @} */
 /*-----------------------------------------------------------*/

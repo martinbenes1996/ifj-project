@@ -1,3 +1,15 @@
+
+/**
+ * @file functions.h
+ * @interface functions
+ * @authors xbenes49 xbolsh00 xkrato47 xpolan09
+ * @date 5th october 2017
+ * @brief Global functions.
+ *
+ * This module defines global inline functions, used in whole project
+ * (print, indicators, etc.).
+ */
+
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
@@ -9,6 +21,12 @@
 #include "tables.h"
 #include "types.h"
 
+/*------------------------------ DECLARATIONS --------------------------------*/
+/** @addtogroup Covers
+ * Cover functions.
+ * @{
+ */
+
 /**
  * @brief   Checks phrasem if is operator.
  *
@@ -19,6 +37,7 @@
  * @returns True if success. False otherwise.
  */
 inline bool isOperator(Phrasem p, const char * op);
+
 /**
  * @brief   Checks phrasem if is separator.
  *
@@ -26,6 +45,7 @@ inline bool isOperator(Phrasem p, const char * op);
  * @returns True if success. False otherwise.
  */
 inline bool isSeparator(Phrasem p);
+
 /**
  * @brief   Checks phrasem if is keyword.
  *
@@ -37,12 +57,54 @@ inline bool isSeparator(Phrasem p);
  */
 inline bool matchesKeyword(Phrasem p, const char * kw);
 
+/**
+ * @brief   Datatype from variable.
+ *
+ * This function will return DataType from Phrasem given.
+ * @param p       Phrasem.
+ * @returns DataType of variable.
+ */
+inline DataType getDataType(Phrasem p);
+
+/** @}*/
+/*----------------------------------------------------*/
+/** @addtogroup Tools
+ * Tool functions.
+ * @{
+ */
+
+/**
+ * @brief    Phrasem duplicator.
+ *
+ * This function will do deep copy of given Phrasem structure.
+ * @param p       Phrasem to be copied.
+ * @returns Copied Phrasem, or NULL, if fail.
+ */
 inline Phrasem duplicatePhrasem(Phrasem p);
+
+/**
+ * @brief    String duplicator.
+ *
+ * This function is implementation of non-standard function of string.h
+ * @param str    String to be copied.
+ * @returns Copied string, or NULL, if fail.
+ */
 inline char * strdup(const char * str);
 
+/**
+ * @brief    Frees phrasem completely.
+ *
+ * This function will free the phrasem and all memory bind to it.
+ * @param p     Phrasem to free.
+ */
 inline void freePhrasem(Phrasem p);
 
-inline DataType getDataType(Phrasem p);
+/** @}*/
+/*----------------------------------------------------*/
+/** @addtogroup Printers
+ * Printers functions.
+ * @{
+ */
 
 /**
  * @brief   Debug function to print phrasem.
@@ -50,8 +112,41 @@ inline DataType getDataType(Phrasem p);
  */
 inline void PrintPhrasem(Phrasem p);
 
+/**
+ * @brief   Debug function to print data type.
+ * @param dt       DataType to be printed.
+ */
+inline void PrintDataType(DataType dt);
 
-/*------------------------------------------------*/
+/** @}*/
+/*----------------------------------------------------*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*------------------------------ DEFINITIONS --------------------------------*/
+
+/*--------------- COVERS -------------------*/
 inline bool isOperator(Phrasem p, const char * op)
 {
   return (p->table == TokenType_Operator) && (p->d.index == getOperatorId(op));
@@ -67,6 +162,15 @@ inline bool matchesKeyword(Phrasem p, const char * kw)
   return (p->table == TokenType_Keyword) && (p->d.index == isKeyword(kw));
 }
 
+inline DataType getDataType(Phrasem p)
+{
+  if(matchesKeyword(p, "integer")) return DataType_Integer;
+  else if(matchesKeyword(p, "double")) return DataType_Double;
+  else if(matchesKeyword(p, "string")) return DataType_String;
+  else return DataType_Unknown;
+}
+
+/*------------------ TOOLS --------------------*/
 inline char * strdup(const char * str)
 {
   char * newstr = malloc(sizeof(char)*(strlen(str)+1));
@@ -123,13 +227,7 @@ inline void freePhrasem(Phrasem p)
   free(p);
 }
 
-inline DataType getDataType(Phrasem p)
-{
-  if(matchesKeyword(p, "integer")) return DataType_Integer;
-  else if(matchesKeyword(p, "double")) return DataType_Double;
-  else if(matchesKeyword(p, "string")) return DataType_String;
-  else return DataType_Unknown;
-}
+/*----------------- PRINTERS ---------------*/
 
 inline void PrintPhrasem(Phrasem p)
 {
@@ -171,6 +269,32 @@ inline void PrintPhrasem(Phrasem p)
       debug("Phrasem [%s]", TokenTypeToString(p->table));
       break;
     default:
+      break;
+  }
+}
+
+inline void PrintDataType(DataType dt)
+{
+  switch(dt)
+  {
+    case DataType_String:
+      debug("DataType [string]");
+      break;
+
+    case DataType_Double:
+      debug("DataType [double]");
+      break;
+
+    case DataType_Integer:
+      debug("DataType [int]");
+      break;
+
+    case DataType_Unknown:
+      debug("DataType [UNKNOWN]");
+      break;
+
+    default:
+      debug("---undefined datatype---");
       break;
   }
 }

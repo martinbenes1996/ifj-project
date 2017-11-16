@@ -444,7 +444,7 @@ Phrasem getIdentifier(){
           else {
             ALLOC_PHRASEM(phr);
             phr->table = TokenType_Symbol;
-            phr->d.str = p;
+            phr->d.str = CutBuffer(p);
             phr->line = line;
 
              // DEBUG
