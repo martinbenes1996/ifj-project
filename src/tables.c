@@ -52,7 +52,7 @@ int isKeyword(const char * word)
 
               //OPERATOR TABLE FUNCTIONS
 
-#define OPERATOR_ARRAY_SIZE 15
+#define OPERATOR_ARRAY_SIZE 17
 /**
  * @brief   Operator table.
  *
@@ -60,7 +60,7 @@ int isKeyword(const char * word)
  * DO NOT CHANGE THE ORDER OF THINGS IN IT!! Dollar and i are important.
  */
 const char operators[OPERATOR_ARRAY_SIZE][3] = {"+", "-", "\\", "*", "/", "(", ")", "i", "$", "=", "<>", "<",
-                                                "<=", ">", ">=",};
+                                                "<=", ">", ">=", ",", ";"};
 
 // returns -1 -> fail, index into array -> found
 #define TABLE_ERROR -1

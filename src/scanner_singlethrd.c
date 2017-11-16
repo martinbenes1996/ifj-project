@@ -204,6 +204,12 @@ Phrasem getOperator() {
           SaveToBuffer(input);
           end = true;
         }
+
+        else if (input == ';') {
+          SaveToBuffer(input);
+          end = true;
+        }
+
         else RaiseError("not a operator", ErrorType_Syntax);
         break;
 
@@ -818,7 +824,8 @@ Phrasem RemoveFromQueue()
           ||(input == '\\')
           ||(input == '(')
           ||(input == ')')
-          ||(input == ',')) {
+          ||(input == ',')
+          ||(input == ';')) {
     returnByte(input);
     return getOperator();
   }

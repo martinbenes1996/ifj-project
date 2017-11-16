@@ -365,13 +365,18 @@ bool P_HandleTarget(Phrasem p)
   DataType target_dt = findVariableType(Config_getFunction(), p->d.str);
   DataType source_dt = typeOfResult;
 
-  PrintDataType(target_dt);
-  PrintDataType(source_dt);
+  #ifdef TYPECAST_DEBUG
+    PrintDataType(target_dt);
+    PrintDataType(source_dt);
+  #endif
 
 
   // same type
   if(target_dt == source_dt)
   {
+    #ifdef TYPECAST_DEBUG
+      debug("No typecast.");
+    #endif
     if( !Send(mstack) ) return false;
     if( !HandlePhrasem(p) ) return false;
   }
@@ -380,6 +385,9 @@ bool P_HandleTarget(Phrasem p)
   else if((target_dt == DataType_Integer)
        && (source_dt == DataType_Double))
   {
+    #ifdef TYPECAST_DEBUG
+      debug("Source: [double]->[int].");
+    #endif
     if( !Send(mstack) ) return false;
     GenerateTypeCast(TypeCast_Double2Int);
     if( !HandlePhrasem(p) ) return false;
@@ -389,6 +397,9 @@ bool P_HandleTarget(Phrasem p)
   else if((target_dt == DataType_Double)
        && (source_dt == DataType_Integer))
   {
+    #ifdef TYPECAST_DEBUG
+      debug("Source: [int]->[double].");
+    #endif
     if( !Send(mstack) ) return false;
     GenerateTypeCast(TypeCast_Int2Double);
     if( !HandlePhrasem(p) ) return false;
@@ -400,4 +411,9 @@ bool P_HandleTarget(Phrasem p)
   if( !HandlePhrasem(p) ) return false;
 
   return true;
+}
+
+bool P_MoveStackToGenerator()
+{
+  return Send(mstack);
 }

@@ -60,6 +60,7 @@ typedef enum{
     BiggerEq,    // >=
 
     Comma,        // ,
+    Semicolon     // ;
 } Operators;
 
 /**

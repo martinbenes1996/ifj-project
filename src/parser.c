@@ -1058,7 +1058,6 @@ bool PrintParse(bool first)
   if(first)
   {
     G_Print();
-    G_Expression();
     if(!ExpressionParse()) return false;
   }
   // non first print parameter (may not exist)
@@ -1085,6 +1084,8 @@ bool PrintParse(bool first)
 
   // ;
   CheckOperator(";");
+
+  P_MoveStackToGenerator();
 
   // recursive call of the same function
   return PrintParse(false);

@@ -50,7 +50,8 @@
     //#define PARSER_DEBUG /* Syntactic analysis debug. */
     //#define STACK_DEBUG /* Stack debug. */
     //#define PEDANT_DEBUG /* Semantic analysis debug. */
-    //#define GENERATOR_DEBUG /* Code generator debug. */
+    //#define TYPECAST_DEBUG /* Typecast debug. */
+    #define GENERATOR_DEBUG /* Code generator debug. */
     //#define KEYWORD_TABLE_DEBUG /* Table of keywords debug. */
     //#define BUFFER_DEBUG /* Buffer debug. */
     //#define CONFIG_DEBUG /* Configuration module debug. */

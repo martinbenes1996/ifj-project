@@ -84,6 +84,14 @@ bool P_HandleOperand(Phrasem p);
 bool P_HandleTarget(Phrasem p);
 
 /**
+ * @brief     Moves stack to generator.
+ *
+ * This function sends stack to generator and returns status.
+ * @returns True, if success. False otherwise.
+ */
+bool P_MoveStackToGenerator();
+
+/**
  * @brief     Performs last actions with stack after expression parse.
  *
  * This function handles retyping of operands.
