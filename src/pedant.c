@@ -427,11 +427,12 @@ bool ExpressionEnd()
     typeOfResult = RetypeRecursive(&where, &from);
     if(typeOfResult == DataType_Unknown)
         return false;
-printfstack(mstack);
+
     //turning of the stack
     mstack = TurnStack(mstack);
-printfstack(mstack);
+
     #ifdef PEDANT_DEBUG
+        printfstack(mstack);
         debug("Expression processed, sending it to generator");
     #endif
 
