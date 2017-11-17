@@ -103,7 +103,7 @@ Phrasem PopFromStack(Stack st)
   return p;
 }
 
-bool TurnStack(Stack st)
+Stack TurnStack(Stack st)
 {
     #ifdef STACK_DEBUG
         debug("Stack was turned.");
@@ -126,14 +126,14 @@ bool TurnStack(Stack st)
         {
             ClearStack(st);
             ClearStack(st2);
-            return false;
+            return NULL;
         }
 
     // st -> new stack
-    ClearStack(st);
-    st = st2;
+    //ClearStack(st);
+    //st = st2;
 
-    return true;
+    return st2;
 }
 
 void ClearStack(Stack st)

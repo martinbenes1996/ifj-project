@@ -45,9 +45,9 @@ Phrasem PopFromStack(Stack st);
  *
  * This function will turn the stack upside-down.
  * @param st      Stack being turned.
- * @returns True if success. False otherwise.
+ * @returns New stack if success. NULL otherwise.
  */
-bool TurnStack(Stack st);
+Stack TurnStack(Stack st);
 
 /**
  * @brief     Clears whole stack.

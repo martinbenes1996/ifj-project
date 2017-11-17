@@ -763,7 +763,7 @@ bool ExpressionParse()
 
 
     //call pedant end function
-    //if(!ExpressionEnd()) failure = true;
+    if(!ExpressionEnd()) failure = true;
 
     ClearStack(temporaryOpStack);   //should be empty. If its not -> error.
     ClearEPStack();                 //destroying EPStack

@@ -104,54 +104,134 @@ void printfstack(Stack a)
     while(pom != NULL)
     {
         if(pom->data->table == TokenType_Variable) printf("%s\n", pom->data->d.str);
+        else if(pom->data->table == TypeCast_Double2Int) printf("double -> int\n");
+        else if(pom->data->table == TypeCast_Int2Double) printf("int -> double\n");
+        else if(pom->data->table == TokenType_Operator) printf("Oper: %d\n", pom->data->d.index);
             else printf("%d\n", pom->data->d.index);
         pom = pom->next;
     }
 }
-
+/**
+ * @brief   Inserts a retype token into stack.
+ *
+ * @param where      double pointer to stackitem.
+ * @returns True if success. False otherwise.
+ */
 bool RetypeToDouble(StackItem ** where)
 {
-    //alloc new phrasem and stackItem
-    //type "retypeToDouble"
-    //connect it to the list by using where:
-    // newstackitem->next = (*where)->next;
-    // *where = newstackitem;
-(void) where;
+    #ifdef PEDANT_DEBUG
+        debug("Retyping phrasem to double");
+    #endif
+    Phrasem token;
+    token = malloc(sizeof(struct phrasem_data));
+    if(token == NULL)
+    {
+        RaiseError("Retypetodouble: could not allocate memory", *where, ErrorType_Internal);
+        return false;
+    }
+    // allocation of new token
+    token->table = TypeCast_Int2Double;
+
+    StackItem * pom;
+    pom = malloc(sizeof(StackItem));
+    if(pom == NULL)
+    {
+        RaiseError("Retypetodouble: could not allocate memory", *where, ErrorType_Internal);
+        return false;
+    }
+    // allocation of new stack item and linking the list
+    pom->data = token;
+    pom->next = *where;
+    *where = pom;
+
     return true;
 }
-
+/**
+ * @brief   Inserts a retype token into stack.
+ *
+ * @param where      double pointer to stackitem.
+ * @returns True if success. False otherwise.
+ */
 bool RetypeToInt(StackItem ** where)
 {
-    //alloc new phrasem and stackItem
-    //type "retypeToInt"
-    //connect it to the list by using where:
-    // newstackitem->next = (*where)->next;
-    // *where = newstackitem;
-(void) where;
+    #ifdef PEDANT_DEBUG
+        debug("Retyping phrasem to int");
+    #endif
+    Phrasem token;
+    token = malloc(sizeof(struct phrasem_data));
+    if(token == NULL)
+    {
+        RaiseError("Retypetoint: could not allocate memory", *where, ErrorType_Internal);
+        return false;
+    }
+    // allocation of new token
+    token->table = TypeCast_Double2Int;
+
+    StackItem * pom;
+    pom = malloc(sizeof(StackItem));
+    if(pom == NULL)
+    {
+        RaiseError("Retypetoint: could not allocate memory", *where, ErrorType_Internal);
+        return false;
+    }
+    // allocation of new stack item and linking the list
+    pom->data = token;
+    pom->next = *where;
+    *where = pom;
+
     return true;
 }
 
-// this function returns a type of operand or calls itself to find out the result of operation
-// it saves value of from into variable in expressionEnd function
-// and where into variable in the recursive parent function
-DataType RetypeRecursive(StackItem *** where, StackItem ** from)
+#ifdef PEDANT_DEBUG
+    static int debugRecursion = 0;
+#endif
+/**
+ * @brief   Recursive retyping.
+ * This function returns a type of operand or calls itself to find out the result of operation
+ * it saves value of from into variable in expressionEnd function and where into variable in
+ * the recursive parent function.
+ * @param where     pointer to double pointer to stackitem.
+ * @param from      pointer double pointer to stackitem, shows where in stack i currently am.
+ * @returns type of subexpression if success. DataType_Unknown otherwise.
+ */
+DataType RetypeRecursive(StackItem *** where, StackItem *** from)
 {
+    #ifdef PEDANT_DEBUG
+        for(int debugg = 0;debugg < debugRecursion;++debugg) {printf(" ");}
+        printf("Rekurze stupne %d:\n", debugRecursion);
+        PrintPhrasem((**from)->data);
+        debugRecursion++;
+    #endif
+
     if(*from == NULL) return DataType_Unknown;      //should not happen
 
-    if((*from)->data->table == TokenType_Constant || (*from)->data->table == TokenType_Variable)
+    if((**from)->data->table == TokenType_Constant || (**from)->data->table == TokenType_Variable)
     {
-        // where is a pointer to previous stackitem->next (pointing to current item)
+        #ifdef PEDANT_DEBUG
+            debugRecursion--;
+        #endif
+        // where is a pointer to previous stackitem->next (pointing to a current stackitem)
         // which i may modify by inserting retype token to the list (behind current token)
-        *where = from;
-        *from = (*from)->next;          //set starting item to the next one for recursion
-        return (**where)->data->table;  //return data of the operand
+        *where = *from;
+
+        //return data of the operand
+        if((**from)->data->table == TokenType_Variable)
+        {
+            *from = &(**from)->next;          //set starting item to the next one for recursion
+            return findVariableType(Config_getFunction(), (**where)->data->d.str);
+        }
+
+        else
+        {
+            *from = &(**from)->next;          //set starting item to the next one for recursion
+            return findConstType((**where)->data->d.index);
+        }
     }
-    else if((*from)->data->table == TokenType_Operator)
+    else if((**from)->data->table == TokenType_Operator)
     {
-        Operators currentOperator = (*from)->data->d.index;
-        StackItem * temp_from = *from;
-        *where = from;
-        *from = (*from)->next;
+        Operators currentOperator = (**from)->data->d.index;
+        *where = *from;
+        *from = &(**from)->next;
 
         StackItem ** where1 = NULL;
         StackItem ** where2 = NULL;
@@ -159,6 +239,10 @@ DataType RetypeRecursive(StackItem *** where, StackItem ** from)
         DataType typeOfResult2;
         typeOfResult1 = RetypeRecursive(&where1, from);
         typeOfResult2 = RetypeRecursive(&where2, from);
+
+        #ifdef PEDANT_DEBUG
+            debugRecursion--;
+        #endif
 
         switch(currentOperator)
         {
@@ -287,23 +371,23 @@ DataType RetypeRecursive(StackItem *** where, StackItem ** from)
                       else if(typeOfResult1 == DataType_Double && typeOfResult2 == DataType_Double)
                       {
                             // both doubles -> no need for retyping
-                            return DataType_Integer;
+                            return DataType_Double;
                       }
                       else if(typeOfResult1 == DataType_Integer && typeOfResult2 == DataType_Double)
                       {
                             if(!RetypeToDouble(where1)) return DataType_Unknown;
-                            return DataType_Integer;
+                            return DataType_Double;
                       }
                       else if(typeOfResult1 == DataType_Double && typeOfResult2 == DataType_Integer)
                       {
                             if(!RetypeToDouble(where2)) return DataType_Unknown;
-                            return DataType_Integer;
+                            return DataType_Double;
                       }
                       else if(typeOfResult1 == DataType_Integer && typeOfResult2 == DataType_Integer)
                       {
                             if(!RetypeToDouble(where1)) return DataType_Unknown;
                             if(!RetypeToDouble(where2)) return DataType_Unknown;
-                            return DataType_Integer;
+                            return DataType_Double;
                       }
                       else
                       {
@@ -319,24 +403,37 @@ DataType RetypeRecursive(StackItem *** where, StackItem ** from)
     }
     else    // not variable or constant or operator -> error
     {
-        RaiseError("token type is not constant or variable or operator", (*from)->data, ErrorType_Semantic1);
-        *from = (*from)->next;
+        #ifdef PEDANT_DEBUG
+            debugRecursion--;
+        #endif
+        RaiseError("token type is not constant or variable or operator", (**from)->data, ErrorType_Semantic1);
+        *from = &(**from)->next;
         return DataType_Unknown;
     }
 }
-
+/**
+ * @brief   Performs last operations upon expression before sending it to generator.
+ * This function calls for retyping and turns the stack. It also sets global variable typeOfResult.
+ *
+ * @returns True if success. False otherwise.
+ */
 bool ExpressionEnd()
 {
     StackItem ** where = NULL;        //place where to put a retype token
-    StackItem * from;                 //where in the stack i currently am
-    from = mstack->first;
+    StackItem ** from;                //where in the stack i currently am
+    from = &mstack->first;
 
     //retyping
     typeOfResult = RetypeRecursive(&where, &from);
     if(typeOfResult == DataType_Unknown)
         return false;
-
-    //otoceni stacku
+printfstack(mstack);
+    //turning of the stack
+    mstack = TurnStack(mstack);
+printfstack(mstack);
+    #ifdef PEDANT_DEBUG
+        debug("Expression processed, sending it to generator");
+    #endif
 
     return true;
 }
@@ -348,7 +445,12 @@ bool ExpressionEnd()
         freePhrasem(p);                             \
         return false;                               \
     }
-
+/**
+ * @brief   Token handling.
+ * This function pushes received tokens onto a stack and checks if all symbols and constants are properly defined.
+ * @param p     Received phrasem.
+ * @returns true if success. false otherwise.
+ */
 bool P_HandleOperand(Phrasem p)
 {
   #ifdef PEDANT_DEBUG
@@ -418,7 +520,7 @@ bool P_HandleOperand(Phrasem p)
   {
         TRY_PUSH_ONTO_STACK;
   }
-  else
+  else      // neither operand nor operator
   {
         RaiseError("token type is not constant or symbol or operator", p, ErrorType_Semantic1);
         freePhrasem(p);
