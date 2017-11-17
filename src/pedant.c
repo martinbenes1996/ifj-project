@@ -259,7 +259,7 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
                       else if(typeOfResult1 == DataType_String || typeOfResult2 == DataType_String)
                       {
                             // when only one of them is string it is an error
-                            RaiseError("only one operand is string (add)", temp_from->data, ErrorType_Semantic1);
+                            RaiseError("only one operand is string (add)", temp_from->data, ErrorType_Semantic2);
                             return DataType_Unknown;
                       }
                       else if(typeOfResult1 == DataType_Integer && typeOfResult2 == DataType_Double)
@@ -289,7 +289,7 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
                       else if(typeOfResult1 == DataType_String || typeOfResult2 == DataType_String)
                       {
                             // when atleast one of them is string it is an error
-                            RaiseError("one operand is string (mul, sub)", temp_from->data, ErrorType_Semantic1);
+                            RaiseError("one operand is string (mul, sub)", temp_from->data, ErrorType_Semantic2);
                             return DataType_Unknown;
                       }
                       else if(typeOfResult1 == typeOfResult2)   // <<<--- both operands are the same
@@ -324,7 +324,7 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
                       else if(typeOfResult1 == DataType_String || typeOfResult2 == DataType_String)
                       {
                             // when atleast one of them is string it is an error
-                            RaiseError("one operand is string (divInt)", temp_from->data, ErrorType_Semantic1);
+                            RaiseError("one operand is string (divInt)", temp_from->data, ErrorType_Semantic2);
                             return DataType_Unknown;
                       }
                       else if(typeOfResult1 == DataType_Integer && typeOfResult2 == DataType_Integer)
@@ -365,7 +365,7 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
                       else if(typeOfResult1 == DataType_String || typeOfResult2 == DataType_String)
                       {
                             // when atleast one of them is string it is an error
-                            RaiseError("one operand is string (divDouble)", temp_from->data, ErrorType_Semantic1);
+                            RaiseError("one operand is string (divDouble)", temp_from->data, ErrorType_Semantic2);
                             return DataType_Unknown;
                       }
                       else if(typeOfResult1 == DataType_Double && typeOfResult2 == DataType_Double)
