@@ -268,6 +268,12 @@ inline void PrintPhrasem(Phrasem p)
     case TokenType_EOF:
       debug("Phrasem [%s]", TokenTypeToString(p->table));
       break;
+    case TypeCast_Int2Double:
+      debug("Phrasem [%s]", TokenTypeToString(p->table));
+      break;
+    case TypeCast_Double2Int:
+      debug("Phrasem [%s]", TokenTypeToString(p->table));
+      break;
     default:
       break;
   }

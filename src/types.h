@@ -135,6 +135,8 @@ inline const char * TokenTypeToString(TokenType tt)
     case TokenType_Variable: return "Variable";
     case TokenType_Separator: return "Separator";
     case TokenType_EOF: return "End of file";
+    case TypeCast_Int2Double: return "Int2Double";
+    case TypeCast_Double2Int: return "Double2Int";
     default: return "Unknown TokenType!";
   }
 }

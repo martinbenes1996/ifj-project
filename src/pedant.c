@@ -432,7 +432,6 @@ bool ExpressionEnd()
     mstack = TurnStack(mstack);
 
     #ifdef PEDANT_DEBUG
-        printfstack(mstack);
         debug("Expression processed, sending it to generator");
     #endif
 
