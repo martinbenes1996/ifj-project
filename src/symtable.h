@@ -32,8 +32,7 @@ struct paramFce{
 
 /*-----------------------------------------------------------*/
 
-        //SYMBOL TABLE FUNCTIONS  !!!NOT TESTED!!!
-        //Do not use yet
+                //SYMBOL TABLE FUNCTIONS
 
 // -Odstranil jsem funkci VarInsert, pokud jste ji pouzili, zmente ji!
 

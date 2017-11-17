@@ -103,7 +103,7 @@ void printfstack(Stack a)
 
     while(pom != NULL)
     {
-        if(pom->data->table == TokenType_Symbol) printf("%s\n", pom->data->d.str);
+        if(pom->data->table == TokenType_Variable) printf("%s\n", pom->data->d.str);
             else printf("%d\n", pom->data->d.index);
         pom = pom->next;
     }
@@ -341,6 +341,14 @@ bool ExpressionEnd()
     return true;
 }
 
+#define TRY_PUSH_ONTO_STACK                         \
+    if(PushOntoStack(mstack, p)) return true;       \
+    else                                            \
+    {                                               \
+        freePhrasem(p);                             \
+        return false;                               \
+    }
+
 bool P_HandleOperand(Phrasem p)
 {
   #ifdef PEDANT_DEBUG
@@ -349,8 +357,7 @@ bool P_HandleOperand(Phrasem p)
   #endif
   if(p == NULL)
   {
-    // error
-    // ...
+    RaiseError("Handle_operand: received a NULL pointer instead of token", p, ErrorType_Internal);
     return false;
   }
 
@@ -359,7 +366,66 @@ bool P_HandleOperand(Phrasem p)
     mstack = InitStack();
   }
 
-  return PushOntoStack(mstack, p);
+  // checking if symbols are defined and retyping tokens
+  if(p->table == TokenType_Symbol)
+  {
+    char * functionName;
+    functionName = Config_getFunction();
+
+    // checks if the token contains a name of function
+    if(findFunctionInTable(p->d.str))
+    {
+        RaiseError("Handle_operand: function as an operand in expression! not allowed", p, ErrorType_Semantic1);
+        freePhrasem(p);
+        return false;
+    }
+    // checks if the token constains defined variable with known type
+    if(findVariable(functionName, p->d.str))
+    {
+        p->table = TokenType_Variable;
+        if(findVariableType(functionName, p->d.str) != DataType_Unknown)
+        {
+            TRY_PUSH_ONTO_STACK;
+        }
+        else
+        {
+            RaiseError("Handle_operand: variable has type of -> DataType_Unknown <-", p, ErrorType_Semantic1);
+            freePhrasem(p);
+            return false;
+        }
+    }
+    else
+    {
+        RaiseError("Handle_operand: variable not found in symbol table", p, ErrorType_Semantic1);
+        freePhrasem(p);
+        return false;
+    }
+  }
+  else if(p->table == TokenType_Constant)
+  {
+    if(findConstType(p->d.index) != DataType_Unknown)
+    {
+        TRY_PUSH_ONTO_STACK;
+    }
+    else
+    {
+        RaiseError("Handle_operand: constant is of an undefined type", p, ErrorType_Semantic1);
+        freePhrasem(p);
+        return false;
+    }
+  }
+  else if(p->table == TokenType_Operator)
+  {
+        TRY_PUSH_ONTO_STACK;
+  }
+  else
+  {
+        RaiseError("token type is not constant or symbol or operator", p, ErrorType_Semantic1);
+        freePhrasem(p);
+        return false;
+  }
+
+  return true;
 }
 
 bool P_HandleTarget(Phrasem p)

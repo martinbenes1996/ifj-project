@@ -678,7 +678,7 @@ bool ExpressionParse()
 
         }
         // token is operator
-        // 7 is a magical constant -> index into array that determines the maximal value of operator
+        // 9 is a magical constant -> index into array that determines the maximal value of operator
         // processed in this function (not logical operators)
         // see tables.c operators[9][]
         else if(p->table == TokenType_Operator && p->d.index < 9)
@@ -767,7 +767,6 @@ bool ExpressionParse()
 
     ClearStack(temporaryOpStack);   //should be empty. If its not -> error.
     ClearEPStack();                 //destroying EPStack
-    //if(!TurnStack(returnStack)) return false;   //turning the stack
 
     //if(failure) EndRoutine();
     return !failure;
@@ -784,7 +783,7 @@ bool LogicParse()
   // left
   if(!ExpressionParse()) return false;
   P_MoveStackToGenerator();
-  
+
   //Phrasem q = CheckQueue(q); // foo
 
   // parse the sign
