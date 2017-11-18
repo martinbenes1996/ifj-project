@@ -1,0 +1,9 @@
+.IFJcode17
+CREATEFRAME
+
+DEFVAR TF@x
+READ TF@x int
+
+PUSHS TF@x
+
+WRITE TF@x
