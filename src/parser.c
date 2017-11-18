@@ -308,7 +308,7 @@ bool PrintParse(bool first);
  * This function will parse the arguments of function.
  * @returns True, if success. False otherwise.
  */
-bool FunctionArgumentsParse();
+//bool FunctionArgumentsParse();
 
 /**
  * @brief   Parses line with symbol as first.
@@ -1108,6 +1108,7 @@ bool PrintParse(bool first)
   return PrintParse(false);
 }
 
+/*
 bool FunctionArgumentsParse()
 {
   #ifdef PARSER_DEBUG
@@ -1127,7 +1128,7 @@ bool FunctionArgumentsParse()
   }
   return true;
 }
-
+*/
 bool SymbolParse()
 {
   #ifdef PARSER_DEBUG
@@ -1146,6 +1147,8 @@ bool SymbolParse()
   else if( P_FunctionDefined(p) )
   {
     RaiseError("IFJ17 doesn't enable to call function like that", p, ErrorType_Syntax);
+    // if function can be called like: f() -> aka no assignment
+    // which is not possible in syntax
     /*
     // '(' token
     CheckOperator("(");

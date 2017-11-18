@@ -649,4 +649,6 @@ bool P_CheckType_MoveStackToGenerator(DataType dt)
     GenerateTypeCast(TypeCast_Int2Double);
   }
   else RaiseError("incompatible types", NULL, ErrorType_Semantic2);
+
+  return true;
 }
