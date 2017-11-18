@@ -336,21 +336,21 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
                             // Generator requires two doubles and it will retype the result automatically
                             if(!RetypeToInt(where1)) return DataType_Unknown;
                             if(!RetypeToInt(where2)) return DataType_Unknown;
-                            return DataType_Double;
+                            return DataType_Integer;
                       }
                       else if(typeOfResult1 == DataType_Integer && typeOfResult2 == DataType_Double)
                       {
                             if(!RetypeToDouble(where1)) return DataType_Unknown;
-                            return DataType_Double;
+                            return DataType_Integer;
                       }
                       else if(typeOfResult1 == DataType_Double && typeOfResult2 == DataType_Integer)
                       {
                             if(!RetypeToDouble(where2)) return DataType_Unknown;
-                            return DataType_Double;
+                            return DataType_Integer;
                       }
                       else if(typeOfResult1 == DataType_Double && typeOfResult2 == DataType_Double)
                       {
-                            return DataType_Double;
+                            return DataType_Integer;
                       }
                       else
                       {
