@@ -302,9 +302,9 @@ void GeneratePrint()
   #endif
 
   const char *tmp = GenerateTmpVariable();
-  out("DEFVAR %s", tmp);
-  out("POPS %s", tmp);
-  out("WRITE %s", tmp);
+  out("DEFVAR LF@%s", tmp);
+  out("POPS LF@%s", tmp);
+  out("WRITE LF@%s", tmp);
 }
 
 void GenerateRead(Phrasem p)
