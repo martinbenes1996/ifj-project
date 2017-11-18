@@ -89,12 +89,25 @@ bool P_FunctionDefined(Phrasem p)
   return findFunctionInTable(p->d.str);
 }
 
-bool P_DefineNewFunction(const char * funcname)
+bool P_FunctionDeclared(Phrasem p)
+{
+  #ifdef PEDANT_DEBUG
+    debug("Pedant, Function Declared?");
+  #endif
+
+  if(p == NULL) return false;
+  return findFunctionInTable(p->d.str);
+}
+
+bool P_DefineNewFunction(Phrasem funcname, Parameters params)
 {
   #ifdef PEDANT_DEBUG
     debug("Pedant, Define New Function.");
   #endif
-  return addFunction(funcname);
+
+  if(!addFunction(funcname->d.str)) return false;
+  if(!addFunctionParameters(funcname->d.str, params)) return false;
+  return true;
 }
 
 //Docasne

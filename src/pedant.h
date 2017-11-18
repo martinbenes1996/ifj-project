@@ -43,6 +43,8 @@ bool P_VariableDefined(Phrasem varname);
  */
 bool P_FunctionDefined(Phrasem funcname);
 
+bool P_FunctionDeclared(Phrasem funcname);
+
 /**
  * @brief   Defines new variable.
  *
@@ -61,7 +63,7 @@ bool P_DefineNewVariable(Phrasem varname, Phrasem datatype);
  * @param funcname    Name of the function.
  * @returns True if success. False otherwise.
  */
-bool P_DefineNewFunction(const char * funcname);
+bool P_DefineNewFunction(Phrasem funcname, Parameters params);
 
 /**
  * @brief     Pushes operand/operator to stack.

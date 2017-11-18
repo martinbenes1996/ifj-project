@@ -18,6 +18,7 @@
 #include <string.h>
 
 #include "io.h"
+#include "list.h"
 #include "tables.h"
 #include "types.h"
 

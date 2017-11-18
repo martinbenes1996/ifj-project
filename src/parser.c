@@ -1459,31 +1459,95 @@ bool FunctionDefinitionParse()
 
   // nesting control
   if(Config_getFunction() != NULL)
-  {
     RaiseError("nested function definition", funcname, ErrorType_Syntax);
-  }
+
+  // parameters declaration
+  Parameters params = paramInit();
 
   // operator (
   CheckOperator("(");
+  Phrasem arg = CheckQueue(arg);
+  // no parameters
+  if(isOperator(arg, ")")) ReturnToQueue(arg);
+  // parameters
+  else
+  {
+    ReturnToQueue(arg);
 
-  // parameters declaration
-  // ...
+    // parameters
+    while(1)
+    {
 
-  // operator )
-  CheckOperator(")");
+      // variable
+      Phrasem arg = CheckQueue(arg);
+      if(!VariableParse(arg)) RaiseExpectedError("identificator", arg);
 
+      // keyword 'as'
+      CheckKeyword("as");
+
+      // datatype keyword
+      Phrasem type = CheckQueue(type);
+      if(!DataTypeParse(type))
+      {
+        freePhrasem(arg);
+        RaiseExpectedError("datatype expected", type);
+      }
+      DataType dt = getDataType(type);
+      freePhrasem(type);
+
+      // parameter to add
+      if(!paramAdd(&params, arg->d.str, dt))
+        RaiseError("list allocation error", arg, ErrorType_Internal);
+      freePhrasem(arg);
+
+      // , or )
+      Phrasem op = CheckQueue(op);
+      if(isOperator(op, ",")) freePhrasem(op); // ,
+      else if(isOperator(op, ")"))             // )
+      {
+        ReturnToQueue(op);
+        break;
+      }
+
+    }
+
+    // operator )
+    CheckOperator(")");
+  }
+
+  // keyword 'as'
   CheckKeyword("as");
 
-  Phrasem dt = CheckQueue(dt);
-  if(!DataTypeParse(dt)) return false;
+  // datatype keyword
+  Phrasem type = CheckQueue(type);
+  if(!DataTypeParse(type)) return false;
+  DataType dt = getDataType(type);
+  freePhrasem(type);
 
   // LF
   CheckSeparator();
 
-  #warning do asap
-  // check symbol table
+  /*-------------------- SEMANTICS ----------------------*/
+  // defined
+  if( P_FunctionDefined(funcname) )
+  {
+    RaiseError("redefinition of function", funcname, ErrorType_Semantic1);
+    return false;
+  }
+  // declared
+  if(P_FunctionDeclared(funcname))
+  {
+    // check params in declaration
+    if(!ParametersMatches(params, findFunctionParameters(funcname->d.str)))
+      RaiseError("not matching parameters in declaration and definition", funcname, ErrorType_Semantic3);
+    // check return value datatype
+    if(dt != findFunctionType(funcname->d.str))
+      RaiseError("not matchig return datatype in declaration and definition", funcname, ErrorType_Semantic3);
+  }
+  if(!P_DefineNewFunction(funcname, params)) return false;
+  /*-----------------------------------------------------*/
+
   // in the semantics
-  // ...
   if(!setFunction(funcname->d.str)) return false;
 
   do {
@@ -1511,8 +1575,7 @@ bool ScopeParse()
   }
   // actualizing function
   setFunction("scope");
-  #warning parameters
-  P_DefineNewFunction(Config_getFunction());
+  addFunction(Config_getFunction());
 
   // LF
   CheckSeparator();
