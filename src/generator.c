@@ -199,6 +199,9 @@ void ClearGeneratedName();
 
 char * GenerateType(Phrasem p);
 
+char * GenerateTmpVariable();
+void ClearGeneratedTmpVariable();
+
 /** @} */
 /*---------------------------------------------------------*/
 
@@ -298,7 +301,7 @@ void GeneratePrint()
     debug("Generating print.");
   #endif
 
-  const char *tmp = "var";
+  const char *tmp = GenerateTmpVariable();
   out("DEFVAR %s", tmp);
   out("POPS %s", tmp);
   out("WRITE %s", tmp);
@@ -363,6 +366,7 @@ bool Send(Stack s)
   #ifdef GENERATOR_DEBUG
     debug("Send to Generator");
     PrintStack(s);
+    PrintGStateStack();
   #endif
 
   // incoming stack process
@@ -465,6 +469,8 @@ void G_Print()
   #ifdef GENERATOR_DEBUG
     debug("Generate print.");
   #endif
+
+  PushGState(GState_Print);
 
 
 }
@@ -621,6 +627,8 @@ void ClearGeneratedName()
   }
 }
 
+
+
 char * GenerateType(Phrasem p)
 {
   DataType dt;
@@ -641,7 +649,38 @@ char * GenerateType(Phrasem p)
 
 
 
+static char varname[] = "*aaaaaa";
+void incrementVarname(unsigned it)
+{
 
+  if(it >= strlen(varname))
+  {
+    err("empty");
+    strcpy(varname, "*aaaaaa");
+  }
+
+  // overflow
+
+  if(varname[it] == 'z') varname[it] = 'A';
+  else if(varname[it] == 'Z' ) varname[it] = '0';
+  else if(varname[it] == '9' )
+  {
+    varname[it++] = 'a';
+    incrementVarname(it);
+  }
+
+  // increment
+  else
+  {
+    varname[it]++;
+  }
+
+}
+char * GenerateTmpVariable()
+{
+  incrementVarname(1);
+  return varname;
+}
 
 
 
