@@ -15,20 +15,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "list.h"
 #include "types.h"
 
 
-
-/**
- * @brief   Structure representing type and name of parametres.
- *          Used for sending lists of parametres.
- * List.
- */
-struct paramFce{
-    DataType type;
-    char * name;
-    struct paramFce *nextParam;
-};
 
 /*-----------------------------------------------------------*/
 
@@ -95,7 +85,7 @@ bool addFunctionParameters(const char * functionName, struct paramFce * parametr
  * @param functionName  name of the function
  * @returns pointer or NULL.
  */
-struct paramFce * findFunctionParameters(char * functionName);
+struct paramFce * findFunctionParameters(const char * functionName);
 /**
  * @brief   Finds number of parametres of a function.
  *

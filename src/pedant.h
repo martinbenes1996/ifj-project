@@ -41,7 +41,7 @@ bool P_VariableDefined(Phrasem varname);
  * @param varname         Name of the function.
  * @returns   True if defined. False if not.
  */
-bool P_FunctionDefined(const char * funcname);
+bool P_FunctionDefined(Phrasem funcname);
 
 /**
  * @brief   Defines new variable.
@@ -92,6 +92,15 @@ bool P_HandleCompareOperator(Phrasem p);
  * @returns True, if success. False otherwise.
  */
 bool P_MoveStackToGenerator();
+
+/**
+ * @brief     Checks type of stack.
+ *
+ * This function checks type of stack in pedant, moves it to generator
+ * and calls for generating implicit typecast.
+ * @return True, if success. False otherwise.
+ */
+bool P_CheckType_MoveStackToGenerator(DataType);
 
 /**
  * @brief     Performs last actions with stack after expression parse.

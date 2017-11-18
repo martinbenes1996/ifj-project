@@ -35,6 +35,7 @@ typedef enum
   GState_Expression,
   GState_Logic,
   GState_VariableDeclaration,
+  GState_Argument,
   GState_Empty
 } GState;
 
@@ -317,6 +318,8 @@ void GenerateRead(Phrasem p)
   out("READ %s %s", GenerateName(p), GenerateType(p));
 }
 
+void GenerateArgument();
+
 void GenerateAritm(Stack s)
 {
   #ifdef GENERATOR_DEBUG
@@ -334,13 +337,27 @@ void GenerateAritm(Stack s)
     // second
     Phrasem q = PopFromStack(s);
     if(q == NULL) break;
+    // implicit conversion
+    if(isTypeCast(q))
+    {
+      GenerateTypeCast(q->table);
+      q = PopFromStack(s);
+    }
     // control of implicit conversion (if so, then pop again)
     out("PUSHS %s", GenerateName(q));
     free(q);
 
     // operator
     Phrasem operator = PopFromStack(s);
-    // control of implicit conversion (if so, then pop again)
+    if(operator == NULL) break;
+
+    // implicit conversion
+    if(isTypeCast(operator))
+    {
+      GenerateTypeCast(operator->table);
+      operator = PopFromStack(s);
+    }
+
     if (isOperator(operator, "+")) {
       out("ADDS");
     }
@@ -356,6 +373,10 @@ void GenerateAritm(Stack s)
     else if (isOperator(operator, "/")) {
       out("DIVS");
     }
+    else if (isOperator(operator, "\\")) {
+      out("DIVS");
+      out("FLOAT2INTS");
+    }
   }
 }
 
@@ -366,7 +387,6 @@ bool Send(Stack s)
   #ifdef GENERATOR_DEBUG
     debug("Send to Generator");
     PrintStack(s);
-    PrintGStateStack();
   #endif
 
   // incoming stack process
@@ -380,6 +400,14 @@ bool Send(Stack s)
   {
     GeneratePrint();
   }
+  else if( below == GState_Argument)
+  {
+    GenerateArgument();
+  }
+
+  #ifdef GENERATOR_DEBUG
+    PrintGStateStack();
+  #endif
   return true;
 }
 
@@ -387,7 +415,6 @@ bool HandlePhrasem(Phrasem p)
 {
   #ifdef GENERATOR_DEBUG
     debug("Handeling phrasem.");
-    PrintGStateStack();
     PrintPhrasem(p);
   #endif
 
@@ -415,6 +442,9 @@ bool HandlePhrasem(Phrasem p)
   }
 
   PopGState();
+  #ifdef GENERATOR_DEBUG
+    PrintGStateStack();
+  #endif
   return true;
 }
 
@@ -428,6 +458,7 @@ void G_FunctionCall()
   #endif
 
   PushGState(GState_FunctionCall);
+  out("CREATEFRAME");
 
 }
 
@@ -462,6 +493,31 @@ void G_Assignment()
   PushGState(GState_Assignment);
 
 
+}
+/*---------- DATA -----------*/
+static char param_name[4]; // there can't be more, than 999 parameters
+/*---------------------------*/
+void G_ArgumentAssignment(unsigned ord)
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate argument assignment.");
+  #endif
+
+  PushGState(GState_Argument);
+
+  char param_name[4]; // there can't be more, than 999 parameters
+  sprintf(param_name, "*%u", ord);
+  out("DEFVAR TF@%s", param_name);
+
+}
+void GenerateArgument()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate argument.");
+  #endif
+
+  out("POPS TF@%s", param_name);
+  RemoveGState();
 }
 
 void G_Print()
@@ -514,7 +570,6 @@ void G_EndBlock()
 {
   #ifdef GENERATOR_DEBUG
     debug("Generate end.");
-    PrintGStateStack();
   #endif
 
   GState up = PopGState();
@@ -528,6 +583,15 @@ void G_EndBlock()
     out("JUMP %s", PopLabel());
     out("LABEL %s", tmp);
   }
+  else if( up == GState_FunctionCall )
+  {
+    out("POPFRAME");
+    out("PUSHS TF@*ret");
+  }
+
+  #ifdef GENERATOR_DEBUG
+    PrintGStateStack();
+  #endif
 }
 
 

@@ -19,6 +19,7 @@
 #include "functions.h"
 #include "generator.h"
 #include "io.h"
+#include "list.h"
 #include "parser.h"
 #include "pedant.h"
 #include "queue.h"
@@ -375,7 +376,21 @@ bool CycleParse();
  */
 bool ConditionParse();
 
+/**
+ * @brief   Parses assignment.
+ *
+ * This function will parse the assignment.
+ * @returns True, if success. False otherwise.
+ */
 bool AssignmentParse();
+
+/**
+ * @brief   Parses function call.
+ *
+ * This function will parse the condition on the right side of assignment.
+ * @returns True, if success. False otherwise.
+ */
+bool FunctionCallParse();
 
 /** @} */
 /*----------------------------------------------------*/
@@ -623,7 +638,7 @@ bool ExpressionParse()
     if(p->table != TokenType_Symbol && p->table != TokenType_Constant &&
       (p->table != TokenType_Operator || p->d.index > 9))
     {
-        RaiseError("Empty expression", p, ErrorType_Semantic1);
+        RaiseError("Empty expression", p, ErrorType_Syntax);
         ReturnToQueue(p);
         failure = true;
     }
@@ -673,7 +688,7 @@ bool ExpressionParse()
             else if(x == '#')
             {
                 failure = true;
-                RaiseError("Expression error", p, ErrorType_Semantic1);
+                RaiseError("Expression error", p, ErrorType_Syntax);
             }
 
         }
@@ -722,13 +737,13 @@ bool ExpressionParse()
                     else
                     {
                         failure = true;
-                        RaiseError("Expression error", p, ErrorType_Semantic1);
+                        RaiseError("Expression error", p, ErrorType_Syntax);
                     }
                 }
                 else    // pom == -1; cannot find a rule for reduction -> bad expression
                 {
                     failure = true;
-                    RaiseError("Expression error", p, ErrorType_Semantic1);
+                    RaiseError("Expression error", p, ErrorType_Syntax);
                 }
             }
             else if(x == '=')
@@ -739,7 +754,7 @@ bool ExpressionParse()
             else    // x == '#'
             {
                 failure = true;
-                RaiseError("Expression error", p, ErrorType_Semantic1);
+                RaiseError("Expression error", p, ErrorType_Syntax);
             }
         }
         else    //it is not my symbol
@@ -925,7 +940,7 @@ bool VariableDefinitionParse()
   if(type == DataType_Unknown)
   {
     freePhrasem(var);
-    RaiseError("unknown datatype", dt, ErrorType_Semantic1);
+    RaiseError("unknown datatype", dt, ErrorType_Internal);
   }
 
   Phrasem dup = duplicatePhrasem(var); // deep copy
@@ -972,7 +987,7 @@ bool VariableDefinitionParse()
       default:
         freePhrasem(sep);
         freePhrasem(dup);
-        RaiseError("unknown datatype", nul, ErrorType_Semantic1);
+        RaiseError("unknown datatype", nul, ErrorType_Internal);
     }
 
 
@@ -1068,6 +1083,7 @@ bool PrintParse(bool first)
     if( isSeparator(q) )
     {
       free(q);
+      G_EndBlock();
       return true;
     }
 
@@ -1127,8 +1143,10 @@ bool SymbolParse()
     if( !AssignmentParse() ) return false;
 
   }
-  else if( P_FunctionDefined(p->d.str) )
+  else if( P_FunctionDefined(p) )
   {
+    RaiseError("IFJ17 doesn't enable to call function like that", p, ErrorType_Syntax);
+    /*
     // '(' token
     CheckOperator("(");
 
@@ -1140,9 +1158,10 @@ bool SymbolParse()
 
     // LF
     CheckSeparator();
+    */
 
   }
-  else RaiseError("unknown symbol", p, ErrorType_Semantic1);
+  else RaiseError("unknown symbol", p, ErrorType_Internal);
 
   return true;
 }
@@ -1271,6 +1290,8 @@ bool FunctionDeclarationParse()
 
   // nesting
   if(Config_getFunction() != NULL) RaiseError("nested function declaration", funcname, ErrorType_Syntax);
+  // redefinition
+  if(P_FunctionDefined(funcname)) RaiseError("redeclaration of function", funcname, ErrorType_Semantic1);
 
   // operator (
   CheckOperator("(");
@@ -1357,8 +1378,19 @@ bool AssignmentParse()
   // =
   CheckOperator("=");
 
-  // expression
-  if(!ExpressionParse()) return false;
+  Phrasem func = CheckQueue(func);
+  if(P_FunctionDefined(func))
+  {
+    ReturnToQueue(func);
+    // function call
+    FunctionCallParse();
+  }
+  else
+  {
+    ReturnToQueue(func);
+    // expression
+    if(!ExpressionParse()) return false;
+  }
 
   // LF
   CheckSeparator();
@@ -1368,6 +1400,46 @@ bool AssignmentParse()
     free(var);
     return false;
   }
+
+  return true;
+}
+
+bool FunctionCallParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("Function call parse.");
+  #endif
+  G_FunctionCall();
+
+  Phrasem funcname = CheckQueue(funcname);
+  if( !FunctionParse(funcname) ) return false;
+
+  // defined
+  if( !P_FunctionDefined(funcname) ) return false;
+
+  // (
+  CheckOperator("(");
+
+  // iterate over arguments
+  Parameters params = findFunctionParameters(funcname->d.str);
+  for(unsigned ord = 1; params != NULL; ord++)
+  {
+    DataType dt = params->type;
+    G_ArgumentAssignment(ord);
+    if(!ExpressionParse()) return false;
+
+    if(!P_CheckType_MoveStackToGenerator(dt)) return false;
+
+    if(params->next != NULL) CheckOperator(",");
+    params = params->next;
+  }
+
+  // )
+  CheckOperator(")");
+  // LF
+  CheckSeparator();
+
+  G_EndBlock();
 
   return true;
 }
@@ -1397,14 +1469,19 @@ bool FunctionDefinitionParse()
   // operator )
   CheckOperator(")");
 
+  CheckKeyword("as");
+
+  Phrasem dt = CheckQueue(dt);
+  if(!DataTypeParse(dt)) return false;
+
   // LF
   CheckSeparator();
 
+  #warning do asap
   // check symbol table
   // in the semantics
   // ...
-
-  CheckKeyword("begin");
+  if(!setFunction(funcname->d.str)) return false;
 
   do {
       if(!BlockParse()) return false;

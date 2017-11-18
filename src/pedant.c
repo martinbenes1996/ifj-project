@@ -68,24 +68,25 @@ bool P_DefineNewVariable(Phrasem varname, Phrasem datatype)
   DataType type = getDataType(datatype);
   if(type == DataType_Unknown)
   {
-    RaiseError("unknown datatype", datatype, ErrorType_Semantic1);
+    RaiseError("unknown datatype", datatype, ErrorType_Internal);
   }
 
   if(!addVariable(Config_getFunction(), varname->d.str)
   || !addVariableType(Config_getFunction(), varname->d.str, type))
   {
-    RaiseError("alloc variable error", varname, ErrorType_Semantic1);
+    RaiseError("alloc variable error", varname, ErrorType_Internal);
   }
 
   return true;
 }
 
-bool P_FunctionDefined(const char * funcname)
+bool P_FunctionDefined(Phrasem p)
 {
   #ifdef PEDANT_DEBUG
     debug("Pedant, Function Defined?");
   #endif
-  return findFunctionInTable(funcname);
+  if((p == NULL) || (p->d.str == NULL)) return false;
+  return findFunctionInTable(p->d.str);
 }
 
 bool P_DefineNewFunction(const char * funcname)
@@ -259,7 +260,8 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
                       else if(typeOfResult1 == DataType_String || typeOfResult2 == DataType_String)
                       {
                             // when only one of them is string it is an error
-                            RaiseError("only one operand is string (add)", temp_from->data, ErrorType_Semantic2);
+                            setErrorMessage("only one operand is string (add)");
+                            setErrorType(ErrorType_Semantic2);
                             return DataType_Unknown;
                       }
                       else if(typeOfResult1 == DataType_Integer && typeOfResult2 == DataType_Double)
@@ -289,7 +291,8 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
                       else if(typeOfResult1 == DataType_String || typeOfResult2 == DataType_String)
                       {
                             // when atleast one of them is string it is an error
-                            RaiseError("one operand is string (mul, sub)", temp_from->data, ErrorType_Semantic2);
+                            setErrorMessage("one operand is string (mul, sub)");
+                            setErrorType(ErrorType_Semantic2);
                             return DataType_Unknown;
                       }
                       else if(typeOfResult1 == typeOfResult2)   // <<<--- both operands are the same
@@ -324,28 +327,29 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
                       else if(typeOfResult1 == DataType_String || typeOfResult2 == DataType_String)
                       {
                             // when atleast one of them is string it is an error
-                            RaiseError("one operand is string (divInt)", temp_from->data, ErrorType_Semantic2);
+                            setErrorMessage("one operand is string (DivInt)");
+                            setErrorType(ErrorType_Semantic2);
                             return DataType_Unknown;
                       }
                       else if(typeOfResult1 == DataType_Integer && typeOfResult2 == DataType_Integer)
                       {
-                            // both integers -> no need for retyping
+                            // Generator requires two doubles and it will retype the result automatically
+                            if(!RetypeToInt(where1)) return DataType_Unknown;
+                            if(!RetypeToInt(where2)) return DataType_Unknown;
                             return DataType_Integer;
                       }
                       else if(typeOfResult1 == DataType_Integer && typeOfResult2 == DataType_Double)
                       {
-                            if(!RetypeToInt(where2)) return DataType_Unknown;
+                            if(!RetypeToDouble(where1)) return DataType_Unknown;
                             return DataType_Integer;
                       }
                       else if(typeOfResult1 == DataType_Double && typeOfResult2 == DataType_Integer)
                       {
-                            if(!RetypeToInt(where1)) return DataType_Unknown;
+                            if(!RetypeToDouble(where2)) return DataType_Unknown;
                             return DataType_Integer;
                       }
                       else if(typeOfResult1 == DataType_Double && typeOfResult2 == DataType_Double)
                       {
-                            if(!RetypeToInt(where1)) return DataType_Unknown;
-                            if(!RetypeToInt(where2)) return DataType_Unknown;
                             return DataType_Integer;
                       }
                       else
@@ -365,7 +369,8 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
                       else if(typeOfResult1 == DataType_String || typeOfResult2 == DataType_String)
                       {
                             // when atleast one of them is string it is an error
-                            RaiseError("one operand is string (divDouble)", temp_from->data, ErrorType_Semantic2);
+                            setErrorMessage("one operand is string (DivDouble)");
+                            setErrorType(ErrorType_Semantic2);
                             return DataType_Unknown;
                       }
                       else if(typeOfResult1 == DataType_Double && typeOfResult2 == DataType_Double)
@@ -397,7 +402,8 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
                       break;
 
 
-            default: RaiseError("invalid operator", temp_from->data, ErrorType_Semantic1);
+            default: setErrorMessage("invalid operator");
+                     setErrorType(ErrorType_Semantic3);
                      return DataType_Unknown;
         }
     }
@@ -406,7 +412,9 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
         #ifdef PEDANT_DEBUG
             debugRecursion--;
         #endif
-        RaiseError("token type is not constant or variable or operator", (**from)->data, ErrorType_Semantic1);
+
+        setErrorMessage("token type is not constant or variable or operator");
+        setErrorType(ErrorType_Semantic3);
         *from = &(**from)->next;
         return DataType_Unknown;
     }
@@ -426,7 +434,10 @@ bool ExpressionEnd()
     //retyping
     typeOfResult = RetypeRecursive(&where, &from);
     if(typeOfResult == DataType_Unknown)
+    {
+        ClearStack(mstack);
         return false;
+    }
 
     //turning of the stack
     mstack = TurnStack(mstack);
@@ -466,6 +477,7 @@ bool P_HandleOperand(Phrasem p)
   if(mstack == NULL)
   {
     mstack = InitStack();
+    if(mstack == NULL) return false;
   }
 
   // checking if symbols are defined and retyping tokens
@@ -477,11 +489,11 @@ bool P_HandleOperand(Phrasem p)
     // checks if the token contains a name of function
     if(findFunctionInTable(p->d.str))
     {
-        RaiseError("Handle_operand: function as an operand in expression! not allowed", p, ErrorType_Semantic1);
-        freePhrasem(p);
+        RaiseError("Handle_operand: function as an operand in expression! not allowed", p, ErrorType_Semantic2);
+        //freePhrasem(p);
         return false;
     }
-    // checks if the token constains defined variable with known type
+    // checks if the token contains defined variable with known type
     if(findVariable(functionName, p->d.str))
     {
         p->table = TokenType_Variable;
@@ -491,15 +503,15 @@ bool P_HandleOperand(Phrasem p)
         }
         else
         {
-            RaiseError("Handle_operand: variable has type of -> DataType_Unknown <-", p, ErrorType_Semantic1);
-            freePhrasem(p);
+            RaiseError("Handle_operand: variable has type of -> DataType_Unknown <-", p, ErrorType_Internal);
+            //freePhrasem(p);
             return false;
         }
     }
     else
     {
         RaiseError("Handle_operand: variable not found in symbol table", p, ErrorType_Semantic1);
-        freePhrasem(p);
+        //freePhrasem(p);
         return false;
     }
   }
@@ -511,8 +523,8 @@ bool P_HandleOperand(Phrasem p)
     }
     else
     {
-        RaiseError("Handle_operand: constant is of an undefined type", p, ErrorType_Semantic1);
-        freePhrasem(p);
+        RaiseError("Handle_operand: constant is of an undefined type", p, ErrorType_Semantic2);
+        //freePhrasem(p);
         return false;
     }
   }
@@ -522,8 +534,8 @@ bool P_HandleOperand(Phrasem p)
   }
   else      // neither operand nor operator
   {
-        RaiseError("token type is not constant or symbol or operator", p, ErrorType_Semantic1);
-        freePhrasem(p);
+        RaiseError("token type is not constant or symbol or operator", p, ErrorType_Semantic3);
+        //freePhrasem(p);
         return false;
   }
 
@@ -621,4 +633,20 @@ bool P_MoveStackToGenerator()
 {
   mdtmem = typeOfResult;
   return Send(mstack);
+}
+
+bool P_CheckType_MoveStackToGenerator(DataType dt)
+{
+  if(typeOfResult == dt) return P_MoveStackToGenerator();
+  else if((typeOfResult == DataType_Double) && (dt == DataType_Integer))
+  {
+    if(!P_MoveStackToGenerator()) return false;
+    GenerateTypeCast(TypeCast_Double2Int);
+  }
+  else if((typeOfResult == DataType_Integer) && (dt == DataType_Double))
+  {
+    if(!P_MoveStackToGenerator()) return false;
+    GenerateTypeCast(TypeCast_Int2Double);
+  }
+  else RaiseError("incompatible types", NULL, ErrorType_Semantic2);
 }
