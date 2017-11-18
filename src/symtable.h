@@ -85,7 +85,7 @@ bool addFunctionParameters(const char * functionName, struct paramFce * parametr
  * @param functionName  name of the function
  * @returns pointer or NULL.
  */
-struct paramFce * findFunctionParameters(char * functionName);
+struct paramFce * findFunctionParameters(const char * functionName);
 /**
  * @brief   Finds number of parametres of a function.
  *

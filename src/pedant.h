@@ -94,6 +94,15 @@ bool P_HandleCompareOperator(Phrasem p);
 bool P_MoveStackToGenerator();
 
 /**
+ * @brief     Checks type of stack.
+ *
+ * This function checks type of stack in pedant, moves it to generator
+ * and calls for generating implicit typecast.
+ * @return True, if success. False otherwise.
+ */
+bool P_CheckType_MoveStackToGenerator(DataType);
+
+/**
  * @brief     Performs last actions with stack after expression parse.
  *
  * This function handles retyping of operands.

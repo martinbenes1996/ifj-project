@@ -35,6 +35,7 @@ typedef enum
   GState_Expression,
   GState_Logic,
   GState_VariableDeclaration,
+  GState_Argument,
   GState_Empty
 } GState;
 
@@ -317,6 +318,8 @@ void GenerateRead(Phrasem p)
   out("READ %s %s", GenerateName(p), GenerateType(p));
 }
 
+void GenerateArgument();
+
 void GenerateAritm(Stack s)
 {
   #ifdef GENERATOR_DEBUG
@@ -397,6 +400,10 @@ bool Send(Stack s)
   {
     GeneratePrint();
   }
+  else if( below == GState_Argument)
+  {
+    GenerateArgument();
+  }
 
   #ifdef GENERATOR_DEBUG
     PrintGStateStack();
@@ -451,6 +458,7 @@ void G_FunctionCall()
   #endif
 
   PushGState(GState_FunctionCall);
+  out("CREATEFRAME");
 
 }
 
@@ -485,6 +493,31 @@ void G_Assignment()
   PushGState(GState_Assignment);
 
 
+}
+/*---------- DATA -----------*/
+static char param_name[4]; // there can't be more, than 999 parameters
+/*---------------------------*/
+void G_ArgumentAssignment(unsigned ord)
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate argument assignment.");
+  #endif
+
+  PushGState(GState_Argument);
+
+  char param_name[4]; // there can't be more, than 999 parameters
+  sprintf(param_name, "*%u", ord);
+  out("DEFVAR TF@%s", param_name);
+
+}
+void GenerateArgument()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate argument.");
+  #endif
+
+  out("POPS TF@%s", param_name);
+  RemoveGState();
 }
 
 void G_Print()
@@ -549,6 +582,11 @@ void G_EndBlock()
     const char * tmp = PopLabel();
     out("JUMP %s", PopLabel());
     out("LABEL %s", tmp);
+  }
+  else if( up == GState_FunctionCall )
+  {
+    out("POPFRAME");
+    out("PUSHS TF@*ret");
   }
 
   #ifdef GENERATOR_DEBUG

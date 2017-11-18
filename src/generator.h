@@ -76,6 +76,14 @@ void G_Cycle();
 /** @brief Announces assignment to generator. */
 void G_Assignment();
 
+/**
+ * @brief   Announces assignment to argument.
+ *
+ * This function is called when function call is reached.
+ * @param ord       Order of parameter.
+ */
+void G_ArgumentAssignment(unsigned ord);
+
 /** @brief Announces print command to generator. */
 void G_Print();
 

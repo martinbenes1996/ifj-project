@@ -376,7 +376,21 @@ bool CycleParse();
  */
 bool ConditionParse();
 
+/**
+ * @brief   Parses assignment.
+ *
+ * This function will parse the assignment.
+ * @returns True, if success. False otherwise.
+ */
 bool AssignmentParse();
+
+/**
+ * @brief   Parses function call.
+ *
+ * This function will parse the condition on the right side of assignment.
+ * @returns True, if success. False otherwise.
+ */
+bool FunctionCallParse();
 
 /** @} */
 /*----------------------------------------------------*/
@@ -573,7 +587,7 @@ int checkEPRules(/*Stack returnStack, */Stack temporaryOpStack)
             LookTripleAheadEPStack(op_E, DivDouble, op_E))
     {
         MODIFY_STACK();
-        if(!P_HandleOperand(PopFromStack(temporaryOpStack))) return -1; //it should pop an operator
+        P_HandleOperand(PopFromStack(temporaryOpStack)); //it should pop an operator
         return 1;
     }
     else if(LookTripleAheadEPStack(CloseBracket, op_E, OpenBracket))
@@ -624,8 +638,7 @@ bool ExpressionParse()
     if(p->table != TokenType_Symbol && p->table != TokenType_Constant &&
       (p->table != TokenType_Operator || p->d.index > 9))
     {
-        setErrorMessage("Empty expression");
-        setErrorType(ErrorType_Syntax);
+        RaiseError("Empty expression", p, ErrorType_Syntax);
         ReturnToQueue(p);
         failure = true;
     }
@@ -668,14 +681,14 @@ bool ExpressionParse()
                     PushOntoEPStack(op_i);    // i: operand
 
                 }
-                if(!P_HandleOperand(p)) failure = true;
+                P_HandleOperand(p);
+                //PushOntoStack(returnStack, p);      //pushing operand on stack
                 p = CheckQueue(p);
             }
             else if(x == '#')
             {
                 failure = true;
-                setErrorMessage("Expression error");
-                setErrorType(ErrorType_Syntax);
+                RaiseError("Expression error", p, ErrorType_Syntax);
             }
 
         }
@@ -724,15 +737,13 @@ bool ExpressionParse()
                     else
                     {
                         failure = true;
-                        setErrorMessage("Expression error");
-                        setErrorType(ErrorType_Syntax);
+                        RaiseError("Expression error", p, ErrorType_Syntax);
                     }
                 }
                 else    // pom == -1; cannot find a rule for reduction -> bad expression
                 {
                     failure = true;
-                    setErrorMessage("Expression error");
-                    setErrorType(ErrorType_Syntax);
+                    RaiseError("Expression error", p, ErrorType_Syntax);
                 }
             }
             else if(x == '=')
@@ -743,8 +754,7 @@ bool ExpressionParse()
             else    // x == '#'
             {
                 failure = true;
-                setErrorMessage("Expression error");
-                setErrorType(ErrorType_Syntax);
+                RaiseError("Expression error", p, ErrorType_Syntax);
             }
         }
         else    //it is not my symbol
@@ -768,8 +778,7 @@ bool ExpressionParse()
 
 
     //call pedant end function
-    if(!failure)
-        if(!ExpressionEnd()) failure = true;
+    if(!ExpressionEnd()) failure = true;
 
     ClearStack(temporaryOpStack);   //should be empty. If its not -> error.
     ClearEPStack();                 //destroying EPStack
@@ -1136,6 +1145,7 @@ bool SymbolParse()
   }
   else if( P_FunctionDefined(p) )
   {
+    RaiseError("IFJ17 doesn't enable to call function like that", p, ErrorType_Syntax);
     /*
     // '(' token
     CheckOperator("(");
@@ -1368,8 +1378,19 @@ bool AssignmentParse()
   // =
   CheckOperator("=");
 
-  // expression
-  if(!ExpressionParse()) return false;
+  Phrasem func = CheckQueue(func);
+  if(P_FunctionDefined(func))
+  {
+    ReturnToQueue(func);
+    // function call
+    FunctionCallParse();
+  }
+  else
+  {
+    ReturnToQueue(func);
+    // expression
+    if(!ExpressionParse()) return false;
+  }
 
   // LF
   CheckSeparator();
@@ -1379,6 +1400,46 @@ bool AssignmentParse()
     free(var);
     return false;
   }
+
+  return true;
+}
+
+bool FunctionCallParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("Function call parse.");
+  #endif
+  G_FunctionCall();
+
+  Phrasem funcname = CheckQueue(funcname);
+  if( !FunctionParse(funcname) ) return false;
+
+  // defined
+  if( !P_FunctionDefined(funcname) ) return false;
+
+  // (
+  CheckOperator("(");
+
+  // iterate over arguments
+  Parameters params = findFunctionParameters(funcname->d.str);
+  for(unsigned ord = 1; params != NULL; ord++)
+  {
+    DataType dt = params->type;
+    G_ArgumentAssignment(ord);
+    if(!ExpressionParse()) return false;
+
+    if(!P_CheckType_MoveStackToGenerator(dt)) return false;
+
+    if(params->next != NULL) CheckOperator(",");
+    params = params->next;
+  }
+
+  // )
+  CheckOperator(")");
+  // LF
+  CheckSeparator();
+
+  G_EndBlock();
 
   return true;
 }
@@ -1408,14 +1469,19 @@ bool FunctionDefinitionParse()
   // operator )
   CheckOperator(")");
 
+  CheckKeyword("as");
+
+  Phrasem dt = CheckQueue(dt);
+  if(!DataTypeParse(dt)) return false;
+
   // LF
   CheckSeparator();
 
+  #warning do asap
   // check symbol table
   // in the semantics
   // ...
-
-  CheckKeyword("begin");
+  if(!setFunction(funcname->d.str)) return false;
 
   do {
       if(!BlockParse()) return false;

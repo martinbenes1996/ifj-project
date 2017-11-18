@@ -634,3 +634,19 @@ bool P_MoveStackToGenerator()
   mdtmem = typeOfResult;
   return Send(mstack);
 }
+
+bool P_CheckType_MoveStackToGenerator(DataType dt)
+{
+  if(typeOfResult == dt) return P_MoveStackToGenerator();
+  else if((typeOfResult == DataType_Double) && (dt == DataType_Integer))
+  {
+    if(!P_MoveStackToGenerator()) return false;
+    GenerateTypeCast(TypeCast_Double2Int);
+  }
+  else if((typeOfResult == DataType_Integer) && (dt == DataType_Double))
+  {
+    if(!P_MoveStackToGenerator()) return false;
+    GenerateTypeCast(TypeCast_Int2Double);
+  }
+  else RaiseError("incompatible types", NULL, ErrorType_Semantic2);
+}

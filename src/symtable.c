@@ -880,7 +880,7 @@ size_t findFunctionNumberOfParametres(const char * functionName)
  * @param functionName  name of the function
  * @returns pointer or NULL.
  */
-struct paramFce * findFunctionParameters(char * functionName)
+struct paramFce * findFunctionParameters(const char * functionName)
 {
     #ifdef SYMTABLE_DEBUG
         debug("Looking for parametres");
