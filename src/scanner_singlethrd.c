@@ -120,16 +120,16 @@ bool getComment() {
 
       case 2:
         if (input != '/') { break; }
-        else if (input == EOF) RaiseError("expected \'//\' ", ErrorType_Syntax);
+        else if (input == EOF) RaiseError("expected \'//\' ", ErrorType_Lexical);
         else { state = 3; break; }
 
       case 3:
         if (input != '/') { state = 2; break; }
-        else if (input == EOF) RaiseError("expected \'//\' ", ErrorType_Syntax);
+        else if (input == EOF) RaiseError("expected \'//\' ", ErrorType_Lexical);
         else { end = true; break; }
 
       default:
-        EndScanner("unknown state in comment", ErrorType_Syntax);
+        EndScanner("unknown state in comment", ErrorType_Lexical);
         end = true;
         break;
     }
@@ -210,18 +210,18 @@ Phrasem getOperator() {
           end = true;
         }
 
-        else RaiseError("not a operator", ErrorType_Syntax);
+        else RaiseError("not a operator", ErrorType_Lexical);
         break;
 
 
       case 1:
         if ( input == '>') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          if ( !AddToBuffer(input) ) RaiseError("buffer allocation failed", ErrorType_Internal);
           end = true;
         }
 
         else if (input == '=') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          if ( !AddToBuffer(input) ) RaiseError("buffer allocation failed", ErrorType_Internal);
           end = true;
         }
         else {
@@ -232,7 +232,7 @@ Phrasem getOperator() {
 
       case 2:
         if ( input == '=') {
-          if ( !AddToBuffer(input) ) RaiseError("parsing not possible", ErrorType_Syntax);
+          if ( !AddToBuffer(input) ) RaiseError("buffer allocation failed", ErrorType_Internal);
           end = true;
         }
 
@@ -249,13 +249,13 @@ Phrasem getOperator() {
   }
 
   char * p = GetBuffer();
-  if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
+  if(p == NULL) RaiseError("buffer allocation failed", ErrorType_Internal);
 
 
   long x = getOperatorId(p);
   free(p);
 
-  if ( x == -1) RaiseError("constant table error", ErrorType_Internal);
+  if ( x == -1) RaiseError("constant table failed", ErrorType_Internal);
 
   ALLOC_PHRASEM(phr);
   phr->table = TokenType_Operator;
@@ -299,13 +299,13 @@ Phrasem getString() {
         if (input == '"') {
 
           char * p = GetBuffer();
-          if(p == NULL) RaiseError("buffer allocation error", ErrorType_Internal);
+          if(p == NULL) RaiseError("buffer allocation failed", ErrorType_Internal);
 
           DataUnion du;
           du.svalue = p;
 
           int x = constInsert(DataType_String, du);
-          if ( x == -1) RaiseError("constant table allocation error", ErrorType_Internal);
+          if ( x == -1) RaiseError("constant table allocation failed", ErrorType_Internal);
 
           ALLOC_PHRASEM(phr);
           phr->table = TokenType_Constant;
@@ -317,7 +317,7 @@ Phrasem getString() {
 
           return phr;
         }
-        else if (input == EOF)  RaiseError("string not ended", ErrorType_Syntax);
+        else if (input == EOF)  RaiseError("string not ended", ErrorType_Lexical);
         else if (input != '\\') {
           SaveToBuffer(input);
         }
@@ -351,7 +351,7 @@ Phrasem getString() {
           asciival += 100*(input - '0');
           state = 4;
         }
-        else RaiseError("bad internal state", ErrorType_Syntax);
+        else RaiseError("bad internal state", ErrorType_Internal);
 
         break;
       // second digit of \xxx
@@ -361,7 +361,7 @@ Phrasem getString() {
           asciival += 10*(input-'0');
           state = 5;
         }
-        else RaiseError("not valid escape sequence", ErrorType_Syntax);
+        else RaiseError("not valid escape sequence", ErrorType_Lexical);
 
         break;
       // third digit
@@ -369,15 +369,15 @@ Phrasem getString() {
         if(isdigit(input))
         {
           asciival += input-'0';
-          if((asciival > 255) && (asciival < 1)) RaiseError("not valid escape sequence", ErrorType_Syntax);
+          if((asciival > 255) && (asciival < 1)) RaiseError("not valid escape sequence", ErrorType_Lexical);
           SaveToBuffer(asciival);
           state = 2;
           break;
         }
-        else RaiseError("not valid escape sequence", ErrorType_Syntax);
+        else RaiseError("not valid escape sequence", ErrorType_Lexical);
 
       default:
-        RaiseError("bad internal state", ErrorType_Syntax);
+        RaiseError("bad internal state", ErrorType_Lexical);
     }
   }
   return NULL;
@@ -462,7 +462,7 @@ Phrasem getIdentifier(){
 
       // bad state
       default:
-        RaiseError("parsing not possible", ErrorType_Syntax);
+        RaiseError("bad internal state", ErrorType_Internal);
     }
   } while(1);
   return NULL;
@@ -523,7 +523,7 @@ Phrasem getNumber(){
         }
 
         else {
-          RaiseError("digit expected", ErrorType_Syntax);
+          RaiseError("digit expected", ErrorType_Lexical);
         }
 
         break;
@@ -557,7 +557,7 @@ Phrasem getNumber(){
         }
 
         else {
-          RaiseError("digit expected", ErrorType_Syntax);
+          RaiseError("digit expected", ErrorType_Lexical);
         }
 
         break;
@@ -570,7 +570,7 @@ Phrasem getNumber(){
         }
 
         else {
-          RaiseError("digit expected", ErrorType_Syntax);
+          RaiseError("digit expected", ErrorType_Lexical);
         }
         break;
       // positive exponent, other digits
@@ -593,7 +593,7 @@ Phrasem getNumber(){
           state = 10;
         }
 
-        else RaiseError("digit expected", ErrorType_Syntax);
+        else RaiseError("digit expected", ErrorType_Lexical);
 
         break;
 
@@ -834,7 +834,7 @@ Phrasem RemoveFromQueue()
     return getNumber();
   }
 
-  else RaiseError("unknown symbol", ErrorType_Syntax);
+  else RaiseError("unknown symbol", ErrorType_Lexical);
 
 }
 

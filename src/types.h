@@ -230,10 +230,12 @@ typedef struct stack
  */
 
 #define OK 0
-#define SYNTAX_ERROR 1
-#define SEMANTIC1_ERROR 2
-#define SEMANTIC2_ERROR 3
-#define INTERNAL_ERROR 99
+#define LEXICAL_ERROR 1
+#define SYNTAX_ERROR 2
+#define SEMANTIC1_ERROR 3 // not defined function/variable, redefinition of function/variable
+#define SEMANTIC2_ERROR 4 // type incompatibility, bad argument/parameter count in function call
+#define SEMANTIC3_ERROR 6 // other semantic errors
+#define INTERNAL_ERROR 99 // allocation error etc.
 
 /** @} */
 /*--------------------------------------------------*/

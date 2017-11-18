@@ -19,6 +19,7 @@
 #include "functions.h"
 #include "generator.h"
 #include "io.h"
+#include "list.h"
 #include "parser.h"
 #include "pedant.h"
 #include "queue.h"
@@ -623,7 +624,7 @@ bool ExpressionParse()
     if(p->table != TokenType_Symbol && p->table != TokenType_Constant &&
       (p->table != TokenType_Operator || p->d.index > 9))
     {
-        RaiseError("Empty expression", p, ErrorType_Semantic1);
+        RaiseError("Empty expression", p, ErrorType_Syntax);
         ReturnToQueue(p);
         failure = true;
     }
@@ -673,7 +674,7 @@ bool ExpressionParse()
             else if(x == '#')
             {
                 failure = true;
-                RaiseError("Expression error", p, ErrorType_Semantic1);
+                RaiseError("Expression error", p, ErrorType_Syntax);
             }
 
         }
@@ -722,13 +723,13 @@ bool ExpressionParse()
                     else
                     {
                         failure = true;
-                        RaiseError("Expression error", p, ErrorType_Semantic1);
+                        RaiseError("Expression error", p, ErrorType_Syntax);
                     }
                 }
                 else    // pom == -1; cannot find a rule for reduction -> bad expression
                 {
                     failure = true;
-                    RaiseError("Expression error", p, ErrorType_Semantic1);
+                    RaiseError("Expression error", p, ErrorType_Syntax);
                 }
             }
             else if(x == '=')
@@ -739,7 +740,7 @@ bool ExpressionParse()
             else    // x == '#'
             {
                 failure = true;
-                RaiseError("Expression error", p, ErrorType_Semantic1);
+                RaiseError("Expression error", p, ErrorType_Syntax);
             }
         }
         else    //it is not my symbol
@@ -925,7 +926,7 @@ bool VariableDefinitionParse()
   if(type == DataType_Unknown)
   {
     freePhrasem(var);
-    RaiseError("unknown datatype", dt, ErrorType_Semantic1);
+    RaiseError("unknown datatype", dt, ErrorType_Internal);
   }
 
   Phrasem dup = duplicatePhrasem(var); // deep copy
@@ -972,7 +973,7 @@ bool VariableDefinitionParse()
       default:
         freePhrasem(sep);
         freePhrasem(dup);
-        RaiseError("unknown datatype", nul, ErrorType_Semantic1);
+        RaiseError("unknown datatype", nul, ErrorType_Internal);
     }
 
 
@@ -1128,8 +1129,9 @@ bool SymbolParse()
     if( !AssignmentParse() ) return false;
 
   }
-  else if( P_FunctionDefined(p->d.str) )
+  else if( P_FunctionDefined(p) )
   {
+    /*
     // '(' token
     CheckOperator("(");
 
@@ -1141,9 +1143,10 @@ bool SymbolParse()
 
     // LF
     CheckSeparator();
+    */
 
   }
-  else RaiseError("unknown symbol", p, ErrorType_Semantic1);
+  else RaiseError("unknown symbol", p, ErrorType_Internal);
 
   return true;
 }
@@ -1272,6 +1275,8 @@ bool FunctionDeclarationParse()
 
   // nesting
   if(Config_getFunction() != NULL) RaiseError("nested function declaration", funcname, ErrorType_Syntax);
+  // redefinition
+  if(P_FunctionDefined(funcname)) RaiseError("redeclaration of function", funcname, ErrorType_Semantic1);
 
   // operator (
   CheckOperator("(");

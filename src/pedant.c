@@ -68,24 +68,25 @@ bool P_DefineNewVariable(Phrasem varname, Phrasem datatype)
   DataType type = getDataType(datatype);
   if(type == DataType_Unknown)
   {
-    RaiseError("unknown datatype", datatype, ErrorType_Semantic1);
+    RaiseError("unknown datatype", datatype, ErrorType_Internal);
   }
 
   if(!addVariable(Config_getFunction(), varname->d.str)
   || !addVariableType(Config_getFunction(), varname->d.str, type))
   {
-    RaiseError("alloc variable error", varname, ErrorType_Semantic1);
+    RaiseError("alloc variable error", varname, ErrorType_Internal);
   }
 
   return true;
 }
 
-bool P_FunctionDefined(const char * funcname)
+bool P_FunctionDefined(Phrasem p)
 {
   #ifdef PEDANT_DEBUG
     debug("Pedant, Function Defined?");
   #endif
-  return findFunctionInTable(funcname);
+  if((p == NULL) || (p->d.str == NULL)) return false;
+  return findFunctionInTable(p->d.str);
 }
 
 bool P_DefineNewFunction(const char * funcname)
@@ -397,7 +398,7 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
                       break;
 
 
-            default: RaiseError("invalid operator", temp_from->data, ErrorType_Semantic1);
+            default: RaiseError("invalid operator", temp_from->data, ErrorType_Semantic3);
                      return DataType_Unknown;
         }
     }
@@ -406,7 +407,7 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
         #ifdef PEDANT_DEBUG
             debugRecursion--;
         #endif
-        RaiseError("token type is not constant or variable or operator", (**from)->data, ErrorType_Semantic1);
+        RaiseError("token type is not constant or variable or operator", (**from)->data, ErrorType_Semantic3);
         *from = &(**from)->next;
         return DataType_Unknown;
     }
@@ -477,7 +478,7 @@ bool P_HandleOperand(Phrasem p)
     // checks if the token contains a name of function
     if(findFunctionInTable(p->d.str))
     {
-        RaiseError("Handle_operand: function as an operand in expression! not allowed", p, ErrorType_Semantic1);
+        RaiseError("Handle_operand: function as an operand in expression! not allowed", p, ErrorType_Semantic2);
         freePhrasem(p);
         return false;
     }
@@ -491,7 +492,7 @@ bool P_HandleOperand(Phrasem p)
         }
         else
         {
-            RaiseError("Handle_operand: variable has type of -> DataType_Unknown <-", p, ErrorType_Semantic1);
+            RaiseError("Handle_operand: variable has type of -> DataType_Unknown <-", p, ErrorType_Internal);
             freePhrasem(p);
             return false;
         }
@@ -511,7 +512,7 @@ bool P_HandleOperand(Phrasem p)
     }
     else
     {
-        RaiseError("Handle_operand: constant is of an undefined type", p, ErrorType_Semantic1);
+        RaiseError("Handle_operand: constant is of an undefined type", p, ErrorType_Semantic2);
         freePhrasem(p);
         return false;
     }
@@ -522,7 +523,7 @@ bool P_HandleOperand(Phrasem p)
   }
   else      // neither operand nor operator
   {
-        RaiseError("token type is not constant or symbol or operator", p, ErrorType_Semantic1);
+        RaiseError("token type is not constant or symbol or operator", p, ErrorType_Semantic3);
         freePhrasem(p);
         return false;
   }

@@ -664,7 +664,7 @@ void functionFrameFree(SymbolTable * frame)
     while(frame->firstParam != NULL)
     {
         struct paramFce * pom = frame->firstParam;
-        frame->firstParam = frame->firstParam->nextParam;
+        frame->firstParam = frame->firstParam->next;
         free(pom->name);
         free(pom);
     }
@@ -908,7 +908,7 @@ size_t listLength(struct paramFce * parametres)
     while(parametres != NULL)
     {
         i++;
-        parametres = parametres->nextParam;
+        parametres = parametres->next;
     }
     return i;
 }
@@ -942,7 +942,7 @@ bool addFunctionParameters(const char * functionName, struct paramFce * parametr
         {
             if(!addVariable(function->name, pom->name)) return false;
             if(!addVariableType(function->name, pom->name, pom->type)) return false;
-            pom = pom->nextParam;
+            pom = pom->next;
         }
     }
 
@@ -1110,7 +1110,7 @@ void printfunction(void)
         {
             printf(" - Jmeno param: %s\n", pom->name);
             printf(" - Typ param: %d\n", (int)pom->type);
-            pom = pom->nextParam;
+            pom = pom->next;
         }
         print(functionTable.arr[i]->variables);
         printf("==========================================================================\n\n");
@@ -1137,40 +1137,6 @@ void printfunction(void)
 
 
 
-/**
- * @brief   Destroys parameters of a function.
- *
- */
-void paramFree(struct paramFce * parameter)
-{
-    struct paramFce * pom;
-
-    while(parameter != NULL)
-    {
-        pom = parameter;
-        parameter = parameter->nextParam;
-        free(pom->name);
-        free(pom);
-    }
-    #ifdef SYMTABLE_DEBUG
-        debug("Freeing parameters.");
-    #endif
-}
-/**
- * @brief   Destroys symbol table (function).
- *
- */
-void symtableFree(SymbolTable * symtable)
-{
-    paramFree(symtable->firstParam);
-    free(symtable->name);
-    frameFree(symtable->variables);
-    free(symtable);
-
-    #ifdef SYMTABLE_DEBUG
-        debug("Freeing symbol table (function).");
-    #endif
-}
 /**
  * @brief   Deletes a function symbol table from stack.
  *
@@ -1306,11 +1272,13 @@ bool pushOntoSymtableStack(char * functionName)
  *
  * List.
  */
+ /*
 struct paramFce{
     DataType type;
     char * name;        //do i need to know name of the parameter?
     struct paramFce *next;
 };
+*/
 
 /**
  * @brief   Structure representing function data.

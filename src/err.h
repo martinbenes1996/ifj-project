@@ -22,9 +22,11 @@
  */
 typedef enum
 {
+  ErrorType_Lexical,/**< Lexical error. */
   ErrorType_Syntax, /**< Syntax error. */
-  ErrorType_Semantic1, /**< Semantic error, first type. */
-  ErrorType_Semantic2, /**< Semantic error, second type. */
+  ErrorType_Semantic1, /**< Semantic error, first type. */      // not defined function/variable, redefinition of function/variable
+  ErrorType_Semantic2, /**< Semantic error, second type. */     // type incompatibility, bad argument/parameter count in function call
+  ErrorType_Semantic3, /**< Semantic error, third type */       // other semantic errors
   ErrorType_Internal, /**< Internal error (allocation etc.). */
   ErrorType_Ok /**< Everything ok (returned when nothing happens). */
 } ErrorType;

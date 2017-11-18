@@ -41,7 +41,7 @@ bool P_VariableDefined(Phrasem varname);
  * @param varname         Name of the function.
  * @returns   True if defined. False if not.
  */
-bool P_FunctionDefined(const char * funcname);
+bool P_FunctionDefined(Phrasem funcname);
 
 /**
  * @brief   Defines new variable.

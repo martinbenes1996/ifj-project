@@ -40,6 +40,10 @@ int getErrorCode()
 {
   switch(mtype)
   {
+    // lexical error
+    case ErrorType_Lexical:
+      return LEXICAL_ERROR;
+
     // syntax error
     case ErrorType_Syntax:
       return SYNTAX_ERROR;
@@ -49,6 +53,8 @@ int getErrorCode()
       return SEMANTIC1_ERROR;
     case ErrorType_Semantic2:
       return SEMANTIC2_ERROR;
+    case ErrorType_Semantic3:
+      return SEMANTIC3_ERROR;
 
     // internal error
     case ErrorType_Internal:
