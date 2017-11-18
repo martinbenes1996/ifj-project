@@ -1068,6 +1068,7 @@ bool PrintParse(bool first)
     if( isSeparator(q) )
     {
       free(q);
+      G_EndBlock();
       return true;
     }
 

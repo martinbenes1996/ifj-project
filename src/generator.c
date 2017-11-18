@@ -334,13 +334,27 @@ void GenerateAritm(Stack s)
     // second
     Phrasem q = PopFromStack(s);
     if(q == NULL) break;
+    // implicit conversion
+    if(isTypeCast(q))
+    {
+      GenerateTypeCast(q->table);
+      q = PopFromStack(s);
+    }
     // control of implicit conversion (if so, then pop again)
     out("PUSHS %s", GenerateName(q));
     free(q);
 
     // operator
     Phrasem operator = PopFromStack(s);
-    // control of implicit conversion (if so, then pop again)
+    if(operator == NULL) break;
+
+    // implicit conversion
+    if(isTypeCast(operator))
+    {
+      GenerateTypeCast(operator->table);
+      operator = PopFromStack(s);
+    }
+
     if (isOperator(operator, "+")) {
       out("ADDS");
     }
@@ -356,6 +370,10 @@ void GenerateAritm(Stack s)
     else if (isOperator(operator, "/")) {
       out("DIVS");
     }
+    else if (isOperator(operator, "\\")) {
+      out("DIVS");
+      out("FLOAT2INTS");
+    }
   }
 }
 
@@ -366,7 +384,6 @@ bool Send(Stack s)
   #ifdef GENERATOR_DEBUG
     debug("Send to Generator");
     PrintStack(s);
-    PrintGStateStack();
   #endif
 
   // incoming stack process
@@ -380,6 +397,10 @@ bool Send(Stack s)
   {
     GeneratePrint();
   }
+
+  #ifdef GENERATOR_DEBUG
+    PrintGStateStack();
+  #endif
   return true;
 }
 
@@ -387,7 +408,6 @@ bool HandlePhrasem(Phrasem p)
 {
   #ifdef GENERATOR_DEBUG
     debug("Handeling phrasem.");
-    PrintGStateStack();
     PrintPhrasem(p);
   #endif
 
@@ -415,6 +435,9 @@ bool HandlePhrasem(Phrasem p)
   }
 
   PopGState();
+  #ifdef GENERATOR_DEBUG
+    PrintGStateStack();
+  #endif
   return true;
 }
 
@@ -514,7 +537,6 @@ void G_EndBlock()
 {
   #ifdef GENERATOR_DEBUG
     debug("Generate end.");
-    PrintGStateStack();
   #endif
 
   GState up = PopGState();
@@ -528,6 +550,10 @@ void G_EndBlock()
     out("JUMP %s", PopLabel());
     out("LABEL %s", tmp);
   }
+
+  #ifdef GENERATOR_DEBUG
+    PrintGStateStack();
+  #endif
 }
 
 

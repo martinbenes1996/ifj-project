@@ -46,6 +46,8 @@ inline bool isOperator(Phrasem p, const char * op);
  */
 inline bool isSeparator(Phrasem p);
 
+inline bool isTypeCast(Phrasem p);
+
 /**
  * @brief   Checks phrasem if is keyword.
  *
@@ -155,6 +157,11 @@ inline bool isOperator(Phrasem p, const char * op)
 inline bool isSeparator(Phrasem p)
 {
   return p->table == TokenType_Separator;
+}
+
+inline bool isTypeCast(Phrasem p)
+{
+  return (p->table == TypeCast_Double2Int) || (p->table == TypeCast_Int2Double);
 }
 
 inline bool matchesKeyword(Phrasem p, const char * kw)
