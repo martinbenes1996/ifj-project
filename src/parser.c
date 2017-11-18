@@ -572,7 +572,7 @@ int checkEPRules(/*Stack returnStack, */Stack temporaryOpStack)
             LookTripleAheadEPStack(op_E, DivDouble, op_E))
     {
         MODIFY_STACK();
-        P_HandleOperand(PopFromStack(temporaryOpStack)); //it should pop an operator
+        if(!P_HandleOperand(PopFromStack(temporaryOpStack))) return -1; //it should pop an operator
         return 1;
     }
     else if(LookTripleAheadEPStack(CloseBracket, op_E, OpenBracket))
@@ -623,7 +623,9 @@ bool ExpressionParse()
     if(p->table != TokenType_Symbol && p->table != TokenType_Constant &&
       (p->table != TokenType_Operator || p->d.index > 9))
     {
-        RaiseError("Empty expression", p, ErrorType_Semantic1);
+        //RaiseError("Empty expression", p, ErrorType_Semantic1);
+        setErrorMessage("Empty expression");
+        setErrorType(ErrorType_Semantic1);
         ReturnToQueue(p);
         failure = true;
     }
@@ -666,14 +668,15 @@ bool ExpressionParse()
                     PushOntoEPStack(op_i);    // i: operand
 
                 }
-                P_HandleOperand(p);
-                //PushOntoStack(returnStack, p);      //pushing operand on stack
+                if(!P_HandleOperand(p)) failure = true;
                 p = CheckQueue(p);
             }
             else if(x == '#')
             {
                 failure = true;
-                RaiseError("Expression error", p, ErrorType_Semantic1);
+                //RaiseError("Expression error", p, ErrorType_Semantic1);
+                setErrorMessage("Expression error");
+                setErrorType(ErrorType_Semantic1);
             }
 
         }
@@ -722,13 +725,17 @@ bool ExpressionParse()
                     else
                     {
                         failure = true;
-                        RaiseError("Expression error", p, ErrorType_Semantic1);
+                        //RaiseError("Expression error", p, ErrorType_Semantic1);
+                        setErrorMessage("Expression error");
+                        setErrorType(ErrorType_Semantic1);
                     }
                 }
                 else    // pom == -1; cannot find a rule for reduction -> bad expression
                 {
                     failure = true;
-                    RaiseError("Expression error", p, ErrorType_Semantic1);
+                    //RaiseError("Expression error", p, ErrorType_Semantic1);
+                    setErrorMessage("Expression error");
+                    setErrorType(ErrorType_Semantic1);
                 }
             }
             else if(x == '=')
@@ -739,7 +746,9 @@ bool ExpressionParse()
             else    // x == '#'
             {
                 failure = true;
-                RaiseError("Expression error", p, ErrorType_Semantic1);
+                //RaiseError("Expression error", p, ErrorType_Semantic1);
+                setErrorMessage("Expression error");
+                setErrorType(ErrorType_Semantic1);
             }
         }
         else    //it is not my symbol
@@ -763,7 +772,8 @@ bool ExpressionParse()
 
 
     //call pedant end function
-    if(!ExpressionEnd()) failure = true;
+    if(!failure)
+        if(!ExpressionEnd()) failure = true;
 
     ClearStack(temporaryOpStack);   //should be empty. If its not -> error.
     ClearEPStack();                 //destroying EPStack
