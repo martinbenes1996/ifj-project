@@ -7,7 +7,7 @@
 
 # compile settings
 cc = gcc
-defines = -DDEBUG_MODE #-DUSE_SYSLOG -DMULTITHREAD
+defines = -DDEBUG_MODE -DCOLOR_MODE #-DUSE_SYSLOG -DMULTITHREAD
 linkings = -lpthread -lm
 flags = $(defines) -O2 -g -std=c99 -pedantic -Wall -Wextra
 

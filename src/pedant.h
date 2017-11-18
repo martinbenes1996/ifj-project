@@ -83,6 +83,8 @@ bool P_HandleOperand(Phrasem p);
  */
 bool P_HandleTarget(Phrasem p);
 
+bool P_HandleCompareOperator(Phrasem p);
+
 /**
  * @brief     Moves stack to generator.
  *

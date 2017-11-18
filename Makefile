@@ -41,4 +41,4 @@ clean:
 	@printf "";\
 	cd ./src && make clean -s
 	@echo "Cleaning project files.";\
-	rm -rf doc/html test/*.err test/*.out test/*.stderr test/*.stdout
+	rm -rf doc/html test/*.err test/test*/*_compiled test/test*/*.stderr test/test*/*.stdout

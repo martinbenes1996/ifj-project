@@ -432,7 +432,7 @@ bool ExpressionEnd()
     mstack = TurnStack(mstack);
 
     #ifdef PEDANT_DEBUG
-        debug("Expression processed, sending it to generator");
+        debug("Expression processed, saved in pedant.");
     #endif
 
     return true;
@@ -532,6 +532,9 @@ bool P_HandleOperand(Phrasem p)
 
 bool P_HandleTarget(Phrasem p)
 {
+  #ifdef PEDANT_DEBUG
+    debug("Pedant, handle target!");
+  #endif
   DataType target_dt = findVariableType(Config_getFunction(), p->d.str);
   DataType source_dt = typeOfResult;
 
@@ -578,12 +581,13 @@ bool P_HandleTarget(Phrasem p)
   // error
   else RaiseError("incompatible type", p, ErrorType_Semantic2);
 
-  if( !HandlePhrasem(p) ) return false;
-
   return true;
 }
 
 bool P_HandleCompareOperator(Phrasem p) {
+  #ifdef PEDANT_DEBUG
+    debug("Pedant, handle compare operator.");
+  #endif
   DataType generated = mdtmem;
   DataType waiting = typeOfResult;
 

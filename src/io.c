@@ -18,20 +18,35 @@
 
 #include "io.h"
 
-#define RED "\033[0;31m"
-#define RED_BOLD "\033[1;31m"
-#define RED_INVERSE "\033[7;31m"
-#define GREEN "\033[0;32m"
-#define GREEN_BOLD "\033[1;32m"
-#define GREEN_INVERSE "\033[7;32m"
-#define YELLOW "\033[0;33m"
-#define YELLOW_BOLD "\033[1;33m"
-#define YELLOW_INVERSE "\033[7;33m"
-#define BLUE "\033[0;34m"
-#define BLUE_BOLD "\033[1;34m"
-#define BLUE_INVERSE "\033[7;34"
-#define RESET_COLOR "\033[0m"
-
+#ifdef COLOR_MODE
+  #define RED "\033[0;31m"
+  #define RED_BOLD "\033[1;31m"
+  #define RED_INVERSE "\033[7;31m"
+  #define GREEN "\033[0;32m"
+  #define GREEN_BOLD "\033[1;32m"
+  #define GREEN_INVERSE "\033[7;32m"
+  #define YELLOW "\033[0;33m"
+  #define YELLOW_BOLD "\033[1;33m"
+  #define YELLOW_INVERSE "\033[7;33m"
+  #define BLUE "\033[0;34m"
+  #define BLUE_BOLD "\033[1;34m"
+  #define BLUE_INVERSE "\033[7;34"
+  #define RESET_COLOR "\033[0m"
+#else
+  #define RED ""
+  #define RED_BOLD ""
+  #define RED_INVERSE ""
+  #define GREEN ""
+  #define GREEN_BOLD ""
+  #define GREEN_INVERSE ""
+  #define YELLOW ""
+  #define YELLOW_BOLD ""
+  #define YELLOW_INVERSE ""
+  #define BLUE ""
+  #define BLUE_BOLD ""
+  #define BLUE_INVERSE ""
+  #define RESET_COLOR ""
+#endif // COLOR_MODE
 
 /*------------------ OUTPUT --------------------*/
 

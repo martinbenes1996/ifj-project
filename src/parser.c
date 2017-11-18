@@ -430,7 +430,7 @@ bool RunParser()
     {
       Phrasem p = CheckQueue(p);
       if(p->table == TokenType_EOF) return true;
-      //PrintPhrasem(p);
+      PrintPhrasem(p);
       free(p);
     }
   }
@@ -800,14 +800,13 @@ bool LogicParse()
 
   // right
   if(!ExpressionParse()) return false;
-
   //Phrasem r = CheckQueue(r);  // foo
 
   // sending logic operator
   #ifdef PARSER_DEBUG
     PrintPhrasem(p);
   #endif
-  if(!HandlePhrasem(p)) return false;
+  if(!P_HandleCompareOperator(p)) return false;
 
   return true;
 }
@@ -1087,6 +1086,7 @@ bool PrintParse(bool first)
   CheckOperator(";");
 
   P_MoveStackToGenerator();
+
 
   // recursive call of the same function
   return PrintParse(false);
@@ -1466,6 +1466,7 @@ bool GlobalBlockParse()
 
   // EOF
   if(p->table == TokenType_EOF) end = true;
+  else if(p->table == TokenType_Separator) status = true;
   // not a keyword
   else if(p->table != TokenType_Keyword) RaiseError("syntax error on global level", p, ErrorType_Syntax);
 

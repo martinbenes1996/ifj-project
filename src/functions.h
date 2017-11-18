@@ -275,6 +275,7 @@ inline void PrintPhrasem(Phrasem p)
       debug("Phrasem [%s]", TokenTypeToString(p->table));
       break;
     default:
+      debug("---unknown phrasem---");
       break;
   }
 }

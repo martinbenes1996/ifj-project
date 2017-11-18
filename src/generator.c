@@ -197,6 +197,8 @@ char * GenerateName(Phrasem p);
  */
 void ClearGeneratedName();
 
+char * GenerateType(Phrasem p);
+
 /** @} */
 /*---------------------------------------------------------*/
 
@@ -214,6 +216,7 @@ void InitGenerator()
 
   out(".IFJcode17");
   out("CREATEFRAME");
+  out("PUSHFRAME");
 }
 
 
@@ -229,19 +232,19 @@ void GenerateLogic(Phrasem p)
   if(isOperator(p, "="))
   {
     // =
-    out("JUMIFNEQS %s", aftercond);
+    out("JUMPIFNEQS %s", aftercond);
   }
   else if(isOperator(p, "<>"))
   {
     // <>
-    out("JUMIFEQS %s", aftercond);
+    out("JUMPIFEQS %s", aftercond);
   }
   else if(isOperator(p, ">"))
   {
     // >
     out("GTS");
     out("PUSHS bool@true");
-    out("JUMIFNEQS %s", aftercond);
+    out("JUMPIFNEQS %s", aftercond);
   }
 
   else if(isOperator(p, "<"))
@@ -249,14 +252,14 @@ void GenerateLogic(Phrasem p)
     // <
     out("LTS");
     out("PUSHS bool@true");
-    out("JUMIFNEQS %s", aftercond);
+    out("JUMPIFNEQS %s", aftercond);
   }
   else if(isOperator(p, ">="))
   {
     // >=
     out("LTS");
     out("PUSHS bool@true");
-    out("JUMIFEQS %s", aftercond);
+    out("JUMPIFEQS %s", aftercond);
 
   }
   else
@@ -308,7 +311,7 @@ void GenerateRead(Phrasem p)
   #endif
 
   // this will go from symbol table
-  out("READ %s", GenerateName(p));
+  out("READ %s %s", GenerateName(p), GenerateType(p));
 }
 
 void GenerateAritm(Stack s)
@@ -381,6 +384,7 @@ bool HandlePhrasem(Phrasem p)
   #ifdef GENERATOR_DEBUG
     debug("Handeling phrasem.");
     PrintGStateStack();
+    PrintPhrasem(p);
   #endif
 
   // look to state stack
@@ -504,6 +508,7 @@ void G_EndBlock()
 {
   #ifdef GENERATOR_DEBUG
     debug("Generate end.");
+    PrintGStateStack();
   #endif
 
   GState up = PopGState();
@@ -616,6 +621,23 @@ void ClearGeneratedName()
   }
 }
 
+char * GenerateType(Phrasem p)
+{
+  DataType dt;
+  switch(p->table)
+  {
+    case TokenType_Variable:
+      dt = findVariableType(Config_getFunction(), p->d.str);
+      switch(dt)
+      {
+        case DataType_Integer: return "int";
+        case DataType_Double: return "float";
+        case DataType_String: return "string";
+        default: return NULL;
+      }
+    default: return NULL;
+  }
+}
 
 
 
