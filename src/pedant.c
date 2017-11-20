@@ -1,4 +1,5 @@
 
+#include "collector.h"
 #include "config.h"
 #include "err.h"
 #include "functions.h"
@@ -34,7 +35,7 @@ void EndPedant(const char * msg, ErrorType errtype)
   }
 }
 
-#define RaiseError(msg, phrasem, errtype)                       \
+#define RaiseError(msg, errtype)                                \
   do {                                                          \
     err("%s: %s: l.%d: %s", __FILE__, __func__, __LINE__, msg); \
     EndPedant(msg, errtype);                                    \
@@ -68,13 +69,13 @@ bool P_DefineNewVariable(Phrasem varname, Phrasem datatype)
   DataType type = getDataType(datatype);
   if(type == DataType_Unknown)
   {
-    RaiseError("unknown datatype", datatype, ErrorType_Internal);
+    RaiseError("unknown datatype", ErrorType_Internal);
   }
 
   if(!addVariable(Config_getFunction(), varname->d.str)
   || !addVariableType(Config_getFunction(), varname->d.str, type))
   {
-    RaiseError("alloc variable error", varname, ErrorType_Internal);
+    RaiseError("alloc variable error", ErrorType_Internal);
   }
 
   return true;
@@ -136,12 +137,10 @@ bool RetypeToDouble(StackItem ** where)
     #ifdef PEDANT_DEBUG
         debug("Retyping phrasem to double");
     #endif
-    Phrasem token;
-    token = malloc(sizeof(struct phrasem_data));
+    Phrasem token = allocPhrasem();
     if(token == NULL)
     {
-        RaiseError("Retypetodouble: could not allocate memory", *where, ErrorType_Internal);
-        return false;
+        RaiseError("Retypetodouble: could not allocate memory", ErrorType_Internal);
     }
     // allocation of new token
     token->table = TypeCast_Int2Double;
@@ -150,8 +149,7 @@ bool RetypeToDouble(StackItem ** where)
     pom = malloc(sizeof(StackItem));
     if(pom == NULL)
     {
-        RaiseError("Retypetodouble: could not allocate memory", *where, ErrorType_Internal);
-        return false;
+        RaiseError("Retypetodouble: could not allocate memory", ErrorType_Internal);
     }
     // allocation of new stack item and linking the list
     pom->data = token;
@@ -171,12 +169,10 @@ bool RetypeToInt(StackItem ** where)
     #ifdef PEDANT_DEBUG
         debug("Retyping phrasem to int");
     #endif
-    Phrasem token;
-    token = malloc(sizeof(struct phrasem_data));
+    Phrasem token = allocPhrasem();
     if(token == NULL)
     {
-        RaiseError("Retypetoint: could not allocate memory", *where, ErrorType_Internal);
-        return false;
+        RaiseError("Retypetoint: could not allocate memory", ErrorType_Internal);
     }
     // allocation of new token
     token->table = TypeCast_Double2Int;
@@ -185,8 +181,7 @@ bool RetypeToInt(StackItem ** where)
     pom = malloc(sizeof(StackItem));
     if(pom == NULL)
     {
-        RaiseError("Retypetoint: could not allocate memory", *where, ErrorType_Internal);
-        return false;
+        RaiseError("Retypetoint: could not allocate memory", ErrorType_Internal);
     }
     // allocation of new stack item and linking the list
     pom->data = token;
@@ -466,7 +461,6 @@ bool ExpressionEnd()
     if(PushOntoStack(mstack, p)) return true;       \
     else                                            \
     {                                               \
-        freePhrasem(p);                             \
         return false;                               \
     }
 /**
@@ -483,13 +477,13 @@ bool P_HandleOperand(Phrasem p)
   #endif
   if(p == NULL)
   {
-    RaiseError("Handle_operand: received a NULL pointer instead of token", p, ErrorType_Internal);
-    return false;
+    RaiseError("Handle_operand: received a NULL pointer instead of token", ErrorType_Internal);
   }
 
   if(mstack == NULL)
   {
     mstack = InitStack();
+    fprintf(stderr, "Alloc mstack %p\n", mstack);
     if(mstack == NULL) return false;
   }
 
@@ -502,9 +496,7 @@ bool P_HandleOperand(Phrasem p)
     // checks if the token contains a name of function
     if(findFunctionInTable(p->d.str))
     {
-        RaiseError("Handle_operand: function as an operand in expression! not allowed", p, ErrorType_Semantic2);
-        //freePhrasem(p);
-        return false;
+        RaiseError("Handle_operand: function as an operand in expression! not allowed", ErrorType_Semantic2);
     }
     // checks if the token contains defined variable with known type
     if(findVariable(functionName, p->d.str))
@@ -516,16 +508,12 @@ bool P_HandleOperand(Phrasem p)
         }
         else
         {
-            RaiseError("Handle_operand: variable has type of -> DataType_Unknown <-", p, ErrorType_Internal);
-            //freePhrasem(p);
-            return false;
+            RaiseError("Handle_operand: variable has type of -> DataType_Unknown <-", ErrorType_Internal);
         }
     }
     else
     {
-        RaiseError("Handle_operand: variable not found in symbol table", p, ErrorType_Semantic1);
-        //freePhrasem(p);
-        return false;
+        RaiseError("Handle_operand: variable not found in symbol table", ErrorType_Semantic1);
     }
   }
   else if(p->table == TokenType_Constant)
@@ -536,9 +524,7 @@ bool P_HandleOperand(Phrasem p)
     }
     else
     {
-        RaiseError("Handle_operand: constant is of an undefined type", p, ErrorType_Semantic2);
-        //freePhrasem(p);
-        return false;
+        RaiseError("Handle_operand: constant is of an undefined type", ErrorType_Semantic2);
     }
   }
   else if(p->table == TokenType_Operator)
@@ -547,9 +533,7 @@ bool P_HandleOperand(Phrasem p)
   }
   else      // neither operand nor operator
   {
-        RaiseError("token type is not constant or symbol or operator", p, ErrorType_Semantic3);
-        //freePhrasem(p);
-        return false;
+        RaiseError("token type is not constant or symbol or operator", ErrorType_Semantic3);
   }
 
   return true;
@@ -576,6 +560,7 @@ bool P_HandleTarget(Phrasem p)
       debug("No typecast.");
     #endif
     if( !Send(mstack) ) return false;
+    mstack = NULL;
     if( !HandlePhrasem(p) ) return false;
   }
 
@@ -587,6 +572,7 @@ bool P_HandleTarget(Phrasem p)
       debug("Source: [double]->[int].");
     #endif
     if( !Send(mstack) ) return false;
+    mstack = NULL;
     GenerateTypeCast(TypeCast_Double2Int);
     if( !HandlePhrasem(p) ) return false;
   }
@@ -599,12 +585,13 @@ bool P_HandleTarget(Phrasem p)
       debug("Source: [int]->[double].");
     #endif
     if( !Send(mstack) ) return false;
+    mstack = NULL;
     GenerateTypeCast(TypeCast_Int2Double);
     if( !HandlePhrasem(p) ) return false;
   }
 
   // error
-  else RaiseError("incompatible type", p, ErrorType_Semantic2);
+  else RaiseError("incompatible type", ErrorType_Semantic2);
 
   return true;
 }
@@ -618,6 +605,7 @@ bool P_HandleCompareOperator(Phrasem p) {
 
   if (generated == waiting) {
     if (!Send(mstack)) return false;
+    mstack = NULL;
     if (!HandlePhrasem(p)) return false;
     return true;
   }
@@ -625,18 +613,20 @@ bool P_HandleCompareOperator(Phrasem p) {
   else if ((generated == DataType_Integer)&&(waiting == DataType_Double)) {
     GenerateTypeCast(TypeCast_Int2Double);
     if (!Send(mstack)) return false;
+    mstack = NULL;
     if (!HandlePhrasem(p)) return false;
     return true;
   }
 
   else if((generated == DataType_Double)&&(waiting == DataType_Integer)) {
     if(!Send(mstack)) return false;
+    mstack = NULL;
     GenerateTypeCast(TypeCast_Int2Double);
     if(!HandlePhrasem(p)) return false;
     return true;
   }
 
-  else RaiseError("incompatible types", p, ErrorType_Semantic2);
+  else RaiseError("incompatible types", ErrorType_Semantic2);
 
 }
 
@@ -645,7 +635,9 @@ bool P_HandleCompareOperator(Phrasem p) {
 bool P_MoveStackToGenerator()
 {
   mdtmem = typeOfResult;
-  return Send(mstack);
+  bool status = Send(mstack);
+  mstack = NULL;
+  return status;
 }
 
 bool P_CheckType_MoveStackToGenerator(DataType dt)
@@ -661,7 +653,16 @@ bool P_CheckType_MoveStackToGenerator(DataType dt)
     if(!P_MoveStackToGenerator()) return false;
     GenerateTypeCast(TypeCast_Int2Double);
   }
-  else RaiseError("incompatible types", NULL, ErrorType_Semantic2);
+  else RaiseError("incompatible types", ErrorType_Semantic2);
 
   return true;
+}
+
+void ClearPedant()
+{
+  if(mstack != NULL)
+  {
+    fprintf(stderr, "Free mstack %p\n", mstack);
+    ClearStack(mstack);
+  }
 }

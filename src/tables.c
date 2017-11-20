@@ -66,12 +66,28 @@ const char operators[OPERATOR_ARRAY_SIZE][3] = {"+", "-", "\\", "*", "/", "(", "
 #define TABLE_ERROR -1
 long getOperatorId(const char * word)
 {
-    if(word == NULL) return TABLE_ERROR;
+  if(word == NULL) return TABLE_ERROR;
 
-    int i = 0;
-    for(;i < OPERATOR_ARRAY_SIZE;++i)
-        if(!strcmp(operators[i], word)) return i;
+  #ifdef OPERATOR_TABLE_DEBUG
+    debug("Searching for %s", word);
+  #endif
 
+  int i = 0;
+  for(;i < OPERATOR_ARRAY_SIZE;++i)
+  {
+    if(!strcmp(operators[i], word))
+    {
+      #ifdef OPERATOR_TABLE_DEBUG
+        debug("Found!");
+      #endif
+      return i;
+    }
+  }
+
+
+  #ifdef OPERATOR_TABLE_DEBUG
+    debug("Not found!");
+  #endif
   return -1;
 
 }

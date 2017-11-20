@@ -17,6 +17,7 @@
 #include <string.h>
 
 #include "buffer.h"
+#include "collector.h"
 #include "config.h"
 #include "err.h"
 #include "functions.h"
@@ -27,7 +28,11 @@
 #include "tables.h"
 #include "types.h"
 
+/*---- DATA ------*/
 bool done = false;
+static Stack mem = NULL;
+static bool meminit = false;
+/*----------------*/
 
 void EndScanner(const char * msg, ErrorType errtype)
 {
@@ -45,6 +50,12 @@ void EndScanner(const char * msg, ErrorType errtype)
       debug("End Scanner.");
     #endif
   }
+  ClearStack(mem);
+}
+
+void ClearScanner()
+{
+  EndScanner(NULL, ErrorType_Ok);
 }
 
 /**
@@ -77,17 +88,11 @@ void EndScanner(const char * msg, ErrorType errtype)
 
 
 #define ALLOC_PHRASEM(id)                                               \
-  Phrasem id = malloc(sizeof(struct phrasem_data));                     \
+  Phrasem id = allocPhrasem();/*malloc(sizeof(struct phrasem_data));*/   \
   if (id == NULL) RaiseError("allocation error", ErrorType_Internal)
 
 
 /*------------------------------------------------------------------------*/
-
-
-/*---- DATA ------*/
-static Stack mem = NULL;
-static bool meminit = false;
-/*----------------*/
 
 
 /**
@@ -186,8 +191,18 @@ Phrasem getOperator() {
         }
 
         else if (input == '\\') {
-          SaveToBuffer(input);
-          end = true;
+          long x = getOperatorId("\\");
+          if ( x == -1) RaiseError("constant table failed", ErrorType_Internal);
+
+          ALLOC_PHRASEM(phr);
+          phr->table = TokenType_Operator;
+          phr->d.index = x;
+
+          #ifdef SCANNER_DEBUG
+            PrintPhrasem(phr);
+          #endif
+
+          return phr;
         }
 
         else if (input == '(') {

@@ -188,9 +188,10 @@ inline char * strdup(const char * str)
   return newstr;
 }
 
+extern Phrasem allocPhrasem();
 inline Phrasem duplicatePhrasem(Phrasem p)
 {
-  Phrasem dup = malloc(sizeof(struct phrasem_data));
+  Phrasem dup = allocPhrasem();
   if(dup == NULL) return NULL;
   //
   dup->table = p->table;

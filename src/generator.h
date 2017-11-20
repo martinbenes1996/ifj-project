@@ -31,6 +31,8 @@
  */
 void InitGenerator();
 
+void ClearGenerator();
+
 /** @} */
 /*-----------------------------------------------------------*/
 /** @addtogroup Generator_handle

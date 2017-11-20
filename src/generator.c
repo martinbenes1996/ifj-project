@@ -274,8 +274,6 @@ void GenerateLogic(Phrasem p)
     out("JUMIFEQS %s", aftercond);
   }
 
-  free(p);
-
 }
 
 void GenerateAssignment(Phrasem p)
@@ -285,7 +283,6 @@ void GenerateAssignment(Phrasem p)
   #endif
 
   out("POPS %s", GenerateName(p));
-  free(p);
 }
 void GenerateVariableDeclaration(Phrasem p)
 {
@@ -329,7 +326,6 @@ void GenerateAritm(Stack s)
   // first
   Phrasem p = PopFromStack(s);
   out("PUSHS %s", GenerateName(p) );
-  free(p);
 
   while(1)
   {
@@ -345,7 +341,6 @@ void GenerateAritm(Stack s)
     }
     // control of implicit conversion (if so, then pop again)
     out("PUSHS %s", GenerateName(q));
-    free(q);
 
     // operator
     Phrasem operator = PopFromStack(s);
@@ -391,6 +386,7 @@ bool Send(Stack s)
 
   // incoming stack process
   GenerateAritm(s);
+  ClearStack(s);
 
   // state stack
   PopGState();
@@ -946,4 +942,12 @@ void ClearLabels()
 {
   // clear
   while(PopLabel() != NULL) { }
+}
+
+
+void ClearGenerator()
+{
+  ClearGStates();
+  ClearLabels();
+  ClearGeneratedName();
 }

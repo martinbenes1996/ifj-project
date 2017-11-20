@@ -112,6 +112,8 @@ bool P_CheckType_MoveStackToGenerator(DataType);
  */
 bool ExpressionEnd();
 
+void ClearPedant();
+
 
 /** @}*/
 /*----------------------------------------------------------------------------*/
