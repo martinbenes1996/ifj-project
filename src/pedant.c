@@ -86,18 +86,21 @@ bool P_FunctionDefined(Phrasem p)
   #ifdef PEDANT_DEBUG
     debug("Pedant, Function Defined?");
   #endif
-  if((p == NULL) || (p->d.str == NULL)) return false;
+  if(p->table != TokenType_Symbol) return false;
+
   return findFunctionInTable(p->d.str);
 }
 
-bool P_FunctionDeclared(Phrasem p)
+bool P_DeclareNewFunction(Phrasem funcname, Parameters params)
 {
   #ifdef PEDANT_DEBUG
-    debug("Pedant, Function Declared?");
+    debug("Pedant, Define New Function.");
   #endif
+  if(funcname->table != TokenType_Symbol) return false;
 
-  if(p == NULL) return false;
-  return findFunctionInTable(p->d.str);
+  if(!addFunction(funcname->d.str)) return false;
+  if(!addFunctionParameters(funcname->d.str, params, false)) return false;
+  return true;
 }
 
 bool P_DefineNewFunction(Phrasem funcname, Parameters params)
@@ -107,7 +110,7 @@ bool P_DefineNewFunction(Phrasem funcname, Parameters params)
   #endif
 
   if(!addFunction(funcname->d.str)) return false;
-  if(!addFunctionParameters(funcname->d.str, params)) return false;
+  if(!addFunctionParameters(funcname->d.str, params, true)) return false;
   return true;
 }
 
@@ -443,7 +446,7 @@ bool ExpressionEnd()
     typeOfResult = RetypeRecursive(&where, &from);
     if(typeOfResult == DataType_Unknown)
     {
-        ClearStack(mstack);
+        //ClearStack(mstack);
         return false;
     }
 
@@ -483,7 +486,6 @@ bool P_HandleOperand(Phrasem p)
   if(mstack == NULL)
   {
     mstack = InitStack();
-    fprintf(stderr, "Alloc mstack %p\n", mstack);
     if(mstack == NULL) return false;
   }
 
@@ -661,8 +663,6 @@ bool P_CheckType_MoveStackToGenerator(DataType dt)
 void ClearPedant()
 {
   if(mstack != NULL)
-  {
-    fprintf(stderr, "Free mstack %p\n", mstack);
     ClearStack(mstack);
-  }
+    mstack = NULL;
 }

@@ -43,8 +43,6 @@ bool P_VariableDefined(Phrasem varname);
  */
 bool P_FunctionDefined(Phrasem funcname);
 
-bool P_FunctionDeclared(Phrasem funcname);
-
 /**
  * @brief   Defines new variable.
  *

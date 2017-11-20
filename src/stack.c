@@ -66,6 +66,7 @@ bool PushOntoStack(Stack st, Phrasem data)
   st->first = it;
   #ifdef STACK_DEBUG
     debug("Stack recieved an item.");
+    PrintPhrasem(data);
   #endif
   return true;
 }
@@ -99,6 +100,7 @@ Phrasem PopFromStack(Stack st)
   free(it);
   #ifdef STACK_DEBUG
     debug("Stack popped an item.");
+    PrintPhrasem(p);
   #endif
   return p;
 }
@@ -138,6 +140,9 @@ Stack TurnStack(Stack st)
 
 void ClearStack(Stack st)
 {
+  #ifdef STACK_DEBUG
+    debug("Clear stack.");
+  #endif
   Phrasem p;
   while((p = PopFromStack(st)) != NULL) { }
   free(st);

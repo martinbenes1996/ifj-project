@@ -48,7 +48,7 @@
     //#define QUEUE_DEBUG /* Scanner-Parser queue connection debug. */
     //#define SCANNER_DEBUG /* Lexical analysis debug. */
     //#define PARSER_DEBUG /* Syntactic analysis debug. */
-    //#define STACK_DEBUG /* Stack debug. */
+    #define STACK_DEBUG /* Stack debug. */
     //#define PEDANT_DEBUG /* Semantic analysis debug. */
     //#define TYPECAST_DEBUG /* Typecast debug. */
     //#define GENERATOR_DEBUG /* Code generator debug. */
@@ -58,8 +58,8 @@
     //#define CONSTANT_TABLE_DEBUG /* Table of constants debug. */
     //#define GSTATE_STACK_DEBUG /* Generator state stack debug. */
     //#define EXPRESSION_DEBUG /* Expression parse stack debug. */
-    #define COLLECTOR_DEBUG /* Garbage collector for Phrasem structures. */
-    #define OPERATOR_TABLE_DEBUG /* Operator table debug. */
+    //#define COLLECTOR_DEBUG /* Garbage collector for Phrasem structures. */
+    //#define OPERATOR_TABLE_DEBUG /* Operator table debug. */
 
 	  /*add your own*/
 

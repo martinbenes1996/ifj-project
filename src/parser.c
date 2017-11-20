@@ -1333,7 +1333,8 @@ bool AssignmentParse()
   CheckOperator("=");
 
   Phrasem func = CheckQueue(func);
-  /*
+  PrintPhrasem(func);
+
   if(P_FunctionDefined(func))
   {
     ReturnToQueue(func);
@@ -1342,13 +1343,10 @@ bool AssignmentParse()
   }
   else
   {
-  */
     ReturnToQueue(func);
     // expression
     if(!ExpressionParse()) return false;
-    /*
   }
-  */
 
   // LF
   CheckSeparator();
@@ -1370,6 +1368,8 @@ bool FunctionCallParse()
 
   Phrasem funcname = CheckQueue(funcname);
   if( !FunctionParse(funcname) ) return false;
+
+  PrintPhrasem(funcname);
 
   // defined
   if( !P_FunctionDefined(funcname) ) return false;
@@ -1487,7 +1487,7 @@ bool FunctionDefinitionParse()
     return false;
   }
   // declared
-  if(P_FunctionDeclared(funcname))
+  if(P_FunctionDefined(funcname))
   {
     // check params in declaration
     if(!ParametersMatches(params, findFunctionParameters(funcname->d.str)))
