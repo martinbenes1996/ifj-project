@@ -48,7 +48,7 @@
     //#define QUEUE_DEBUG /* Scanner-Parser queue connection debug. */
     //#define SCANNER_DEBUG /* Lexical analysis debug. */
     //#define PARSER_DEBUG /* Syntactic analysis debug. */
-    #define STACK_DEBUG /* Stack debug. */
+    //#define STACK_DEBUG /* Stack debug. */
     //#define PEDANT_DEBUG /* Semantic analysis debug. */
     //#define TYPECAST_DEBUG /* Typecast debug. */
     //#define GENERATOR_DEBUG /* Code generator debug. */
