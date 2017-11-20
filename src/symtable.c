@@ -918,9 +918,10 @@ size_t listLength(struct paramFce * parametres)
  * Returns false when unsuccessful or true
  * @param functionName  name of the function
  * @param type          type of the parameter
+ * @param definition    true -> function is being defined, false -> it is only a declaration
  * @returns True/false.
  */
-bool addFunctionParameters(const char * functionName, struct paramFce * parametres)
+bool addFunctionParameters(const char * functionName, struct paramFce * parametres, bool definition)
 {
     SymbolTable * function;
     function = findFunction(functionName);
@@ -931,18 +932,21 @@ bool addFunctionParameters(const char * functionName, struct paramFce * parametr
     }
     else
     {
-        if(function->firstParam != NULL) return false;
+        //if(function->firstParam != NULL) return false;
         //inserts parametres into list
         function->firstParam = parametres;
         function->numberOfParameters = listLength(parametres);
 
-        //inserts parametres into variable array
-        struct paramFce * pom = function->firstParam;
-        while(pom != NULL)
+        if(definition)
         {
-            if(!addVariable(function->name, pom->name)) return false;
-            if(!addVariableType(function->name, pom->name, pom->type)) return false;
-            pom = pom->next;
+            //inserts parametres into variable array
+            struct paramFce * pom = function->firstParam;
+            while(pom != NULL)
+            {
+                if(!addVariable(function->name, pom->name)) return false;
+                if(!addVariableType(function->name, pom->name, pom->type)) return false;
+                pom = pom->next;
+            }
         }
     }
 
