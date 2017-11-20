@@ -73,9 +73,10 @@ bool addVariable(const char * functionName, const char * name);
  * Returns false when unsuccessful or true
  * @param functionName  name of the function
  * @param type          type of the parameter
+ * @param definition    true -> function is being defined, false -> it is only a declaration
  * @returns True/false.
  */
-bool addFunctionParameters(const char * functionName, struct paramFce * parametres);
+bool addFunctionParameters(const char * functionName, struct paramFce * parametres, bool definition);
 /**
  * @brief   finds all parameters of a function.
  *
