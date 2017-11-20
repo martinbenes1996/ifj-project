@@ -36,6 +36,8 @@ typedef enum
   GState_Logic,
   GState_VariableDeclaration,
   GState_Argument,
+  GState_Return,
+  GState_Function,
   GState_Empty
 } GState;
 
@@ -315,6 +317,31 @@ void GenerateRead(Phrasem p)
   out("READ %s %s", GenerateName(p), GenerateType(p));
 }
 
+void GenerateReturn()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generating return.");
+  #endif
+
+  // this LF -> TF
+  out("POPFRAME");
+  out("DEFVAR TF@*ret");
+  out("POPS TF@*ret");
+  out("RETURN");
+  out("");
+}
+
+void GenerateFunction(Phrasem p)
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generating function.");
+  #endif
+
+  // function
+  out("LABEL %s", p->d.str);
+  out("PUSHFRAME");
+}
+
 void GenerateArgument();
 
 void GenerateAritm(Stack s)
@@ -396,9 +423,13 @@ bool Send(Stack s)
   {
     GeneratePrint();
   }
-  else if( below == GState_Argument)
+  else if( below == GState_Argument )
   {
     GenerateArgument();
+  }
+  else if( below == GState_Return )
+  {
+    GenerateReturn();
   }
 
   #ifdef GENERATOR_DEBUG
@@ -435,6 +466,10 @@ bool HandlePhrasem(Phrasem p)
   else if(top == GState_Assignment)
   {
     GenerateAssignment(p);
+  }
+  else if(top == GState_Function)
+  {
+    GenerateFunction(p);
   }
 
   PopGState();
@@ -488,8 +523,26 @@ void G_Assignment()
 
   PushGState(GState_Assignment);
 
-
 }
+
+void G_Return()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate return.");
+  #endif
+
+  PushGState(GState_Return);
+}
+
+void G_Function()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate function.");
+  #endif
+
+  PushGState(GState_Function);
+}
+
 /*---------- DATA -----------*/
 static char param_name[4]; // there can't be more, than 999 parameters
 /*---------------------------*/

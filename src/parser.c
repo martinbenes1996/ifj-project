@@ -394,6 +394,8 @@ bool AssignmentParse();
  */
 bool FunctionCallParse();
 
+bool ReturnParse();
+
 /** @} */
 /*----------------------------------------------------*/
 /** @addtogroup End_parsers
@@ -1121,6 +1123,28 @@ bool SymbolParse()
   return true;
 }
 
+bool ReturnParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("Return parse.");
+  #endif
+
+  G_Return();
+
+  // Expression
+  if(!ExpressionParse()) return false;
+
+  // semantics
+  DataType ftype = findFunctionType(Config_getFunction());
+  PrintDataType(ftype);
+  if(!P_CheckType_MoveStackToGenerator(ftype)) return false;
+
+  // LF
+  CheckSeparator();
+
+  return true;
+}
+
 bool BlockParse()
 {
   #ifdef PARSER_DEBUG
@@ -1168,11 +1192,11 @@ bool BlockParse()
       {
         ReturnToQueue(p);
         end = true;
-        return true;
       }
       // function return
       else if(matchesKeyword(p, "return"))
       {
+        if(!ReturnParse()) return false;
       }
       // function declaration
       else if(matchesKeyword(p, "declare"))
@@ -1333,13 +1357,12 @@ bool AssignmentParse()
   CheckOperator("=");
 
   Phrasem func = CheckQueue(func);
-  PrintPhrasem(func);
 
   if(P_FunctionDefined(func))
   {
     ReturnToQueue(func);
     // function call
-    FunctionCallParse();
+    if(!FunctionCallParse()) return false;
   }
   else
   {
@@ -1369,10 +1392,8 @@ bool FunctionCallParse()
   Phrasem funcname = CheckQueue(funcname);
   if( !FunctionParse(funcname) ) return false;
 
-  PrintPhrasem(funcname);
-
   // defined
-  if( !P_FunctionDefined(funcname) ) return false;
+  if( !P_FunctionDefined(funcname) ) RaiseError("calling unknown function", ErrorType_Semantic1);
 
   // (
   CheckOperator("(");
@@ -1393,8 +1414,6 @@ bool FunctionCallParse()
 
   // )
   CheckOperator(")");
-  // LF
-  CheckSeparator();
 
   G_EndBlock();
 
@@ -1407,9 +1426,13 @@ bool FunctionDefinitionParse()
     debug("Function definition parse.");
   #endif
 
+  G_Function();
+
   // function name
   Phrasem funcname = CheckQueue(funcname);
   if( !FunctionParse(funcname) ) return false;
+
+  HandlePhrasem(funcname);
 
   // nesting control
   if(Config_getFunction() != NULL)
@@ -1463,9 +1486,10 @@ bool FunctionDefinitionParse()
 
     }
 
-    // operator )
-    CheckOperator(")");
   }
+
+  // operator )
+  CheckOperator(")");
 
   // keyword 'as'
   CheckKeyword("as");
@@ -1474,7 +1498,6 @@ bool FunctionDefinitionParse()
   Phrasem type = CheckQueue(type);
   if(!DataTypeParse(type)) return false;
   DataType dt = getDataType(type);
-  freePhrasem(type);
 
   // LF
   CheckSeparator();
@@ -1496,7 +1519,7 @@ bool FunctionDefinitionParse()
     if(dt != findFunctionType(funcname->d.str))
       RaiseError("not matchig return datatype in declaration and definition", ErrorType_Semantic3);
   }
-  if(!P_DefineNewFunction(funcname, params)) return false;
+  if(!P_DefineNewFunction(funcname, type, params)) return false;
   /*-----------------------------------------------------*/
 
   // in the semantics
@@ -1509,6 +1532,8 @@ bool FunctionDefinitionParse()
   // end function
   if(!EndFunctionParse()) return false;
 
+  // set no function
+  setFunction(NULL);
 
   return true;
 }

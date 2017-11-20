@@ -101,6 +101,12 @@ void G_Expression();
 /** @brief Announces variable declaration to generator. */
 void G_VariableDeclaration();
 
+/** @brief Announces return call to generator. */
+void G_Return();
+
+/** @brief Announces function definition to generator. */
+void G_Function();
+
 /** @brief Announces end of a block to generator. */
 void G_EndBlock();
 

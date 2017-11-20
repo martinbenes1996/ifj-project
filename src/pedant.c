@@ -86,30 +86,45 @@ bool P_FunctionDefined(Phrasem p)
   #ifdef PEDANT_DEBUG
     debug("Pedant, Function Defined?");
   #endif
-  if(p->table != TokenType_Symbol) return false;
+  if(p->table != TokenType_Function) return false;
 
   return findFunctionInTable(p->d.str);
 }
 
-bool P_DeclareNewFunction(Phrasem funcname, Parameters params)
+bool P_DeclareNewFunction(Phrasem funcname, Phrasem functype, Parameters params)
 {
   #ifdef PEDANT_DEBUG
     debug("Pedant, Define New Function.");
   #endif
+
+  DataType type = getDataType(functype);
+  if(type == DataType_Unknown)
+  {
+    RaiseError("unknown datatype", ErrorType_Internal);
+  }
+
   if(funcname->table != TokenType_Symbol) return false;
 
   if(!addFunction(funcname->d.str)) return false;
+  if(!setFunctionType(funcname->d.str, type)) return false;
   if(!addFunctionParameters(funcname->d.str, params, false)) return false;
   return true;
 }
 
-bool P_DefineNewFunction(Phrasem funcname, Parameters params)
+bool P_DefineNewFunction(Phrasem funcname, Phrasem functype, Parameters params)
 {
   #ifdef PEDANT_DEBUG
     debug("Pedant, Define New Function.");
   #endif
 
+  DataType type = getDataType(functype);
+  if(type == DataType_Unknown)
+  {
+    RaiseError("unknown datatype", ErrorType_Internal);
+  }
+
   if(!addFunction(funcname->d.str)) return false;
+  if(!setFunctionType(funcname->d.str, type)) return false;
   if(!addFunctionParameters(funcname->d.str, params, true)) return false;
   return true;
 }
