@@ -211,8 +211,8 @@ void EndRoutine()
   #endif // MULTITHREAD
 
   // clear memory
-  constTableFree();       //free the table of constants
-	functionTableEnd();     //free the table of symbols
+  constTableFree();
+	functionTableEnd();
   if(Config_getFunction() != NULL) free(Config_getFunction());
   ClearScanner();
   ClearGenerator();
@@ -531,6 +531,8 @@ bool FunctionParse(Phrasem p)
   {
     RaiseExpectedError("function");
   }
+
+  fprintf(stderr, "%s\n", TokenTypeToString(p->table));
 
   if(p->table != TokenType_Symbol)
   {
@@ -1077,11 +1079,7 @@ bool PrintParse(bool first)
   {
     Phrasem q = CheckQueue(q);
 
-    if( isSeparator(q) )
-    {
-      G_EndBlock();
-      return true;
-    }
+    if( isSeparator(q) ) return true;
 
     else
     {
@@ -1097,6 +1095,8 @@ bool PrintParse(bool first)
   CheckOperator(";");
 
   P_MoveStackToGenerator();
+
+  G_EndBlock();
 
 
   // recursive call of the same function
@@ -1390,7 +1390,7 @@ bool FunctionCallParse()
   G_FunctionCall();
 
   Phrasem funcname = CheckQueue(funcname);
-  if( !FunctionParse(funcname) ) return false;
+  if(!FunctionParse(funcname)) return false;
 
   // defined
   if( !P_FunctionDefined(funcname) ) RaiseError("calling unknown function", ErrorType_Semantic1);

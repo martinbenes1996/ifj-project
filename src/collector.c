@@ -5,9 +5,11 @@
 #include "functions.h"
 #include "io.h"
 
+/*---------- DATA -----------*/
 static void ** mptrs = NULL;
 static size_t msize = 0;
 static size_t mcapacity = 0;
+/*---------------------------*/
 
 Phrasem allocPhrasem()
 {
