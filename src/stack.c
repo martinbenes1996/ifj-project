@@ -132,9 +132,7 @@ Stack TurnStack(Stack st)
         }
 
     // st -> new stack
-    //ClearStack(st);
-    //st = st2;
-
+    ClearStack(st);
     return st2;
 }
 
@@ -146,7 +144,6 @@ void ClearStack(Stack st)
   Phrasem p;
   while((p = PopFromStack(st)) != NULL) { }
   free(st);
-  EndStack(NULL, ErrorType_Ok);
 }
 
 

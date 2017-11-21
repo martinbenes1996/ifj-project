@@ -976,17 +976,26 @@ void RemoveLabel()
   mLabels.first = olditem->next;
 
   // remove label first
-  // ...
+  free((void*)olditem->lbl);
   free(olditem);
 
 }
 
 const char * PopLabel()
 {
-  // look up
-  const char * lbl = LookUpLabel();
-  // remove
-  RemoveLabel();
+  // olditem
+  LabelItem olditem = mLabels.first;
+  // empty
+  if(olditem == NULL) return NULL;
+
+  // not empty
+  mLabels.first = olditem->next;
+
+  // str
+  const char * lbl = olditem->lbl;
+
+  // remove label first
+  free(olditem);
 
   return lbl;
 }
@@ -994,7 +1003,8 @@ const char * PopLabel()
 void ClearLabels()
 {
   // clear
-  while(PopLabel() != NULL) { }
+  const char * lbl;
+  while( (lbl = PopLabel()) != NULL) { free((void *)lbl);  }
 }
 
 
