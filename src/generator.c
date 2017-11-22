@@ -36,6 +36,8 @@ typedef enum
   GState_Logic,
   GState_VariableDeclaration,
   GState_Argument,
+  GState_Return,
+  GState_Function,
   GState_Empty
 } GState;
 
@@ -274,8 +276,6 @@ void GenerateLogic(Phrasem p)
     out("JUMIFEQS %s", aftercond);
   }
 
-  free(p);
-
 }
 
 void GenerateAssignment(Phrasem p)
@@ -285,7 +285,6 @@ void GenerateAssignment(Phrasem p)
   #endif
 
   out("POPS %s", GenerateName(p));
-  free(p);
 }
 void GenerateVariableDeclaration(Phrasem p)
 {
@@ -318,6 +317,31 @@ void GenerateRead(Phrasem p)
   out("READ %s %s", GenerateName(p), GenerateType(p));
 }
 
+void GenerateReturn()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generating return.");
+  #endif
+
+  // this LF -> TF
+  out("POPFRAME");
+  out("DEFVAR TF@*ret");
+  out("POPS TF@*ret");
+  out("RETURN");
+  out("");
+}
+
+void GenerateFunction(Phrasem p)
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generating function.");
+  #endif
+
+  // function
+  out("LABEL %s", p->d.str);
+  out("PUSHFRAME");
+}
+
 void GenerateArgument();
 
 void GenerateAritm(Stack s)
@@ -329,7 +353,6 @@ void GenerateAritm(Stack s)
   // first
   Phrasem p = PopFromStack(s);
   out("PUSHS %s", GenerateName(p) );
-  free(p);
 
   while(1)
   {
@@ -345,7 +368,6 @@ void GenerateAritm(Stack s)
     }
     // control of implicit conversion (if so, then pop again)
     out("PUSHS %s", GenerateName(q));
-    free(q);
 
     // operator
     Phrasem operator = PopFromStack(s);
@@ -391,6 +413,7 @@ bool Send(Stack s)
 
   // incoming stack process
   GenerateAritm(s);
+  ClearStack(s);
 
   // state stack
   PopGState();
@@ -400,9 +423,13 @@ bool Send(Stack s)
   {
     GeneratePrint();
   }
-  else if( below == GState_Argument)
+  else if( below == GState_Argument )
   {
     GenerateArgument();
+  }
+  else if( below == GState_Return )
+  {
+    GenerateReturn();
   }
 
   #ifdef GENERATOR_DEBUG
@@ -439,6 +466,10 @@ bool HandlePhrasem(Phrasem p)
   else if(top == GState_Assignment)
   {
     GenerateAssignment(p);
+  }
+  else if(top == GState_Function)
+  {
+    GenerateFunction(p);
   }
 
   PopGState();
@@ -492,8 +523,26 @@ void G_Assignment()
 
   PushGState(GState_Assignment);
 
-
 }
+
+void G_Return()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate return.");
+  #endif
+
+  PushGState(GState_Return);
+}
+
+void G_Function()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate function.");
+  #endif
+
+  PushGState(GState_Function);
+}
+
 /*---------- DATA -----------*/
 static char param_name[4]; // there can't be more, than 999 parameters
 /*---------------------------*/
@@ -927,17 +976,26 @@ void RemoveLabel()
   mLabels.first = olditem->next;
 
   // remove label first
-  // ...
+  free((void*)olditem->lbl);
   free(olditem);
 
 }
 
 const char * PopLabel()
 {
-  // look up
-  const char * lbl = LookUpLabel();
-  // remove
-  RemoveLabel();
+  // olditem
+  LabelItem olditem = mLabels.first;
+  // empty
+  if(olditem == NULL) return NULL;
+
+  // not empty
+  mLabels.first = olditem->next;
+
+  // str
+  const char * lbl = olditem->lbl;
+
+  // remove label first
+  free(olditem);
 
   return lbl;
 }
@@ -945,5 +1003,14 @@ const char * PopLabel()
 void ClearLabels()
 {
   // clear
-  while(PopLabel() != NULL) { }
+  const char * lbl;
+  while( (lbl = PopLabel()) != NULL) { free((void *)lbl);  }
+}
+
+
+void ClearGenerator()
+{
+  ClearGStates();
+  ClearLabels();
+  ClearGeneratedName();
 }

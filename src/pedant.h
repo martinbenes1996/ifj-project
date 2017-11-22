@@ -61,7 +61,7 @@ bool P_DefineNewVariable(Phrasem varname, Phrasem datatype);
  * @param funcname    Name of the function.
  * @returns True if success. False otherwise.
  */
-bool P_DefineNewFunction(const char * funcname);
+bool P_DefineNewFunction(Phrasem funcname, Phrasem functype, Parameters params);
 
 /**
  * @brief     Pushes operand/operator to stack.
@@ -109,6 +109,8 @@ bool P_CheckType_MoveStackToGenerator(DataType);
  * @returns True, if success. False otherwise.
  */
 bool ExpressionEnd();
+
+void ClearPedant();
 
 
 /** @}*/

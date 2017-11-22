@@ -16,7 +16,7 @@ typedef struct paramFce{
 
 Parameters paramInit();
 
-bool paramAdd(Parameters * p, DataType dt);
+bool paramAdd(Parameters * p, const char * name, DataType dt);
 
 
 
@@ -25,5 +25,9 @@ bool paramAdd(Parameters * p, DataType dt);
  *
  */
 void paramFree(Parameters parameter);
+
+DataType paramPop(Parameters * p);
+
+bool ParametersMatches(Parameters p1, Parameters p2);
 
 #endif // LIST_H

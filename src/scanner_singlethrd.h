@@ -22,6 +22,8 @@
  * @{
  */
 
+void ClearScanner();
+
 /**
  * @brief   Removes from given queue.
  *

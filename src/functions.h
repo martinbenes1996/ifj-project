@@ -18,6 +18,7 @@
 #include <string.h>
 
 #include "io.h"
+#include "list.h"
 #include "tables.h"
 #include "types.h"
 
@@ -187,9 +188,10 @@ inline char * strdup(const char * str)
   return newstr;
 }
 
+extern Phrasem allocPhrasem();
 inline Phrasem duplicatePhrasem(Phrasem p)
 {
-  Phrasem dup = malloc(sizeof(struct phrasem_data));
+  Phrasem dup = allocPhrasem();
   if(dup == NULL) return NULL;
   //
   dup->table = p->table;
