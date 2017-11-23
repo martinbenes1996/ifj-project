@@ -58,6 +58,8 @@ bool setFunction(const char * f)
 }
 
 bool end = false; /**< Set to true, if keyword end reached. */
+bool wasReturn = true;
+bool wasScope = false;
 
 /*-------------------------- ERROR MACROS --------------------------------*/
 /**
@@ -440,7 +442,7 @@ bool RunParser()
   #endif
   bool status = true;
 
-  if(!constTableInit()) return false;
+  if(!constTableInit()) RaiseError("Error allocating symbol table", ErrorType_Internal);
   InitGenerator();
 
   if(bypass())
@@ -490,7 +492,11 @@ bool RunParser()
             break;
           }
           // success
-          if(end) break;
+          if(end)
+          {
+            if(!wasScope) RaiseError("no scope defined", ErrorType_Semantic3);
+            break;
+          }
 
           // something to do after each function
         }
@@ -802,7 +808,6 @@ bool ExpressionParse()
     ClearStack(temporaryOpStack);   //should be empty. If its not -> error.
     ClearEPStack();                 //destroying EPStack
 
-    //if(failure) EndRoutine();
     return !failure;
 }
 
@@ -862,6 +867,10 @@ bool EndFunctionParse()
   // separator
   CheckSeparator();
 
+  G_EndBlock();
+
+  if(!wasReturn) RaiseError("no return in function", ErrorType_Semantic3);
+  wasReturn = true;
   end = false;
   return true;
 }
@@ -1151,6 +1160,8 @@ bool ReturnParse()
   // LF
   CheckSeparator();
 
+  G_EndBlock();
+  wasReturn = true;
   return true;
 }
 
@@ -1385,14 +1396,6 @@ bool AssignmentParse()
 
       if(!ReturnToQueue(vardup)) return false;
     }
-    /*
-    Phrasem m;
-    do {
-      m = CheckQueue(m);
-      PrintPhrasem(m);
-    } while(m->table != TokenType_Separator);
-    exit(0);
-*/
 
     // expression
     if(!ExpressionParse()) return false;
@@ -1400,8 +1403,6 @@ bool AssignmentParse()
 
   // LF
   CheckSeparator();
-
-  PrintPhrasem(var);
 
   if(!P_HandleTarget(var))
   {
@@ -1456,6 +1457,7 @@ bool FunctionDefinitionParse()
   #endif
 
   G_Function();
+  wasReturn = false;
 
   // function name
   Phrasem funcname = CheckQueue(funcname);
@@ -1483,7 +1485,6 @@ bool FunctionDefinitionParse()
     // parameters
     while(1)
     {
-
       // variable
       Phrasem arg = CheckQueue(arg);
       if(!VariableParse(arg)) RaiseExpectedError("identificator");
@@ -1493,10 +1494,7 @@ bool FunctionDefinitionParse()
 
       // datatype keyword
       Phrasem type = CheckQueue(type);
-      if(!DataTypeParse(type))
-      {
-        RaiseExpectedError("datatype expected");
-      }
+      if(!DataTypeParse(type)) RaiseExpectedError("datatype");
       DataType dt = getDataType(type);
 
       // parameter to add
@@ -1517,6 +1515,10 @@ bool FunctionDefinitionParse()
 
   }
 
+  #ifdef PARSER_DEBUG
+    PrintParameters(params);
+  #endif
+
   // operator )
   CheckOperator(")");
 
@@ -1525,20 +1527,21 @@ bool FunctionDefinitionParse()
 
   // datatype keyword
   Phrasem type = CheckQueue(type);
-  if(!DataTypeParse(type)) return false;
+  if(!DataTypeParse(type)) RaiseExpectedError("datatype");
   DataType dt = getDataType(type);
 
   // LF
   CheckSeparator();
 
   /*-------------------- SEMANTICS ----------------------*/
+
   // defined
   if( P_FunctionDefined(funcname) )
   {
     RaiseError("redefinition of function", ErrorType_Semantic1);
-    return false;
   }
-  // declared
+
+  // declared/declared
   if(P_FunctionDefined(funcname))
   {
     // check params in declaration
@@ -1548,11 +1551,15 @@ bool FunctionDefinitionParse()
     if(dt != findFunctionType(funcname->d.str))
       RaiseError("not matchig return datatype in declaration and definition", ErrorType_Semantic3);
   }
-  if(!P_DefineNewFunction(funcname, type, params)) return false;
+
+  // define new function
+  if(!P_DefineNewFunction(funcname, type, params))
+    RaiseError("error defining function", ErrorType_Syntax);
+
   /*-----------------------------------------------------*/
 
   // in the semantics
-  if(!setFunction(funcname->d.str)) return false;
+  if(!setFunction(funcname->d.str)) RaiseError("allocation error", ErrorType_Internal);
 
   do {
       if(!BlockParse()) return false;
@@ -1564,6 +1571,7 @@ bool FunctionDefinitionParse()
   // set no function
   setFunction(NULL);
 
+  end = false;
   return true;
 }
 
@@ -1574,6 +1582,7 @@ bool ScopeParse()
   #endif
 
   G_Scope();
+  wasScope = true;
 
   // nesting
   if(Config_getFunction() != NULL) RaiseError("nested functions", ErrorType_Internal);
@@ -1592,6 +1601,8 @@ bool ScopeParse()
   // end scope parse
   if(!EndScopeParse()) return false;
 
+  // set no function
+  setFunction(NULL);
   end = false;
   return true;
 }

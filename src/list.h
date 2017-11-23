@@ -18,6 +18,7 @@ Parameters paramInit();
 
 bool paramAdd(Parameters * p, const char * name, DataType dt);
 
+void PrintParameters(Parameters);
 
 
 /**

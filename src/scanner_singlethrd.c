@@ -31,6 +31,7 @@
 /*---- DATA ------*/
 bool done = false;
 static Stack mem = NULL;
+static bool incr_line = false;
 static bool meminit = false;
 static bool equalsign = false;
 /*----------------*/
@@ -1086,6 +1087,12 @@ Phrasem RemoveFromQueue()
     return pom;
   }
 
+  if(incr_line)
+  {
+    incr_line = false;
+    Config_setLine(Config_getLine()+1);
+  }
+
   // reading
   int input;
   loadAnother:
@@ -1109,8 +1116,9 @@ Phrasem RemoveFromQueue()
 
   if(input == '\n')
   {
+    incr_line = true; // increment line next call
 
-    Config_setLine(Config_getLine()+1);
+    // separaotr
     ALLOC_PHRASEM(phr);
     phr->table = TokenType_Separator;
     phr->d.str = NULL;
@@ -1118,7 +1126,7 @@ Phrasem RemoveFromQueue()
       PrintPhrasem(phr);
     #endif
 
-
+    // if *= etc.
     if(equalsign)
     {
       ReturnToQueue(phr);

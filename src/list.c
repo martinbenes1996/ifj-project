@@ -16,10 +16,37 @@ bool paramAdd(Parameters * p, const char * name, DataType dt)
   newparam->type = dt;
   newparam->name = strdup(name);
     if(newparam->name == NULL) return false;
-  newparam->next = first;
 
-  p = &newparam;
+  // empty
+  if(first == NULL)
+  {
+    newparam->next = NULL;
+    (*p) = newparam;
+    return true;
+  }
+
+  // not empty
+  // search for last
+  struct paramFce * pom = (*p);
+  while(pom->next != NULL) { pom = pom->next; }
+  // add after
+  pom->next = newparam;
+  newparam->next = NULL;
   return true;
+}
+
+void PrintParameters(Parameters parameter)
+{
+  struct paramFce * pom;
+
+  if(parameter == NULL) debug("---empty parameters---");
+
+  while(parameter != NULL)
+  {
+    pom = parameter;
+    parameter = parameter->next;
+    debug("%s [%s]", pom->name, DataType2Str(pom->type));
+  }
 }
 
 void paramFree(struct paramFce * parameter)
@@ -30,6 +57,7 @@ void paramFree(struct paramFce * parameter)
     {
         pom = parameter;
         parameter = parameter->next;
+        free(pom->name);
         free(pom);
     }
     #ifdef SYMTABLE_DEBUG

@@ -69,6 +69,8 @@ inline bool matchesKeyword(Phrasem p, const char * kw);
  */
 inline DataType getDataType(Phrasem p);
 
+inline const char * DataType2Str(DataType);
+
 /** @}*/
 /*----------------------------------------------------*/
 /** @addtogroup Tools
@@ -294,24 +296,27 @@ inline void PrintDataType(DataType dt)
   switch(dt)
   {
     case DataType_String:
-      debug("DataType [string]");
-      break;
-
     case DataType_Double:
-      debug("DataType [double]");
-      break;
-
     case DataType_Integer:
-      debug("DataType [int]");
-      break;
-
     case DataType_Unknown:
-      debug("DataType [UNKNOWN]");
+      debug("DataType [%s]", DataType2Str(dt));
       break;
 
     default:
       debug("---undefined datatype---");
       break;
+  }
+}
+
+inline const char * DataType2Str(DataType dt)
+{
+  switch(dt)
+  {
+    case DataType_String: return "string";
+    case DataType_Double: return "double";
+    case DataType_Integer: return "int";
+    case DataType_Unknown: return "unknown";
+    default: return "???";
   }
 }
 

@@ -86,7 +86,6 @@ bool P_FunctionDefined(Phrasem p)
   #ifdef PEDANT_DEBUG
     debug("Pedant, Function Defined?");
   #endif
-  if(p->table != TokenType_Function) return false;
 
   return findFunctionInTable(p->d.str);
 }

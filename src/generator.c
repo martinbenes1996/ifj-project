@@ -38,6 +38,7 @@ typedef enum
   GState_Argument,
   GState_Return,
   GState_Function,
+  GState_FunctionHeader,
   GState_Empty
 } GState;
 
@@ -323,16 +324,9 @@ void GenerateReturn()
   #ifdef GENERATOR_DEBUG
     debug("Generating return.");
   #endif
-
-  // this LF -> TF
-  out("POPFRAME");
-  out("DEFVAR TF@*ret");
-  out("POPS TF@*ret");
-  out("RETURN");
-  out("");
 }
 
-void GenerateFunction(Phrasem p)
+void GenerateFunctionHeader(Phrasem p)
 {
   #ifdef GENERATOR_DEBUG
     debug("Generating function.");
@@ -341,7 +335,8 @@ void GenerateFunction(Phrasem p)
   // function
   out("");
   out("LABEL %s", p->d.str);
-  out("PUSHFRAME");
+
+
 }
 
 void GenerateArgument();
@@ -469,9 +464,9 @@ bool HandlePhrasem(Phrasem p)
   {
     GenerateAssignment(p);
   }
-  else if(top == GState_Function)
+  else if(top == GState_FunctionHeader)
   {
-    GenerateFunction(p);
+    GenerateFunctionHeader(p);
   }
 
   PopGState();
@@ -543,6 +538,7 @@ void G_Function()
   #endif
 
   PushGState(GState_Function);
+  PushGState(GState_FunctionHeader);
 }
 
 void G_Scope()
@@ -652,7 +648,17 @@ void G_EndBlock()
   else if( up == GState_FunctionCall )
   {
     out("POPFRAME");
-    out("PUSHS TF@*ret");
+    out("PUSHS LF@*ret");
+  }
+  else if( up == GState_Return )
+  {
+    out("DEFVAR LF@*ret");
+    out("POPS LF@*ret");
+    out("RETURN");
+  }
+  else if( up == GState_Function )
+  {
+    out("");
   }
 
   #ifdef GENERATOR_DEBUG
@@ -912,6 +918,10 @@ char * GStateToStr(GState st)
     case GState_Expression: return "GState_Expression";
     case GState_Logic: return "GState_Logic";
     case GState_VariableDeclaration: return "GState_VariableDeclaration";
+    case GState_Argument: return "GState_Argument";
+    case GState_Return: return "GState_Return";
+    case GState_Function: return "GState_Function";
+    case GState_FunctionHeader: return "GState_FunctionHeader";
     case GState_Empty: return "GState_Empty";
     default: return "UNKNOWN STATE!";
   }

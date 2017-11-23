@@ -41,4 +41,6 @@ clean:
 	@printf "";\
 	cd ./src && make clean -s
 	@echo "Cleaning project files.";\
-	rm -rf doc/html test/*.err test/test*/*_compiled test/test*/*.stderr test/test*/*.stdout
+	rm -rf doc/html
+	@printf "";\
+	$(MAKE) -C test/ -s
