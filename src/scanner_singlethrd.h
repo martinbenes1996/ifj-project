@@ -41,6 +41,8 @@ Phrasem RemoveFromQueue();
  */
 bool ReturnToQueue(Phrasem p);
 
+void PrintScannerStack();
+
 /** @} */
 /*-----------------------------------------------------------*/
 

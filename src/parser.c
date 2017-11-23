@@ -1360,9 +1360,6 @@ bool AssignmentParse()
 
   Phrasem func = CheckQueue(func);
 
-  PrintPhrasem(func);
-  fprintf(stderr, "%s\n", (P_FunctionDefined(func))?"defined":"not defined");
-
   if(P_FunctionDefined(func))
   {
     ReturnToQueue(func);
@@ -1372,6 +1369,22 @@ bool AssignmentParse()
   else
   {
     ReturnToQueue(func);
+
+    if(getUnary())
+    {
+      Phrasem vardup = duplicatePhrasem(var);
+      if(vardup == NULL) RaiseError("allocation failed", ErrorType_Internal);
+
+      if(!ReturnToQueue(vardup)) return false;
+    }
+
+    Phrasem m;
+    do {
+      m = CheckQueue(m);
+      PrintPhrasem(m);
+    } while(m->table != TokenType_Separator);
+    exit(0);
+
     // expression
     if(!ExpressionParse()) return false;
   }

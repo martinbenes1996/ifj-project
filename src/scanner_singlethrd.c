@@ -36,6 +36,7 @@ static bool equalsign = false;
 /*----------------*/
 
 bool getUnary() { return equalsign; }
+void PrintScannerStack() { PrintStack(mem); }
 
 void EndScanner(const char * msg, ErrorType errtype)
 {
