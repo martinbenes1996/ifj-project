@@ -1377,7 +1377,7 @@ bool AssignmentParse()
 
       if(!ReturnToQueue(vardup)) return false;
     }
-
+    /*
     Phrasem m;
     do {
       m = CheckQueue(m);
@@ -1388,6 +1388,7 @@ bool AssignmentParse()
     // expression
     if(!ExpressionParse()) return false;
   }
+  */
 
   // LF
   CheckSeparator();
