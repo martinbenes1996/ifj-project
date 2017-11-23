@@ -1384,11 +1384,11 @@ bool AssignmentParse()
       PrintPhrasem(m);
     } while(m->table != TokenType_Separator);
     exit(0);
+*/
 
     // expression
     if(!ExpressionParse()) return false;
   }
-  */
 
   // LF
   CheckSeparator();
