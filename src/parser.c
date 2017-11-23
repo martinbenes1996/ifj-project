@@ -1381,6 +1381,7 @@ bool AssignmentParse()
     {
       Phrasem vardup = duplicatePhrasem(var);
       if(vardup == NULL) RaiseError("allocation failed", ErrorType_Internal);
+      vardup->table = TokenType_Symbol;
 
       if(!ReturnToQueue(vardup)) return false;
     }
