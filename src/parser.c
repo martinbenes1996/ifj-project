@@ -573,6 +573,12 @@ int decodeToken(...)
     PushOntoEPStack(op_E);           \
   } while(0)
 
+#define ExpressionError(msg)                                \
+    do {                                                    \
+    setErrorMessage(msg);                                   \
+    setErrorType(ErrorType_Syntax);                      \
+    } while(0)
+
 //tries to perform stack modifications based on rules (called when '>')
 int checkEPRules(/*Stack returnStack, */Stack temporaryOpStack)
 {
@@ -644,7 +650,7 @@ bool ExpressionParse()
     if(p->table != TokenType_Symbol && p->table != TokenType_Constant &&
       (p->table != TokenType_Operator || p->d.index > 9))
     {
-        RaiseError("Empty expression", ErrorType_Syntax);
+        ExpressionError("Empty expression");
         ReturnToQueue(p);
         failure = true;
     }
@@ -694,7 +700,7 @@ bool ExpressionParse()
             else if(x == '#')
             {
                 failure = true;
-                RaiseError("Expression error", ErrorType_Syntax);
+                ExpressionError("Expression error");
             }
 
         }
@@ -743,13 +749,13 @@ bool ExpressionParse()
                     else
                     {
                         failure = true;
-                        RaiseError("Expression error", ErrorType_Syntax);
+                        ExpressionError("Expression error");
                     }
                 }
                 else    // pom == -1; cannot find a rule for reduction -> bad expression
                 {
                     failure = true;
-                    RaiseError("Expression error", ErrorType_Syntax);
+                    ExpressionError("Expression error");
                 }
             }
             else if(x == '=')
@@ -760,7 +766,7 @@ bool ExpressionParse()
             else    // x == '#'
             {
                 failure = true;
-                RaiseError("Expression error", ErrorType_Syntax);
+                ExpressionError("Expression error");
             }
         }
         else    //it is not my symbol
