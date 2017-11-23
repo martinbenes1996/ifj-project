@@ -17,11 +17,12 @@
 #ifndef MULTITHREAD
 
 /*-----------------------------------------------------------*/
+bool getUnary();
+
 /** @addtogroup Scanner
  * Scanner functions.
  * @{
  */
-
 void ClearScanner();
 
 /**

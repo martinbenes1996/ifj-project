@@ -35,6 +35,8 @@ static bool meminit = false;
 static bool equalsign = false;
 /*----------------*/
 
+bool getUnary() { return equalsign; }
+
 void EndScanner(const char * msg, ErrorType errtype)
 {
   if(msg != NULL)
@@ -204,7 +206,7 @@ Phrasem getOperator() {
             long index = getOperatorId("=");
             if(index == -1)  RaiseError("operator table error", ErrorType_Internal);
 
-            if (equalsign) RaiseError("+= waited once", ErrorType_Syntax); 
+            if (equalsign) RaiseError("+= waited once", ErrorType_Syntax);
               equalsign = true;
 
             SaveToBuffer('=');
@@ -881,13 +883,13 @@ Phrasem Base() {
       case 2:
         if ((input == '0') || (input == '1')) {
           resultB= resultB*2 + (input - '0');
-          state = 5;  
+          state = 5;
           break;
         }
 
          else RaiseError("binary number expected", ErrorType_Lexical);
       //octal number
-      case 3: 
+      case 3:
         if ((input >= '0') && (input <= '7')) {
           resultO = resultO*8 + (input - '0');
           state  = 6;
@@ -1004,7 +1006,7 @@ Phrasem Base() {
           ALLOC_PHRASEM(p);
           p->table = TokenType_Constant;
           p->d.index = i;
-          
+
           #ifdef SCANNER_DEBUG
             PrintPhrasem(p);
           #endif
@@ -1058,7 +1060,7 @@ Phrasem Base() {
           return p;
 
         } while(0);
-          
+
 
           // error state
       default:
@@ -1114,7 +1116,7 @@ Phrasem RemoveFromQueue()
     #ifdef SCANNER_DEBUG
       PrintPhrasem(phr);
     #endif
-    
+
 
     if(equalsign)
     {
@@ -1177,7 +1179,7 @@ Phrasem RemoveFromQueue()
         PrintPhrasem(pointer);
       #endif
 
-      if (equalsign) RaiseError("/= waited once", ErrorType_Syntax); 
+      if (equalsign) RaiseError("/= waited once", ErrorType_Syntax);
       equalsign = true;
 
       return pointer;
