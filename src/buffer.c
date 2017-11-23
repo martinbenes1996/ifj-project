@@ -11,7 +11,14 @@
 static char *buf = NULL;
 static long iter = -1;
 static long max = -1;
+static bool mdecapitalize = false;
 /*-------------------------*/
+
+// -------------- Decapitalize ---------------
+void Decapitalize(bool d)
+{
+  mdecapitalize = d;
+}
 
 // ---------------- GetBuffer -----------------
 char * GetBuffer()
@@ -80,7 +87,7 @@ bool AddToBuffer(char c)
 
   //-------------- emplace ---------------
   // case-insensitive
-  c = tolower(c);
+  if(mdecapitalize) c = tolower(c);
 
   // adding 0
   if( c == '\0' )

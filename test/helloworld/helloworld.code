@@ -1,0 +1,4 @@
+.IFJcode17
+CREATEFRAME
+
+WRITE string@Hello,\032world\010
