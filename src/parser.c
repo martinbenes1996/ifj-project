@@ -614,7 +614,7 @@ int checkEPRules(/*Stack returnStack, */Stack temporaryOpStack)
     }
     else return -1;     //cannot find a rule and it is not the end of expression
 }
-
+#define EXPRESSION_DEBUG
 bool ExpressionParse()
 {
   #ifdef PARSER_DEBUG
@@ -646,6 +646,11 @@ bool ExpressionParse()
     //get token hopefully - don't worry, you will
     Phrasem p = CheckQueue(p);
 
+    #ifdef EXPRESSION_DEBUG
+        debug("First token received by expression parser: ");
+        PrintPhrasem(p);
+    #endif
+
     //if the first token i get is wrong -> expression is empty -> error
     if(p->table != TokenType_Symbol && p->table != TokenType_Constant &&
       (p->table != TokenType_Operator || p->d.index > 9))
@@ -664,6 +669,8 @@ bool ExpressionParse()
     {
         #ifdef EXPRESSION_DEBUG
             printstackEP();   //<<-- debug
+            debug("Token received by expression parser: ");
+            PrintPhrasem(p);
         #endif
 
         //token is operand
