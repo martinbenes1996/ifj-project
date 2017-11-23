@@ -223,6 +223,7 @@ void InitGenerator()
   out(".IFJcode17");
   out("CREATEFRAME");
   out("PUSHFRAME");
+  out("JUMP $main");
 }
 
 
@@ -543,6 +544,15 @@ void G_Function()
   PushGState(GState_Function);
 }
 
+void G_Scope()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate scope.");
+  #endif
+
+  out("LABEL $main");
+}
+
 /*---------- DATA -----------*/
 static char param_name[4]; // there can't be more, than 999 parameters
 /*---------------------------*/
@@ -624,13 +634,19 @@ void G_EndBlock()
   GState up = PopGState();
   if( up == GState_Condition )
   {
-    out("LABEL %s", PopLabel());
+    const char * aftercond = PopLabel();
+    out("LABEL %s", aftercond);
+    free((void *)aftercond);
   }
   else if( up == GState_Cycle )
   {
-    const char * tmp = PopLabel();
-    out("JUMP %s", PopLabel());
-    out("LABEL %s", tmp);
+    const char * aftercycle = PopLabel();
+    const char * tocycle = PopLabel();
+
+    out("JUMP %s", tocycle);
+    out("LABEL %s", aftercycle);
+    free((void *)aftercycle);
+    free((void *)tocycle);
   }
   else if( up == GState_FunctionCall )
   {

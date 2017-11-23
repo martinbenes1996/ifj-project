@@ -532,8 +532,6 @@ bool FunctionParse(Phrasem p)
     RaiseExpectedError("function");
   }
 
-  fprintf(stderr, "%s\n", TokenTypeToString(p->table));
-
   if(p->table != TokenType_Symbol)
   {
     RaiseExpectedError("function name");
@@ -610,7 +608,6 @@ int checkEPRules(/*Stack returnStack, */Stack temporaryOpStack)
     }
     else return -1;     //cannot find a rule and it is not the end of expression
 }
-
 
 bool ExpressionParse()
 {
@@ -1136,7 +1133,6 @@ bool ReturnParse()
 
   // semantics
   DataType ftype = findFunctionType(Config_getFunction());
-  PrintDataType(ftype);
   if(!P_CheckType_MoveStackToGenerator(ftype)) return false;
 
   // LF
@@ -1543,6 +1539,8 @@ bool ScopeParse()
   #ifdef PARSER_DEBUG
     debug("Scope parse.");
   #endif
+
+  G_Scope();
 
   // nesting
   if(Config_getFunction() != NULL) RaiseError("nested functions", ErrorType_Internal);

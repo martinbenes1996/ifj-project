@@ -107,6 +107,8 @@ void G_Return();
 /** @brief Announces function definition to generator. */
 void G_Function();
 
+void G_Scope();
+
 /** @brief Announces end of a block to generator. */
 void G_EndBlock();
 
