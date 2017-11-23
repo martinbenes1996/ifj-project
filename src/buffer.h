@@ -40,6 +40,15 @@ char * GetBuffer();
 bool AddToBuffer(char c);
 
 /**
+ * @brief   Decapitalize setter.
+ *
+ * This function says, wheather the next buffer characters should
+ * be decapitalized, or not.
+ * @param d     True, if decapitalize.
+ */
+void Decapitalize(bool d);
+
+/**
  * @brief   Buffer cutter.
  *
  * This function will take the buffer and normalize it to size 128,

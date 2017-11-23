@@ -8,6 +8,6 @@
 '' Description: Hello world.
 ''
 
-Scope 'Main part
+Scope
   Print !"Hello, world\n";
 End Scope

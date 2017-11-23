@@ -600,7 +600,7 @@ int checkEPRules(/*Stack returnStack, */Stack temporaryOpStack)
             LookTripleAheadEPStack(op_E, DivDouble, op_E))
     {
         MODIFY_STACK();
-        P_HandleOperand(PopFromStack(temporaryOpStack)); //it should pop an operator
+        if(!P_HandleOperand(PopFromStack(temporaryOpStack))) return -1; //it should pop an operator
         return 1;
     }
     else if(LookTripleAheadEPStack(CloseBracket, op_E, OpenBracket))
@@ -693,8 +693,7 @@ bool ExpressionParse()
                     PushOntoEPStack(op_i);    // i: operand
 
                 }
-                P_HandleOperand(p);
-                //PushOntoStack(returnStack, p);      //pushing operand on stack
+                if(!P_HandleOperand(p)) failure = true;
                 p = CheckQueue(p);
             }
             else if(x == '#')
@@ -790,7 +789,8 @@ bool ExpressionParse()
 
 
     //call pedant end function
-    if(!ExpressionEnd()) failure = true;
+    if(!failure)
+        if(!ExpressionEnd()) failure = true;
 
     ClearStack(temporaryOpStack);   //should be empty. If its not -> error.
     ClearEPStack();                 //destroying EPStack
