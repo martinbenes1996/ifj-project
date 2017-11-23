@@ -729,7 +729,236 @@ Phrasem getNumber(){
   return NULL;
 }
 
+Phrasem Base() {
+  int resultB = 0; //result of the binary number
+  int resultO = 0;  //result of the octal number
+  int resultH = 0;  //result of the hexa number
+  int state = 0;
+  int input;
+  bool end = false;
+  
+  while(!end){
+    input = getByte();
+    switch (state) {
+      case 0:
+        if (input == '&') {
+          state = 1;
+          break;
+        }
+        else {
+          RaiseError("bad internal state", ErrorType_Internal);
+        }
 
+      case 1:
+        if (input == 'B') {
+          state = 2;
+          break;
+        }
+
+        else if (input == 'O') {
+          state = 3;
+          break;
+        }
+
+        else if (input == 'H') {
+          state = 4;
+          break;
+        }
+
+        else {
+          returnByte(input);
+          end = true;
+          break;
+        }
+
+      //binary number
+      case 2:
+        if ((input == '0') || (input == '1')) {
+          resultB= resultB*2 + (input - '0');
+          state = 5;  
+          break;
+        }
+
+         else RaiseError("binary number expected", ErrorType_Lexical);
+      //octal number
+      case 3: 
+        if ((input >= '0') && (input <= '7')) {
+          resultO = resultO*8 + (input - '0');
+          state  = 6;
+          break;
+        }
+
+        else RaiseError("octal number expecte", ErrorType_Lexical);
+      //hexa number
+      case 4:
+        if (((input >= '0')&&(input <= '9'))
+          || ((input >= 'A') && (input <= 'F'))
+          || ((input >= 'a') && (input <= 'f'))){
+
+            if ((input == 'A') || (input == 'a')) {
+              resultH = resultH*16 + 10;
+            }
+
+            else if ((input == 'B') || (input == 'b')) {
+              resultH = resultH*16 + 11;
+            }
+
+            else if ((input == 'C') || (input == 'c')) {
+              resultH = resultH*16 + 12;
+            }
+            else if ((input == 'D') || (input == 'd')) {
+              resultH = resultH*16 + 13;
+            }
+            else if ((input == 'E') || (input == 'e')) {
+              resultH = resultH*16 + 14;
+            }
+            else if ((input == 'F') || (input == 'f')) {
+              resultH = resultH*16 + 15;
+            }
+            else {
+              resultH = resultH*16 + (input - '0');
+            }
+            state = 7;
+            break;
+        }
+
+        else RaiseError("hexa number expecte", ErrorType_Lexical);
+      //other binary numbers
+      case 5:
+        if ((input == '0') || (input == '1')) {
+          resultB = resultB*2 + (input - '0');
+          break;
+        }
+
+        else {
+          returnByte(input);
+          state = 8;
+          break;
+        }
+
+      case 6:
+        if ((input>= '0') && (input <= '7')) {
+          resultO = resultO*8 + (input - '0');
+          break;
+        }
+
+        else {
+          returnByte(input);
+          state = 9;
+          break;
+        }
+
+      case 7:
+        if (((input >= '0')&&(input <= '9'))
+          || ((input >= 'A') && (input <= 'F'))
+          || ((input >= 'a') && (input <= 'f'))){
+
+            if ((input == 'A') || (input == 'a')) {
+              resultH = resultH*16 + 10;
+            }
+
+            else if ((input == 'B') || (input == 'b')) {
+              resultH = resultH*16 + 11;
+            }
+            else if ((input == 'C') || (input == 'c')) {
+              resultH = resultH*16 + 12;
+            }
+            else if ((input == 'D') || (input == 'd')) {
+              resultH = resultH*16 + 13;
+            }
+            else if ((input == 'E') || (input == 'e')) {
+              resultH = resultH*16 + 14;
+            }
+            else if ((input == 'F') || (input == 'f')) {
+              resultH = resultH*16 + 15;
+            }
+            else {
+              resultH = resultH*16 + (input - '0');
+            }
+            break;
+        }
+
+        else {
+          returnByte(input);
+          state = 10;
+          break;
+        }
+
+      case 8:
+        do {
+          returnByte(input);
+          DataUnion uni;
+          uni.ivalue = resultB;
+          int i = constInsert(DataType_Integer, uni);
+
+          if ( i == -1) RaiseError("constant table allocation error", ErrorType_Internal);
+
+          ALLOC_PHRASEM(p);
+          p->table = TokenType_Constant;
+          p->d.index = i;
+          
+          #ifdef SCANNER_DEBUG
+            PrintPhrasem(p);
+          #endif
+
+          return p;
+
+        } while(0);
+
+
+      case 9:
+        do {
+          returnByte(input);
+          DataUnion uni;
+          uni.ivalue = resultO;
+
+          int i = constInsert(DataType_Integer, uni);
+
+          if (i == -1) RaiseError("constant table allocation error", ErrorType_Internal);
+
+          ALLOC_PHRASEM(p);
+          p->table = TokenType_Constant;
+          p->d.index = i;
+
+          #ifdef SCANNER_DEBUG
+            PrintPhrasem(p);
+          #endif
+
+          return p;
+
+        } while(0);
+
+
+      case 10:
+        do {
+          returnByte(input);
+          DataUnion uni;
+          uni.ivalue = resultH;
+
+          int i = constInsert(DataType_Integer, uni);
+
+          if (i == -1) RaiseError("constant table allocation error", ErrorType_Internal);
+
+          ALLOC_PHRASEM(p);
+          p->table = TokenType_Constant;
+          p->d.index = i;
+
+          #ifdef SCANNER_DEBUG
+            PrintPhrasem(p);
+          #endif
+
+          return p;
+
+        } while(0);
+          
+
+          // error state
+      default:
+        RaiseError("bad internal state", ErrorType_Internal);
+  }
+}
+  return NULL;
+}
 
 Phrasem RemoveFromQueue()
 {
@@ -777,6 +1006,13 @@ Phrasem RemoveFromQueue()
       PrintPhrasem(phr);
     #endif
     return phr;
+  }
+
+  //BASE
+  else if (input == '&') {
+    returnByte(input);
+    return Base();
+
   }
 
   // string
