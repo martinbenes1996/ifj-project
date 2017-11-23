@@ -32,6 +32,7 @@
 bool done = false;
 static Stack mem = NULL;
 static bool meminit = false;
+static bool equalsign = false;
 /*----------------*/
 
 void EndScanner(const char * msg, ErrorType errtype)
@@ -82,7 +83,7 @@ void ClearScanner()
 #define RaiseAllocError() RaiseError("bad allocation", ErrorType_Internal);
 
 /**
- * @brief SAfe buffer saver.
+ * @brief Safe buffer saver.
  */
 #define SaveToBuffer(c) if(!AddToBuffer(c)) { RaiseAllocError(); }
 
@@ -90,6 +91,16 @@ void ClearScanner()
 #define ALLOC_PHRASEM(id)                                               \
   Phrasem id = allocPhrasem();/*malloc(sizeof(struct phrasem_data));*/   \
   if (id == NULL) RaiseError("allocation error", ErrorType_Internal)
+
+
+#define FILLSTACK(op)                                                               \
+  do {                                                                              \
+    ALLOC_PHRASEM(p);                                                               \
+    p->table = TokenType_Operator;                                                  \
+    p->d.index = getOperatorId(op);                                                 \
+    if(p->d.index == -1) RaiseError("Operator table error", ErrorType_Internal);    \
+    if(!ReturnToQueue(p)) return NULL;                                              \
+  } while(0)
 
 
 /*------------------------------------------------------------------------*/
@@ -178,32 +189,122 @@ Phrasem getOperator() {
 
         else if (input == '+') {
           SaveToBuffer(input);
+
+          input = getByte();
+          if (input == '=') {
+            free(GetBuffer());
+
+            // (
+            FILLSTACK("(");
+
+            // +
+            FILLSTACK("+");
+
+            // =
+            long index = getOperatorId("=");
+            if(index == -1)  RaiseError("operator table error", ErrorType_Internal);
+
+            if (equalsign) RaiseError("+= waited once", ErrorType_Syntax); 
+              equalsign = true;
+
+            SaveToBuffer('=');
+          }
+
+          else {
+            returnByte(input);
+          }
           end = true;
         }
 
         else if (input == '-') {
           SaveToBuffer(input);
+
+          input = getByte();
+          if (input == '=') {
+            free(GetBuffer());
+
+            //(
+            FILLSTACK("(");
+
+            //-
+            FILLSTACK("-");
+
+            //=
+            long i = getOperatorId("=");
+            if (i == -1) RaiseError("operator table error", ErrorType_Internal);
+
+            if (equalsign) RaiseError("-= waited once", ErrorType_Syntax);
+              equalsign = true;
+            SaveToBuffer('=');
+          }
+
+          else {
+            returnByte(input);
+          }
           end = true;
         }
 
         else if (input == '*') {
           SaveToBuffer(input);
+          input = getByte();
+          if (input == '=') {
+            free(GetBuffer());
+            // (
+            FILLSTACK("(");
+
+            // *
+            FILLSTACK("*");
+
+            // =
+            long id = getOperatorId("=");
+            if (id == -1) RaiseError("operator table error", ErrorType_Internal);
+
+            if (equalsign) RaiseError("*= waited once", ErrorType_Syntax);
+              equalsign = true;
+
+            SaveToBuffer('=');
+          }
+
+          else {
+            returnByte(input);
+          }
+
           end = true;
         }
 
         else if (input == '\\') {
-          long x = getOperatorId("\\");
-          if ( x == -1) RaiseError("constant table failed", ErrorType_Internal);
+          input =getByte();
+          if (input == '=') {
+            // (
+            FILLSTACK("(");
+            // "\"
+            FILLSTACK("\\");
+            // =
+            long index = getOperatorId("=");
+            if (index == -1) RaiseError("operator table error", ErrorType_Internal);
 
-          ALLOC_PHRASEM(phr);
-          phr->table = TokenType_Operator;
-          phr->d.index = x;
+            if (equalsign) RaiseError("*= waited once", ErrorType_Syntax);
+              equalsign = true;
 
-          #ifdef SCANNER_DEBUG
-            PrintPhrasem(phr);
-          #endif
+            SaveToBuffer('=');
+            end = true;
 
-          return phr;
+          }
+
+          else {
+            long x = getOperatorId("\\");
+            if ( x == -1) RaiseError("constant table failed", ErrorType_Internal);
+
+            ALLOC_PHRASEM(phr);
+            phr->table = TokenType_Operator;
+            phr->d.index = x;
+
+            #ifdef SCANNER_DEBUG
+              PrintPhrasem(phr);
+            #endif
+            returnByte(input);
+            return phr;
+          }
         }
 
         else if (input == '(') {
@@ -232,12 +333,12 @@ Phrasem getOperator() {
 
       case 1:
         if ( input == '>') {
-          if ( !AddToBuffer(input) ) RaiseError("buffer allocation failed", ErrorType_Internal);
+          SaveToBuffer(input);
           end = true;
         }
 
         else if (input == '=') {
-          if ( !AddToBuffer(input) ) RaiseError("buffer allocation failed", ErrorType_Internal);
+          SaveToBuffer(input);
           end = true;
         }
         else {
@@ -248,7 +349,7 @@ Phrasem getOperator() {
 
       case 2:
         if ( input == '=') {
-          if ( !AddToBuffer(input) ) RaiseError("buffer allocation failed", ErrorType_Internal);
+          SaveToBuffer(input);
           end = true;
         }
 
@@ -734,7 +835,238 @@ Phrasem getNumber(){
   return NULL;
 }
 
+Phrasem Base() {
+  int resultB = 0; //result of the binary number
+  int resultO = 0;  //result of the octal number
+  int resultH = 0;  //result of the hexa number
+  int state = 0;
+  int input;
+  bool end = false;
 
+  while(!end){
+    input = getByte();
+    switch (state) {
+      case 0:
+        if (input == '&') {
+          state = 1;
+          break;
+        }
+        else {
+          RaiseError("bad internal state", ErrorType_Internal);
+        }
+
+      case 1:
+        if (input == 'B') {
+          state = 2;
+          break;
+        }
+
+        else if (input == 'O') {
+          state = 3;
+          break;
+        }
+
+        else if (input == 'H') {
+          state = 4;
+          break;
+        }
+
+        else {
+          returnByte(input);
+          end = true;
+          break;
+        }
+
+      //binary number
+      case 2:
+        if ((input == '0') || (input == '1')) {
+          resultB= resultB*2 + (input - '0');
+          state = 5;  
+          break;
+        }
+
+         else RaiseError("binary number expected", ErrorType_Lexical);
+      //octal number
+      case 3: 
+        if ((input >= '0') && (input <= '7')) {
+          resultO = resultO*8 + (input - '0');
+          state  = 6;
+          break;
+        }
+
+        else RaiseError("octal number expecte", ErrorType_Lexical);
+      //hexa number
+      case 4:
+        if (((input >= '0')&&(input <= '9'))
+          || ((input >= 'A') && (input <= 'F'))
+          || ((input >= 'a') && (input <= 'f'))){
+
+            if ((input == 'A') || (input == 'a')) {
+              resultH = resultH*16 + 10;
+            }
+
+            else if ((input == 'B') || (input == 'b')) {
+              resultH = resultH*16 + 11;
+            }
+
+            else if ((input == 'C') || (input == 'c')) {
+              resultH = resultH*16 + 12;
+            }
+            else if ((input == 'D') || (input == 'd')) {
+              resultH = resultH*16 + 13;
+            }
+            else if ((input == 'E') || (input == 'e')) {
+              resultH = resultH*16 + 14;
+            }
+            else if ((input == 'F') || (input == 'f')) {
+              resultH = resultH*16 + 15;
+            }
+            else {
+              resultH = resultH*16 + (input - '0');
+            }
+            state = 7;
+            break;
+        }
+
+        else RaiseError("hexa number expecte", ErrorType_Lexical);
+      //other binary numbers
+      case 5:
+        if ((input == '0') || (input == '1')) {
+          resultB = resultB*2 + (input - '0');
+          break;
+        }
+
+        else {
+          returnByte(input);
+          state = 8;
+          break;
+        }
+
+      //other octal numbers
+      case 6:
+        if ((input>= '0') && (input <= '7')) {
+          resultO = resultO*8 + (input - '0');
+          break;
+        }
+
+        else {
+          returnByte(input);
+          state = 9;
+          break;
+        }
+
+      //other hexa numbers
+      case 7:
+        if (((input >= '0')&&(input <= '9'))
+          || ((input >= 'A') && (input <= 'F'))
+          || ((input >= 'a') && (input <= 'f'))){
+
+            if ((input == 'A') || (input == 'a')) {
+              resultH = resultH*16 + 10;
+            }
+
+            else if ((input == 'B') || (input == 'b')) {
+              resultH = resultH*16 + 11;
+            }
+            else if ((input == 'C') || (input == 'c')) {
+              resultH = resultH*16 + 12;
+            }
+            else if ((input == 'D') || (input == 'd')) {
+              resultH = resultH*16 + 13;
+            }
+            else if ((input == 'E') || (input == 'e')) {
+              resultH = resultH*16 + 14;
+            }
+            else if ((input == 'F') || (input == 'f')) {
+              resultH = resultH*16 + 15;
+            }
+            else {
+              resultH = resultH*16 + (input - '0');
+            }
+            break;
+        }
+
+        else {
+          returnByte(input);
+          state = 10;
+          break;
+        }
+
+      case 8:
+        do {
+          returnByte(input);
+          DataUnion uni;
+          uni.ivalue = resultB;
+          int i = constInsert(DataType_Integer, uni);
+
+          if ( i == -1) RaiseError("constant table allocation error", ErrorType_Internal);
+
+          ALLOC_PHRASEM(p);
+          p->table = TokenType_Constant;
+          p->d.index = i;
+          
+          #ifdef SCANNER_DEBUG
+            PrintPhrasem(p);
+          #endif
+
+          return p;
+
+        } while(0);
+
+
+      case 9:
+        do {
+          returnByte(input);
+          DataUnion uni;
+          uni.ivalue = resultO;
+
+          int i = constInsert(DataType_Integer, uni);
+
+          if (i == -1) RaiseError("constant table allocation error", ErrorType_Internal);
+
+          ALLOC_PHRASEM(p);
+          p->table = TokenType_Constant;
+          p->d.index = i;
+
+          #ifdef SCANNER_DEBUG
+            PrintPhrasem(p);
+          #endif
+
+          return p;
+
+        } while(0);
+
+
+      case 10:
+        do {
+          returnByte(input);
+          DataUnion uni;
+          uni.ivalue = resultH;
+
+          int i = constInsert(DataType_Integer, uni);
+
+          if (i == -1) RaiseError("constant table allocation error", ErrorType_Internal);
+
+          ALLOC_PHRASEM(p);
+          p->table = TokenType_Constant;
+          p->d.index = i;
+
+          #ifdef SCANNER_DEBUG
+            PrintPhrasem(p);
+          #endif
+
+          return p;
+
+        } while(0);
+          
+
+          // error state
+      default:
+        RaiseError("bad internal state", ErrorType_Internal);
+    }
+  }
+  return NULL;
+}
 
 Phrasem RemoveFromQueue()
 {
@@ -774,6 +1106,7 @@ Phrasem RemoveFromQueue()
 
   if(input == '\n')
   {
+
     Config_setLine(Config_getLine()+1);
     ALLOC_PHRASEM(phr);
     phr->table = TokenType_Separator;
@@ -781,7 +1114,28 @@ Phrasem RemoveFromQueue()
     #ifdef SCANNER_DEBUG
       PrintPhrasem(phr);
     #endif
-    return phr;
+    
+
+    if(equalsign)
+    {
+      ReturnToQueue(phr);
+      equalsign = false;
+
+      ALLOC_PHRASEM(op);
+      op->table = TokenType_Operator;
+      op->d.index = getOperatorId(")");
+      if(op->d.index == -1) return NULL;
+      return op;
+    }
+    else return phr;
+
+  }
+
+  //BASE
+  else if (input == '&') {
+    returnByte(input);
+    return Base();
+
   }
 
   // string
@@ -804,13 +1158,38 @@ Phrasem RemoveFromQueue()
       getComment();
       goto loadAnother;
     }
+
+    else if (input == '=') {
+      // (
+      FILLSTACK("(");
+
+      // /
+      FILLSTACK("/");
+
+      // =
+      long index = getOperatorId("=");
+      if(index == -1)  RaiseError("operator table error", ErrorType_Internal);
+      ALLOC_PHRASEM(pointer);
+      pointer->table = TokenType_Operator;
+      pointer->d.index = index;
+
+      #ifdef SCANNER_DEBUG
+        PrintPhrasem(pointer);
+      #endif
+
+      if (equalsign) RaiseError("/= waited once", ErrorType_Syntax); 
+      equalsign = true;
+
+      return pointer;
+
+    }
     else {
       returnByte(input);
 
       // AddToQueue '/' as operator
       long x = getOperatorId("/");
 
-      if ( x == -1) RaiseError("constant table allocation error", ErrorType_Internal);
+      if ( x == -1) RaiseError("operator table error", ErrorType_Internal);
 
       ALLOC_PHRASEM(phr);
       phr->table = TokenType_Operator;
