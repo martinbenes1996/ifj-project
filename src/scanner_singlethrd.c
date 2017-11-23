@@ -736,7 +736,7 @@ Phrasem Base() {
   int state = 0;
   int input;
   bool end = false;
-  
+
   while(!end){
     input = getByte();
     switch (state) {
@@ -836,6 +836,7 @@ Phrasem Base() {
           break;
         }
 
+      //other octal numbers
       case 6:
         if ((input>= '0') && (input <= '7')) {
           resultO = resultO*8 + (input - '0');
@@ -848,6 +849,7 @@ Phrasem Base() {
           break;
         }
 
+      //other hexa numbers
       case 7:
         if (((input >= '0')&&(input <= '9'))
           || ((input >= 'A') && (input <= 'F'))
