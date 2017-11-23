@@ -614,7 +614,7 @@ int checkEPRules(/*Stack returnStack, */Stack temporaryOpStack)
     }
     else return -1;     //cannot find a rule and it is not the end of expression
 }
-#define EXPRESSION_DEBUG
+
 bool ExpressionParse()
 {
   #ifdef PARSER_DEBUG
