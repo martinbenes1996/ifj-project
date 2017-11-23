@@ -1,9 +1,95 @@
 .IFJcode17
 CREATEFRAME
+PUSHFRAME
+JUMP main
 
-DEFVAR TF@x
-READ TF@x int
+# function loadfloat
+LABEL loadFloat
+  PUSHFRAME
+  DEFVAR LF@*ret
+  READ LF@*ret float
+  POPFRAME
+  RETURN
 
-PUSHS TF@x
+# main function
+LABEL main
 
-WRITE TF@x
+  # read a
+  DEFVAR LF@a
+  CREATEFRAME
+  CALL loadFloat
+  MOVE LF@a TF@*ret
+
+  # read b
+  DEFVAR LF@b
+  CREATEFRAME
+  CALL loadFloat
+  MOVE LF@b TF@*ret
+
+  # read c
+  DEFVAR LF@c
+  CREATEFRAME
+  CALL loadFloat
+  MOVE LF@c TF@*ret
+
+  # count maximum
+  CREATEFRAME
+    DEFVAR TF@$a
+    DEFVAR TF@$b
+    DEFVAR TF@$c
+  MOVE TF@$a LF@a
+  MOVE TF@$b LF@b
+  MOVE TF@$c LF@c
+  CALL maximum
+  DEFVAR LF@max
+  MOVE LF@max TF@*ret
+  WRITE LF@max
+  WRITE string@\010
+  JUMP end
+
+LABEL maximum
+  PUSHFRAME
+  DEFVAR LF@*ret
+
+  # a > b
+  PUSHS LF@$a
+  PUSHS LF@$b
+  GTS
+
+  PUSHS bool@true
+  JUMPIFNEQS b_greater
+
+    # a > c
+    PUSHS LF@$a
+    PUSHS LF@$c
+    GTS
+    PUSHS bool@true
+    JUMPIFNEQS c_max
+
+    #a max
+    MOVE LF@*ret LF@$a
+    JUMP done
+
+  LABEL b_greater
+
+    # b > c
+    PUSHS LF@$b
+    PUSHS LF@$c
+    GTS
+    PUSHS bool@true
+    JUMPIFNEQS c_max
+
+    # b max
+    MOVE LF@*ret LF@$b
+    JUMP done
+
+    # c_max
+    LABEL c_max
+      MOVE LF@*ret LF@$c
+
+  LABEL done
+  CLEARS
+  POPFRAME
+  RETURN
+
+LABEL end

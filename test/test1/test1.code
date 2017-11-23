@@ -1,9 +1,11 @@
 .IFJcode17
 CREATEFRAME
 
+# reads integer
 DEFVAR TF@x
 READ TF@x int
 
+# checks with 10
 PUSHS TF@x
 PUSHS int@10
 
@@ -11,5 +13,5 @@ LTS
 PUSHS bool@true
 JUMPIFEQS lala
   WRITE TF@x
-  WRITE string@\010
+  #WRITE string@\032
 LABEL lala

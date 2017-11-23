@@ -339,6 +339,7 @@ void GenerateFunction(Phrasem p)
   #endif
 
   // function
+  out("");
   out("LABEL %s", p->d.str);
   out("PUSHFRAME");
 }

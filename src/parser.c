@@ -1360,6 +1360,9 @@ bool AssignmentParse()
 
   Phrasem func = CheckQueue(func);
 
+  PrintPhrasem(func);
+  fprintf(stderr, "%s\n", (P_FunctionDefined(func))?"defined":"not defined");
+
   if(P_FunctionDefined(func))
   {
     ReturnToQueue(func);
@@ -1375,6 +1378,8 @@ bool AssignmentParse()
 
   // LF
   CheckSeparator();
+
+  PrintPhrasem(var);
 
   if(!P_HandleTarget(var))
   {
@@ -1392,7 +1397,7 @@ bool FunctionCallParse()
   G_FunctionCall();
 
   Phrasem funcname = CheckQueue(funcname);
-  if(!FunctionParse(funcname)) return false;
+  if( !FunctionParse(funcname) ) return false;
 
   // defined
   if( !P_FunctionDefined(funcname) ) RaiseError("calling unknown function", ErrorType_Semantic1);

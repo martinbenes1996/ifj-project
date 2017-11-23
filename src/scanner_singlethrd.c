@@ -121,10 +121,11 @@ bool getComment() {
 
       case 1:
         if ( input != '\n') { break; }
-        else { end = true; break; }
+        else { end = true; Config_setLine(Config_getLine()+1); break; }
 
       case 2:
-        if (input != '/') { break; }
+        if(input == '\n') { Config_setLine(Config_getLine()+1); break;}
+        else if (input != '/') { break; }
         else if (input == EOF) RaiseError("expected \'//\' ", ErrorType_Lexical);
         else { state = 3; break; }
 
@@ -296,6 +297,8 @@ Phrasem getString() {
   int asciival = 0;
   bool end = false;
 
+  Decapitalize(false);
+
   while(!end) {
     input = getByte();
     switch (state) {
@@ -403,6 +406,8 @@ Phrasem getIdentifier(){
   #ifdef SCANNER_DEBUG
     debug("Get Identifier");
   #endif
+
+  Decapitalize(true);
 
 	int state = 0;
  	int input;

@@ -46,13 +46,17 @@ launch_test() {
   fi
 
   # advanced method of compare
-  if [ "$(cat "$1/$1.stdout")" = "$(cat "$1/$1_compiled.stdout")" ]; then
-    test_succ=$((test_succ+1))
-    echo "[OK]"
-  else
-    echo "[ERROR]"
-    diff "$1/$1.stdout" "$1/$1_compiled.stdout"
+  if [ "$(diff $1/$1.stdout $1/$1_compiled.stdout)" = "" ]; then
+    if [ "$(diff $1/$1.stderr $1/$1_compiled.stderr)" = "" ]; then
+      test_succ=$((test_succ+1))
+      echo "[OK]"
+      return
+    fi
   fi
+
+  # error
+  echo "[ERROR]"
+  diff "$1/$1.stdout" "$1/$1_compiled.stdout"
 }
 
 
