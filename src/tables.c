@@ -29,17 +29,17 @@
  *
  * This array contains list af all possible keywords.
  */
-const char keywords[35][9] = {"as", "asc", "declare", "dim", "do", "double",
+const char keywords[36][9] = {"as", "asc", "declare", "dim", "do", "double",
   "else", "end", "chr", "function", "if", "input", "integer", "length",
   "loop", "print", "return", "scope", "string", "substr", "then", "while",
   "and", "boolean", "continue", "elseif", "exit", "false", "for", "next",
-  "not", "or", "shared", "static", "true"};
+  "not", "or", "shared", "static", "true", "else"};
 
 int isKeyword(const char * word)
 {
     int index = -1;
 
-    for(int i = 0; i < 35 ;++i)
+    for(int i = 0; i < 36 ;++i)
         if(strcmp(word, keywords[i]) == 0)
         {
             index = i;

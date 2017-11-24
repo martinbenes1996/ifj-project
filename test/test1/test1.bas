@@ -5,6 +5,7 @@ scope
 
   if x >= 10 then
     Print x;
+  else
   end if
 
 end scope

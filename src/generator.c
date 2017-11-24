@@ -39,6 +39,7 @@ typedef enum
   GState_Return,
   GState_Function,
   GState_FunctionHeader,
+  GState_Else,
   GState_Empty
 } GState;
 
@@ -518,6 +519,18 @@ void G_Condition()
 
   PushGState(GState_Condition);
 
+}
+
+void G_Else()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate else.");
+  #endif
+
+  const char * els = PopLabel();
+  out("JUMP %s", GenerateLabel());
+  out("LABEL %s", els);
+  free((void *)els);
 }
 
 void G_Cycle()

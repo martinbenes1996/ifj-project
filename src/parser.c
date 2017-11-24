@@ -1239,6 +1239,11 @@ bool BlockParse()
       {
         RaiseError("defining scope inside function", ErrorType_Syntax);
       }
+      else if(matchesKeyword(p, "else"))
+      {
+        ReturnToQueue(p);
+        end = true;
+      }
       // error
       else
       {
@@ -1381,11 +1386,12 @@ bool CycleParse()
   #endif
 
   G_Cycle();
-  if(!LogicParse()) return false;
-
 
   // keyword then
   CheckKeyword("while");
+
+  if(!LogicParse()) return false;
+
   // LF
   CheckSeparator();
 
@@ -1393,6 +1399,8 @@ bool CycleParse()
   do {
     if(!BlockParse()) return false;
   } while(!end);
+
+  end = false;
 
   if(!EndCycleParse()) return false;
 
@@ -1411,7 +1419,6 @@ bool ConditionParse()
 
   // keyword 'then'
   CheckKeyword("then");
-
   // LF
   CheckSeparator();
 
@@ -1421,9 +1428,27 @@ bool ConditionParse()
 
     if(end) break;
   }
+  end = false;
+
+  G_Else();
+
+  // else
+  CheckKeyword("else");
+  CheckSeparator();
+  while(1)
+  {
+    if(!BlockParse()) RaiseError("unexpected token", ErrorType_Syntax);
+
+    if(end) break;
+  }
+  end = false;
 
   // end if
   if(!EndIfParse()) return false;
+
+  // error
+  else
+
 
   return true;
 }

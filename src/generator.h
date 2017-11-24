@@ -114,6 +114,8 @@ void G_Scope();
 void G_FinalJump();
 void G_FinalLabel();
 
+void G_Else();
+
 /** @brief Announces end of a block to generator. */
 void G_EndBlock();
 
