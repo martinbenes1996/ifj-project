@@ -985,6 +985,25 @@ short int checkFunctionState(const char * functionName)
     }
     return -1;          //should not get there
 }
+/**
+ * @brief   Finds the first undefined function, returns its name and sets it to defined
+ *                     (can be called repetedly to find all undefined functions).
+ *
+ * @returns name of the undefined function or NULL when everything is ok.
+ */
+//mozno vracet nazev nedefinovane funkce nebo bool
+const char * functionDefinitionCheck()
+{
+    for(size_t i = 0;i < functionTable.arr_size;++i)
+    {
+        if(functionTable.arr[i] != NULL && !functionTable.arr[i]->defined)
+        {
+            functionTable.arr[i]->defined = true;        //can be called repetedly
+            return functionTable.arr[i]->name;
+        }
+    }
+    return NULL;
+}
 
 /**
  * @brief   Adds a variable into a  function.

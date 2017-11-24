@@ -139,8 +139,14 @@ void functionTableEnd();
  * @returns -1 -> function not found, 0 -> function is declared, 1 -> function is defined.
  */
 short int checkFunctionState(const char * functionName);
-
-
+/**
+ * @brief   Finds the first undefined function, returns its name and sets it to defined
+ *                     (can be called repetedly to find all undefined functions).
+ *          Use at the end of program
+ *
+ * @returns name of the undefined function or NULL when everything is ok.
+ */
+const char * functionDefinitionCheck();
 
 
 /**
