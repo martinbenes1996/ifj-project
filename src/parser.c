@@ -1293,17 +1293,19 @@ bool FunctionDeclarationParse()
   if(Config_getFunction() != NULL) RaiseError("nested function declaration", ErrorType_Syntax);
 
 
-  /*
-  // function returns -1 if function is not known, 0 if function is declared, 1 if its defined
-  if(checkFunctionState(funcname->d.str) != -1)
-  {
-    RaiseError("DeclareNewFunction: redeclaration or declaration of an already defined function",
-                                                                                ErrorType_Semantic1);
-  }
-*/
 
   // redefinition
-  if(P_FunctionDefined(funcname)) RaiseError("redeclaration of function", ErrorType_Semantic1);
+  // function returns -1 if function is not known, 0 if function is declared, 1 if its defined
+  if(checkFunctionState(funcname->d.str) != FUNCTION_UNKNOWN)       //types.h l.246
+  {
+    RaiseError("FunctionDeclarationParse: redeclaration or declaration of an already defined function",
+                                                                                ErrorType_Semantic1);
+  }
+  // later you just have to call P_DeclareNewFunction
+  // pouzivat funkci P_FunctionDefined je zbytecne
+
+
+
 
   // operator (
   CheckOperator("(");
@@ -1552,23 +1554,24 @@ bool FunctionDefinitionParse()
 
   /*-------------------- SEMANTICS ----------------------*/
 
-  /*
-  if(findFunctionType(funcname->d.str) != type)
-    {
-        RaiseError("DefineNewFunction: declared and defined functions have different type", ErrorType_Semantic1);
-    }
 
-    //kontrola parametru?
-
-    if(!addFunctionParameters(funcname->d.str, params, true)) return false;
-  }
-  else
+  short int state;
+  state = checkFunctionState(funcname->d.str);
+  if(state == FUNCTION_DEFINED)
   {
-    RaiseError("DefineNewFunction: redefinition of a function", ErrorType_Semantic1);
+    RaiseError("FunctionDefinitionParse: redefinition of a function", ErrorType_Semantic1);
   }
-  */
-
-
+  else if(state == FUNCTION_DECLARED)
+  {
+    // check params in declaration
+    if(!ParametersMatches(params, findFunctionParameters(funcname->d.str)))
+      RaiseError("not matching parameters in declaration and definition", ErrorType_Semantic3);
+    // check return value datatype
+    if(dt != findFunctionType(funcname->d.str))
+      RaiseError("not matchig return datatype in declaration and definition", ErrorType_Semantic3);
+  }
+// puvodni text:
+/*
   // defined
   if( P_FunctionDefined(funcname) )
   {
@@ -1585,10 +1588,10 @@ bool FunctionDefinitionParse()
     if(dt != findFunctionType(funcname->d.str))
       RaiseError("not matchig return datatype in declaration and definition", ErrorType_Semantic3);
   }
-
+*/
   // define new function
   if(!P_DefineNewFunction(funcname, type, params))
-    RaiseError("error defining function", ErrorType_Syntax);
+    RaiseError("error defining function", ErrorType_Internal);  // cannot be any other type of error
 
   /*-----------------------------------------------------*/
 

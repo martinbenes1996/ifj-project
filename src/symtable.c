@@ -32,7 +32,6 @@
 struct variable{
     DataType type;
     char * name;
-    //DataUnion value;
 };
 
 /**
@@ -360,8 +359,6 @@ SymbolTableFrame * frameResize(size_t newsize, SymbolTableFrame * frame2)
     if((frame = frameInit(newsize)) != NULL)
     {
         frame->count = frameEntityCount(frame2);
-        //frame->functionIndex = frame2->functionIndex;
-        //frame->next = frame2->next;
 
         //going through all variables in table and copying variables
         for(size_t i=0;i < frameTableSize(frame2);++i)

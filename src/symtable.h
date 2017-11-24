@@ -146,6 +146,7 @@ short int checkFunctionState(const char * functionName);
 const char * functionDefinitionCheck();
 
 
+
 /**
  * @brief   Prints the whole symtable.
  *          Use for testing. (not sure if it will work like that :))
