@@ -3,4 +3,27 @@ CREATEFRAME
 PUSHFRAME
 JUMP main
 
-#function 
+#function
+LABEL main
+
+DEFVAR LF@max
+READ LF@max int
+
+LABEL before_cond
+PUSHS LF@max
+PUSHS int@0
+LTS
+PUSHS bool@true
+JUMPIFEQS after_cycle
+
+  # print
+  WRITE LF@max
+
+  # -1
+  PUSHS LF@max
+  PUSHS int@1
+  SUBS
+  POPS LF@max
+
+JUMP before_cond
+LABEL after_cycle

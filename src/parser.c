@@ -1196,22 +1196,22 @@ bool BlockParse()
       // condition
       else if(matchesKeyword(p, "if"))
       {
-        if(!ConditionParse()) return false;
+        return ConditionParse();
       }
       // printing
       else if(matchesKeyword(p, "print"))
       {
-        PrintParse(true);
+        return PrintParse(true);
       }
       // loading
       else if(matchesKeyword(p, "input"))
       {
-        InputParse();
+        return InputParse();
       }
       // cycle
       else if(matchesKeyword(p, "do"))
       {
-        CycleParse();
+        return CycleParse();
       }
       // end cycle
       else if(matchesKeyword(p, "loop"))
@@ -1222,7 +1222,7 @@ bool BlockParse()
       // function return
       else if(matchesKeyword(p, "return"))
       {
-        if(!ReturnParse()) return false;
+        return ReturnParse();
       }
       // function declaration
       else if(matchesKeyword(p, "declare"))

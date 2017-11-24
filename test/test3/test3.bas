@@ -13,7 +13,7 @@ function vypis() as integer
   Input x
 
   dim i as integer
-  Do i < While
+  Do WHile x>=0
     print x;
     x = x-1
   Loop
