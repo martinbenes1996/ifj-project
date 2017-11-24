@@ -24,8 +24,6 @@
 
                 //SYMBOL TABLE FUNCTIONS
 
-// -Odstranil jsem funkci VarInsert, pokud jste ji pouzili, zmente ji!
-
 
 
 /**
