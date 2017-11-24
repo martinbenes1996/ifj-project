@@ -44,7 +44,6 @@ LABEL main
   DEFVAR LF@max
   MOVE LF@max TF@*ret
   WRITE LF@max
-  WRITE string@\010
   JUMP end
 
 LABEL maximum

@@ -212,6 +212,9 @@ void EndRoutine()
   pthread_join(sc, NULL);
   #endif // MULTITHREAD
 
+  const char * notdefined = functionDefinitionCheck();
+  if(notdefined != NULL) EndParser("not all declared functions defined", ErrorType_Semantic1);
+
   // clear memory
   constTableFree();
 	functionTableEnd();
@@ -1279,7 +1282,7 @@ bool BlockParse()
 bool FunctionDeclarationParse()
 {
   #ifdef PARSER_DEBUG
-    debug("Declaration parse.");
+    debug("Function declaration parse.");
   #endif
 
   // keyword function
@@ -1292,8 +1295,6 @@ bool FunctionDeclarationParse()
   // nesting
   if(Config_getFunction() != NULL) RaiseError("nested function declaration", ErrorType_Syntax);
 
-
-
   // redefinition
   // function returns -1 if function is not known, 0 if function is declared, 1 if its defined
   if(checkFunctionState(funcname->d.str) != FUNCTION_UNKNOWN)       //types.h l.246
@@ -1304,22 +1305,71 @@ bool FunctionDeclarationParse()
   // later you just have to call P_DeclareNewFunction
   // pouzivat funkci P_FunctionDefined je zbytecne
 
-
-
+  // parameters declaration
+  Parameters params = paramInit();
 
   // operator (
   CheckOperator("(");
+  Phrasem arg = CheckQueue(arg);
+  // no parameters
+  if(isOperator(arg, ")")) ReturnToQueue(arg);
+  // parameters
+  else
+  {
+    ReturnToQueue(arg);
 
-  // parameters declaration
-  // ...
+    // parameters
+    while(1)
+    {
+      // variable
+      Phrasem arg = CheckQueue(arg);
+      if(!VariableParse(arg)) RaiseExpectedError("identificator");
+
+      // keyword 'as'
+      CheckKeyword("as");
+
+      // datatype keyword
+      Phrasem type = CheckQueue(type);
+      if(!DataTypeParse(type)) RaiseExpectedError("datatype");
+      DataType dt = getDataType(type);
+
+      // parameter to add
+      if(!paramAdd(&params, NULL, dt))
+        RaiseError("list allocation error", ErrorType_Internal);
+
+      // , or )
+      Phrasem op = CheckQueue(op);
+      if(isOperator(op, ",")) continue;        // ,
+      else if(isOperator(op, ")"))             // )
+      {
+        ReturnToQueue(op);
+        break;
+      }
+      else RaiseExpectedError("operator , or )");
+
+    }
+
+  }
+
+  #ifdef PARSER_DEBUG
+    PrintParameters(params);
+  #endif
 
   // operator )
   CheckOperator(")");
 
+  // keyword 'as'
+  CheckKeyword("as");
+
+  // datatype keyword
+  Phrasem type = CheckQueue(type);
+  if(!DataTypeParse(type)) RaiseExpectedError("datatype");
+
   // LF
   CheckSeparator();
 
-
+  if(!P_DeclareNewFunction(funcname, type, params))
+    RaiseError("symtable allocation error", ErrorType_Internal);
 
   return true;
 }
@@ -1394,13 +1444,15 @@ bool AssignmentParse()
 
   Phrasem func = CheckQueue(func);
 
-  if((func->table == TokenType_Symbol) && P_FunctionDefined(func))
+  if((func->table == TokenType_Symbol) && P_FunctionExists(func))
   {
     ReturnToQueue(func);
     // function call
     if(!FunctionCallParse()) return false;
 
-    #warning typecast
+    //#warning typecast
+    if(!P_CheckDataType(var)) return false;
+
     G_FunctionAssignment(var);
   }
   else
@@ -1418,15 +1470,14 @@ bool AssignmentParse()
 
     // expression
     if(!ExpressionParse()) return false;
+
+    if(!P_HandleTarget(var)) return false;
   }
 
   // LF
   CheckSeparator();
 
-  if(!P_HandleTarget(var))
-  {
-    return false;
-  }
+
 
   return true;
 }
@@ -1442,7 +1493,7 @@ bool FunctionCallParse()
   if( !FunctionParse(funcname) ) return false;
 
   // defined
-  if( !P_FunctionDefined(funcname) ) RaiseError("calling unknown function", ErrorType_Semantic1);
+  if( !P_FunctionExists(funcname) ) RaiseError("calling unknown function", ErrorType_Semantic1);
 
   // (
   CheckOperator("(");
@@ -1465,6 +1516,7 @@ bool FunctionCallParse()
   CheckOperator(")");
 
   HandlePhrasem(funcname);
+  P_HangDataType(findFunctionType(funcname->d.str));
 
   return true;
 }

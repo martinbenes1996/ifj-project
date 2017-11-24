@@ -14,8 +14,13 @@ bool paramAdd(Parameters * p, const char * name, DataType dt)
   if(newparam == NULL) return false;
 
   newparam->type = dt;
-  newparam->name = strdup(name);
+  if(name == NULL) newparam->name = NULL;
+  else
+  {
+    newparam->name = strdup(name);
     if(newparam->name == NULL) return false;
+  }
+
 
   // empty
   if(first == NULL)

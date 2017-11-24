@@ -93,6 +93,18 @@ bool P_FunctionDefined(Phrasem p)
   return (checkFunctionState(p->d.str) == 1) ? true:false;
 }
 
+bool P_FunctionExists(Phrasem p)
+{
+  #ifdef PEDANT_DEBUG
+    debug("Pedant, Function Declared or Defined?");
+  #endif
+
+  //the problem here is that function can be declared, defined or not in the table at all
+  //i therefore suggest changing the type to short int and return -1, 0, 1
+  //or maybe even better remove this function and call directly checkFunctionState
+  return (checkFunctionState(p->d.str) >= 0) ? true:false;
+}
+
 bool P_DeclareNewFunction(Phrasem funcname, Phrasem functype, Parameters params)
 {
   #ifdef PEDANT_DEBUG
@@ -105,7 +117,10 @@ bool P_DeclareNewFunction(Phrasem funcname, Phrasem functype, Parameters params)
     RaiseError("unknown datatype", ErrorType_Internal);
   }
 
-  if(funcname->table != TokenType_Symbol) return false;
+
+
+  if((funcname->table != TokenType_Function)
+  && (funcname->table != TokenType_Symbol)) return false;
 
   if(!addFunction(funcname->d.str)) return false;
   if(!setFunctionType(funcname->d.str, type)) return false;
@@ -661,7 +676,34 @@ bool P_HandleCompareOperator(Phrasem p) {
 
 }
 
+void P_HangDataType(DataType dt)
+{
+  typeOfResult = dt;
+}
 
+bool P_CheckDataType(Phrasem p)
+{
+  #ifdef PEDANT_DEBUG
+    debug("Pedant, check datatype and handle phrasem.");
+  #endif
+  DataType generated = typeOfResult;
+  DataType waiting = findVariableType(Config_getFunction(), p->d.str);
+
+  if (generated == waiting) {
+  }
+
+  else if ((generated == DataType_Integer)&&(waiting == DataType_Double)) {
+    GenerateTypeCast(TypeCast_Int2Double);
+  }
+
+  else if((generated == DataType_Double)&&(waiting == DataType_Integer)) {
+    GenerateTypeCast(TypeCast_Int2Double);
+  }
+
+  else RaiseError("incompatible types", ErrorType_Semantic2);
+
+  return true;
+}
 
 bool P_MoveStackToGenerator()
 {

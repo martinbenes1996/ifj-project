@@ -16,13 +16,24 @@ function max3() as double
 
     end if
 
-    'c is max
-    return c
+    if c > b then
+
+      'c is max
+      return c
+
+    end if
 
   end if
 
-  'b is max
-  return b
+  if b > c then
+
+    'b is max
+    return b
+
+  end if
+
+  'c is max
+  return c
 
 end function
 

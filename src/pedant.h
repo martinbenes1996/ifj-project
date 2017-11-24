@@ -43,6 +43,8 @@ bool P_VariableDefined(Phrasem varname);
  */
 bool P_FunctionDefined(Phrasem funcname);
 
+bool P_FunctionExists(Phrasem p);
+
 /**
  * @brief   Defines new variable.
  *
@@ -53,6 +55,17 @@ bool P_FunctionDefined(Phrasem funcname);
  * @returns True if success. False otherwise.
  */
 bool P_DefineNewVariable(Phrasem varname, Phrasem datatype);
+
+/**
+ * @brief   Declares new function.
+ *
+ * This function will write new record to symtable.
+ * @param funcname      Phrasem with function name.
+ * @param functype      Phrasem with function type.
+ * @param params        Parameters.
+ * @returns True if success. False otherwise.
+ */
+bool P_DeclareNewFunction(Phrasem, Phrasem, Parameters);
 
 /**
  * @brief   Defines new function.
@@ -101,6 +114,10 @@ bool P_MoveStackToGenerator();
  * @return True, if success. False otherwise.
  */
 bool P_CheckType_MoveStackToGenerator(DataType);
+
+void P_HangDataType(DataType);
+
+bool P_CheckDataType(Phrasem);
 
 /**
  * @brief     Performs last actions with stack after expression parse.
