@@ -25,7 +25,6 @@
                 //SYMBOL TABLE FUNCTIONS
 
 
-
 /**
  * @brief   Finds a variable in a function.
  *

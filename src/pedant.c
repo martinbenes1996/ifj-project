@@ -107,13 +107,6 @@ bool P_DeclareNewFunction(Phrasem funcname, Phrasem functype, Parameters params)
 
   if(funcname->table != TokenType_Symbol) return false;
 
-  // function returns -1 if function is not known, 0 if function is declared, 1 if its defined
-  if(checkFunctionState(funcname->d.str) != -1)
-  {
-    RaiseError("DeclareNewFunction: redeclaration or declaration of an already defined function",
-                                                                                ErrorType_Semantic1);
-  }
-
   if(!addFunction(funcname->d.str)) return false;
   if(!setFunctionType(funcname->d.str, type)) return false;
   if(!addFunctionParameters(funcname->d.str, params, false)) return false;
@@ -132,28 +125,20 @@ bool P_DefineNewFunction(Phrasem funcname, Phrasem functype, Parameters params)
     RaiseError("unknown datatype", ErrorType_Internal);
   }
 
-  // function returns -1 if function is not known, 0 if function is declared, 1 if its defined
-  if(checkFunctionState(funcname->d.str) == -1)
+  // checkFunctionState returns -1 if function is not known, 0 if function is declared, 1 if its defined
+  short int state;
+  state = checkFunctionState(funcname->d.str);
+  if(state == FUNCTION_UNKNOWN)
   {
     if(!addFunction(funcname->d.str)) return false;
     if(!setFunctionType(funcname->d.str, type)) return false;
     if(!addFunctionParameters(funcname->d.str, params, true)) return false;
   }
-  else if(checkFunctionState(funcname->d.str) == 0)
+  else if(state == FUNCTION_DECLARED)
   {
-    if(findFunctionType(funcname->d.str) != type)
-    {
-        RaiseError("DefineNewFunction: declared and defined functions have different type", ErrorType_Semantic1);
-    }
-
-    //kontrola parametru?
-
     if(!addFunctionParameters(funcname->d.str, params, true)) return false;
   }
-  else
-  {
-    RaiseError("DefineNewFunction: redefinition of a function", ErrorType_Semantic1);
-  }
+  else return false;        //should not happen here
 
   return true;
 }

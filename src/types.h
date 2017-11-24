@@ -240,4 +240,10 @@ typedef struct stack
 /** @} */
 /*--------------------------------------------------*/
 
+//return values for declaration/definition function parse
+#define FUNCTION_DEFINED 1
+#define FUNCTION_DECLARED 0
+#define FUNCTION_UNKNOWN -1     //function is not in symboltable
+
+
 #endif // TYPES_H

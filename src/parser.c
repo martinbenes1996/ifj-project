@@ -1291,6 +1291,17 @@ bool FunctionDeclarationParse()
 
   // nesting
   if(Config_getFunction() != NULL) RaiseError("nested function declaration", ErrorType_Syntax);
+
+
+  /*
+  // function returns -1 if function is not known, 0 if function is declared, 1 if its defined
+  if(checkFunctionState(funcname->d.str) != -1)
+  {
+    RaiseError("DeclareNewFunction: redeclaration or declaration of an already defined function",
+                                                                                ErrorType_Semantic1);
+  }
+*/
+
   // redefinition
   if(P_FunctionDefined(funcname)) RaiseError("redeclaration of function", ErrorType_Semantic1);
 
@@ -1540,6 +1551,23 @@ bool FunctionDefinitionParse()
   CheckSeparator();
 
   /*-------------------- SEMANTICS ----------------------*/
+
+  /*
+  if(findFunctionType(funcname->d.str) != type)
+    {
+        RaiseError("DefineNewFunction: declared and defined functions have different type", ErrorType_Semantic1);
+    }
+
+    //kontrola parametru?
+
+    if(!addFunctionParameters(funcname->d.str, params, true)) return false;
+  }
+  else
+  {
+    RaiseError("DefineNewFunction: redefinition of a function", ErrorType_Semantic1);
+  }
+  */
+
 
   // defined
   if( P_FunctionDefined(funcname) )
