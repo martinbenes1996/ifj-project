@@ -126,11 +126,19 @@ bool findFunctionInTable(const char * functionName);
  * @param name  name of the function
  * @returns True/false.
  */
+bool addFunction(const char * name);
 /**
  * @brief   Frees the function table.
  *          Use in the end.
  */
 void functionTableEnd();
+/**
+ * @brief   Checks whether the function is defined or declared.
+ *
+ * @param functionName      name of the function
+ * @returns -1 -> function not found, 0 -> function is declared, 1 -> function is defined.
+ */
+short int checkFunctionState(const char * functionName);
 
 
 

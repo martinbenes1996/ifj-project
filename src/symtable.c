@@ -55,6 +55,7 @@ typedef struct symbolTableFrame{
 typedef struct symbolTable{
     DataType type;
     char *name;
+    bool defined;
     size_t numberOfParameters;
     struct paramFce *firstParam;
     SymbolTableFrame *variables;
@@ -613,6 +614,7 @@ SymbolTable * functionFrameInit()
         frame->name = NULL;
         frame->variables = frameInit(STARTING_CHUNK);
         frame->numberOfParameters = 0;
+        frame->defined = false;
         frame->type = DataType_Unknown;
     }
     else
@@ -932,13 +934,13 @@ bool addFunctionParameters(const char * functionName, struct paramFce * parametr
     }
     else
     {
-        //if(function->firstParam != NULL) return false;
         //inserts parametres into list
         function->firstParam = parametres;
         function->numberOfParameters = listLength(parametres);
 
         if(definition)
         {
+            function->defined = true;
             //inserts parametres into variable array
             struct paramFce * pom = function->firstParam;
             while(pom != NULL)
@@ -955,6 +957,35 @@ bool addFunctionParameters(const char * functionName, struct paramFce * parametr
     #endif
     return true;
 }
+/**
+ * @brief   Checks whether the function is defined or declared.
+ *
+ * @param functionName      name of the function
+ * @returns -1 -> function not found, 0 -> function is declared, 1 -> function is defined.
+ */
+short int checkFunctionState(const char * functionName)
+{
+    #ifdef SYMTABLE_DEBUG
+        debug("Checking the status of function %s.", functionName);
+    #endif
+
+    SymbolTable * function;
+    function = findFunction(functionName);
+    if(function == NULL)
+    {
+        return -1;      //function is neither declared nor defined
+    }
+    else if(!function->defined)
+    {
+        return 0;       //function is only declared
+    }
+    else
+    {
+        return 1;       //function is defined
+    }
+    return -1;          //should not get there
+}
+
 /**
  * @brief   Adds a variable into a  function.
  *

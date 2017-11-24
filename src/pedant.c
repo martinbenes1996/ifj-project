@@ -87,13 +87,16 @@ bool P_FunctionDefined(Phrasem p)
     debug("Pedant, Function Defined?");
   #endif
 
-  return findFunctionInTable(p->d.str);
+  //the problem here is that function can be declared, defined or not in the table at all
+  //i therefore suggest changing the type to short int and return -1, 0, 1
+  //or maybe even better remove this function and call directly checkFunctionState
+  return (checkFunctionState(p->d.str) == 1) ? true:false;
 }
 
 bool P_DeclareNewFunction(Phrasem funcname, Phrasem functype, Parameters params)
 {
   #ifdef PEDANT_DEBUG
-    debug("Pedant, Define New Function.");
+    debug("Pedant, Declare New Function.");
   #endif
 
   DataType type = getDataType(functype);
@@ -103,6 +106,13 @@ bool P_DeclareNewFunction(Phrasem funcname, Phrasem functype, Parameters params)
   }
 
   if(funcname->table != TokenType_Symbol) return false;
+
+  // function returns -1 if function is not known, 0 if function is declared, 1 if its defined
+  if(checkFunctionState(funcname->d.str) != -1)
+  {
+    RaiseError("DeclareNewFunction: redeclaration or declaration of an already defined function",
+                                                                                ErrorType_Semantic1);
+  }
 
   if(!addFunction(funcname->d.str)) return false;
   if(!setFunctionType(funcname->d.str, type)) return false;
@@ -122,9 +132,29 @@ bool P_DefineNewFunction(Phrasem funcname, Phrasem functype, Parameters params)
     RaiseError("unknown datatype", ErrorType_Internal);
   }
 
-  if(!addFunction(funcname->d.str)) return false;
-  if(!setFunctionType(funcname->d.str, type)) return false;
-  if(!addFunctionParameters(funcname->d.str, params, true)) return false;
+  // function returns -1 if function is not known, 0 if function is declared, 1 if its defined
+  if(checkFunctionState(funcname->d.str) == -1)
+  {
+    if(!addFunction(funcname->d.str)) return false;
+    if(!setFunctionType(funcname->d.str, type)) return false;
+    if(!addFunctionParameters(funcname->d.str, params, true)) return false;
+  }
+  else if(checkFunctionState(funcname->d.str) == 0)
+  {
+    if(findFunctionType(funcname->d.str) != type)
+    {
+        RaiseError("DefineNewFunction: declared and defined functions have different type", ErrorType_Semantic1);
+    }
+
+    //kontrola parametru?
+
+    if(!addFunctionParameters(funcname->d.str, params, true)) return false;
+  }
+  else
+  {
+    RaiseError("DefineNewFunction: redefinition of a function", ErrorType_Semantic1);
+  }
+
   return true;
 }
 

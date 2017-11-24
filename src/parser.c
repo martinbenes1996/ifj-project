@@ -1595,7 +1595,8 @@ bool ScopeParse()
 
   // actualizing function
   setFunction("scope");
-  addFunction(Config_getFunction(), true);
+  addFunction(Config_getFunction());
+  addFunctionParameters(Config_getFunction(), NULL, true);      // sets the function as defined
 
   // LF
   CheckSeparator();
