@@ -126,7 +126,6 @@ bool findFunctionInTable(const char * functionName);
  * @param name  name of the function
  * @returns True/false.
  */
-bool addFunction(const char * name);
 /**
  * @brief   Frees the function table.
  *          Use in the end.

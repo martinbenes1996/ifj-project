@@ -280,6 +280,13 @@ void GenerateLogic(Phrasem p)
 
 }
 
+void GenerateFunctionCall(Phrasem p)
+{
+  out("CALL %s", p->d.str);
+  out("POPFRAME");
+  out("PUSHS TF@*ret");
+}
+
 void GenerateAssignment(Phrasem p)
 {
   #ifdef GENERATOR_DEBUG
@@ -335,8 +342,7 @@ void GenerateFunctionHeader(Phrasem p)
   // function
   out("");
   out("LABEL %s", p->d.str);
-
-
+  out("PUSHFRAME");
 }
 
 void GenerateArgument();
@@ -349,6 +355,7 @@ void GenerateAritm(Stack s)
 
   // first
   Phrasem p = PopFromStack(s);
+  if(p == NULL) return;
   out("PUSHS %s", GenerateName(p) );
 
   while(1)
@@ -468,6 +475,10 @@ bool HandlePhrasem(Phrasem p)
   {
     GenerateFunctionHeader(p);
   }
+  else if(top == GState_FunctionCall)
+  {
+    GenerateFunctionCall(p);
+  }
 
   PopGState();
   #ifdef GENERATOR_DEBUG
@@ -488,6 +499,15 @@ void G_FunctionCall()
   PushGState(GState_FunctionCall);
   out("CREATEFRAME");
 
+}
+
+void G_FunctionAssignment(Phrasem p)
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate function assignment.");
+  #endif
+
+  out("POPS LF@%s", p->d.str);
 }
 
 void G_Condition()
@@ -548,6 +568,24 @@ void G_Scope()
   #endif
 
   out("LABEL $main");
+}
+
+void G_FinalJump()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate final jump.");
+  #endif
+
+  out("JUMP $end");
+}
+
+void G_FinalLabel()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate final label.");
+  #endif
+
+  out("LABEL $end");
 }
 
 /*---------- DATA -----------*/
@@ -644,11 +682,6 @@ void G_EndBlock()
     out("LABEL %s", aftercycle);
     free((void *)aftercycle);
     free((void *)tocycle);
-  }
-  else if( up == GState_FunctionCall )
-  {
-    out("POPFRAME");
-    out("PUSHS LF@*ret");
   }
   else if( up == GState_Return )
   {

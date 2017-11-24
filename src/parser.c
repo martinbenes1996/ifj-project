@@ -495,6 +495,7 @@ bool RunParser()
           if(end)
           {
             if(!wasScope) RaiseError("no scope defined", ErrorType_Semantic3);
+            G_FinalLabel();
             break;
           }
 
@@ -932,6 +933,8 @@ bool EndScopeParse()
   CheckSeparator();
 
   setFunction(NULL);
+
+  G_FinalJump(); // jump to end of file
 
   end = true;
   return true;
@@ -1378,11 +1381,14 @@ bool AssignmentParse()
 
   Phrasem func = CheckQueue(func);
 
-  if(P_FunctionDefined(func))
+  if((func->table == TokenType_Symbol) && P_FunctionDefined(func))
   {
     ReturnToQueue(func);
     // function call
     if(!FunctionCallParse()) return false;
+
+    #warning typecast
+    G_FunctionAssignment(var);
   }
   else
   {
@@ -1445,7 +1451,7 @@ bool FunctionCallParse()
   // )
   CheckOperator(")");
 
-  G_EndBlock();
+  HandlePhrasem(funcname);
 
   return true;
 }
@@ -1589,7 +1595,7 @@ bool ScopeParse()
 
   // actualizing function
   setFunction("scope");
-  addFunction(Config_getFunction());
+  addFunction(Config_getFunction(), true);
 
   // LF
   CheckSeparator();

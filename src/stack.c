@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include "config.h"
 #include "err.h"
 #include "functions.h"
 #include "io.h"
@@ -30,6 +31,7 @@ void EndStack(const char * msg, ErrorType errtype)
       debug(msg);
     #endif
     setErrorType(errtype);
+    setErrorLine(Config_getLine());
     setErrorMessage(msg);
   }
   // ok
@@ -48,6 +50,7 @@ bool PushOntoStack(Stack st, Phrasem data)
   {
     EndStack("Stack: PushOntoStack: recieved NULL pointer", ErrorType_Internal);
     return false;
+    return true;
   }
 
   // allocation
@@ -76,7 +79,8 @@ Phrasem PopFromStack(Stack st)
   // control
   if(st == NULL)
   {
-    EndStack("Stack: PopFromStack: recieved NULL pointer", ErrorType_Internal);
+    // TODO
+    //EndStack("Stack: PopFromStack: recieved NULL pointer", ErrorType_Internal);
     return NULL;
   }
 
@@ -152,7 +156,8 @@ void PrintStack(Stack st)
   // control
   if(st == NULL)
   {
-    EndStack("Stack: PrintStack: recieved NULL pointer", ErrorType_Internal);
+    // TODO
+    //EndStack("Stack: PrintStack: recieved NULL pointer", ErrorType_Internal);
     return;
   }
 

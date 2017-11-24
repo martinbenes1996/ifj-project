@@ -69,6 +69,8 @@ bool HandlePhrasem(Phrasem p);
 /** @brief Announces function call to generator. */
 void G_FunctionCall();
 
+void G_FunctionAssignment(Phrasem);
+
 /** @brief Announces condition to generator. */
 void G_Condition();
 
@@ -108,6 +110,9 @@ void G_Return();
 void G_Function();
 
 void G_Scope();
+
+void G_FinalJump();
+void G_FinalLabel();
 
 /** @brief Announces end of a block to generator. */
 void G_EndBlock();
