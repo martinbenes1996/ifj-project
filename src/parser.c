@@ -81,12 +81,11 @@ bool wasScope = false;
 /**
  * @brief Queue error raiser.
  *
- * This macro raises specialized Queue error(when it returns NULL pointer).
- * @param phrasem     Target memory.
+ * This macro raises deals with lexical error.
  */
 #define RaiseQueueError()                                       \
   do {                                                          \
-    EndParser(NULL, ErrorType_Ok);                     \
+    EndParser(NULL, ErrorType_Ok);                              \
     return false;                                               \
   } while(0)
 

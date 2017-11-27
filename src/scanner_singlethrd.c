@@ -146,13 +146,14 @@ bool getComment() {
         else RaiseError("bad internal state", ErrorType_Internal);
 
       case 1:
+        if ( input == EOF) RaiseLexicalError("expected \'\\n\'");
         if ( input != '\n') { break; }
         else { end = true; Config_setLine(Config_getLine()+1); break; }
 
       case 2:
         if(input == '\n') { Config_setLine(Config_getLine()+1); break;}
-        else if (input != '/') { break; }
         else if (input == EOF) RaiseLexicalError("expected \'//\' ");
+        else if (input != '/') { break; }
         else { state = 3; break; }
 
       case 3:
@@ -1169,7 +1170,7 @@ Phrasem RemoveFromQueue()
 
   else if ( input == '\'' ) {
     returnByte(input);
-    getComment();
+    if(!getComment()) return NULL;
     goto loadAnother;
   }
 
@@ -1178,7 +1179,7 @@ Phrasem RemoveFromQueue()
     if (input == '/')
     {
       returnByte('~');
-      getComment();
+      if(!getComment()) return NULL;
       goto loadAnother;
     }
 
