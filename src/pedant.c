@@ -28,11 +28,6 @@ void EndPedant(const char * msg, ErrorType errtype)
     setErrorMessage(msg);
     setErrorLine(Config_getLine());
   }
-  else
-  {
-    setErrorType(ErrorType_Ok);
-    setErrorMessage("");
-  }
 }
 
 #define RaiseError(msg, errtype)                                \
