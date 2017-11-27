@@ -604,7 +604,6 @@ void G_ArgumentAssignment(unsigned ord)
 
   PushGState(GState_Argument);
 
-  char param_name[4]; // there can't be more, than 999 parameters
   sprintf(param_name, "*%u", ord);
   out("DEFVAR TF@%s", param_name);
 

@@ -566,6 +566,10 @@ bool DataTypeParse(Phrasem p)
 
 /*-----------------expression parse----------------------------*/
 
+/*--------------- DATA -----------------*/
+static bool extraCloseBracket = false;
+/*--------------------------------------*/
+
 /*
 //returns an index into ExprParseArray
 int decodeToken(...)
@@ -1523,6 +1527,7 @@ bool FunctionCallParse()
   CheckOperator("(");
 
   // iterate over arguments
+  extraCloseBracket = true;
   Parameters params = findFunctionParameters(funcname->d.str);
   for(unsigned ord = 1; params != NULL; ord++)
   {
@@ -1538,6 +1543,7 @@ bool FunctionCallParse()
 
   // )
   CheckOperator(")");
+  extraCloseBracket = false;
 
   HandlePhrasem(funcname);
   P_HangDataType(findFunctionType(funcname->d.str));
