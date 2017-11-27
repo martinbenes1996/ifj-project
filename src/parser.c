@@ -1695,6 +1695,7 @@ bool ScopeParse()
   #endif
 
   G_Scope();
+  if(wasScope) RaiseError("multiple scope definition", ErrorType_Syntax);
   wasScope = true;
 
   // nesting

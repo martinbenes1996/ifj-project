@@ -355,6 +355,57 @@ void GenerateAritm(Stack s)
     debug("Generating arithmetics.");
   #endif
 
+  Phrasem p;
+  while((p = PopFromStack(s)) != NULL)
+  {
+
+    // operand
+    if((p->table == TokenType_Constant)
+    || (p->table == TokenType_Variable))
+    {
+      out("PUSHS %s", GenerateName(p) );
+    }
+
+    // operator
+    else if(p->table == TokenType_Operator)
+    {
+      if (isOperator(p, "+")) {
+        out("ADDS");
+      }
+
+      else if (isOperator(p, "-")) {
+        out("SUBS");
+      }
+
+      else if (isOperator(p, "*")) {
+        out("MULS");
+      }
+
+      else if (isOperator(p, "/")) {
+        out("DIVS");
+      }
+      else if (isOperator(p, "\\")) {
+        out("DIVS");
+        out("FLOAT2INTS");
+      }
+    }
+
+    // typecast
+    else if(isTypeCast(p))
+    {
+      GenerateTypeCast(p->table);
+    }
+  }
+
+}
+
+/*
+void GenerateAritm(Stack s)
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generating arithmetics.");
+  #endif
+
   // first
   Phrasem p = PopFromStack(s);
   if(p == NULL) return;
@@ -407,6 +458,7 @@ void GenerateAritm(Stack s)
     }
   }
 }
+*/
 
 /*------------------------------- RECIEVERS ----------------------------------*/
 
