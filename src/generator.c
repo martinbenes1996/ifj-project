@@ -399,67 +399,6 @@ void GenerateAritm(Stack s)
 
 }
 
-/*
-void GenerateAritm(Stack s)
-{
-  #ifdef GENERATOR_DEBUG
-    debug("Generating arithmetics.");
-  #endif
-
-  // first
-  Phrasem p = PopFromStack(s);
-  if(p == NULL) return;
-  out("PUSHS %s", GenerateName(p) );
-
-  while(1)
-  {
-
-    // second
-    Phrasem q = PopFromStack(s);
-    if(q == NULL) break;
-    // implicit conversion
-    if(isTypeCast(q))
-    {
-      GenerateTypeCast(q->table);
-      q = PopFromStack(s);
-    }
-    // control of implicit conversion (if so, then pop again)
-    out("PUSHS %s", GenerateName(q));
-
-    // operator
-    Phrasem operator = PopFromStack(s);
-    if(operator == NULL) break;
-
-    // implicit conversion
-    if(isTypeCast(operator))
-    {
-      GenerateTypeCast(operator->table);
-      operator = PopFromStack(s);
-    }
-
-    if (isOperator(operator, "+")) {
-      out("ADDS");
-    }
-
-    else if (isOperator(operator, "-")) {
-      out("SUBS");
-    }
-
-    else if (isOperator(operator, "*")) {
-      out("MULS");
-    }
-
-    else if (isOperator(operator, "/")) {
-      out("DIVS");
-    }
-    else if (isOperator(operator, "\\")) {
-      out("DIVS");
-      out("FLOAT2INTS");
-    }
-  }
-}
-*/
-
 /*------------------------------- RECIEVERS ----------------------------------*/
 
 bool Send(Stack s)
