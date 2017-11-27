@@ -86,7 +86,7 @@ bool wasScope = false;
  */
 #define RaiseQueueError()                                       \
   do {                                                          \
-    EndParser("queue error", ErrorType_Internal);               \
+    EndParser(NULL, ErrorType_Ok);                     \
     return false;                                               \
   } while(0)
 
