@@ -60,7 +60,7 @@
     //#define EXPRESSION_DEBUG /* Expression parse stack debug. */
     //#define COLLECTOR_DEBUG /* Garbage collector for Phrasem structures. */
     //#define OPERATOR_TABLE_DEBUG /* Operator table debug. */
-
+    //#define ERROR_CODE_DEBUG /*Control of error*/
 	  /*add your own*/
 
   #endif // DEBUG_MODE
