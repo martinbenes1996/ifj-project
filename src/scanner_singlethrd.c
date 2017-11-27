@@ -41,6 +41,7 @@ void PrintScannerStack() { PrintStack(mem); }
 
 void EndScanner(const char * msg, ErrorType errtype)
 {
+  printf("%d ", getErrorCode());
   if(msg != NULL)
   {
     #ifdef SCANNER_DEBUG
@@ -55,6 +56,7 @@ void EndScanner(const char * msg, ErrorType errtype)
       debug("End Scanner.");
     #endif
   }
+  
   ClearStack(mem);
 }
 
