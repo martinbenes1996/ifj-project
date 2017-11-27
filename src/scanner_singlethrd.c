@@ -60,6 +60,10 @@ void EndScanner(const char * msg, ErrorType errtype)
 
 void ClearScanner()
 {
+  // clear buffer
+  char * p = GetBuffer();
+  if (p != NULL) free(p);
+
   EndScanner(NULL, ErrorType_Ok);
 }
 
@@ -85,6 +89,13 @@ void ClearScanner()
  * @brief  Alloc error raiser.
  */
 #define RaiseAllocError() RaiseError("bad allocation", ErrorType_Internal);
+
+#define RaiseLexicalError(msg)                                  \
+  do {                                                          \
+    err("%s: %s: l.%d: %s", __FILE__, __func__, __LINE__, msg); \
+    EndScanner(msg, ErrorType_Lexical);                         \
+    return NULL;                                                \
+  } while(0)
 
 /**
  * @brief Safe buffer saver.
@@ -141,16 +152,16 @@ bool getComment() {
       case 2:
         if(input == '\n') { Config_setLine(Config_getLine()+1); break;}
         else if (input != '/') { break; }
-        else if (input == EOF) RaiseError("expected \'//\' ", ErrorType_Lexical);
+        else if (input == EOF) RaiseLexicalError("expected \'//\' ");
         else { state = 3; break; }
 
       case 3:
         if (input != '/') { state = 2; break; }
-        else if (input == EOF) RaiseError("expected \'//\' ", ErrorType_Lexical);
+        else if (input == EOF) RaiseLexicalError("expected \'//\' ");
         else { end = true; break; }
 
       default:
-        EndScanner("unknown state in comment", ErrorType_Lexical);
+        EndScanner("invalid internal state", ErrorType_Internal);
         end = true;
         break;
     }
@@ -208,7 +219,7 @@ Phrasem getOperator() {
             long index = getOperatorId("=");
             if(index == -1)  RaiseError("operator table error", ErrorType_Internal);
 
-            if (equalsign) RaiseError("+= waited once", ErrorType_Syntax);
+            if (equalsign) RaiseError("+= expected only maximum once per line", ErrorType_Syntax);
               equalsign = true;
 
             SaveToBuffer('=');
@@ -237,7 +248,7 @@ Phrasem getOperator() {
             long i = getOperatorId("=");
             if (i == -1) RaiseError("operator table error", ErrorType_Internal);
 
-            if (equalsign) RaiseError("-= waited once", ErrorType_Syntax);
+            if (equalsign) RaiseError("-= expected maximum once per line", ErrorType_Syntax);
               equalsign = true;
             SaveToBuffer('=');
           }
@@ -263,7 +274,7 @@ Phrasem getOperator() {
             long id = getOperatorId("=");
             if (id == -1) RaiseError("operator table error", ErrorType_Internal);
 
-            if (equalsign) RaiseError("*= waited once", ErrorType_Syntax);
+            if (equalsign) RaiseError("*= expected maximum once per line", ErrorType_Syntax);
               equalsign = true;
 
             SaveToBuffer('=');
@@ -287,7 +298,7 @@ Phrasem getOperator() {
             long index = getOperatorId("=");
             if (index == -1) RaiseError("operator table error", ErrorType_Internal);
 
-            if (equalsign) RaiseError("*= waited once", ErrorType_Syntax);
+            if (equalsign) RaiseError("*= expected maximum once per line", ErrorType_Syntax);
               equalsign = true;
 
             SaveToBuffer('=');
@@ -331,7 +342,7 @@ Phrasem getOperator() {
           end = true;
         }
 
-        else RaiseError("not a operator", ErrorType_Lexical);
+        else RaiseLexicalError("not a operator");
         break;
 
 
@@ -440,7 +451,8 @@ Phrasem getString() {
 
           return phr;
         }
-        else if (input == EOF)  RaiseError("string not ended", ErrorType_Lexical);
+        else if (input == EOF)  RaiseLexicalError("string not ended");
+        else if (input == '\n') RaiseLexicalError("multiple line string");
         else if (input != '\\') {
           SaveToBuffer(input);
         }
@@ -484,7 +496,7 @@ Phrasem getString() {
           asciival += 10*(input-'0');
           state = 5;
         }
-        else RaiseError("not valid escape sequence", ErrorType_Lexical);
+        else RaiseLexicalError("not valid escape sequence");
 
         break;
       // third digit
@@ -492,15 +504,15 @@ Phrasem getString() {
         if(isdigit(input))
         {
           asciival += input-'0';
-          if((asciival > 255) && (asciival < 1)) RaiseError("not valid escape sequence", ErrorType_Lexical);
+          if((asciival > 255) && (asciival < 1)) RaiseLexicalError("not valid escape sequence");
           SaveToBuffer(asciival);
           state = 2;
           break;
         }
-        else RaiseError("not valid escape sequence", ErrorType_Lexical);
+        else RaiseLexicalError("invalid escape sequence");
 
       default:
-        RaiseError("bad internal state", ErrorType_Lexical);
+        RaiseError("bad internal state", ErrorType_Internal);
     }
   }
   return NULL;
@@ -932,7 +944,7 @@ Phrasem Base() {
             break;
         }
 
-        else RaiseError("hexa number expecte", ErrorType_Lexical);
+        else RaiseError("only hexadecimal digits expected", ErrorType_Lexical);
       //other binary numbers
       case 5:
         if ((input == '0') || (input == '1')) {
@@ -1188,7 +1200,7 @@ Phrasem RemoveFromQueue()
         PrintPhrasem(pointer);
       #endif
 
-      if (equalsign) RaiseError("/= waited once", ErrorType_Syntax);
+      if (equalsign) RaiseError("/= expected only once per line", ErrorType_Syntax);
       equalsign = true;
 
       return pointer;
@@ -1244,7 +1256,7 @@ Phrasem RemoveFromQueue()
     return getNumber();
   }
 
-  else RaiseError("unknown symbol", ErrorType_Lexical);
+  else RaiseLexicalError("unknown symbol");
 
 }
 
