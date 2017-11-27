@@ -309,14 +309,6 @@ bool InputParse();
 bool PrintParse(bool first);
 
 /**
- * @brief   Parses arguments of function call.
- *
- * This function will parse the arguments of function.
- * @returns True, if success. False otherwise.
- */
-//bool FunctionArgumentsParse();
-
-/**
  * @brief   Parses line with symbol as first.
  *
  * This function will parse the line beginning with the symbol.
@@ -397,6 +389,10 @@ bool AssignmentParse();
  * @returns True, if success. False otherwise.
  */
 bool FunctionCallParse();
+bool LengthParse();
+bool SubStrParse();
+bool AscParse();
+bool ChrParse();
 
 bool ReturnParse();
 
@@ -1471,8 +1467,15 @@ bool AssignmentParse()
   CheckOperator("=");
 
   Phrasem func = CheckQueue(func);
+  PrintPhrasem(func);
 
-  if((func->table == TokenType_Symbol) && P_FunctionExists(func))
+  // embedded functions
+  if( matchesKeyword(func, "length") ) return LengthParse();
+  else if( matchesKeyword(func, "substr") ) return SubStrParse();
+  else if( matchesKeyword(func, "asc") ) return AscParse();
+  else if( matchesKeyword(func, "chr") ) return ChrParse();
+
+  else if((func->table == TokenType_Symbol) && P_FunctionExists(func))
   {
     ReturnToQueue(func);
     // function call
@@ -1520,7 +1523,7 @@ bool FunctionCallParse()
   Phrasem funcname = CheckQueue(funcname);
   if( !FunctionParse(funcname) ) return false;
 
-  // defined
+  // was declared/defined
   if( !P_FunctionExists(funcname) ) RaiseError("calling unknown function", ErrorType_Semantic1);
 
   // (
@@ -1548,6 +1551,46 @@ bool FunctionCallParse()
   HandlePhrasem(funcname);
   P_HangDataType(findFunctionType(funcname->d.str));
 
+  return true;
+}
+
+bool LengthParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("Length call parse.");
+  #endif
+
+  // call
+  return true;
+}
+
+bool SubStrParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("SubStr call parse.");
+  #endif
+
+  // call
+  return true;
+}
+
+bool AscParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("Asc call parse.");
+  #endif
+
+  // call
+  return true;
+}
+
+bool ChrParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("Chr call parse.");
+  #endif
+
+  // call
   return true;
 }
 
