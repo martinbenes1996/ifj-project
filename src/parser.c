@@ -646,6 +646,7 @@ bool ExpressionParse()
     TokenType tempType = TokenType_EOF;
     bool failure = false;
     int brackets = 0;
+    bool newPhrasem = true;
 
     //get token hopefully - don't worry, you will
     Phrasem p = CheckQueue(p);
@@ -700,6 +701,7 @@ bool ExpressionParse()
                 }
                 if(!P_HandleOperand(p)) failure = true;
                 p = CheckQueue(p);
+                newPhrasem = true;
             }
             else if(x == '#')
             {
@@ -715,7 +717,7 @@ bool ExpressionParse()
         else if(p->table == TokenType_Operator && p->d.index < 9)
         {
             // close bracket in function call
-            if(extraCloseBracket)
+            if(extraCloseBracket && newPhrasem)
             {
                 if(p->d.index == OpenBracket) brackets++;
                 else if(p->d.index == CloseBracket)
@@ -732,6 +734,7 @@ bool ExpressionParse()
                         //continue;
                     }
                 }
+                newPhrasem = false;
             }
 
             //x is operation from array [top of stack][number of operator in token]
@@ -756,6 +759,7 @@ bool ExpressionParse()
                     PushOntoStack(temporaryOpStack, p); //pushing operator (not brackets) on temp stack
                 //else freePhrasem(p);        //if token is a bracket, free it
                 p = CheckQueue(p);
+                newPhrasem = true;
             }
             else if(x == '>')
             {
@@ -786,6 +790,7 @@ bool ExpressionParse()
             {
                 PushOntoEPStack(p->d.index);
                 p = CheckQueue(p);
+                newPhrasem = true;
             }
             else    // x == '#'
             {
