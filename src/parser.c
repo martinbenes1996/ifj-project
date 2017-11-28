@@ -566,12 +566,6 @@ bool DataTypeParse(Phrasem p)
 static bool extraCloseBracket = false;
 /*--------------------------------------*/
 
-/*
-//returns an index into ExprParseArray
-int decodeToken(...)
-{
-}
-*/
 
 #define MODIFY_STACK()              \
   do {                              \
@@ -651,6 +645,7 @@ bool ExpressionParse()
     PhrasemData tempIndex;
     TokenType tempType = TokenType_EOF;
     bool failure = false;
+    int brackets = 0;
 
     //get token hopefully - don't worry, you will
     Phrasem p = CheckQueue(p);
@@ -685,12 +680,6 @@ bool ExpressionParse()
         //token is operand
         if(p->table == TokenType_Symbol || p->table == TokenType_Constant)
         {
-            //if symbol ...
-            //zeptat se symtable, jestli je to fce nebo prom
-            // + zavolat variable/fce parser
-            //pokud je to fce -> chyba (mozne rozsireni)
-            // ...
-
             //x is operation from array [top of stack][number of operator in token]
             x = ExprParseArray[(int)ExprOnTopOfEPStack()][op_i];
             if(x == '<')
@@ -725,6 +714,26 @@ bool ExpressionParse()
         // see tables.c operators[9][]
         else if(p->table == TokenType_Operator && p->d.index < 9)
         {
+            // close bracket in function call
+            if(extraCloseBracket)
+            {
+                if(p->d.index == OpenBracket) brackets++;
+                else if(p->d.index == CloseBracket)
+                {
+                    brackets--;
+                    if(brackets < 0)
+                    {
+                        //setting token to ending type to empty the EPstack
+                        tempIndex = p->d;       //p->d.index;
+                        tempType = p->table;
+                        p->d.index = op_$;
+                        p->table = TokenType_Operator;
+                        tokenChanged = true;
+                        //continue;
+                    }
+                }
+            }
+
             //x is operation from array [top of stack][number of operator in token]
             x = ExprParseArray[(int)ExprOnTopOfEPStack()][p->d.index];
             if(x == '<')
@@ -751,7 +760,7 @@ bool ExpressionParse()
             else if(x == '>')
             {
                 int pom;
-                pom = checkEPRules(/*returnStack, */temporaryOpStack);
+                pom = checkEPRules(temporaryOpStack);
                 if(pom == 1)
                 {
                     continue;       //successfuly managed to execute a rule
