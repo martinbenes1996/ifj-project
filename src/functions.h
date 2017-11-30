@@ -61,6 +61,17 @@ inline bool isTypeCast(Phrasem p);
 inline bool matchesKeyword(Phrasem p, const char * kw);
 
 /**
+ * @brief   Checks phrasem if is function.
+ *
+ * This function will take phrasem and string with keyword.
+ * It returns true, if it is the function.
+ * @param p       Phrasem to be check.
+ * @param f       Function.
+ * @returns True if success. False otherwise.
+ */
+inline bool matchesFunction(Phrasem p, const char * f);
+
+/**
  * @brief   Datatype from variable.
  *
  * This function will return DataType from Phrasem given.
@@ -170,6 +181,11 @@ inline bool isTypeCast(Phrasem p)
 inline bool matchesKeyword(Phrasem p, const char * kw)
 {
   return (p->table == TokenType_Keyword) && (p->d.index == isKeyword(kw));
+}
+
+inline bool matchesFunction(Phrasem p, const char * f)
+{
+  return (p->table == TokenType_Function)  && !strcmp(p->d.str, f);
 }
 
 inline DataType getDataType(Phrasem p)

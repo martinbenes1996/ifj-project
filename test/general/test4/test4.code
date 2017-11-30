@@ -1,0 +1,19 @@
+.IFJcode17
+CREATEFRAME
+PUSHFRAME
+
+# read
+DEFVAR LF@x
+READ LF@x int
+
+# typecast
+PUSHS LF@x
+INT2FLOATS
+PUSHS LF@x
+INT2FLOATS
+MULS
+
+# print
+DEFVAR LF@y
+POPS LF@y
+WRITE LF@y

@@ -309,14 +309,6 @@ bool InputParse();
 bool PrintParse(bool first);
 
 /**
- * @brief   Parses arguments of function call.
- *
- * This function will parse the arguments of function.
- * @returns True, if success. False otherwise.
- */
-//bool FunctionArgumentsParse();
-
-/**
  * @brief   Parses line with symbol as first.
  *
  * This function will parse the line beginning with the symbol.
@@ -397,6 +389,10 @@ bool AssignmentParse();
  * @returns True, if success. False otherwise.
  */
 bool FunctionCallParse();
+bool LengthParse();
+bool SubStrParse();
+bool AscParse();
+bool ChrParse();
 
 bool ReturnParse();
 
@@ -566,12 +562,10 @@ bool DataTypeParse(Phrasem p)
 
 /*-----------------expression parse----------------------------*/
 
-/*
-//returns an index into ExprParseArray
-int decodeToken(...)
-{
-}
-*/
+/*--------------- DATA -----------------*/
+static bool extraCloseBracket = false;
+/*--------------------------------------*/
+
 
 #define MODIFY_STACK()              \
   do {                              \
@@ -651,6 +645,8 @@ bool ExpressionParse()
     PhrasemData tempIndex;
     TokenType tempType = TokenType_EOF;
     bool failure = false;
+    int brackets = 0;
+    bool newPhrasem = true;
 
     //get token hopefully - don't worry, you will
     Phrasem p = CheckQueue(p);
@@ -685,12 +681,6 @@ bool ExpressionParse()
         //token is operand
         if(p->table == TokenType_Symbol || p->table == TokenType_Constant)
         {
-            //if symbol ...
-            //zeptat se symtable, jestli je to fce nebo prom
-            // + zavolat variable/fce parser
-            //pokud je to fce -> chyba (mozne rozsireni)
-            // ...
-
             //x is operation from array [top of stack][number of operator in token]
             x = ExprParseArray[(int)ExprOnTopOfEPStack()][op_i];
             if(x == '<')
@@ -711,6 +701,7 @@ bool ExpressionParse()
                 }
                 if(!P_HandleOperand(p)) failure = true;
                 p = CheckQueue(p);
+                newPhrasem = true;
             }
             else if(x == '#')
             {
@@ -725,6 +716,27 @@ bool ExpressionParse()
         // see tables.c operators[9][]
         else if(p->table == TokenType_Operator && p->d.index < 9)
         {
+            // close bracket in function call
+            if(extraCloseBracket && newPhrasem)
+            {
+                if(p->d.index == OpenBracket) brackets++;
+                else if(p->d.index == CloseBracket)
+                {
+                    brackets--;
+                    if(brackets < 0)
+                    {
+                        //setting token to ending type to empty the EPstack
+                        tempIndex = p->d;       //p->d.index;
+                        tempType = p->table;
+                        p->d.index = op_$;
+                        p->table = TokenType_Operator;
+                        tokenChanged = true;
+                        //continue;
+                    }
+                }
+                newPhrasem = false;
+            }
+
             //x is operation from array [top of stack][number of operator in token]
             x = ExprParseArray[(int)ExprOnTopOfEPStack()][p->d.index];
             if(x == '<')
@@ -747,11 +759,12 @@ bool ExpressionParse()
                     PushOntoStack(temporaryOpStack, p); //pushing operator (not brackets) on temp stack
                 //else freePhrasem(p);        //if token is a bracket, free it
                 p = CheckQueue(p);
+                newPhrasem = true;
             }
             else if(x == '>')
             {
                 int pom;
-                pom = checkEPRules(/*returnStack, */temporaryOpStack);
+                pom = checkEPRules(temporaryOpStack);
                 if(pom == 1)
                 {
                     continue;       //successfuly managed to execute a rule
@@ -777,6 +790,7 @@ bool ExpressionParse()
             {
                 PushOntoEPStack(p->d.index);
                 p = CheckQueue(p);
+                newPhrasem = true;
             }
             else    // x == '#'
             {
@@ -1463,19 +1477,27 @@ bool AssignmentParse()
   if(!VariableParse(var)) return false;
   if(!P_VariableDefined(var)) RaiseError("unknown variable", ErrorType_Semantic1);
 
+  // get variable type
+  DataType dt = findVariableType(Config_getFunction(), var->d.str);
+
   // =
   CheckOperator("=");
 
   Phrasem func = CheckQueue(func);
 
-  if((func->table == TokenType_Symbol) && P_FunctionExists(func))
+  // embedded functions
+  if( matchesKeyword(func, "length") ) return LengthParse();
+  else if( matchesKeyword(func, "substr") ) return SubStrParse();
+  else if( matchesKeyword(func, "asc") ) return AscParse();
+  else if( matchesKeyword(func, "chr") ) return ChrParse();
+
+  else if((func->table == TokenType_Symbol) && P_FunctionExists(func))
   {
     ReturnToQueue(func);
     // function call
     if(!FunctionCallParse()) return false;
 
-    //#warning typecast
-    if(!P_CheckDataType(var)) return false;
+    if(!P_CheckDataType(dt)) return false;
 
     G_FunctionAssignment(var);
   }
@@ -1501,8 +1523,6 @@ bool AssignmentParse()
   // LF
   CheckSeparator();
 
-
-
   return true;
 }
 
@@ -1516,13 +1536,14 @@ bool FunctionCallParse()
   Phrasem funcname = CheckQueue(funcname);
   if( !FunctionParse(funcname) ) return false;
 
-  // defined
+  // was declared/defined
   if( !P_FunctionExists(funcname) ) RaiseError("calling unknown function", ErrorType_Semantic1);
 
   // (
   CheckOperator("(");
 
   // iterate over arguments
+  extraCloseBracket = true;
   Parameters params = findFunctionParameters(funcname->d.str);
   for(unsigned ord = 1; params != NULL; ord++)
   {
@@ -1530,7 +1551,9 @@ bool FunctionCallParse()
     G_ArgumentAssignment(ord);
     if(!ExpressionParse()) return false;
 
-    if(!P_CheckType_MoveStackToGenerator(dt)) return false;
+    if(!P_MoveStackToGenerator()) return false;
+    if(!P_CheckDataType(dt)) return false;
+    GenerateArgument();
 
     if(params->next != NULL) CheckOperator(",");
     params = params->next;
@@ -1538,10 +1561,67 @@ bool FunctionCallParse()
 
   // )
   CheckOperator(")");
+  extraCloseBracket = false;
 
   HandlePhrasem(funcname);
   P_HangDataType(findFunctionType(funcname->d.str));
 
+  return true;
+}
+
+bool LengthParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("Length call parse.");
+  #endif
+
+  G_Length();
+
+  CheckOperator("(");
+
+  extraCloseBracket = true;
+  if(!ExpressionParse()) return false;
+  G_Expression2StringExpression();
+  if(!P_MoveStackToGenerator()) return false;
+  extraCloseBracket = false;
+
+  CheckOperator(")");
+
+  CheckSeparator();
+
+
+
+  // call
+  return true;
+}
+
+bool SubStrParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("SubStr call parse.");
+  #endif
+
+  // call
+  return true;
+}
+
+bool AscParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("Asc call parse.");
+  #endif
+
+  // call
+  return true;
+}
+
+bool ChrParse()
+{
+  #ifdef PARSER_DEBUG
+    debug("Chr call parse.");
+  #endif
+
+  // call
   return true;
 }
 
@@ -1578,7 +1658,7 @@ bool FunctionDefinitionParse()
     ReturnToQueue(arg);
 
     // parameters
-    while(1)
+    for(unsigned i = 1; 1; i++)
     {
       // variable
       Phrasem arg = CheckQueue(arg);
@@ -1595,6 +1675,10 @@ bool FunctionDefinitionParse()
       // parameter to add
       if(!paramAdd(&params, arg->d.str, dt))
         RaiseError("list allocation error", ErrorType_Internal);
+
+      G_VariableDeclaration();
+      if(!HandlePhrasem(arg)) return false;
+      AssignArgument(arg, i);
 
       // , or )
       Phrasem op = CheckQueue(op);
@@ -1695,6 +1779,7 @@ bool ScopeParse()
   #endif
 
   G_Scope();
+  if(wasScope) RaiseError("multiple scope definition", ErrorType_Syntax);
   wasScope = true;
 
   // nesting

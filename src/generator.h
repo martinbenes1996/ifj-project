@@ -59,6 +59,8 @@ bool Send(Stack s);
  */
 bool HandlePhrasem(Phrasem p);
 
+void AssignArgument(Phrasem p, unsigned ord);
+
 /** @} */
 /*-----------------------------------------------------------*/
 /** @addtogroup Announcers
@@ -100,6 +102,8 @@ void G_Logic();
 /** @brief Announces expression to generator. */
 void G_Expression();
 
+void G_Expression2StringExpression();
+
 /** @brief Announces variable declaration to generator. */
 void G_VariableDeclaration();
 
@@ -115,6 +119,8 @@ void G_FinalJump();
 void G_FinalLabel();
 
 void G_Else();
+
+void G_Length();
 
 /** @brief Announces end of a block to generator. */
 void G_EndBlock();
@@ -134,6 +140,8 @@ void G_EndBlock();
  * @param tc    Type of typecast.
  */
 void GenerateTypeCast(TokenType tc);
+
+void GenerateArgument();
 
 /** @} */
 /*-----------------------------------------------------------*/

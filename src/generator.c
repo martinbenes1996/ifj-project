@@ -33,6 +33,7 @@ typedef enum
   GState_Input,
   GState_Print,
   GState_Expression,
+  GState_StringExpression,
   GState_Logic,
   GState_VariableDeclaration,
   GState_Argument,
@@ -40,6 +41,7 @@ typedef enum
   GState_Function,
   GState_FunctionHeader,
   GState_Else,
+  GState_Length,
   GState_Empty
 } GState;
 
@@ -222,10 +224,19 @@ void InitGenerator()
     debug("Init generator.");
   #endif
 
+  // header
+  out("\n"
+      "# Generated code\n"
+      "# IFJ\n"
+      "# xbenes49 xbolsh00 xpolan09\n"
+      "# 2017\n");
+
+
   out(".IFJcode17");
   out("CREATEFRAME");
   out("PUSHFRAME");
   out("JUMP $main");
+  out("");
 }
 
 
@@ -301,7 +312,6 @@ void GenerateVariableDeclaration(Phrasem p)
   #ifdef GENERATOR_DEBUG
     debug("Generating variable declaration.");
   #endif
-
   out("DEFVAR %s", GenerateName(p));
 }
 
@@ -342,12 +352,27 @@ void GenerateFunctionHeader(Phrasem p)
   #endif
 
   // function
-  out("");
+  out("\n# function %s", p->d.str);
   out("LABEL %s", p->d.str);
   out("PUSHFRAME");
 }
 
 void GenerateArgument();
+
+void GenerateLength()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generating length.");
+  #endif
+
+  const char * l = GenerateTmpVariable();
+  const char * str = GenerateTmpVariable();
+  out("DEFVAR LF@%s", l);
+  out("DEFVAR LF@%s", str);
+  out("STRLEN LF%s LF@%s", l, str);
+  out("PUSHS LF%s", str);
+
+}
 
 void GenerateAritm(Stack s)
 {
@@ -355,57 +380,70 @@ void GenerateAritm(Stack s)
     debug("Generating arithmetics.");
   #endif
 
-  // first
-  Phrasem p = PopFromStack(s);
-  if(p == NULL) return;
-  out("PUSHS %s", GenerateName(p) );
-
-  while(1)
+  Phrasem p;
+  while((p = PopFromStack(s)) != NULL)
   {
 
-    // second
-    Phrasem q = PopFromStack(s);
-    if(q == NULL) break;
-    // implicit conversion
-    if(isTypeCast(q))
+    // operand
+    if((p->table == TokenType_Constant)
+    || (p->table == TokenType_Variable))
     {
-      GenerateTypeCast(q->table);
-      q = PopFromStack(s);
+      out("PUSHS %s", GenerateName(p) );
     }
-    // control of implicit conversion (if so, then pop again)
-    out("PUSHS %s", GenerateName(q));
 
     // operator
-    Phrasem operator = PopFromStack(s);
-    if(operator == NULL) break;
-
-    // implicit conversion
-    if(isTypeCast(operator))
+    else if(p->table == TokenType_Operator)
     {
-      GenerateTypeCast(operator->table);
-      operator = PopFromStack(s);
+      if (isOperator(p, "+")) {
+        out("ADDS");
+      }
+
+      else if (isOperator(p, "-")) {
+        out("SUBS");
+      }
+
+      else if (isOperator(p, "*")) {
+        out("MULS");
+      }
+
+      else if (isOperator(p, "/")) {
+        out("DIVS");
+      }
+      else if (isOperator(p, "\\")) {
+        out("DIVS");
+        out("FLOAT2INTS");
+      }
     }
 
-    if (isOperator(operator, "+")) {
-      out("ADDS");
-    }
-
-    else if (isOperator(operator, "-")) {
-      out("SUBS");
-    }
-
-    else if (isOperator(operator, "*")) {
-      out("MULS");
-    }
-
-    else if (isOperator(operator, "/")) {
-      out("DIVS");
-    }
-    else if (isOperator(operator, "\\")) {
-      out("DIVS");
-      out("FLOAT2INTS");
+    // typecast
+    else if(isTypeCast(p))
+    {
+      GenerateTypeCast(p->table);
     }
   }
+
+}
+
+void GenerateStringArithm(Stack s)
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generating string arithmetics.");
+  #endif
+
+  const char * tmp = GenerateTmpVariable();
+  out("DEFVAR LF@%s", tmp);
+  out("MOVE LF@%s string@", tmp);
+
+  Phrasem p;
+  while((p = PopFromStack(s)) != NULL)
+  {
+    if(isOperator(p, "+")) continue;
+
+    out("CONCAT LF@%s LF@%s %s", tmp, tmp, GenerateName(p));
+  }
+
+  out("PUSHS LF@%s", tmp);
+
 }
 
 /*------------------------------- RECIEVERS ----------------------------------*/
@@ -415,27 +453,34 @@ bool Send(Stack s)
   #ifdef GENERATOR_DEBUG
     debug("Send to Generator");
     PrintStack(s);
+    PrintGStateStack();
   #endif
 
   // incoming stack process
-  GenerateAritm(s);
+  GState top = PopGState();
+  if(top == GState_Expression) GenerateAritm(s);
+  else if(top == GState_StringExpression) GenerateStringArithm(s);
   ClearStack(s);
 
-  // state stack
-  PopGState();
   // underneath
   GState below = LookUpGState();
   if( below == GState_Print )
   {
     GeneratePrint();
   }
+  /*
   else if( below == GState_Argument )
   {
     GenerateArgument();
   }
+  */
   else if( below == GState_Return )
   {
     GenerateReturn();
+  }
+  else if(top == GState_Length)
+  {
+    GenerateLength();
   }
 
   #ifdef GENERATOR_DEBUG
@@ -489,6 +534,14 @@ bool HandlePhrasem(Phrasem p)
   return true;
 }
 
+/*---------- DATA -----------*/
+static char param_name[4]; // there can't be more, than 999 parameters
+/*---------------------------*/
+void AssignArgument(Phrasem p, unsigned ord)
+{
+    sprintf(param_name, "*%u", ord);
+    out("MOVE LF@%s LF@%s", p->d.str, param_name);
+}
 
 
 /*------------------------------ INDICATORS ----------------------------------*/
@@ -602,9 +655,6 @@ void G_FinalLabel()
   out("LABEL $end");
 }
 
-/*---------- DATA -----------*/
-static char param_name[4]; // there can't be more, than 999 parameters
-/*---------------------------*/
 void G_ArgumentAssignment(unsigned ord)
 {
   #ifdef GENERATOR_DEBUG
@@ -613,7 +663,6 @@ void G_ArgumentAssignment(unsigned ord)
 
   PushGState(GState_Argument);
 
-  char param_name[4]; // there can't be more, than 999 parameters
   sprintf(param_name, "*%u", ord);
   out("DEFVAR TF@%s", param_name);
 
@@ -665,6 +714,15 @@ void G_Expression()
   PushGState(GState_Expression);
 }
 
+void G_Expression2StringExpression()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate string expression.");
+  #endif
+  PopGState();
+  PushGState(GState_StringExpression);
+}
+
 void G_VariableDeclaration()
 {
   #ifdef GENERATOR_DEBUG
@@ -672,6 +730,15 @@ void G_VariableDeclaration()
   #endif
 
   PushGState(GState_VariableDeclaration);
+}
+
+void G_Length()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate string length.");
+  #endif
+
+  PushGState(GState_Length);
 }
 
 void G_EndBlock()
@@ -970,6 +1037,8 @@ char * GStateToStr(GState st)
     case GState_Function: return "GState_Function";
     case GState_FunctionHeader: return "GState_FunctionHeader";
     case GState_Empty: return "GState_Empty";
+    case GState_StringExpression: return "GState_StringExpression";
+    case GState_Length: return "GState_Length";
     default: return "UNKNOWN STATE!";
   }
 }
