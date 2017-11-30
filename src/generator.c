@@ -41,6 +41,7 @@ typedef enum
   GState_Function,
   GState_FunctionHeader,
   GState_Else,
+  GState_Length,
   GState_Empty
 } GState;
 
@@ -358,6 +359,21 @@ void GenerateFunctionHeader(Phrasem p)
 
 void GenerateArgument();
 
+void GenerateLength()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generating length.");
+  #endif
+
+  const char * l = GenerateTmpVariable();
+  const char * str = GenerateTmpVariable();
+  out("DEFVAR LF@%s", l);
+  out("DEFVAR LF@%s", str);
+  out("STRLEN LF%s LF@%s", l, str);
+  out("PUSHS LF%s", str);
+
+}
+
 void GenerateAritm(Stack s)
 {
   #ifdef GENERATOR_DEBUG
@@ -437,6 +453,7 @@ bool Send(Stack s)
   #ifdef GENERATOR_DEBUG
     debug("Send to Generator");
     PrintStack(s);
+    PrintGStateStack();
   #endif
 
   // incoming stack process
@@ -460,6 +477,10 @@ bool Send(Stack s)
   else if( below == GState_Return )
   {
     GenerateReturn();
+  }
+  else if(top == GState_Length)
+  {
+    GenerateLength();
   }
 
   #ifdef GENERATOR_DEBUG
@@ -709,6 +730,15 @@ void G_VariableDeclaration()
   #endif
 
   PushGState(GState_VariableDeclaration);
+}
+
+void G_Length()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate string length.");
+  #endif
+
+  PushGState(GState_Length);
 }
 
 void G_EndBlock()
@@ -1007,6 +1037,8 @@ char * GStateToStr(GState st)
     case GState_Function: return "GState_Function";
     case GState_FunctionHeader: return "GState_FunctionHeader";
     case GState_Empty: return "GState_Empty";
+    case GState_StringExpression: return "GState_StringExpression";
+    case GState_Length: return "GState_Length";
     default: return "UNKNOWN STATE!";
   }
 }

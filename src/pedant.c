@@ -713,7 +713,11 @@ bool P_MoveStackToGenerator()
 
 bool P_CheckType_MoveStackToGenerator(DataType dt)
 {
-  if(typeOfResult == dt) return P_MoveStackToGenerator();
+  if(typeOfResult == dt)
+  {
+    if(dt == DataType_String) G_Expression2StringExpression();
+    return P_MoveStackToGenerator();
+  }
   else if((typeOfResult == DataType_Double) && (dt == DataType_Integer))
   {
     if(!P_MoveStackToGenerator()) return false;

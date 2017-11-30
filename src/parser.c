@@ -1575,6 +1575,22 @@ bool LengthParse()
     debug("Length call parse.");
   #endif
 
+  G_Length();
+
+  CheckOperator("(");
+
+  extraCloseBracket = true;
+  if(!ExpressionParse()) return false;
+  G_Expression2StringExpression();
+  if(!P_MoveStackToGenerator()) return false;
+  extraCloseBracket = false;
+
+  CheckOperator(")");
+
+  CheckSeparator();
+
+
+
   // call
   return true;
 }

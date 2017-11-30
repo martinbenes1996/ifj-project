@@ -120,6 +120,8 @@ void G_FinalLabel();
 
 void G_Else();
 
+void G_Length();
+
 /** @brief Announces end of a block to generator. */
 void G_EndBlock();
 
