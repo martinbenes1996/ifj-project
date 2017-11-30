@@ -1,0 +1,9 @@
+
+# Testing file string1.code
+# IFJ
+# xbenes49 xbolsh00 xpolan09
+# 2017
+
+.IFJcode17
+
+WRITE string@Hello,\032world!\010

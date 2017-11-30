@@ -66,6 +66,7 @@ launch_lextest() {
   ../../ifj < "$1/$1.bas" > "$1/$1_compiled.code" 2> "$1/$1_translate.stderr"
   if [ "$?" != "0" ]; then
     echo "[ERROR]"
+    sleep 2
     cat "$1/$1_translate.stderr"
     return
   fi
@@ -74,6 +75,7 @@ launch_lextest() {
   ../ic17int "$1/$1_compiled.code" < "$1/$1.stdin" > "$1/$1_compiled.stdout" 2> "$1/$1_compiled.stderr"
   if [ "$?" != "0" ]; then
     echo "[ERROR]"
+    sleep 2
     cat "$1/$1_compiled.stderr"
     return
   fi
@@ -82,6 +84,7 @@ launch_lextest() {
   ../ic17int "$1/$1.code" < "$1/$1.stdin" > "$1/$1.stdout" 2> "$1/$1.stderr"
   if [ "$?" != "0" ]; then
     echo "[ERROR]"
+    sleep 2
     cat  "$1/$1.stderr"
     return
   fi
@@ -97,6 +100,7 @@ launch_lextest() {
 
   # error
   echo "[ERROR]"
+  sleep 2
   diff "$1/$1.stdout" "$1/$1_compiled.stdout"
 }
 
@@ -124,7 +128,7 @@ run_all_tests()
 
     launch_test "$t"
 
-    sleep 1
+    sleep 0.2
   done
   sleep 0.5
 

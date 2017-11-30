@@ -1486,7 +1486,12 @@ bool AssignmentParse()
   Phrasem func = CheckQueue(func);
 
   // embedded functions
-  if( matchesKeyword(func, "length") ) return LengthParse();
+  if( matchesKeyword(func, "length") )
+  {
+    if(!LengthParse()) return false;
+    P_HangDataType(DataType_Integer);
+    if(!P_HandleTarget(var)) return false;
+  }
   else if( matchesKeyword(func, "substr") ) return SubStrParse();
   else if( matchesKeyword(func, "asc") ) return AscParse();
   else if( matchesKeyword(func, "chr") ) return ChrParse();
@@ -1586,10 +1591,6 @@ bool LengthParse()
   extraCloseBracket = false;
 
   CheckOperator(")");
-
-  CheckSeparator();
-
-
 
   // call
   return true;
@@ -1714,7 +1715,6 @@ bool FunctionDefinitionParse()
 
   /*-------------------- SEMANTICS ----------------------*/
 
-
   short int state;
   state = checkFunctionState(funcname->d.str);
   if(state == FUNCTION_DEFINED)
@@ -1730,25 +1730,7 @@ bool FunctionDefinitionParse()
     if(dt != findFunctionType(funcname->d.str))
       RaiseError("not matchig return datatype in declaration and definition", ErrorType_Semantic3);
   }
-// puvodni text:
-/*
-  // defined
-  if( P_FunctionDefined(funcname) )
-  {
-    RaiseError("redefinition of function", ErrorType_Semantic1);
-  }
 
-  // declared/declared
-  if(P_FunctionDefined(funcname))
-  {
-    // check params in declaration
-    if(!ParametersMatches(params, findFunctionParameters(funcname->d.str)))
-      RaiseError("not matching parameters in declaration and definition", ErrorType_Semantic3);
-    // check return value datatype
-    if(dt != findFunctionType(funcname->d.str))
-      RaiseError("not matchig return datatype in declaration and definition", ErrorType_Semantic3);
-  }
-*/
   // define new function
   if(!P_DefineNewFunction(funcname, type, params))
     RaiseError("error defining function", ErrorType_Internal);  // cannot be any other type of error

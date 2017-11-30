@@ -1,12 +1,10 @@
-''
-'' File: helloworld.bas
-'' Authors:
-''    Martin Benes (xbenes49)
-''    Ksenia Bolshakova (xbolsh00)
-''    Petr Kratochvil (xkrato47)
-''    Ondrej Polansky (xpolan09)
-'' Description: Hello world.
-''
+
+//
+  file:     helloworld.bas
+  author:   xbenes49
+  date:     28th november 2017
+  Hello world test.
+//
 
 Scope
   Print !"Hello, world\n";

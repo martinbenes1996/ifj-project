@@ -1,4 +1,11 @@
 
+//
+  file:     function1.bas
+  author:   xbenes49
+  date:     30th november 2017
+  Test of pre-declaration and after-definition.
+//
+
 declare function vypis() as integer
 
 scope

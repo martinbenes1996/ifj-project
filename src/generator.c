@@ -235,6 +235,7 @@ void InitGenerator()
   out(".IFJcode17");
   out("CREATEFRAME");
   out("PUSHFRAME");
+  out("DEFVAR LF@*tmp");
   out("JUMP $main");
   out("");
 }
@@ -321,11 +322,8 @@ void GeneratePrint()
     debug("Generating print.");
   #endif
 
-  const char *tmp = GenerateTmpVariable();
-  out("CREATEFRAME");
-  out("DEFVAR TF@%s", tmp);
-  out("POPS TF@%s", tmp);
-  out("WRITE TF@%s", tmp);
+  out("POPS LF@*tmp");
+  out("WRITE LF@*tmp");
 }
 
 void GenerateRead(Phrasem p)
@@ -355,6 +353,8 @@ void GenerateFunctionHeader(Phrasem p)
   out("\n# function %s", p->d.str);
   out("LABEL %s", p->d.str);
   out("PUSHFRAME");
+  out("DEFVAR LF@*tmp");
+  out("DEFVAR LF@*ret");
 }
 
 void GenerateArgument();
@@ -365,12 +365,11 @@ void GenerateLength()
     debug("Generating length.");
   #endif
 
-  const char * l = GenerateTmpVariable();
   const char * str = GenerateTmpVariable();
-  out("DEFVAR LF@%s", l);
   out("DEFVAR LF@%s", str);
-  out("STRLEN LF%s LF@%s", l, str);
-  out("PUSHS LF%s", str);
+  out("POPS LF@%s", str);
+  out("STRLEN LF@*tmp LF@%s", str);
+  out("PUSHS LF@*tmp", str);
 
 }
 
@@ -468,17 +467,11 @@ bool Send(Stack s)
   {
     GeneratePrint();
   }
-  /*
-  else if( below == GState_Argument )
-  {
-    GenerateArgument();
-  }
-  */
   else if( below == GState_Return )
   {
     GenerateReturn();
   }
-  else if(top == GState_Length)
+  else if(below == GState_Length)
   {
     GenerateLength();
   }
@@ -766,7 +759,6 @@ void G_EndBlock()
   }
   else if( up == GState_Return )
   {
-    out("DEFVAR LF@*ret");
     out("POPS LF@*ret");
     out("RETURN");
   }

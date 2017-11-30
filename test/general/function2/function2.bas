@@ -1,8 +1,9 @@
+
 //
-  file:     test4
+  file:     function2.bas
   author:   xbenes49
   date:     28th november 2017
-  Test of pre-declaration and after-definition.
+  Test of parameter handling in functions.
 //
 
 declare function sq(i as double) as double

@@ -1,0 +1,26 @@
+.IFJcode17
+CREATEFRAME
+PUSHFRAME
+
+WRITE string@Zadejte\032cislo\032pro\032vypocet\032faktorialu
+
+DEFVAR LF@x
+READ LF@x int
+
+DEFVAR LF@fact
+MOVE LF@fact int@1
+
+LABEL iter
+  PUSHS LF@x
+  PUSHS int@1
+  JUMPIFEQS enditer
+
+  MUL LF@fact LF@fact LF@x
+  SUB LF@x LF@x int@1
+
+  JUMP iter
+LABEL enditer
+
+WRITE string@\010Vysledek\032je:
+WRITE LF@fact
+WRITE string@\010
