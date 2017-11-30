@@ -15,7 +15,7 @@ all:
 doc:
 	@echo "Generating documentation.";\
 	doxygen Doxyfile 2> /dev/null > /dev/null
-#pdflatex doc/main.tex
+	cd doc && pdflatex ifj.tex
 
 # test
 .PHONY: test
@@ -41,6 +41,6 @@ clean:
 	@printf "";\
 	cd ./src && make clean -s
 	@echo "Cleaning project files.";\
-	rm -rf doc/html
+	rm -rf doc/html doc/*.toc doc/*.aux doc/*.log
 	@printf "";\
 	$(MAKE) -C test/ -s

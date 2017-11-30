@@ -25,4 +25,7 @@
 ifj
 
 ### Documentation ###
-./doc/*
+*.pdf
+*.aux
+*.toc
+*.log
