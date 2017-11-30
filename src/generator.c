@@ -33,6 +33,7 @@ typedef enum
   GState_Input,
   GState_Print,
   GState_Expression,
+  GState_StringExpression,
   GState_Logic,
   GState_VariableDeclaration,
   GState_Argument,
@@ -222,10 +223,19 @@ void InitGenerator()
     debug("Init generator.");
   #endif
 
+  // header
+  out("\n"
+      "# Generated code\n"
+      "# IFJ\n"
+      "# xbenes49 xbolsh00 xpolan09\n"
+      "# 2017\n");
+
+
   out(".IFJcode17");
   out("CREATEFRAME");
   out("PUSHFRAME");
   out("JUMP $main");
+  out("");
 }
 
 
@@ -301,7 +311,6 @@ void GenerateVariableDeclaration(Phrasem p)
   #ifdef GENERATOR_DEBUG
     debug("Generating variable declaration.");
   #endif
-
   out("DEFVAR %s", GenerateName(p));
 }
 
@@ -342,7 +351,7 @@ void GenerateFunctionHeader(Phrasem p)
   #endif
 
   // function
-  out("");
+  out("\n# function %s", p->d.str);
   out("LABEL %s", p->d.str);
   out("PUSHFRAME");
 }
@@ -399,6 +408,28 @@ void GenerateAritm(Stack s)
 
 }
 
+void GenerateStringArithm(Stack s)
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generating string arithmetics.");
+  #endif
+
+  const char * tmp = GenerateTmpVariable();
+  out("DEFVAR LF@%s", tmp);
+  out("MOVE LF@%s string@", tmp);
+
+  Phrasem p;
+  while((p = PopFromStack(s)) != NULL)
+  {
+    if(isOperator(p, "+")) continue;
+
+    out("CONCAT LF@%s LF@%s %s", tmp, tmp, GenerateName(p));
+  }
+
+  out("PUSHS LF@%s", tmp);
+
+}
+
 /*------------------------------- RECIEVERS ----------------------------------*/
 
 bool Send(Stack s)
@@ -409,21 +440,23 @@ bool Send(Stack s)
   #endif
 
   // incoming stack process
-  GenerateAritm(s);
+  GState top = PopGState();
+  if(top == GState_Expression) GenerateAritm(s);
+  else if(top == GState_StringExpression) GenerateStringArithm(s);
   ClearStack(s);
 
-  // state stack
-  PopGState();
   // underneath
   GState below = LookUpGState();
   if( below == GState_Print )
   {
     GeneratePrint();
   }
+  /*
   else if( below == GState_Argument )
   {
     GenerateArgument();
   }
+  */
   else if( below == GState_Return )
   {
     GenerateReturn();
@@ -480,6 +513,14 @@ bool HandlePhrasem(Phrasem p)
   return true;
 }
 
+/*---------- DATA -----------*/
+static char param_name[4]; // there can't be more, than 999 parameters
+/*---------------------------*/
+void AssignArgument(Phrasem p, unsigned ord)
+{
+    sprintf(param_name, "*%u", ord);
+    out("MOVE LF@%s LF@%s", p->d.str, param_name);
+}
 
 
 /*------------------------------ INDICATORS ----------------------------------*/
@@ -593,9 +634,6 @@ void G_FinalLabel()
   out("LABEL $end");
 }
 
-/*---------- DATA -----------*/
-static char param_name[4]; // there can't be more, than 999 parameters
-/*---------------------------*/
 void G_ArgumentAssignment(unsigned ord)
 {
   #ifdef GENERATOR_DEBUG
@@ -653,6 +691,15 @@ void G_Expression()
     debug("Generate expression.");
   #endif
   PushGState(GState_Expression);
+}
+
+void G_Expression2StringExpression()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate string expression.");
+  #endif
+  PopGState();
+  PushGState(GState_StringExpression);
 }
 
 void G_VariableDeclaration()

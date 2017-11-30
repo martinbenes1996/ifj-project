@@ -1,0 +1,3 @@
+.IFJcode17
+
+WRITE string@Hello,\032world!\010

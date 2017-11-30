@@ -117,7 +117,7 @@ bool P_CheckType_MoveStackToGenerator(DataType);
 
 void P_HangDataType(DataType);
 
-bool P_CheckDataType(Phrasem);
+bool P_CheckDataType(DataType);
 
 /**
  * @brief     Performs last actions with stack after expression parse.

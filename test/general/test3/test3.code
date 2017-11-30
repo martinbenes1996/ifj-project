@@ -1,10 +1,6 @@
 .IFJcode17
 CREATEFRAME
 PUSHFRAME
-JUMP main
-
-#function
-LABEL main
 
 DEFVAR LF@max
 READ LF@max int

@@ -8,7 +8,6 @@ raise() {
 
 
 init() {
-  printf "Testing is being initialized"
   for n in $(seq 1 3); do
     printf "."
     sleep 0.5
@@ -22,7 +21,7 @@ test_succ=0
 launch_test() {
 
   # compiling with tested compiler
-  ../ifj < "$1/$1.bas" > "$1/$1_compiled.code" 2> "$1/$1_translate.stderr"
+  ../../ifj < "$1/$1.bas" > "$1/$1_compiled.code" 2> "$1/$1_translate.stderr"
   if [ "$?" != "0" ]; then
     echo "[ERROR]"
     cat "$1/$1_translate.stderr"
@@ -30,7 +29,7 @@ launch_test() {
   fi
 
   # interpreting compiled result
-  ./ic17int "$1/$1_compiled.code" < "$1/$1.stdin" > "$1/$1_compiled.stdout" 2> "$1/$1_compiled.stderr"
+  ../ic17int "$1/$1_compiled.code" < "$1/$1.stdin" > "$1/$1_compiled.stdout" 2> "$1/$1_compiled.stderr"
   if [ "$?" != "0" ]; then
     echo "[ERROR]"
     cat "$1/$1_compiled.stderr"
@@ -38,7 +37,7 @@ launch_test() {
   fi
 
   # interpreting right result
-  ./ic17int "$1/$1.code" < "$1/$1.stdin" > "$1/$1.stdout" 2> "$1/$1.stderr"
+  ../ic17int "$1/$1.code" < "$1/$1.stdin" > "$1/$1.stdout" 2> "$1/$1.stderr"
   if [ "$?" != "0" ]; then
     echo "[ERROR]"
     cat  "$1/$1.stderr"
@@ -59,6 +58,48 @@ launch_test() {
   diff "$1/$1.stdout" "$1/$1_compiled.stdout"
 }
 
+lextest_count=0
+lextest_succ=0
+launch_lextest() {
+
+  # compiling with tested compiler
+  ../../ifj < "$1/$1.bas" > "$1/$1_compiled.code" 2> "$1/$1_translate.stderr"
+  if [ "$?" != "0" ]; then
+    echo "[ERROR]"
+    cat "$1/$1_translate.stderr"
+    return
+  fi
+
+  # interpreting compiled result
+  ../ic17int "$1/$1_compiled.code" < "$1/$1.stdin" > "$1/$1_compiled.stdout" 2> "$1/$1_compiled.stderr"
+  if [ "$?" != "0" ]; then
+    echo "[ERROR]"
+    cat "$1/$1_compiled.stderr"
+    return
+  fi
+
+  # interpreting right result
+  ../ic17int "$1/$1.code" < "$1/$1.stdin" > "$1/$1.stdout" 2> "$1/$1.stderr"
+  if [ "$?" != "0" ]; then
+    echo "[ERROR]"
+    cat  "$1/$1.stderr"
+    return
+  fi
+
+  # advanced method of compare
+  if [ "$(diff $1/$1.stdout $1/$1_compiled.stdout)" = "" ]; then
+    if [ "$(diff $1/$1.stderr $1/$1_compiled.stderr)" = "" ]; then
+      lextest_succ=$((lextest_succ+1))
+      echo "[OK]"
+      return
+    fi
+  fi
+
+  # error
+  echo "[ERROR]"
+  diff "$1/$1.stdout" "$1/$1_compiled.stdout"
+}
+
 
 run_all_tests()
 {
@@ -67,14 +108,36 @@ run_all_tests()
   make clean -s
   echo "======= Building with Makefile ======="
   make -s -j5
-  sleep 2
+  sleep 1
   clear
-  echo "======================================"
   cd test/
 
-
+  # general tests
+  cd general/
+  echo "=========== GENERAL TESTS ============"
+  sleep 1
   for t in $(find * -type d); do
     test_count=$((test_count+1))
+
+    printf "TEST $test_count: "
+    printf "$t "
+
+    launch_test "$t"
+
+    sleep 1
+  done
+  sleep 0.5
+
+  echo "======================================"
+  echo "DONE."
+  sleep 0.5
+  echo "$test_succ / $test_count successful."
+
+  # lexical tests
+  cd ../lex
+  echo "=========== LEXICAL TESTS ============"
+  for t in $(find * -type d 2> /dev/null); do
+    test_count=$((lextest_count+1))
 
     printf "TEST $test_count: "
     printf "$t "
@@ -88,11 +151,12 @@ run_all_tests()
   echo "======================================"
   echo "DONE."
   sleep 0.5
-  echo "$test_succ / $test_count successful."
+  echo "$lextest_succ / $lextest_count successful."
 }
 
 
 # begin
+printf "Testing is being initialized"
 init
 
 # running tests

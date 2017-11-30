@@ -1,0 +1,12 @@
+.IFJcode17
+CREATEFRAME
+PUSHFRAME
+
+DEFVAR LF@a
+DEFVAR LF@b
+
+READ LF@a float
+READ LF@b float
+
+ADD LF@a LF@a LF@b
+WRITE LF@a

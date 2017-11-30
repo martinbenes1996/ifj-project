@@ -9,4 +9,4 @@
 .PHONY: clean
 clean:
 	@echo "Cleaning generated test files.";\
-	rm -rf *~ */*.stdout */*.stderr */*_compiled.code
+	rm -rf *~ general/*/*.stdout general/*/*.stderr general/*/*_compiled.code

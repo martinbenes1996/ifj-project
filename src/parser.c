@@ -1477,11 +1477,13 @@ bool AssignmentParse()
   if(!VariableParse(var)) return false;
   if(!P_VariableDefined(var)) RaiseError("unknown variable", ErrorType_Semantic1);
 
+  // get variable type
+  DataType dt = findVariableType(Config_getFunction(), var->d.str);
+
   // =
   CheckOperator("=");
 
   Phrasem func = CheckQueue(func);
-  PrintPhrasem(func);
 
   // embedded functions
   if( matchesKeyword(func, "length") ) return LengthParse();
@@ -1495,8 +1497,7 @@ bool AssignmentParse()
     // function call
     if(!FunctionCallParse()) return false;
 
-    //#warning typecast
-    if(!P_CheckDataType(var)) return false;
+    if(!P_CheckDataType(dt)) return false;
 
     G_FunctionAssignment(var);
   }
@@ -1521,8 +1522,6 @@ bool AssignmentParse()
 
   // LF
   CheckSeparator();
-
-
 
   return true;
 }
@@ -1552,7 +1551,9 @@ bool FunctionCallParse()
     G_ArgumentAssignment(ord);
     if(!ExpressionParse()) return false;
 
-    if(!P_CheckType_MoveStackToGenerator(dt)) return false;
+    if(!P_MoveStackToGenerator()) return false;
+    if(!P_CheckDataType(dt)) return false;
+    GenerateArgument();
 
     if(params->next != NULL) CheckOperator(",");
     params = params->next;
@@ -1641,7 +1642,7 @@ bool FunctionDefinitionParse()
     ReturnToQueue(arg);
 
     // parameters
-    while(1)
+    for(unsigned i = 1; 1; i++)
     {
       // variable
       Phrasem arg = CheckQueue(arg);
@@ -1658,6 +1659,10 @@ bool FunctionDefinitionParse()
       // parameter to add
       if(!paramAdd(&params, arg->d.str, dt))
         RaiseError("list allocation error", ErrorType_Internal);
+
+      G_VariableDeclaration();
+      if(!HandlePhrasem(arg)) return false;
+      AssignArgument(arg, i);
 
       // , or )
       Phrasem op = CheckQueue(op);

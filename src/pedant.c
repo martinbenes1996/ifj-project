@@ -600,6 +600,9 @@ bool P_HandleTarget(Phrasem p)
     #ifdef TYPECAST_DEBUG
       debug("No typecast.");
     #endif
+
+    if(target_dt == DataType_String) G_Expression2StringExpression();
+
     if( !Send(mstack) ) return false;
     mstack = NULL;
     if( !HandlePhrasem(p) ) return false;
@@ -676,13 +679,13 @@ void P_HangDataType(DataType dt)
   typeOfResult = dt;
 }
 
-bool P_CheckDataType(Phrasem p)
+bool P_CheckDataType(DataType dt)
 {
   #ifdef PEDANT_DEBUG
     debug("Pedant, check datatype and handle phrasem.");
   #endif
   DataType generated = typeOfResult;
-  DataType waiting = findVariableType(Config_getFunction(), p->d.str);
+  DataType waiting = dt;
 
   if (generated == waiting) {
   }
