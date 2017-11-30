@@ -283,8 +283,10 @@ inline void PrintPhrasem(Phrasem p)
 
       break;
     case TokenType_Operator:
+      debug("Phrasem [%s %s]", TokenTypeToString(p->table), Operator2Str(p));
+      break;
     case TokenType_Keyword:
-      debug("Phrasem [%s %d]", TokenTypeToString(p->table), p->d.index);
+      debug("Phrasem [%s %s]", TokenTypeToString(p->table), Keyword2Str(p));
       break;
     case TokenType_Variable:
     case TokenType_Function:

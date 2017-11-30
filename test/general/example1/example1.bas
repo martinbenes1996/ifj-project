@@ -1,4 +1,10 @@
 
+/'
+  file:     example1.bas
+  author:   xbenes49
+  date:     28th november 2017
+  Test of example.
+'/
 scope
   Dim a As Integer
   DIM vysl AS INTEGER

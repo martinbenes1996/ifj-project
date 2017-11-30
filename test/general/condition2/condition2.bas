@@ -1,10 +1,10 @@
 
-//
+/'
   file:     function2.bas
   author:   xbenes49
   date:     28th november 2017
   Test of complex conditions.
-//
+'/
 
 function max3() as double
   dim a as double

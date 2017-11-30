@@ -1,16 +1,13 @@
 
-//
+/'
   file:     function2.bas
   author:   xbenes49
   date:     28th november 2017
   Test of parameter handling in functions.
-//
+'/
 
 declare function sq(i as double) as double
 
-//
-  main
-//
 scope
   'integer input
   dim x as integer
@@ -25,9 +22,6 @@ scope
 
 end scope
 
-//
-  returns parameter i squared
-//
 function sq(x as double) as double
 
   'square

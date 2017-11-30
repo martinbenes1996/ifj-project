@@ -1,10 +1,10 @@
 
-//
+/'
   file:     condition1.bas
   author:   xbenes49
   date:     30th november 2017
   Test of simple condition.
-//
+'/
 
 scope
   dim x as integer

@@ -48,6 +48,52 @@ int isKeyword(const char * word)
     return index;
 }
 
+const char *Keyword2Str(Phrasem p) {
+    if (p->table != TokenType_Keyword) return NULL;
+
+    switch(p->d.index) {
+        case 0: return "as";
+        case 1: return "asc";
+        case 2: return "declare";
+        case 3: return "dim";
+        case 4: return "do";
+        case 5: return "double";
+        case 6: return "else";
+        case 7: return "end";
+        case 8: return "chr";
+        case 9: return "function";
+        case 10: return "if";
+        case 11: return "input";
+        case 12: return "integer";
+        case 13: return "length";
+        case 14: return "loop";
+        case 15: return "print";
+        case 16: return "return";
+        case 17: return "scope";
+        case 18: return "string";
+        case 19: return "substr";
+        case 20: return "then";
+        case 21: return "while";
+        case 22: return "and";
+        case 23: return "boolean";
+        case 24: return "continue";
+        case 25: return "elseif";
+        case 26: return "exit";
+        case 27: return "false";
+        case 28: return "for";
+        case 29: return "next";
+        case 30: return "not";
+        case 31: return "or";
+        case 32: return "shared";
+        case 33: return "static";
+        case 34: return "true";
+        case 35: return "else";
+
+        default: 
+            return "???";
+    }
+}
+
 /*-----------------------------------------------------------*/
 
               //OPERATOR TABLE FUNCTIONS
@@ -94,6 +140,37 @@ long getOperatorId(const char * word)
 
 }
 #undef TABLE_ERROR
+
+const char * Operator2Str(Phrasem p)
+{
+    if(p->table != TokenType_Operator) return NULL;
+
+    switch(p->d.index)
+    {
+        case 0: return "+";
+        case 1: return "-";
+        case 2: return "\\";
+        case 3: return "*";
+        case 4: return "/";
+        case 5: return "(";
+        case 6: return ")";
+        case 7: return "i";
+        case 8: return "$";
+        case 9: return "=";
+        case 10: return "<>";
+        case 11: return "<";
+        case 12: return "<=";
+        case 13: return ">";
+        case 14: return ">=";
+        case 15: return ",";
+        case 16: return ";";
+
+        default: 
+            return "???";
+    }
+
+
+}
 
 /*************************************************************/
 

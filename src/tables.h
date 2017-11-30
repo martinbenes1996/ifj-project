@@ -27,6 +27,7 @@
  * @returns Keyword code or -1.
  */
 int isKeyword(const char * word);
+const char * Keyword2Str(Phrasem);
 
 /*-----------------------------------------------------------*/
 
@@ -42,6 +43,8 @@ int isKeyword(const char * word);
  * @returns Operator code or -1.
  */
 long getOperatorId(const char * word);
+
+const char * Operator2Str(Phrasem p);
 
 /*-----------------------------------------------------------*/
 
