@@ -157,13 +157,13 @@ bool getComment() {
 
       case 2:
         if(input == '\n') { Config_setLine(Config_getLine()+1); break;}
-        else if (input == EOF) RaiseLexicalError("expected \'//\' ");
-        else if (input != '/') { break; }
+        else if (input == EOF) RaiseLexicalError("expected \'\'/\' ");
+        else if (input != '\'') { break; }
         else { state = 3; break; }
 
       case 3:
         if (input != '/') { state = 2; break; }
-        else if (input == EOF) RaiseLexicalError("expected \'//\' ");
+        else if (input == EOF) RaiseLexicalError("expected \'\'/\' ");
         else { end = true; break; }
 
       default:
@@ -1181,7 +1181,7 @@ Phrasem RemoveFromQueue()
 
   else if (input == '/') {
     input = getByte();
-    if (input == '/')
+    if (input == '\'')
     {
       returnByte('~');
       if(!getComment()) return NULL;
