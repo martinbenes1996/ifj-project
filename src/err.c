@@ -41,28 +41,21 @@ int getErrorCode()
   switch(mtype)
   {
     // lexical error
-    case ErrorType_Lexical:
-      return LEXICAL_ERROR;
+    case ErrorType_Lexical: return LEXICAL_ERROR;
 
     // syntax error
-    case ErrorType_Syntax:
-      return SYNTAX_ERROR;
+    case ErrorType_Syntax: return SYNTAX_ERROR;
 
     // semantic error
-    case ErrorType_Semantic1:
-      return SEMANTIC1_ERROR;
-    case ErrorType_Semantic2:
-      return SEMANTIC2_ERROR;
-    case ErrorType_Semantic3:
-      return SEMANTIC3_ERROR;
+    case ErrorType_Semantic1: return SEMANTIC1_ERROR;
+    case ErrorType_Semantic2: return SEMANTIC2_ERROR;
+    case ErrorType_Semantic3: return SEMANTIC3_ERROR;
 
     // internal error
-    case ErrorType_Internal:
-      return INTERNAL_ERROR;
+    case ErrorType_Internal: return INTERNAL_ERROR;
 
     // ok
-    case ErrorType_Ok:
-      return OK;
+    case ErrorType_Ok: return OK;
     default:
       err("err: getErrorCode: unknown error type");
       return INTERNAL_ERROR;

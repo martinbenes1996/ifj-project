@@ -59,7 +59,7 @@ void EndScanner(const char * msg, ErrorType errtype)
       debug("End Scanner.");
     #endif
   }
-  
+
   ClearStack(mem);
 }
 
@@ -153,7 +153,7 @@ bool getComment() {
       case 1:
         if ( input == EOF) RaiseLexicalError("expected \'\\n\'");
         if ( input != '\n') { break; }
-        else { end = true; Config_setLine(Config_getLine()+1); break; }
+        else { end = true; Config_setLine(Config_getLine()+1); returnByte('\n'); break; }
 
       case 2:
         if(input == '\n') { Config_setLine(Config_getLine()+1); break;}

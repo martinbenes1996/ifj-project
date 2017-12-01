@@ -26,26 +26,68 @@
  */
 typedef enum
 {
-  GState_Condition,
-  GState_Cycle,
-  GState_Assignment,
-  GState_FunctionCall,
-  GState_Input,
-  GState_Print,
-  GState_Expression,
-  GState_StringExpression,
-  GState_Logic,
-  GState_VariableDeclaration,
-  GState_Argument,
-  GState_Return,
-  GState_Function,
-  GState_FunctionHeader,
-  GState_Else,
-  GState_Length,
-  GState_Empty
+  // blocks
+  GState_Condition,             /**< Condition. */
+  GState_Else,                  /**< Alternative. */
+  GState_Cycle,                 /**< Cycle. */
+  GState_Function,              /**< Function. */
+
+  // lines
+  GState_Assignment,            /**< Assignment. */
+  GState_Input,                 /**< Input. */
+  GState_Print,                 /**< Print. */
+  GState_VariableDeclaration,   /**< Variable declaration. */
+  GState_Return,                /**< Return. */
+
+  // partials
+  GState_Expression,            /**< Expression. */
+  GState_StringExpression,      /**< String expression. */
+  GState_FunctionCall,          /**< Function call. */
+  GState_Argument,              /**< Argument in function call. */
+  GState_Logic,                 /**< Logic (cycle, condition). */
+  GState_FunctionHeader,        /**< Head of a function. */
+
+  // built-in functions
+  GState_Length,                /**< Function length(). */
+  GState_Int2Str,               /**< Function chr(). */
+  GState_Asc,                   /**< Function asc(). */
+
+  // others
+  GState_Empty                  /**< Empty. */
 } GState;
 
-char * GStateToStr(GState st);
+/**
+ * @brief   GState to string convertor.
+ *
+ * This function returns string from GState given. It is used for debug.
+ * @param st        Given state.
+ * @returns string representation.
+ */
+char * GStateToStr(GState st)
+{
+  switch(st)
+  {
+    case GState_Asc: return "GState_Asc";
+    case GState_Argument: return "GState_Argument";
+    case GState_Assignment: return "GState_Assignment";
+    case GState_Condition: return "GState_Condition";
+    case GState_Cycle: return "State_Cycle";
+    case GState_Empty: return "GState_Empty";
+    case GState_Expression: return "GState_Expression";
+    case GState_Function: return "GState_Function";
+    case GState_FunctionCall: return "GState_FunctionCall";
+    case GState_FunctionHeader: return "GState_FunctionHeader";
+    case GState_Input: return "GState_Input";
+    case GState_Int2Str: return "GState_Int2Str";
+    case GState_Length: return "GState_Length";
+    case GState_Logic: return "GState_Logic";
+    case GState_Print: return "GState_Print";
+    case GState_Return: return "GState_Return";
+    case GState_StringExpression: return "GState_StringExpression";
+    case GState_VariableDeclaration: return "GState_VariableDeclaration";
+    default: return "UNKNOWN STATE!";
+  }
+}
 
 /**
  * @brief   Item in the generator state stack.
@@ -236,6 +278,8 @@ void InitGenerator()
   out("CREATEFRAME");
   out("PUSHFRAME");
   out("DEFVAR LF@*tmp");
+  out("DEFVAR LF@*foo");
+  out("DEFVAR LF@*bar");
   out("JUMP $main");
   out("");
 }
@@ -354,6 +398,8 @@ void GenerateFunctionHeader(Phrasem p)
   out("LABEL %s", p->d.str);
   out("PUSHFRAME");
   out("DEFVAR LF@*tmp");
+  out("DEFVAR LF@*foo");
+  out("DEFVAR LF@*bar");
   out("DEFVAR LF@*ret");
 }
 
@@ -371,6 +417,51 @@ void GenerateLength()
   out("STRLEN LF@*tmp LF@%s", str);
   out("PUSHS LF@*tmp", str);
 
+}
+
+void GenerateInt2Str()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generating int2str.");
+  #endif
+
+  out("POPS LF@*tmp");
+  out("INT2CHAR LF@*foo LF@*tmp");
+  out("PUSHS LF@*foo");
+}
+
+void GenerateAsc()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generating asc.");
+  #endif
+  out("# asc()");
+  out("\tPOPS LF@*tmp"); // index
+  out("\tPOPS LF@*foo"); // string
+  out("\tSTRLEN LF@*bar LF@*foo"); // size of
+  out("\tPUSHS LF@*tmp");
+  out("\tPUSHS LF@*bar");
+  out("\tLTS");
+  out("\tPUSHS bool@true");
+  out("\tJUMPIFNEQS $zero");
+
+  out("\tPUSHS LF@*tmp");
+  out("\tPUSHS int@0");
+  out("\tGTS");
+  out("\tPUSHS bool@true");
+  out("\tJUMPIFNEQS $zero");
+
+  out("\t\tPUSHS LF@*foo");
+  out("\t\tPUSHS LF@*tmp");
+  out("\t\tSTRI2INTS");
+  const char * lbl = GenerateLabel();
+  out("\t\tJUMP %s", lbl);
+
+  out("\tLABEL $zero");
+  out("\tPUSHS int@0");
+
+  out("LABEL %s", lbl);
+  free((void *)lbl);
 }
 
 void GenerateAritm(Stack s)
@@ -410,7 +501,7 @@ void GenerateAritm(Stack s)
       }
       else if (isOperator(p, "\\")) {
         out("DIVS");
-        out("FLOAT2INTS");
+        out("FLOAT2R2EINTS");
       }
     }
 
@@ -475,6 +566,18 @@ bool Send(Stack s)
   {
     GenerateLength();
   }
+  else if(below == GState_Int2Str)
+  {
+    GenerateInt2Str();
+  }
+  else if(below == GState_Asc)
+  {
+    GenerateAsc();
+  }
+  else if(below == GState_Empty)
+  {
+    PopGState();
+  }
 
   #ifdef GENERATOR_DEBUG
     PrintGStateStack();
@@ -538,58 +641,14 @@ void AssignArgument(Phrasem p, unsigned ord)
 
 
 /*------------------------------ INDICATORS ----------------------------------*/
-void G_FunctionCall()
+
+void G_Asc()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate function call.");
+    debug("Generate asc (ordinal of string from position).");
   #endif
 
-  PushGState(GState_FunctionCall);
-  out("CREATEFRAME");
-
-}
-
-void G_FunctionAssignment(Phrasem p)
-{
-  #ifdef GENERATOR_DEBUG
-    debug("Generate function assignment.");
-  #endif
-
-  out("POPS LF@%s", p->d.str);
-}
-
-void G_Condition()
-{
-  #ifdef GENERATOR_DEBUG
-    debug("Generate condition.");
-  #endif
-
-  PushGState(GState_Condition);
-
-}
-
-void G_Else()
-{
-  #ifdef GENERATOR_DEBUG
-    debug("Generate else.");
-  #endif
-
-  const char * els = PopLabel();
-  out("JUMP %s", GenerateLabel());
-  out("LABEL %s", els);
-  free((void *)els);
-}
-
-void G_Cycle()
-{
-  #ifdef GENERATOR_DEBUG
-    debug("Generate cycle.");
-  #endif
-
-  PushGState(GState_Cycle);
-  out("LABEL %s", GenerateLabel());
-
-
+  PushGState(GState_Asc);
 }
 
 void G_Assignment()
@@ -600,52 +659,6 @@ void G_Assignment()
 
   PushGState(GState_Assignment);
 
-}
-
-void G_Return()
-{
-  #ifdef GENERATOR_DEBUG
-    debug("Generate return.");
-  #endif
-
-  PushGState(GState_Return);
-}
-
-void G_Function()
-{
-  #ifdef GENERATOR_DEBUG
-    debug("Generate function.");
-  #endif
-
-  PushGState(GState_Function);
-  PushGState(GState_FunctionHeader);
-}
-
-void G_Scope()
-{
-  #ifdef GENERATOR_DEBUG
-    debug("Generate scope.");
-  #endif
-
-  out("LABEL $main");
-}
-
-void G_FinalJump()
-{
-  #ifdef GENERATOR_DEBUG
-    debug("Generate final jump.");
-  #endif
-
-  out("JUMP $end");
-}
-
-void G_FinalLabel()
-{
-  #ifdef GENERATOR_DEBUG
-    debug("Generate final label.");
-  #endif
-
-  out("LABEL $end");
 }
 
 void G_ArgumentAssignment(unsigned ord)
@@ -670,68 +683,37 @@ void GenerateArgument()
   RemoveGState();
 }
 
-void G_Print()
+void G_Condition()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate print.");
+    debug("Generate condition.");
   #endif
 
-  PushGState(GState_Print);
-
+  PushGState(GState_Condition);
 
 }
 
-void G_Input()
+void G_Cycle()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate input.");
+    debug("Generate cycle.");
   #endif
-  PushGState(GState_Input);
+
+  PushGState(GState_Cycle);
+  out("LABEL %s", GenerateLabel());
 
 }
 
-void G_Logic()
+void G_Else()
 {
   #ifdef GENERATOR_DEBUG
-    debug("Generate logic.");
-  #endif
-  PushGState(GState_Logic);
-
-}
-
-void G_Expression()
-{
-  #ifdef GENERATOR_DEBUG
-    debug("Generate expression.");
-  #endif
-  PushGState(GState_Expression);
-}
-
-void G_Expression2StringExpression()
-{
-  #ifdef GENERATOR_DEBUG
-    debug("Generate string expression.");
-  #endif
-  PopGState();
-  PushGState(GState_StringExpression);
-}
-
-void G_VariableDeclaration()
-{
-  #ifdef GENERATOR_DEBUG
-    debug("Generate variable declaration.");
+    debug("Generate else.");
   #endif
 
-  PushGState(GState_VariableDeclaration);
-}
-
-void G_Length()
-{
-  #ifdef GENERATOR_DEBUG
-    debug("Generate string length.");
-  #endif
-
-  PushGState(GState_Length);
+  const char * els = PopLabel();
+  out("JUMP %s", GenerateLabel());
+  out("LABEL %s", els);
+  free((void *)els);
 }
 
 void G_EndBlock()
@@ -760,6 +742,7 @@ void G_EndBlock()
   else if( up == GState_Return )
   {
     out("POPS LF@*ret");
+    out("CLEARS");
     out("RETURN");
   }
   else if( up == GState_Function )
@@ -772,13 +755,155 @@ void G_EndBlock()
   #endif
 }
 
+void G_Empty()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate empty.");
+  #endif
 
+  PushGState(GState_Empty);
+}
 
+void G_Expression()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate expression.");
+  #endif
+  PushGState(GState_Expression);
+}
 
+void G_Expression2StringExpression()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate string expression.");
+  #endif
 
+  if(LookUpGState() == GState_Expression)
+  {
+    PopGState();
+    PushGState(GState_StringExpression);
+  }
+}
 
+void G_FinalJump()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate final jump.");
+  #endif
 
+  out("JUMP $end");
+}
 
+void G_FinalLabel()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate final label.");
+  #endif
+
+  out("LABEL $end");
+}
+
+void G_Function()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate function.");
+  #endif
+
+  PushGState(GState_Function);
+  PushGState(GState_FunctionHeader);
+}
+
+void G_FunctionAssignment(Phrasem p)
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate function assignment.");
+  #endif
+
+  out("POPS LF@%s", p->d.str);
+}
+
+void G_FunctionCall()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate function call.");
+  #endif
+
+  PushGState(GState_FunctionCall);
+  out("CREATEFRAME");
+
+}
+
+void G_Input()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate input.");
+  #endif
+  PushGState(GState_Input);
+
+}
+
+void G_Int2Str()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate int to string conversion.");
+  #endif
+
+  PushGState(GState_Int2Str);
+}
+
+void G_Length()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate string length.");
+  #endif
+
+  PushGState(GState_Length);
+}
+
+void G_Logic()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate logic.");
+  #endif
+  PushGState(GState_Logic);
+
+}
+
+void G_Print()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate print.");
+  #endif
+
+  PushGState(GState_Print);
+}
+
+void G_Return()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate return.");
+  #endif
+
+  PushGState(GState_Return);
+}
+
+void G_Scope()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate scope.");
+  #endif
+
+  out("LABEL $main");
+}
+
+void G_VariableDeclaration()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate variable declaration.");
+  #endif
+
+  PushGState(GState_VariableDeclaration);
+}
 
 /*----------------------------- PRIVATE GENERATORS ---------------------------*/
 
@@ -794,7 +919,7 @@ void GenerateTypeCast(TokenType tc)
       out("INT2FLOATS");
       break;
     case TypeCast_Double2Int:
-      out("FLOAT2R2EINT");
+      out("FLOAT2R2EINTS");
       break;
     default:
       break;
@@ -869,8 +994,6 @@ void ClearGeneratedName()
   }
 }
 
-
-
 char * GenerateType(Phrasem p)
 {
   DataType dt;
@@ -923,7 +1046,6 @@ char * GenerateTmpVariable()
   incrementVarname(1);
   return varname;
 }
-
 
 
 
@@ -1010,31 +1132,6 @@ void PrintGStateStack()
     debug("------------------\n");
   }
 }
-
-char * GStateToStr(GState st)
-{
-  switch(st)
-  {
-    case GState_Condition: return "GState_Condition";
-    case GState_Cycle: return "State_Cycle";
-    case GState_Assignment: return "GState_Assignment";
-    case GState_FunctionCall: return "GState_FunctionCall";
-    case GState_Input: return "GState_Input";
-    case GState_Print: return "GState_Print";
-    case GState_Expression: return "GState_Expression";
-    case GState_Logic: return "GState_Logic";
-    case GState_VariableDeclaration: return "GState_VariableDeclaration";
-    case GState_Argument: return "GState_Argument";
-    case GState_Return: return "GState_Return";
-    case GState_Function: return "GState_Function";
-    case GState_FunctionHeader: return "GState_FunctionHeader";
-    case GState_Empty: return "GState_Empty";
-    case GState_StringExpression: return "GState_StringExpression";
-    case GState_Length: return "GState_Length";
-    default: return "UNKNOWN STATE!";
-  }
-}
-
 
 /*---------------- LABEL STACK ------------------*/
 

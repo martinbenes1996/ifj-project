@@ -89,7 +89,7 @@ const char *Keyword2Str(Phrasem p) {
         case 34: return "true";
         case 35: return "else";
 
-        default: 
+        default:
             return "???";
     }
 }
@@ -165,7 +165,7 @@ const char * Operator2Str(Phrasem p)
         case 15: return ",";
         case 16: return ";";
 
-        default: 
+        default:
             return "???";
     }
 
@@ -271,7 +271,10 @@ void constTableFree(void)
     for(size_t i = 2;i < consttable.count;++i)
     {
         if(consttable.arr[i].type == DataType_String)
-            free(consttable.arr[i].data.svalue);
+        {
+          free(consttable.arr[i].data.svalue);
+        }
+
     }
     consttable.arr_size = 0;
     consttable.count = 0;
@@ -330,6 +333,7 @@ int constInsert(DataType type, DataUnion uni)
         debug("Insert string %s to index %d", uni.svalue, consttable.count);
       #endif
         consttable.arr[consttable.count].type = DataType_String;
+        /*
         if((consttable.arr[consttable.count].data.svalue = malloc(strlen(uni.svalue) * sizeof(char)
                                                                     + sizeof(char))) == NULL)
 
@@ -338,7 +342,9 @@ int constInsert(DataType type, DataUnion uni)
             setErrorMessage("constantTableInsert: could not allocate memory");
             return false;
         }
-        strcpy(consttable.arr[consttable.count].data.svalue, uni.svalue);
+        */
+        consttable.arr[consttable.count].data.svalue = uni.svalue;
+        //strcpy(consttable.arr[consttable.count].data.svalue, uni.svalue);
     }
     consttable.count++;
 

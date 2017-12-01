@@ -211,8 +211,11 @@ void EndRoutine()
   pthread_join(sc, NULL);
   #endif // MULTITHREAD
 
-  const char * notdefined = functionDefinitionCheck();
-  if(notdefined != NULL) EndParser("not all declared functions defined", ErrorType_Semantic1);
+  if(getErrorType() == ErrorType_Ok)
+  {
+    const char * notdefined = functionDefinitionCheck();
+    if(notdefined != NULL) EndParser("not all declared functions defined", ErrorType_Semantic1);
+  }
 
   // clear memory
   constTableFree();
@@ -963,47 +966,28 @@ bool VariableDefinitionParse()
   #ifdef PARSER_DEBUG
     debug("Variable definition parse.");
   #endif
+
   G_VariableDeclaration();
 
   // getting symbol
   Phrasem var = CheckQueue(var);
-
-  if(!VariableParse(var))
-  {
-    RaiseExpectedError("variable");
-  }
+  if(!VariableParse(var)) RaiseExpectedError("variable");
 
   // getting keyword 'as'
   CheckKeyword("as");
 
   // getting datatype keyword
   Phrasem dt = CheckQueue(dt);
-
-  if(!DataTypeParse(dt))
-  {
-    RaiseExpectedError("datatype keyword");
-  }
+  if(!DataTypeParse(dt)) RaiseExpectedError("datatype keyword");
   DataType type = getDataType(dt);
-  if(type == DataType_Unknown)
-  {
-    RaiseError("unknown datatype", ErrorType_Internal);
-  }
-
-  Phrasem dup = duplicatePhrasem(var); // deep copy
+  if(type == DataType_Unknown) RaiseError("unknown datatype", ErrorType_Internal);
 
   // declare
-  HandlePhrasem(var);           /*<<== var destroyed */
-
-  if(P_VariableDefined(dup))
-  {
-    RaiseError("variable was already defined", ErrorType_Semantic1);
-  }
+  HandlePhrasem(var);
+  if(P_VariableDefined(var)) RaiseError("variable already defined", ErrorType_Semantic1);
 
   // semantics
-  if(!P_DefineNewVariable(dup, dt))
-  {
-    return false;
-  }
+  if(!P_DefineNewVariable(var, dt)) return false;
 
   G_Assignment();
 
@@ -1031,7 +1015,6 @@ bool VariableDefinitionParse()
         RaiseError("unknown datatype", ErrorType_Internal);
     }
 
-
     // volavka
     ReturnToQueue(sep);         // return LF
     ReturnToQueue(nul);         // return 0/0.0/!""
@@ -1042,16 +1025,13 @@ bool VariableDefinitionParse()
     // LF (back, stop point for expressionparse)
     CheckSeparator();
 
-
     // assignment target
-    P_HandleTarget(dup);               /*<<== dup destroyed */
-
+    if(!P_HandleTarget(var)) return false;
 
   }
   // =
   else if(isOperator(sep, "="))
   {
-
     // get expression
     if(!ExpressionParse()) return false;
 
@@ -1059,13 +1039,10 @@ bool VariableDefinitionParse()
     CheckSeparator();
 
     // assignment target
-    P_HandleTarget(dup); // semantics
+    P_HandleTarget(var); // semantics
 
   }
-  else
-  {
-    RaiseError("unexpected token", ErrorType_Syntax);
-  }
+  else RaiseError("unexpected token", ErrorType_Syntax);
 
   return true;
 }
@@ -1082,16 +1059,12 @@ bool InputParse()
   Phrasem p = CheckQueue(p);
 
   // error
-  if(!VariableParse(p))
-  {
-    return false;
-  }
+  if(!VariableParse(p)) return false;
 
   // control of previous definition
   if( !P_VariableDefined(p)) return false;
 
   HandlePhrasem(p);
-
 
   // LF
   CheckSeparator();
@@ -1105,26 +1078,25 @@ bool PrintParse(bool first)
   #ifdef PARSER_DEBUG
     debug("Print parse.");
   #endif
-  // expression
+
   // first parameter
   if(first)
   {
     G_Print();
     if(!ExpressionParse()) return false;
   }
+
   // non first print parameter (may not exist)
   else
   {
     Phrasem q = CheckQueue(q);
-
     if( isSeparator(q) ) return true;
 
     else
     {
       G_Print();
 
-      if(!ReturnToQueue(q)) RaiseQueueError();
-
+      ReturnToQueue(q);
       if(!ExpressionParse()) return false;
     }
   }
@@ -1135,7 +1107,6 @@ bool PrintParse(bool first)
   P_MoveStackToGenerator();
 
   G_EndBlock();
-
 
   // recursive call of the same function
   return PrintParse(false);
@@ -1258,10 +1229,8 @@ bool BlockParse()
         end = true;
       }
       // error
-      else
-      {
-        RaiseError("unknown keyword", ErrorType_Syntax);
-      }
+      else RaiseError("unknown keyword", ErrorType_Syntax);
+
       break;
 
     // constant
@@ -1489,12 +1458,23 @@ bool AssignmentParse()
   if( matchesKeyword(func, "length") )
   {
     if(!LengthParse()) return false;
-    P_HangDataType(DataType_Integer);
     if(!P_HandleTarget(var)) return false;
   }
-  else if( matchesKeyword(func, "substr") ) return SubStrParse();
-  else if( matchesKeyword(func, "asc") ) return AscParse();
-  else if( matchesKeyword(func, "chr") ) return ChrParse();
+  else if( matchesKeyword(func, "substr") )
+  {
+    if(!SubStrParse()) return false;
+    if(!P_HandleTarget(var)) return false;
+  }
+  else if( matchesKeyword(func, "asc") )
+  {
+    if(!AscParse()) return false;
+    if(!P_HandleTarget(var)) return false;
+  }
+  else if( matchesKeyword(func, "chr") )
+  {
+    if(!ChrParse()) return false;
+    if(!P_HandleTarget(var)) return false;
+  }
 
   else if((func->table == TokenType_Symbol) && P_FunctionExists(func))
   {
@@ -1560,7 +1540,13 @@ bool FunctionCallParse()
     if(!P_CheckDataType(dt)) return false;
     GenerateArgument();
 
-    if(params->next != NULL) CheckOperator(",");
+    if(params->next != NULL)
+    {
+      // CheckOperator(",");
+      Phrasem p = CheckQueue(p);
+      if( isOperator(p, ")") ) RaiseError("bad arguments count", ErrorType_Semantic2);
+      else if( !isOperator(p, ",") ) RaiseError("operator \',\' expected", ErrorType_Syntax);
+    }
     params = params->next;
   }
 
@@ -1586,11 +1572,19 @@ bool LengthParse()
 
   extraCloseBracket = true;
   if(!ExpressionParse()) return false;
-  G_Expression2StringExpression();
-  if(!P_MoveStackToGenerator()) return false;
   extraCloseBracket = false;
 
+  /*----------- SEMANTICS -----------*/
+  if(!P_CheckDataType(DataType_String)) return false;
+  /*---------------------------------*/
+
+  /*----------- GENERATOR -----------*/
+  G_Expression2StringExpression();
+  if(!P_MoveStackToGenerator()) return false;
+  /*---------------------------------*/
+
   CheckOperator(")");
+  P_HangDataType(DataType_Integer);
 
   // call
   return true;
@@ -1603,6 +1597,8 @@ bool SubStrParse()
   #endif
 
   // call
+  //...
+
   return true;
 }
 
@@ -1612,7 +1608,30 @@ bool AscParse()
     debug("Asc call parse.");
   #endif
 
-  // call
+  G_Asc();
+  G_Empty();
+
+  CheckOperator("(");
+
+  if(!ExpressionParse()) return false;
+  /*-------------- GENERATOR ------------*/
+  G_Expression2StringExpression();
+  P_MoveStackToGenerator();
+  if(!P_CheckDataType(DataType_String)) return false;
+  /*-------------------------------------*/
+
+  CheckOperator(",");
+
+  extraCloseBracket = true;
+  if(!ExpressionParse()) return false;
+  extraCloseBracket = false;
+  /*-------------- GENERATOR ------------*/
+  P_MoveStackToGenerator();
+  if(!P_CheckDataType(DataType_Integer)) return false;
+  /*-------------------------------------*/
+
+  CheckOperator(")");
+
   return true;
 }
 
@@ -1622,7 +1641,21 @@ bool ChrParse()
     debug("Chr call parse.");
   #endif
 
-  // call
+  G_Int2Str();
+
+  CheckOperator("(");
+
+  extraCloseBracket = true;
+  if(!ExpressionParse()) return false;
+
+  /*-------------- GENERATOR ------------*/
+  P_MoveStackToGenerator();
+  if(!P_CheckDataType(DataType_Integer)) return false;
+  /*-------------------------------------*/
+
+  CheckOperator(")");
+  P_HangDataType(DataType_String);
+
   return true;
 }
 
@@ -1793,7 +1826,6 @@ bool GlobalBlockParse()
   #ifdef PARSER_DEBUG
     debug("Global block parse.");
   #endif
-  bool status = true;
 
   // control not in function
   if(Config_getFunction() != NULL) RaiseError("nested functions", ErrorType_Internal);
@@ -1803,20 +1835,20 @@ bool GlobalBlockParse()
 
   // EOF
   if(p->table == TokenType_EOF) end = true;
-  else if(p->table == TokenType_Separator) status = true;
+  else if(p->table == TokenType_Separator) return true;
   // not a keyword
   else if(p->table != TokenType_Keyword) RaiseError("syntax error on global level", ErrorType_Syntax);
 
   // function declaration
-  else if(matchesKeyword(p, "declare")) status = FunctionDeclarationParse();
+  else if(matchesKeyword(p, "declare")) return FunctionDeclarationParse();
   // function definition
-  else if(matchesKeyword(p, "function")) status = FunctionDefinitionParse();
+  else if(matchesKeyword(p, "function")) return FunctionDefinitionParse();
   // function definition
-  else if(matchesKeyword(p, "scope")) status = ScopeParse();
+  else if(matchesKeyword(p, "scope")) return ScopeParse();
   // error (global not supported)
   else RaiseError("syntax error on global level", ErrorType_Syntax);
 
-  return status;
+  return true;
 }
 
 /*---------------------------- CLEAR --------------------------------*/

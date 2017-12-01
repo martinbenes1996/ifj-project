@@ -37,12 +37,20 @@ bool P_VariableDefined(Phrasem varname);
  * @brief     Returns, weather the function was defined, or not.
  *
  * This function looks in the symbol table and it checks, if the function,
- * named funcname was defined or declared.
+ * named funcname was defined.
  * @param varname         Name of the function.
  * @returns   True if defined. False if not.
  */
 bool P_FunctionDefined(Phrasem funcname);
 
+/**
+ * @brief     Returns, weather the function exists, or not.
+ *
+ * This function looks in the symbol table and it checks, if the function,
+ * named funcname was defined or declared.
+ * @param varname         Name of the function.
+ * @returns   True if exists. False if not.
+ */
 bool P_FunctionExists(Phrasem p);
 
 /**
@@ -96,6 +104,14 @@ bool P_HandleOperand(Phrasem p);
  */
 bool P_HandleTarget(Phrasem p);
 
+/**
+ * @brief     Compare operator handler.
+ *
+ * This function handles the phrasem with comparison operator, checks types
+ * of both sides and calls the generator to generate the comparison.
+ * @param p       Given compare operator.
+ * @returns True if compatible. False otherwise.
+ */
 bool P_HandleCompareOperator(Phrasem p);
 
 /**
@@ -115,8 +131,21 @@ bool P_MoveStackToGenerator();
  */
 bool P_CheckType_MoveStackToGenerator(DataType);
 
-void P_HangDataType(DataType);
+/**
+ * @brief     Hangs datatype.
+ *
+ * This function hangs datatype for later check.
+ * @param dt    DataType hung.
+ */
+void P_HangDataType(DataType dt);
 
+/**
+ * @brief     Checks datatype.
+ *
+ * This function checks the datatype hung with the one given and typecasts.
+ * @param dt    Datatype to check.
+ * @returns True if fine. False if incompatible.
+ */
 bool P_CheckDataType(DataType);
 
 /**
@@ -127,6 +156,11 @@ bool P_CheckDataType(DataType);
  */
 bool ExpressionEnd();
 
+/**
+ * @brief     Pedant destructor.
+ *
+ * This function destructs the pedant and deallocates all its inner memory.
+ */
 void ClearPedant();
 
 

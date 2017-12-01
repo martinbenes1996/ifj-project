@@ -1,0 +1,30 @@
+
+# Testing file operator2.code
+# IFJ
+# xbenes49 xbolsh00 xpolan09
+# 2017
+
+.IFJcode17
+CREATEFRAME
+PUSHFRAME
+
+DEFVAR LF@x
+READ LF@x float
+
+# loop
+LABEL loop
+PUSHS LF@x
+PUSHS float@1.0
+GTS
+PUSHS bool@true
+JUMPIFNEQS end
+
+  PUSHS LF@x
+  PUSHS float@2.0
+  DIVS
+  POPS LF@x
+
+  WRITE LF@x
+
+JUMP loop
+LABEL end

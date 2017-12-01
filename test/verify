@@ -58,50 +58,46 @@ launch_test() {
   diff "$1/$1.stdout" "$1/$1_compiled.stdout"
 }
 
-lextest_count=0
-lextest_succ=0
-launch_lextest() {
+print_error() {
+  if [ "$1" = "0" ]; then
+    printf "0 (OK)"
+  elif [ "$1" = "1" ]; then
+    printf "1 (lex)"
+  elif [ "$1" = "2" ]; then
+    printf "2 (syntax)"
+  elif [ "$1" = "3" ]; then
+    printf "3 (semantic1 - definitions)"
+  elif [ "$1" = "4" ]; then
+    printf "4 (semantic2 - types)"
+  elif [ "$1" = "6" ]; then
+    printf "6 (semantic3 - others)"
+  elif [ "$1" = "99" ]; then
+    printf "99 (intenal)"
+  else
+    printf "UNKNOWN TYPE OF ERROR"
+  fi
+}
+errtest_count=0
+errtest_succ=0
+launch_errtest() {
 
   # compiling with tested compiler
-  ../../ifj < "$1/$1.bas" > "$1/$1_compiled.code" 2> "$1/$1_translate.stderr"
-  if [ "$?" != "0" ]; then
+  ../../ifj < "$1/$1.bas" > /dev/null 2> /dev/null
+  code="$?"
+  if [ "$code" != "$(head -n 1 $1/$1.errcode)" ]; then
     echo "[ERROR]"
+    printf "Given "
+    print_error "$code"
+    printf ", but correct is "
+    print_error "$(head -n 1 $1/$1.errcode)"
+    echo ""
     sleep 2
-    cat "$1/$1_translate.stderr"
     return
   fi
 
-  # interpreting compiled result
-  ../ic17int "$1/$1_compiled.code" < "$1/$1.stdin" > "$1/$1_compiled.stdout" 2> "$1/$1_compiled.stderr"
-  if [ "$?" != "0" ]; then
-    echo "[ERROR]"
-    sleep 2
-    cat "$1/$1_compiled.stderr"
-    return
-  fi
-
-  # interpreting right result
-  ../ic17int "$1/$1.code" < "$1/$1.stdin" > "$1/$1.stdout" 2> "$1/$1.stderr"
-  if [ "$?" != "0" ]; then
-    echo "[ERROR]"
-    sleep 2
-    cat  "$1/$1.stderr"
-    return
-  fi
-
-  # advanced method of compare
-  if [ "$(diff $1/$1.stdout $1/$1_compiled.stdout)" = "" ]; then
-    if [ "$(diff $1/$1.stderr $1/$1_compiled.stderr)" = "" ]; then
-      lextest_succ=$((lextest_succ+1))
-      echo "[OK]"
-      return
-    fi
-  fi
-
-  # error
-  echo "[ERROR]"
-  sleep 2
-  diff "$1/$1.stdout" "$1/$1_compiled.stdout"
+  echo "[OK]"
+  errtest_succ=$(($errtest_succ+1))
+  return
 }
 
 
@@ -130,32 +126,35 @@ run_all_tests()
 
     sleep 0.2
   done
-  sleep 0.5
 
   echo "======================================"
   echo "DONE."
   sleep 0.5
   echo "$test_succ / $test_count successful."
+  sleep 2
+  echo ""
+  echo ""
 
-  # lexical tests
-  cd ../lex
-  echo "=========== LEXICAL TESTS ============"
+  # error tests
+  cd ..
+  cd error
+  echo "=========== ERROR TESTS ============"
   for t in $(find * -type d 2> /dev/null); do
-    test_count=$((lextest_count+1))
+    errtest_count=$((errtest_count+1))
 
-    printf "TEST $test_count: "
+    printf "TEST $errtest_count: "
     printf "$t "
 
-    launch_test "$t"
+    launch_errtest "$t"
 
-    sleep 2
+    sleep 0.2
   done
 
-  sleep 0.5
   echo "======================================"
   echo "DONE."
   sleep 0.5
-  echo "$lextest_succ / $lextest_count successful."
+  echo "$errtest_succ / $errtest_count successful."
+  sleep 2
 }
 
 
@@ -165,3 +164,11 @@ init
 
 # running tests
 run_all_tests
+
+echo ""
+echo ""
+echo "Testing ended"
+echo "*--------------------------*"
+echo "|       tests: $test_succ/$test_count"
+echo "| error tests: $errtest_succ/$errtest_count"
+echo "*--------------------------*"

@@ -1,0 +1,22 @@
+
+# Testing file operator1.code
+# IFJ
+# xbenes49 xbolsh00 xpolan09
+# 2017
+
+.IFJcode17
+CREATEFRAME
+PUSHFRAME
+
+PUSHS int@3
+INT2FLOATS
+
+PUSHS int@2
+INT2FLOATS
+
+DIVS
+FLOAT2R2EINTS
+
+DEFVAR LF@x
+POPS LF@x
+WRITE LF@x

@@ -41,10 +41,6 @@ void EndPedant(const char * msg, ErrorType errtype)
 static Stack mstack = NULL;
 static DataType typeOfResult;
 static DataType mdtmem = DataType_Unknown;      // memory of last stack datatype generated
-
-// how to control [if a+1 < c-6 then] ??
-//static Stack mstack2 = NULL;
-//static DataType typeOfResult2;
 /*--------------------*/
 
 bool P_VariableDefined(Phrasem varname)
@@ -384,8 +380,8 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
                       else if(typeOfResult1 == DataType_Integer && typeOfResult2 == DataType_Integer)
                       {
                             // Generator requires two doubles and it will retype the result automatically
-                            if(!RetypeToInt(where1)) return DataType_Unknown;
-                            if(!RetypeToInt(where2)) return DataType_Unknown;
+                            if(!RetypeToDouble(where1)) return DataType_Unknown;
+                            if(!RetypeToDouble(where2)) return DataType_Unknown;
                             return DataType_Integer;
                       }
                       else if(typeOfResult1 == DataType_Integer && typeOfResult2 == DataType_Double)
@@ -648,6 +644,7 @@ bool P_HandleCompareOperator(Phrasem p) {
   DataType waiting = typeOfResult;
 
   if (generated == waiting) {
+    if (generated == DataType_String) G_Expression2StringExpression();
     if (!Send(mstack)) return false;
     mstack = NULL;
     if (!HandlePhrasem(p)) return false;
@@ -706,6 +703,7 @@ bool P_CheckDataType(DataType dt)
 bool P_MoveStackToGenerator()
 {
   mdtmem = typeOfResult;
+  if(typeOfResult == DataType_String) G_Expression2StringExpression();
   bool status = Send(mstack);
   mstack = NULL;
   return status;

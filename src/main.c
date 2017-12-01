@@ -63,17 +63,25 @@ int main(int argc, char *argv[])
 		debug("IFJ project started.");
 	#endif
 
-	// argument process
+	/*----------- ARGS ----------------*/
 	if(!processArguments(argc, argv)) exit(1);
 	if(help()) { printHelp(); exit(0); }
+	/*---------------------------------*/
 
+
+	/*------ PROGRAM RUN -------*/
 	RunParser();
+	/*--------------------------*/
 
+
+	/*-------- ERROR CHECK ---------*/
 	// error log
 	if(getErrorType() != ErrorType_Ok)
 	{
-		err("%s. Line: %d\n", getErrorMessage(), getErrorLine());
+		err("%s. Line: %d", getErrorMessage(), getErrorLine());
 	}
+	/*-----------------------------*/
+
 
 	// final operations
 	closeOut();

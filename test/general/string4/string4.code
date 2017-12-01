@@ -1,0 +1,28 @@
+.IFJcode17
+CREATEFRAME
+PUSHFRAME
+
+DEFVAR LF@str
+MOVE LF@str string@ahoj
+
+DEFVAR LF@i
+READ LF@i int
+
+DEFVAR LF@pom
+GT LF@pom LF@i int@4
+JUMPIFEQ zero LF@pom bool@true
+
+  LT LF@pom LF@i int@1
+  JUMPIFEQ zero LF@pom bool@true
+
+    PUSHS LF@str
+    PUSHS LF@i
+    STRI2INTS
+    POPS LF@pom
+    WRITE LF@pom
+    JUMP end
+
+LABEL zero
+  WRITE int@0
+
+LABEL end
