@@ -108,6 +108,54 @@ be able to return bytes back to the input with the function \textit{returnByte()
 \end{justify}
 
 \newpage
+\section{Table of symbols}
+\begin{justify}
+  The table contains all important information about symbols – variables and
+functions. For variables it is a type and a name and for functions it is a name,
+type of the return value, list of parameters, list of variables and an
+indication, whether the function was defined.
+
+Because our group was supposed to use hash tables we have a hash table of
+functions and for each function there is, among other things, a hash table of
+variables. Hashing is performed by hash function using the name of a function
+or a variable. In case of collision there is a rehash function, which is based
+on linear probing and increases the index value by three. This prevents
+clustering of entities when names (and therefore fabricated indexes) are
+similar. The size of the table is set to a value that cannot be divided by
+three so that the algorithm works all the time.
+
+There is a starting size for each hash table and all hash tables resize
+automatically when a half of the table is full. It typically doubles the size,
+which might seem a little bit wasteful but it means there will not be that many
+collisions and therefore the program will be faster. We do not expect that the
+number of functions or variables in each function will be higher than a few
+thousand so tables should not take too much space. During the operation of
+resizing, every entity of the former table is rehashed and saved into a bigger
+table.
+
+The table of symbols is implemented in a file named symtable.c and the
+interface is present in symtable.h. Table of symbols offers basic functions
+for storing, modifying and reading all information about the symbols.
+
+
+Other tables.
+
+Many other tables are present in the program. Tables of keywords and operators
+are simple arrays with linear search algorithm. Table of constants is also an
+array with linear search algorithm but this table can actually be resized by
+adding thirty to the current table size, since we expect only a few constants.
+All other tables are implemented in tables.c and interface is in tables.h.
+\end{justify}
+
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{img/TableOfSymbols.jpg}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{img/TableOfConstans.jpg}
+\end{center}
+
+\newpage
 % ------------------------------------------------------- %
 
 \section{Parser}
