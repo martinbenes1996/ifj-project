@@ -8,13 +8,13 @@
 %------------------------------------------------%
 %	    CONFIGURATION + IMPORTED PACKAGES        %
 %------------------------------------------------%
-\documentclass[12pt,a4paper,titlepage]{article}
+\documentclass[10pt,a4paper,titlepage]{article}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
+\usepackage[margin=100pt]{geometry}
 
 
 \usepackage{graphicx}   % Import pictures
-
 \usepackage{ragged2e}   % fullfill paragraphs
 
 \begin{document}
@@ -31,7 +31,7 @@
 % Title - lines
 { \huge \bfseries IFJ project}\\[0.3cm]
 { \Large \bfseries documentation}\\[0.4cm]
-{\bfseries xbenes49, xbolsh00, xpolan09}\\[12cm]
+{\bfseries xbenes49, xbolsh00, xpolan09}\\[10cm]
 
 % Date
 \today
@@ -39,15 +39,6 @@
 
 \end{titlepage}
 \newpage
-
-%-----------------------------------------%
-%	         TABLE OF CONTENTS            %
-%-----------------------------------------%
-
-\tableofcontents  % The table of contents
-\thispagestyle{empty}
-\newpage
-
 
 %-----------------------------------------%
 %	            CHAPTERS                  %
@@ -122,54 +113,36 @@ be able to return bytes back to the input with the function \textit{returnByte()
 \section{Parser}
 
 % LL table
-\begin{center}
-  \begin{tabular}{ | l | c  c  l | } \hline
-    1  & $<$GlobalBlock$>$              & $\rightarrow$ & $<$FunctionDeclaration$>$ $<$GlobalBlock$>$ \\ \hline
-    2  & $<$GlobalBlock$>$              & $\rightarrow$ & $<$FunctionDefinition$>$ $<$GlobalBlock$>$ \\ \hline
-    3  & $<$GlobalBlock$>$              & $\rightarrow$ & $<$Scope$>$ $<$GlobalBlock$>$ \\ \hline
-    4  & $<$GlobalBlock$>$              & $\rightarrow$ & $\varepsilon$ \\ \hline
-    5  & $<$FunctionDeclaration$>$      & $\rightarrow$ & {\it declare} $<$FunctionHeader$>$ \\ \hline
-    6  & $<$FunctionDefinition$>$       & $\rightarrow$ & $<$FunctionHeader$>$ $<$Block$>$ $<$EndFunction$>$ \\ \hline
-    7  & $<$FunctionHeader$>$           & $\rightarrow$ & {\it function} $<$FSymbol$>$ {\it (} $<$Parameters$>$ {\it )} {\it as} $<$DataType$>$ {\it \$} \\ \hline
-    8  & $<$Scope$>$                    & $\rightarrow$ & {\it scope} {\it \$} $<$Block$>$ $<$EndScope$>$ \\ \hline
-    9  & $<$FSymbol$>$                  & $\rightarrow$ & {\it id} \\ \hline
-    10 & $<$VSymbol$>$                  & $\rightarrow$ & {\it id} \\ \hline
-    11 & $<$DataType$>$                 & $\rightarrow$ & {\it string} \\ \hline
-    12 & $<$DataType$>$                 & $\rightarrow$ & {\it double} \\ \hline
-    13 & $<$DataType$>$                 & $\rightarrow$ & {\it integer} \\ \hline
-    14 & $<$EndFunction$>$              & $\rightarrow$ & {\it end} {\it function} {\it \$} \\ \hline
-    15 & $<$EndScope$>$                 & $\rightarrow$ & {\it end} {\it scope} {\it \$} \\ \hline
-    16 & $<$Parameters$>$               & $\rightarrow$ & $<$VSymbol$>$ {\it as} $<$DataType$>$ $<$MoreParameters$>$ \\ \hline
-    17 & $<$MoreParameters$>$           & $\rightarrow$ & {\it ,} $<$Parameters$>$ \\ \hline
-    18 & $<$MoreParameters$>$           & $\rightarrow$ & $\varepsilon$ \\ \hline
-    19 & $<$Block$>$                    & $\rightarrow$ & $<$VariableDefinition$>$ $<$Block$>$ \\ \hline
-    20 & $<$Block$>$                    & $\rightarrow$ & $<$Assignment$>$ $<$Block$>$ \\ \hline
-    21 & $<$Block$>$                    & $\rightarrow$ & $<$Input$>$ $<$Block$>$ \\ \hline
-    22 & $<$Block$>$                    & $\rightarrow$ & $<$Print$>$ $<$Block$>$ \\ \hline
-    23 & $<$Block$>$                    & $\rightarrow$ & $<$Condition$>$ $<$Block$>$ \\ \hline
-    24 & $<$Block$>$                    & $\rightarrow$ & $<$Cycle$>$ $<$Block$>$ \\ \hline
-    25 & $<$Block$>$                    & $\rightarrow$ & $<$Return$>$ $<$Block$>$ \\ \hline
-
-  \end{tabular}
-\end{center}
-
+{\small
+  \begin{center}
+    \begin{tabular}{ | l | c  c  l | } \hline
+      1  & $<$GlobalBlock$>$              & $\rightarrow$ & $<$FunctionDeclaration$>$ $<$GlobalBlock$>$ \\ \hline
+      2  & $<$GlobalBlock$>$              & $\rightarrow$ & $<$FunctionDefinition$>$ $<$GlobalBlock$>$ \\ \hline
+      3  & $<$GlobalBlock$>$              & $\rightarrow$ & $<$Scope$>$ $<$GlobalBlock$>$ \\ \hline
+      4  & $<$GlobalBlock$>$              & $\rightarrow$ & $\varepsilon$ \\ \hline
+      5  & $<$FunctionDeclaration$>$      & $\rightarrow$ & {\it declare} $<$FunctionHeader$>$ \\ \hline
+      6  & $<$FunctionDefinition$>$       & $\rightarrow$ & $<$FunctionHeader$>$ $<$Block$>$ $<$EndFunction$>$ \\ \hline
+      7  & $<$FunctionHeader$>$           & $\rightarrow$ & {\it function} $<$FSymbol$>$ {\it (} $<$Parameters$>$ {\it )} {\it as} $<$DataType$>$ {\it \$} \\ \hline
+      8  & $<$Scope$>$                    & $\rightarrow$ & {\it scope} {\it \$} $<$Block$>$ $<$EndScope$>$ \\ \hline
+      9  & $<$FSymbol$>$                  & $\rightarrow$ & {\it id} \\ \hline
+      10 & $<$VSymbol$>$                  & $\rightarrow$ & {\it id} \\ \hline
+      11 & $<$DataType$>$                 & $\rightarrow$ & {\it string} \\ \hline
+      12 & $<$DataType$>$                 & $\rightarrow$ & {\it double} \\ \hline
+      13 & $<$DataType$>$                 & $\rightarrow$ & {\it integer} \\ \hline
+      14 & $<$EndFunction$>$              & $\rightarrow$ & {\it end} {\it function} {\it \$} \\ \hline
+      15 & $<$EndScope$>$                 & $\rightarrow$ & {\it end} {\it scope} {\it \$} \\ \hline
+      16 & $<$Parameters$>$               & $\rightarrow$ & $<$VSymbol$>$ {\it as} $<$DataType$>$ $<$MoreParameters$>$ \\ \hline
+      17 & $<$MoreParameters$>$           & $\rightarrow$ & {\it ,} $<$Parameters$>$ \\ \hline
+      18 & $<$MoreParameters$>$           & $\rightarrow$ & $\varepsilon$ \\ \hline
+      19 & $<$Block$>$                    & $\rightarrow$ & $<$VariableDefinition$>$ $<$Block$>$ \\ \hline
+      20 & $<$Block$>$                    & $\rightarrow$ & $<$Assignment$>$ $<$Block$>$ \\ \hline
+      21 & $<$Block$>$                    & $\rightarrow$ & $<$Input$>$ $<$Block$>$ \\ \hline
+      22 & $<$Block$>$                    & $\rightarrow$ & $<$Print$>$ $<$Block$>$ \\ \hline
+      23 & $<$Block$>$                    & $\rightarrow$ & $<$Condition$>$ $<$Block$>$ \\ \hline
+      24 & $<$Block$>$                    & $\rightarrow$ & $<$Cycle$>$ $<$Block$>$ \\ \hline
+      25 & $<$Block$>$                    & $\rightarrow$ & $<$Return$>$ $<$Block$>$ \\ \hline
+    \end{tabular}
+  \end{center}
+}
 
 \end{document}
-
-\begin{table}
-\begin{tabular}{*8l}
-\X\alpha        &\X\theta       &\X o           &\X\tau         \\
-\X\beta         &\X\vartheta    &\X\pi          &\X\upsilon     \\
-\X\gamma        &\X\gamma       &\X\varpi       &\X\phi         \\
-\X\delta        &\X\kappa       &\X\rho         &\X\varphi      \\
-\X\epsilon      &\X\lambda      &\X\varrho      &\X\chi         \\
-\X\varepsilon   &\X\mu          &\X\sigma       &\X\psi         \\
-\X\zeta         &\X\nu          &\X\varsigma    &\X\omega       \\
-\X\eta          &\X\xi                                          \\
-                                                                \\
-\X\Gamma        &\X\Lambda      &\X\Sigma       &\X\Psi         \\
-\X\Delta        &\X\Xi          &\X\Upsilon     &\X\Omega       \\
-\X\Theta        &\X\Pi          &\X\Phi
-\end{tabular}
-\caption{Greek Letters}\label{greek}
-\end{table}
