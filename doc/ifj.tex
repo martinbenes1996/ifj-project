@@ -16,6 +16,7 @@
 
 \usepackage{graphicx}   % Import pictures
 \usepackage{ragged2e}   % fullfill paragraphs
+\usepackage{multicol}
 
 \begin{document}
 %-----------------------------------------%
@@ -103,14 +104,18 @@ Operators are scanned in the function \textit{getOperator()}
 \end{center}
 
 \begin{justify}
+
 To simplify the implementation, we use a wrapper modul \textit{io.h} to
 be able to return bytes back to the input with the function \textit{returnByte()}.
 \end{justify}
 
 \newpage
-\section{Table of symbols}
+\section{Tables}
+\subsection{Table of constants}
+
 \begin{justify}
-  The table contains all important information about symbols – variables and
+
+The table contains all important information about symbols – variables and
 functions. For variables it is a type and a name and for functions it is a name,
 type of the return value, list of parameters, list of variables and an
 indication, whether the function was defined.
@@ -137,23 +142,25 @@ The table of symbols is implemented in a file named symtable.c and the
 interface is present in symtable.h. Table of symbols offers basic functions
 for storing, modifying and reading all information about the symbols.
 
+\end{justify}
 
-Other tables.
+\subsection{Other tables}
+
+\begin{justify}
 
 Many other tables are present in the program. Tables of keywords and operators
 are simple arrays with linear search algorithm. Table of constants is also an
 array with linear search algorithm but this table can actually be resized by
 adding thirty to the current table size, since we expect only a few constants.
 All other tables are implemented in tables.c and interface is in tables.h.
+
 \end{justify}
 
-\begin{center}
-  \includegraphics[width=0.7\textwidth]{img/TableOfSymbols.jpg}
-\end{center}
 
-\begin{center}
-  \includegraphics[width=0.7\textwidth]{img/TableOfConstans.jpg}
-\end{center}
+\begin{multicols}{2}
+  \includegraphics[width=0.4\textwidth]{img/TableOfSymbols.jpg}
+  \includegraphics[width=0.3\textwidth]{img/TableOfConstans.jpg}
+\end{multicols}
 
 \newpage
 % ------------------------------------------------------- %
