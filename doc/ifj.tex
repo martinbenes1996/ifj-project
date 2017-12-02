@@ -113,7 +113,8 @@ be able to return bytes back to the input with the function \textit{returnByte()
 \section{Parser}
 
 % LL table
-{\small
+{\scriptsize
+%{\footnotesize
   \begin{center}
     \begin{tabular}{ | l | c  c  l | } \hline
       1  & $<$GlobalBlock$>$              & $\rightarrow$ & $<$FunctionDeclaration$>$ $<$GlobalBlock$>$ \\ \hline
@@ -132,15 +133,44 @@ be able to return bytes back to the input with the function \textit{returnByte()
       14 & $<$EndFunction$>$              & $\rightarrow$ & {\it end} {\it function} {\it \$} \\ \hline
       15 & $<$EndScope$>$                 & $\rightarrow$ & {\it end} {\it scope} {\it \$} \\ \hline
       16 & $<$Parameters$>$               & $\rightarrow$ & $<$VSymbol$>$ {\it as} $<$DataType$>$ $<$MoreParameters$>$ \\ \hline
-      17 & $<$MoreParameters$>$           & $\rightarrow$ & {\it ,} $<$Parameters$>$ \\ \hline
-      18 & $<$MoreParameters$>$           & $\rightarrow$ & $\varepsilon$ \\ \hline
-      19 & $<$Block$>$                    & $\rightarrow$ & $<$VariableDefinition$>$ $<$Block$>$ \\ \hline
-      20 & $<$Block$>$                    & $\rightarrow$ & $<$Assignment$>$ $<$Block$>$ \\ \hline
-      21 & $<$Block$>$                    & $\rightarrow$ & $<$Input$>$ $<$Block$>$ \\ \hline
-      22 & $<$Block$>$                    & $\rightarrow$ & $<$Print$>$ $<$Block$>$ \\ \hline
-      23 & $<$Block$>$                    & $\rightarrow$ & $<$Condition$>$ $<$Block$>$ \\ \hline
-      24 & $<$Block$>$                    & $\rightarrow$ & $<$Cycle$>$ $<$Block$>$ \\ \hline
-      25 & $<$Block$>$                    & $\rightarrow$ & $<$Return$>$ $<$Block$>$ \\ \hline
+      17 & $<$Parameters$>$               & $\rightarrow$ & $\varepsilon$ \\ \hline
+      18 & $<$MoreParameters$>$           & $\rightarrow$ & {\it ,} $<$Parameters$>$ \\ \hline
+      19 & $<$MoreParameters$>$           & $\rightarrow$ & $\varepsilon$ \\ \hline
+      20 & $<$Block$>$                    & $\rightarrow$ & $<$VariableDefinition$>$ $<$Block$>$ \\ \hline
+      21 & $<$Block$>$                    & $\rightarrow$ & $<$Assignment$>$ $<$Block$>$ \\ \hline
+      22 & $<$Block$>$                    & $\rightarrow$ & $<$Input$>$ $<$Block$>$ \\ \hline
+      23 & $<$Block$>$                    & $\rightarrow$ & $<$Print$>$ $<$Block$>$ \\ \hline
+      24 & $<$Block$>$                    & $\rightarrow$ & $<$Condition$>$ $<$Block$>$ \\ \hline
+      25 & $<$Block$>$                    & $\rightarrow$ & $<$Cycle$>$ $<$Block$>$ \\ \hline
+      26 & $<$Block$>$                    & $\rightarrow$ & $<$Return$>$ $<$Block$>$ \\ \hline
+      27 & $<$VariableDefinition$>$       & $\rightarrow$ & {\it dim} $<$VSymbol$>$ {\it as} $<$DataType$>$ $<$VariableInitialization$>$ {\it \$} \\ \hline
+      28 & $<$VariableInitialization$>$   & $\rightarrow$ & {\it =} $<$Expression$>$ {\it \$} \\ \hline
+      29 & $<$VariableInitialization$>$   & $\rightarrow$ & $\varepsilon$ \\ \hline
+      30 & $<$Assignment$>$               & $\rightarrow$ & $<$VSymbol$>$ {\it =} $<$AssignmentValue$>$ {\it \$} \\ \hline
+      31 & $<$AssignmentValue$>$          & $\rightarrow$ & $<$Expression$>$ \\ \hline
+      32 & $<$AssignmentValue$>$          & $\rightarrow$ & $<$FunctionCall$>$ \\ \hline
+      33 & $<$FunctionCall$>$             & $\rightarrow$ & $<$FSymbol$>$ {\it (} $<$Arguments$>$ {\it )} {\it \$} \\ \hline
+      34 & $<$Arguments$>$                & $\rightarrow$ & $<$Expression$>$ $<$MoreArguments$>$ \\ \hline
+      35 & $<$Arguments$>$                & $\rightarrow$ & $\varepsilon$ \\ \hline
+      36 & $<$MoreArguments$>$            & $\rightarrow$ & {\it ,} $<$Arguments$>$ \\ \hline
+      37 & $<$MoreArguments$>$            & $\rightarrow$ & $\varepsilon$ \\ \hline
+      38 & $<$Input$>$                    & $\rightarrow$ & {\it input} $<$VSymbol$>$ {\it \$} \\ \hline
+      39 & $<$Print$>$                    & $\rightarrow$ & {\it print} $<$Expression$>$ {\it ;} $<$PrintParameters$>$ {\it \$} \\ \hline
+      40 & $<$PrintParameters$>$          & $\rightarrow$ & $<$Expression$>$ {\it ;} $<$PrintParameters$>$ \\ \hline
+      41 & $<$PrintParameters$>$          & $\rightarrow$ & $\varepsilon$ \\ \hline
+      42 & $<$Condition$>$                & $\rightarrow$ & {\it if} $<$Logic$>$ {\it then} {\it \$} $<$Block$>$ {\it else} {\it \$} $<$Block$>$ $<$EndIf$>$ \\ \hline
+      43 & $<$Logic$>$                    & $\rightarrow$ & $<$Expression$>$ $<$ComparisonOperator$>$ $<$Expression$>$ \\ \hline
+      44 & $<$ComparisonOperator$>$       & $\rightarrow$ & {\it $<$} \\ \hline
+      45 & $<$ComparisonOperator$>$       & $\rightarrow$ & {\it $<=$} \\ \hline
+      46 & $<$ComparisonOperator$>$       & $\rightarrow$ & {\it $>$} \\ \hline
+      47 & $<$ComparisonOperator$>$       & $\rightarrow$ & {\it $>=$} \\ \hline
+      48 & $<$ComparisonOperator$>$       & $\rightarrow$ & {\it $=$} \\ \hline
+      49 & $<$ComparisonOperator$>$       & $\rightarrow$ & {\it $<>$} \\ \hline
+      50 & $<$EndIf$>$                    & $\rightarrow$ & {\it end} {\it if} {\it \$} \\ \hline
+      51 & $<$Cycle$>$                    & $\rightarrow$ & {\it do} {\it while} $<$Logic$>$ {\it \$} $<$Block$>$ $<$EndCycle$>$ \\ \hline
+      52 & $<$EndCycle$>$                 & $\rightarrow$ & {\it loop} {\it \$} \\ \hline
+      53 & $<$Return$>$                   & $\rightarrow$ & {\it return} $<$Expression$>$ {\it \$} \\ \hline
+      54 & $<$Expression$>$               & $\rightarrow$ & {\bf calling precedent analysis...} \\ \hline
     \end{tabular}
   \end{center}
 }
