@@ -11,7 +11,9 @@ PUSHFRAME
 DEFVAR LF@a
 DEFVAR LF@b
 
+WRITE string@?\032
 READ LF@a float
+WRITE string@?\032
 READ LF@b float
 
 ADD LF@a LF@a LF@b

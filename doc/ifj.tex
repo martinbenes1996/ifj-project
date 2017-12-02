@@ -8,33 +8,14 @@
 %------------------------------------------------%
 %	    CONFIGURATION + IMPORTED PACKAGES        %
 %------------------------------------------------%
-\documentclass[12pt,a4paper,titlepage]{report}
+\documentclass[12pt,a4paper,titlepage]{article}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
-\newcommand\HRule{\rule{\textwidth}{1,5pt}}
 
-\usepackage{titlesec}
-\usepackage{geometry}   % paper size
- \geometry{
- a4paper,
- total={160mm,255mm},
- left=25mm,
- top=25mm,
- bottom=25mm
- }
-
-\titleformat{\chapter}{\Huge\bfseries}{}{0pt}{\Huge\bfseries}   % chapters space
-\titlespacing*{\chapter}{0pt}{-32pt}{23pt}
-
-\usepackage{tikz}       % Borders
-\usetikzlibrary{calc}
 
 \usepackage{graphicx}   % Import pictures
 
-\usepackage{wrapfig}    % pictures between paragraphs
 \usepackage{ragged2e}   % fullfill paragraphs
-
-\usepackage{blindtext}   % text generator
 
 \begin{document}
 %-----------------------------------------%
@@ -42,76 +23,22 @@
 %-----------------------------------------%
 \begin{titlepage}
 
-
-\begin{tikzpicture}[overlay,remember picture]       % Borders around title page
-
-    \draw [line width=1pt,rounded corners=7pt]
-    ($ (current page.north west) + (0.65cm,-0.65cm) $)
-    rectangle
-    ($ (current page.south east) + (-0.65cm,0.65cm) $);
-
-    \draw [densely dotted,line width=0.75pt,rounded corners=7pt]
-    ($ (current page.north west) + (1.15cm,-1.15cm) $)
-    rectangle
-    ($ (current page.south east) + (-1.15cm,1.15cm) $);
-
-        %\draw [line width=1pt,rounded corners=7pt]
-        %($ (current page.north west) + (1.5cm,-1.5cm) $)
-        %rectangle
-        %($ (current page.south east) + (-1.5cm,1.5cm) $);
-
-\end{tikzpicture}
-
-
-
 \begin{center}
-
 % Headings
-\textsc{\LARGE Brno University of technology}\\[1.5cm]
-
-\textsc{\large Faculty of Information Technology}\\[3cm]
+\textsc{\LARGE Brno University of technology}\\[0.5cm]
+\textsc{\large Faculty of Information Technology}\\[7cm]
 
 % Title - lines
-\HRule \\[0.5cm]
-{ \Huge \bfseries IFJ project}\\[0.3cm]
-{ \large \bfseries documentation}\\[0.4cm]
-{ \normalsize \bfseries 2017}\\[0.1cm]
-\HRule \\[2.3cm]
+{ \huge \bfseries IFJ project}\\[0.3cm]
+{ \Large \bfseries documentation}\\[0.4cm]
+{\bfseries xbenes49, xbolsh00, xpolan09}\\[12cm]
 
+% Date
+\today
 \end{center}
 
-
-% Table of authors
-\begin{center}
-    \begin{tabular}{ll}
-    \multicolumn{2}{l}{\hspace{45pt} \large \underline{Authors}} \\
-                                 \\
-    Martin Beneš      & xbenes49 \\
-    Ksenia Bolshakova & xbolsh00 \\
-    Petr Kratochvíl   & xkrato47 \\
-    Ondřej Polanský   & xpolan09 \\
-    \end{tabular}
-\end{center}
-
-
-%\begin{tabular}[t]{@{}l@{\hspace{5pt}}p{.52\textwidth}@{}}
-%Authors: \\
-%& Martin Beneš      \hspace*{0.49in}xbenes49 \\
-%& Ksenia Bolshakova \hspace*{0.49in}xbolsh00 \\
-%& Petr Kratochvíl   \hspace*{0.49in}xkrato47 \\
-%& Ondřej Polanský   \hspace*{0.49in}xpolan09
-%\end{tabular}
-
-\vspace{3.0cm}
-
-\begin{center}
-\normalsize Brno,\\
-{\normalsize\today} % Date
-\end{center}
-
-\newpage
 \end{titlepage}
-
+\newpage
 
 %-----------------------------------------%
 %	         TABLE OF CONTENTS            %
@@ -126,126 +53,123 @@
 %	            CHAPTERS                  %
 %-----------------------------------------%
 
-%\setcounter{page}{1}
-%\pagenumbering{arabic}
+\setcounter{page}{1}
+\pagenumbering{arabic}
 
-\chapter*{Lexical analyse}                                            %%% -1- %%%
-\addcontentsline{toc}{chapter}{Scaner}
-    \section{Intro}
+\section{Lexical analysis}
 
 \begin{justify}
-We did the scanner in two ways: singlethread and multithread work. Both variants work on the basis of the State Automaton.
-The state machine was created on the basis of regular expression designs for individual types of phrases: cel number, decimal number with decimal point and positive or negative exponent, string, operator, identifier, keyword, commentary.\justify
-Regular prints for:
-of these regulars finally came into being.\justify
+We did the scanner in two ways: singlethread and multithread work. Both variants work on the basis of a state machine.
+The state machine was created on a basis of regular expression designs for each type of phrasems:
+integer, real number (decimal point, positive or negative exponent), string, operator, identifier, keyword, comment.
 
-Singlethread is done as a common feature, multithread is done in a separate thread.\justify
+The multithread scanner implementation used separate thread, read bytes from input, generates tokens and pushes
+them to the queue. The parser then reads from the queue and processess the tokens in it. At some moment of multithread
+implementing, we have come to the decision, that the singlethread scanner would be better, since we have got one member off.
 
-For the purpose of decomposition, the structure of the lexical analyzer was divided into several subprograms that implemented individual parts.
+For the purpose of decomposition, the structure of the lexical analyzer was divided into several subprograms
+that implemented individual parts.
 \end{justify}
+
+%%%%% getNumber %%%%%
+\begin{justify}
+Numbers, decimal and exponential numbers are scanned in the function \textit{getNumber()}.
+\end{justify}
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{img/getNumber.png}
+\end{center}
+
+%%%%% getString %%%%%
+\begin{justify}
+Strings are scanned in the function \textit{getString}.
+\end{justify}
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{img/getString.png}
+\end{center}
+
+%%%%% getComment %%%%%
+\begin{justify}
+The comments are scanned in the function \textit{getComment()}. We have simplified the "//" with "\textasciitilde".
+\end{justify}
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{img/getComment.png}
+\end{center}
+
+%%%%% getComment %%%%%
+\begin{justify}
+Identifiers and keywords are scanned in the function \textit{getIdentifier()}.
+\end{justify}
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{img/getIdentifier.png}
+\end{center}
+
+%%%%% getComment %%%%%
+\begin{justify}
+Operators are scanned in the function \textit{getOperator()}
+\end{justify}
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{img/getOperator.png}
+\end{center}
 
 \begin{justify}
-Numerals, decimal numerals, exponential numbers are given in function \textbf{getNumber}
+To simplify the implementation, we use a wrapper modul \textit{io.h} to
+be able to return bytes back to the input with the function \textit{returnByte()}.
 \end{justify}
 
-%(pick # getNumber)
-\vspace{0.3cm}
-
-\begin{wrapfigure}{r}{1.0\textwidth}
-  \begin{center}
-    \includegraphics[width=1.0\textwidth]{img/getNumber.png}
-  \end{center}
-  %\caption{get}
-\end{wrapfigure}
-
-%\vspace{0.4cm}
-%%%
-
-\begin{justify}
-String from \textbf{getString}
-\end{justify}
-
-%(pic # getString)
-%\vspace{0.3cm}
-
-\begin{wrapfigure}{r}{1.0\textwidth}
-  \begin{center}
-    \includegraphics[width=1.0\textwidth]{img/getString.png}
-  \end{center}
-  %\caption{get}
-\end{wrapfigure}
-
-%\vspace{0.4cm}
-%%%
-
-\begin{justify}
-The comment is in the \textbf{getComment} function.
-There we resolved the problem with one "/" or "//", we resolved it by replacing "//" tilda ~ ".
-\end{justify}
-
-%%%(pic # getComment)
-\vspace{0.3cm}
-
-\begin{wrapfigure}{r}{1.0\textwidth}
-  \begin{center}
-    \includegraphics[width=1.0\textwidth]{img/getComment.png}
-  \end{center}
-  %\caption{get}
-\end{wrapfigure}
-
-\vspace{0.4cm}
-%%%
-
-\begin{justify}
-Identifiers and keyword words are rendered in the \textbf{getIdentifier} function
-\end{justify}
-
-%(pic # get Identifier)
-\vspace{0.3cm}
-
-\begin{wrapfigure}{r}{1.0\textwidth}
-  \begin{center}
-    \includegraphics[width=1.0\textwidth]{img/getIdentifier.png}
-  \end{center}
-  %\caption{get}
-\end{wrapfigure}
-
-\vspace{0.4cm}
-%%%
-
-\begin{justify}
-Operators are processed in \textbf{getOperator}
-\end{justify}
-
-%(pic # getOperator)
-\vspace{0.3cm}
-
-\begin{wrapfigure}{r}{1.0\textwidth}
-  \begin{center}
-    \includegraphics[width=1.0\textwidth]{img/getOperator.png}
-  \end{center}
-  %\caption{getOperator}
-\end{wrapfigure}
-
-\vspace{0.4cm}
-%%%
-
-
-\begin{justify}
-For the sake of implementation, we put the wrapper over the input to return the character back to the input. The function is called \textbf{returnByte()}.
-\end{justify}
-
-
-
+\newpage
 % ------------------------------------------------------- %
 
-\iffalse
+\section{Parser}
 
-\chapter*{Pars..}                                                       %%% -2- %%%
-\addcontentsline{toc}{chapter}{Parser}
-    \section{Intro}
-    \Blindtext
+% LL table
+\begin{center}
+  \begin{tabular}{ | l | c  c  l | } \hline
+    1  & $<$GlobalBlock$>$              & $\rightarrow$ & $<$FunctionDeclaration$>$ $<$GlobalBlock$>$ \\ \hline
+    2  & $<$GlobalBlock$>$              & $\rightarrow$ & $<$FunctionDefinition$>$ $<$GlobalBlock$>$ \\ \hline
+    3  & $<$GlobalBlock$>$              & $\rightarrow$ & $<$Scope$>$ $<$GlobalBlock$>$ \\ \hline
+    4  & $<$GlobalBlock$>$              & $\rightarrow$ & $\varepsilon$ \\ \hline
+    5  & $<$FunctionDeclaration$>$      & $\rightarrow$ & {\it declare} $<$FunctionHeader$>$ \\ \hline
+    6  & $<$FunctionDefinition$>$       & $\rightarrow$ & $<$FunctionHeader$>$ $<$Block$>$ $<$EndFunction$>$ \\ \hline
+    7  & $<$FunctionHeader$>$           & $\rightarrow$ & {\it function} $<$FSymbol$>$ {\it (} $<$Parameters$>$ {\it )} {\it as} $<$DataType$>$ {\it \$} \\ \hline
+    8  & $<$Scope$>$                    & $\rightarrow$ & {\it scope} {\it \$} $<$Block$>$ $<$EndScope$>$ \\ \hline
+    9  & $<$FSymbol$>$                  & $\rightarrow$ & {\it id} \\ \hline
+    10 & $<$VSymbol$>$                  & $\rightarrow$ & {\it id} \\ \hline
+    11 & $<$DataType$>$                 & $\rightarrow$ & {\it string} \\ \hline
+    12 & $<$DataType$>$                 & $\rightarrow$ & {\it double} \\ \hline
+    13 & $<$DataType$>$                 & $\rightarrow$ & {\it integer} \\ \hline
+    14 & $<$EndFunction$>$              & $\rightarrow$ & {\it end} {\it function} {\it \$} \\ \hline
+    15 & $<$EndScope$>$                 & $\rightarrow$ & {\it end} {\it scope} {\it \$} \\ \hline
+    16 & $<$Parameters$>$               & $\rightarrow$ & $<$VSymbol$>$ {\it as} $<$DataType$>$ $<$MoreParameters$>$ \\ \hline
+    17 & $<$MoreParameters$>$           & $\rightarrow$ & {\it ,} $<$Parameters$>$ \\ \hline
+    18 & $<$MoreParameters$>$           & $\rightarrow$ & $\varepsilon$ \\ \hline
+    19 & $<$Block$>$                    & $\rightarrow$ & $<$VariableDefinition$>$ $<$Block$>$ \\ \hline
+    20 & $<$Block$>$                    & $\rightarrow$ & $<$Assignment$>$ $<$Block$>$ \\ \hline
+    21 & $<$Block$>$                    & $\rightarrow$ & $<$Input$>$ $<$Block$>$ \\ \hline
+    22 & $<$Block$>$                    & $\rightarrow$ & $<$Print$>$ $<$Block$>$ \\ \hline
+    23 & $<$Block$>$                    & $\rightarrow$ & $<$Condition$>$ $<$Block$>$ \\ \hline
+    24 & $<$Block$>$                    & $\rightarrow$ & $<$Cycle$>$ $<$Block$>$ \\ \hline
+    25 & $<$Block$>$                    & $\rightarrow$ & $<$Return$>$ $<$Block$>$ \\ \hline
 
-\fi
+  \end{tabular}
+\end{center}
+
 
 \end{document}
+
+\begin{table}
+\begin{tabular}{*8l}
+\X\alpha        &\X\theta       &\X o           &\X\tau         \\
+\X\beta         &\X\vartheta    &\X\pi          &\X\upsilon     \\
+\X\gamma        &\X\gamma       &\X\varpi       &\X\phi         \\
+\X\delta        &\X\kappa       &\X\rho         &\X\varphi      \\
+\X\epsilon      &\X\lambda      &\X\varrho      &\X\chi         \\
+\X\varepsilon   &\X\mu          &\X\sigma       &\X\psi         \\
+\X\zeta         &\X\nu          &\X\varsigma    &\X\omega       \\
+\X\eta          &\X\xi                                          \\
+                                                                \\
+\X\Gamma        &\X\Lambda      &\X\Sigma       &\X\Psi         \\
+\X\Delta        &\X\Xi          &\X\Upsilon     &\X\Omega       \\
+\X\Theta        &\X\Pi          &\X\Phi
+\end{tabular}
+\caption{Greek Letters}\label{greek}
+\end{table}

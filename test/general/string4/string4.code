@@ -6,6 +6,7 @@ DEFVAR LF@str
 MOVE LF@str string@ahoj
 
 DEFVAR LF@i
+WRITE string@?\032
 READ LF@i int
 
 DEFVAR LF@pom

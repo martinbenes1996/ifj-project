@@ -10,6 +10,7 @@ PUSHFRAME
 
 # read
 DEFVAR LF@x
+WRITE string@?\032
 READ LF@x int
 
 # typecast

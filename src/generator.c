@@ -377,6 +377,7 @@ void GenerateRead(Phrasem p)
   #endif
 
   // this will go from symbol table
+  out("WRITE string@?\\032");
   out("READ %s %s", GenerateName(p), GenerateType(p));
 }
 

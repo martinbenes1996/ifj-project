@@ -9,6 +9,7 @@ CREATEFRAME
 
 # reads integer
 DEFVAR TF@x
+WRITE string@?\032
 READ TF@x int
 
 # checks with 10

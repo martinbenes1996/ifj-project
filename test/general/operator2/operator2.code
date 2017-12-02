@@ -9,6 +9,7 @@ CREATEFRAME
 PUSHFRAME
 
 DEFVAR LF@x
+WRITE string@?\032
 READ LF@x float
 
 # loop

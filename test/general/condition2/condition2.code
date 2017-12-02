@@ -13,6 +13,7 @@ JUMP main
 LABEL loadFloat
   PUSHFRAME
   DEFVAR LF@*ret
+  WRITE string@?\032
   READ LF@*ret float
   POPFRAME
   RETURN

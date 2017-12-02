@@ -5,6 +5,7 @@ PUSHFRAME
 WRITE string@Zadejte\032cislo\032pro\032vypocet\032faktorialu
 
 DEFVAR LF@x
+WRITE string@?\032
 READ LF@x int
 
 DEFVAR LF@fact

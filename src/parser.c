@@ -885,11 +885,39 @@ bool EndFunctionParse()
   CheckKeyword("function");
 
   // separator
-  CheckSeparator();
+  Phrasem sep = CheckQueue(sep);
+  if( !isSeparator(sep) ) RaiseExpectedError("separator");
+  //CheckSeparator();
 
   G_EndBlock();
 
-  if(!wasReturn) RaiseError("no return in function", ErrorType_Semantic3);
+  // no return
+  if(!wasReturn)
+  {
+
+    Phrasem def = allocPhrasem();
+    if(def == NULL) RaiseError("allocation error", ErrorType_Internal);
+
+    def->table = TokenType_Constant;
+    switch( findFunctionType(Config_getFunction()) )
+    {
+      case DataType_Integer:
+        def->d.index = getIntDefaultValue();
+        break;
+      case DataType_String:
+        def->d.index = getStringDefaultValue();
+        break;
+      case DataType_Double:
+        def->d.index = getDoubleDefaultValue();
+        break;
+      default: RaiseError("unknown datatype", ErrorType_Semantic2);
+    }
+
+    ReturnToQueue(sep);
+    ReturnToQueue(def);
+
+    if(!ReturnParse()) return false;
+  }
   wasReturn = true;
   end = false;
   return true;

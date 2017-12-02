@@ -9,6 +9,7 @@ CREATEFRAME
 PUSHFRAME
 
 DEFVAR LF@max
+WRITE string@?\032
 READ LF@max int
 
 LABEL before_cond
