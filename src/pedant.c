@@ -734,6 +734,8 @@ bool P_CheckType_MoveStackToGenerator(DataType dt)
 void ClearPedant()
 {
   if(mstack != NULL)
+  {
     ClearStack(mstack);
     mstack = NULL;
+  }
 }

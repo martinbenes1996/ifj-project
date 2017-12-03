@@ -1,0 +1,66 @@
+# 2017-12-04 00:14:59.014331
+# SECTION: 02_functions
+# TEST: 06
+# INFO: function params with declaration but invalid types
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# parser.c: FunctionDefinitionParse: l.1789: not matching parameters in declaration and definition
+# not matching parameters in declaration and definition. Line: 5
+# 
+# INTERPRETER STDERR:
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 3
+# CURRENT COMPILER EXIT CODE: 6
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: None
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' function params with declaration but invalid types
+#   2: declare function bar(h as string, t as string) as string
+#   3: 
+#   4: function bar(b as string, c as integer) as string
+#   5: end function 
+#   6: 
+#   7: scope
+#   8: end scope
+
+########################################
+
+# Generated code                                                                #     2/26
+# IFJ                                                                           #     3/26
+# xbenes49 xbolsh00 xpolan09                                                    #     4/26
+# 2017                                                                          #     5/26
+.IFJcode17                                                                      #     7/26
+CREATEFRAME                                                                     #     8/26
+PUSHFRAME                                                                       #     9/26
+DEFVAR LF@*tmp                                                                  #    10/26
+DEFVAR LF@*foo                                                                  #    11/26
+DEFVAR LF@*bar                                                                  #    12/26
+JUMP $main                                                                      #    13/26
+# function bar                                                                  #    16/26
+LABEL bar                                                                       #    17/26
+PUSHFRAME                                                                       #    18/26
+DEFVAR LF@*tmp                                                                  #    19/26
+DEFVAR LF@*foo                                                                  #    20/26
+DEFVAR LF@*bar                                                                  #    21/26
+DEFVAR LF@*ret                                                                  #    22/26
+DEFVAR LF@b                                                                     #    23/26
+MOVE LF@b LF@*1                                                                 #    24/26
+DEFVAR LF@c                                                                     #    25/26
+MOVE LF@c LF@*2                                                                 #    26/26
+

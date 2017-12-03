@@ -1,0 +1,136 @@
+# 2017-12-04 00:14:59.466421
+# SECTION: 02_functions
+# TEST: 32
+# INFO: Double constant into build-in function
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Label already exists!
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+#  103 84
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 52
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' Double constant into build-in function
+#   2: 
+#   3: scope
+#   4:     dim a as double = 3.0
+#   5:     
+#   6:     dim i as integer
+#   7:     dim j as integer
+#   8:     i = asc(!"gzgfggffg", a)
+#   9:     j = asc(!"ERTZUG", 3.0)
+#  10: 
+#  11:     print i; j;
+#  12:     
+#  13: end scope
+
+########################################
+
+# Generated code                                                                #     2/90
+# IFJ                                                                           #     3/90
+# xbenes49 xbolsh00 xpolan09                                                    #     4/90
+# 2017                                                                          #     5/90
+.IFJcode17                                                                      #     7/90
+CREATEFRAME                                                                     #     8/90
+PUSHFRAME                                                                       #     9/90
+DEFVAR LF@*tmp                                                                  #    10/90
+DEFVAR LF@*foo                                                                  #    11/90
+DEFVAR LF@*bar                                                                  #    12/90
+JUMP $main                                                                      #    13/90
+LABEL $main                                                                     #    15/90
+DEFVAR LF@a                                                                     #    16/90
+PUSHS float@3                                                                   #    17/90
+POPS LF@a                                                                       #    18/90
+DEFVAR LF@i                                                                     #    19/90
+PUSHS int@0                                                                     #    20/90
+POPS LF@i                                                                       #    21/90
+DEFVAR LF@j                                                                     #    22/90
+PUSHS int@0                                                                     #    23/90
+POPS LF@j                                                                       #    24/90
+DEFVAR LF@*baaaaa                                                               #    25/90
+MOVE LF@*baaaaa string@                                                         #    26/90
+CONCAT LF@*baaaaa LF@*baaaaa string@gzgfggffg                                   #    27/90
+PUSHS LF@*baaaaa                                                                #    28/90
+PUSHS LF@a                                                                      #    29/90
+# asc()                                                                         #    30/90
+	POPS LF@*tmp                                                                   #    31/90
+	POPS LF@*foo                                                                   #    32/90
+	STRLEN LF@*bar LF@*foo                                                         #    33/90
+	PUSHS LF@*tmp                                                                  #    34/90
+	PUSHS LF@*bar                                                                  #    35/90
+	LTS                                                                            #    36/90
+	PUSHS bool@true                                                                #    37/90
+	JUMPIFNEQS $zero                                                               #    38/90
+	PUSHS LF@*tmp                                                                  #    39/90
+	PUSHS int@0                                                                    #    40/90
+	GTS                                                                            #    41/90
+	PUSHS bool@true                                                                #    42/90
+	JUMPIFNEQS $zero                                                               #    43/90
+		PUSHS LF@*foo                                                                 #    44/90
+		PUSHS LF@*tmp                                                                 #    45/90
+		STRI2INTS                                                                     #    46/90
+		JUMP $aaaaaa                                                                  #    47/90
+	LABEL $zero                                                                    #    48/90
+	PUSHS int@0                                                                    #    49/90
+LABEL $aaaaaa                                                                   #    50/90
+INT2FLOATS                                                                      #    51/90
+FLOAT2R2EINTS                                                                   #    52/90
+POPS LF@i                                                                       #    53/90
+DEFVAR LF@*caaaaa                                                               #    54/90
+MOVE LF@*caaaaa string@                                                         #    55/90
+CONCAT LF@*caaaaa LF@*caaaaa string@ERTZUG                                      #    56/90
+PUSHS LF@*caaaaa                                                                #    57/90
+PUSHS float@3                                                                   #    58/90
+# asc()                                                                         #    59/90
+	POPS LF@*tmp                                                                   #    60/90
+	POPS LF@*foo                                                                   #    61/90
+	STRLEN LF@*bar LF@*foo                                                         #    62/90
+	PUSHS LF@*tmp                                                                  #    63/90
+	PUSHS LF@*bar                                                                  #    64/90
+	LTS                                                                            #    65/90
+	PUSHS bool@true                                                                #    66/90
+	JUMPIFNEQS $zero                                                               #    67/90
+	PUSHS LF@*tmp                                                                  #    68/90
+	PUSHS int@0                                                                    #    69/90
+	GTS                                                                            #    70/90
+	PUSHS bool@true                                                                #    71/90
+	JUMPIFNEQS $zero                                                               #    72/90
+		PUSHS LF@*foo                                                                 #    73/90
+		PUSHS LF@*tmp                                                                 #    74/90
+		STRI2INTS                                                                     #    75/90
+		JUMP $baaaaa                                                                  #    76/90
+	LABEL $zero                                                                    #    77/90
+	PUSHS int@0                                                                    #    78/90
+LABEL $baaaaa                                                                   #    79/90
+INT2FLOATS                                                                      #    80/90
+FLOAT2R2EINTS                                                                   #    81/90
+POPS LF@j                                                                       #    82/90
+PUSHS LF@i                                                                      #    83/90
+POPS LF@*tmp                                                                    #    84/90
+WRITE LF@*tmp                                                                   #    85/90
+PUSHS LF@j                                                                      #    86/90
+POPS LF@*tmp                                                                    #    87/90
+WRITE LF@*tmp                                                                   #    88/90
+JUMP $end                                                                       #    89/90
+LABEL $end                                                                      #    90/90
+

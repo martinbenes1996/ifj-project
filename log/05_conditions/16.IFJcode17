@@ -1,0 +1,300 @@
+# 2017-12-04 00:15:00.855208
+# SECTION: 05_conditions
+# TEST: 16
+# INFO: Many conditions double version
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# 47.1-8: syntax error, unexpected ID, expecting END
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+# NOTOKNOTOKOKOKOKOKOKNOTOKNOTOK
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 51
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' Many conditions double version
+#   2: 
+#   3: scope
+#   4: 
+#   5: dim a as double
+#   6: a = 1.1
+#   7: 
+#   8: if a < 1 then
+#   9:     print !"OK";
+#  10: else
+#  11:     print !"NOTOK";
+#  12: end if
+#  13: 
+#  14: if a <= 0 then
+#  15:     print !"OK";
+#  16: else
+#  17:     print !"NOTOK";
+#  18: end if
+#  19: 
+#  20: if a >= 0 then
+#  21:     print !"OK";
+#  22: else
+#  23:     print !"NOTOK";
+#  24: end if
+#  25: 
+#  26: if a >= 0-1 then
+#  27:     print !"OK";
+#  28: else
+#  29:     print !"NOTOK";
+#  30: end if
+#  31: 
+#  32: if a > 0 then
+#  33:     print !"OK";
+#  34: else
+#  35:     print !"NOTOK";
+#  36: end if
+#  37: 
+#  38: if a <> 0 then
+#  39:     print !"OK";
+#  40: else
+#  41:     print !"NOTOK";
+#  42: end if
+#  43: 
+#  44: if a <> 1 then
+#  45:     print !"OK";
+#  46: else
+#  47:     print !"NOTOK";
+#  48: end if
+#  49: 
+#  50: if a = 1 then
+#  51:     print !"OK";
+#  52: else
+#  53:     print !"NOTOK";
+#  54: end if
+#  55: 
+#  56: if a = 0 then
+#  57:     print !"OK";
+#  58: else
+#  59:     print !"NOTOK";
+#  60: end if
+#  61: 
+#  62: end scope
+
+########################################
+
+# Generated code                                                                #     2/205
+# IFJ                                                                           #     3/205
+# xbenes49 xbolsh00 xpolan09                                                    #     4/205
+# 2017                                                                          #     5/205
+.IFJcode17                                                                      #     7/205
+CREATEFRAME                                                                     #     8/205
+PUSHFRAME                                                                       #     9/205
+DEFVAR LF@*tmp                                                                  #    10/205
+DEFVAR LF@*foo                                                                  #    11/205
+DEFVAR LF@*bar                                                                  #    12/205
+JUMP $main                                                                      #    13/205
+LABEL $main                                                                     #    15/205
+DEFVAR LF@a                                                                     #    16/205
+PUSHS float@0                                                                   #    17/205
+POPS LF@a                                                                       #    18/205
+PUSHS float@1.1                                                                 #    19/205
+POPS LF@a                                                                       #    20/205
+PUSHS LF@a                                                                      #    21/205
+PUSHS int@1                                                                     #    22/205
+INT2FLOATS                                                                      #    23/205
+LTS                                                                             #    24/205
+PUSHS bool@true                                                                 #    25/205
+JUMPIFNEQS $aaaaaa                                                              #    26/205
+DEFVAR LF@*baaaaa                                                               #    27/205
+MOVE LF@*baaaaa string@                                                         #    28/205
+CONCAT LF@*baaaaa LF@*baaaaa string@OK                                          #    29/205
+PUSHS LF@*baaaaa                                                                #    30/205
+POPS LF@*tmp                                                                    #    31/205
+WRITE LF@*tmp                                                                   #    32/205
+JUMP $baaaaa                                                                    #    33/205
+LABEL $aaaaaa                                                                   #    34/205
+DEFVAR LF@*caaaaa                                                               #    35/205
+MOVE LF@*caaaaa string@                                                         #    36/205
+CONCAT LF@*caaaaa LF@*caaaaa string@NOTOK                                       #    37/205
+PUSHS LF@*caaaaa                                                                #    38/205
+POPS LF@*tmp                                                                    #    39/205
+WRITE LF@*tmp                                                                   #    40/205
+LABEL $baaaaa                                                                   #    41/205
+PUSHS LF@a                                                                      #    42/205
+PUSHS int@0                                                                     #    43/205
+INT2FLOATS                                                                      #    44/205
+GTS                                                                             #    45/205
+PUSHS bool@true                                                                 #    46/205
+JUMIFEQS $caaaaa                                                                #    47/205
+DEFVAR LF@*daaaaa                                                               #    48/205
+MOVE LF@*daaaaa string@                                                         #    49/205
+CONCAT LF@*daaaaa LF@*daaaaa string@OK                                          #    50/205
+PUSHS LF@*daaaaa                                                                #    51/205
+POPS LF@*tmp                                                                    #    52/205
+WRITE LF@*tmp                                                                   #    53/205
+JUMP $daaaaa                                                                    #    54/205
+LABEL $caaaaa                                                                   #    55/205
+DEFVAR LF@*eaaaaa                                                               #    56/205
+MOVE LF@*eaaaaa string@                                                         #    57/205
+CONCAT LF@*eaaaaa LF@*eaaaaa string@NOTOK                                       #    58/205
+PUSHS LF@*eaaaaa                                                                #    59/205
+POPS LF@*tmp                                                                    #    60/205
+WRITE LF@*tmp                                                                   #    61/205
+LABEL $daaaaa                                                                   #    62/205
+PUSHS LF@a                                                                      #    63/205
+PUSHS int@0                                                                     #    64/205
+INT2FLOATS                                                                      #    65/205
+LTS                                                                             #    66/205
+PUSHS bool@true                                                                 #    67/205
+JUMPIFEQS $eaaaaa                                                               #    68/205
+DEFVAR LF@*faaaaa                                                               #    69/205
+MOVE LF@*faaaaa string@                                                         #    70/205
+CONCAT LF@*faaaaa LF@*faaaaa string@OK                                          #    71/205
+PUSHS LF@*faaaaa                                                                #    72/205
+POPS LF@*tmp                                                                    #    73/205
+WRITE LF@*tmp                                                                   #    74/205
+JUMP $faaaaa                                                                    #    75/205
+LABEL $eaaaaa                                                                   #    76/205
+DEFVAR LF@*gaaaaa                                                               #    77/205
+MOVE LF@*gaaaaa string@                                                         #    78/205
+CONCAT LF@*gaaaaa LF@*gaaaaa string@NOTOK                                       #    79/205
+PUSHS LF@*gaaaaa                                                                #    80/205
+POPS LF@*tmp                                                                    #    81/205
+WRITE LF@*tmp                                                                   #    82/205
+LABEL $faaaaa                                                                   #    83/205
+PUSHS LF@a                                                                      #    84/205
+PUSHS int@0                                                                     #    85/205
+PUSHS int@1                                                                     #    86/205
+SUBS                                                                            #    87/205
+INT2FLOATS                                                                      #    88/205
+LTS                                                                             #    89/205
+PUSHS bool@true                                                                 #    90/205
+JUMPIFEQS $gaaaaa                                                               #    91/205
+DEFVAR LF@*haaaaa                                                               #    92/205
+MOVE LF@*haaaaa string@                                                         #    93/205
+CONCAT LF@*haaaaa LF@*haaaaa string@OK                                          #    94/205
+PUSHS LF@*haaaaa                                                                #    95/205
+POPS LF@*tmp                                                                    #    96/205
+WRITE LF@*tmp                                                                   #    97/205
+JUMP $haaaaa                                                                    #    98/205
+LABEL $gaaaaa                                                                   #    99/205
+DEFVAR LF@*iaaaaa                                                               #   100/205
+MOVE LF@*iaaaaa string@                                                         #   101/205
+CONCAT LF@*iaaaaa LF@*iaaaaa string@NOTOK                                       #   102/205
+PUSHS LF@*iaaaaa                                                                #   103/205
+POPS LF@*tmp                                                                    #   104/205
+WRITE LF@*tmp                                                                   #   105/205
+LABEL $haaaaa                                                                   #   106/205
+PUSHS LF@a                                                                      #   107/205
+PUSHS int@0                                                                     #   108/205
+INT2FLOATS                                                                      #   109/205
+GTS                                                                             #   110/205
+PUSHS bool@true                                                                 #   111/205
+JUMPIFNEQS $iaaaaa                                                              #   112/205
+DEFVAR LF@*jaaaaa                                                               #   113/205
+MOVE LF@*jaaaaa string@                                                         #   114/205
+CONCAT LF@*jaaaaa LF@*jaaaaa string@OK                                          #   115/205
+PUSHS LF@*jaaaaa                                                                #   116/205
+POPS LF@*tmp                                                                    #   117/205
+WRITE LF@*tmp                                                                   #   118/205
+JUMP $jaaaaa                                                                    #   119/205
+LABEL $iaaaaa                                                                   #   120/205
+DEFVAR LF@*kaaaaa                                                               #   121/205
+MOVE LF@*kaaaaa string@                                                         #   122/205
+CONCAT LF@*kaaaaa LF@*kaaaaa string@NOTOK                                       #   123/205
+PUSHS LF@*kaaaaa                                                                #   124/205
+POPS LF@*tmp                                                                    #   125/205
+WRITE LF@*tmp                                                                   #   126/205
+LABEL $jaaaaa                                                                   #   127/205
+PUSHS LF@a                                                                      #   128/205
+PUSHS int@0                                                                     #   129/205
+INT2FLOATS                                                                      #   130/205
+JUMPIFEQS $kaaaaa                                                               #   131/205
+DEFVAR LF@*laaaaa                                                               #   132/205
+MOVE LF@*laaaaa string@                                                         #   133/205
+CONCAT LF@*laaaaa LF@*laaaaa string@OK                                          #   134/205
+PUSHS LF@*laaaaa                                                                #   135/205
+POPS LF@*tmp                                                                    #   136/205
+WRITE LF@*tmp                                                                   #   137/205
+JUMP $laaaaa                                                                    #   138/205
+LABEL $kaaaaa                                                                   #   139/205
+DEFVAR LF@*maaaaa                                                               #   140/205
+MOVE LF@*maaaaa string@                                                         #   141/205
+CONCAT LF@*maaaaa LF@*maaaaa string@NOTOK                                       #   142/205
+PUSHS LF@*maaaaa                                                                #   143/205
+POPS LF@*tmp                                                                    #   144/205
+WRITE LF@*tmp                                                                   #   145/205
+LABEL $laaaaa                                                                   #   146/205
+PUSHS LF@a                                                                      #   147/205
+PUSHS int@1                                                                     #   148/205
+INT2FLOATS                                                                      #   149/205
+JUMPIFEQS $maaaaa                                                               #   150/205
+DEFVAR LF@*naaaaa                                                               #   151/205
+MOVE LF@*naaaaa string@                                                         #   152/205
+CONCAT LF@*naaaaa LF@*naaaaa string@OK                                          #   153/205
+PUSHS LF@*naaaaa                                                                #   154/205
+POPS LF@*tmp                                                                    #   155/205
+WRITE LF@*tmp                                                                   #   156/205
+JUMP $naaaaa                                                                    #   157/205
+LABEL $maaaaa                                                                   #   158/205
+DEFVAR LF@*oaaaaa                                                               #   159/205
+MOVE LF@*oaaaaa string@                                                         #   160/205
+CONCAT LF@*oaaaaa LF@*oaaaaa string@NOTOK                                       #   161/205
+PUSHS LF@*oaaaaa                                                                #   162/205
+POPS LF@*tmp                                                                    #   163/205
+WRITE LF@*tmp                                                                   #   164/205
+LABEL $naaaaa                                                                   #   165/205
+PUSHS LF@a                                                                      #   166/205
+PUSHS int@1                                                                     #   167/205
+INT2FLOATS                                                                      #   168/205
+JUMPIFNEQS $oaaaaa                                                              #   169/205
+DEFVAR LF@*paaaaa                                                               #   170/205
+MOVE LF@*paaaaa string@                                                         #   171/205
+CONCAT LF@*paaaaa LF@*paaaaa string@OK                                          #   172/205
+PUSHS LF@*paaaaa                                                                #   173/205
+POPS LF@*tmp                                                                    #   174/205
+WRITE LF@*tmp                                                                   #   175/205
+JUMP $paaaaa                                                                    #   176/205
+LABEL $oaaaaa                                                                   #   177/205
+DEFVAR LF@*qaaaaa                                                               #   178/205
+MOVE LF@*qaaaaa string@                                                         #   179/205
+CONCAT LF@*qaaaaa LF@*qaaaaa string@NOTOK                                       #   180/205
+PUSHS LF@*qaaaaa                                                                #   181/205
+POPS LF@*tmp                                                                    #   182/205
+WRITE LF@*tmp                                                                   #   183/205
+LABEL $paaaaa                                                                   #   184/205
+PUSHS LF@a                                                                      #   185/205
+PUSHS int@0                                                                     #   186/205
+INT2FLOATS                                                                      #   187/205
+JUMPIFNEQS $qaaaaa                                                              #   188/205
+DEFVAR LF@*raaaaa                                                               #   189/205
+MOVE LF@*raaaaa string@                                                         #   190/205
+CONCAT LF@*raaaaa LF@*raaaaa string@OK                                          #   191/205
+PUSHS LF@*raaaaa                                                                #   192/205
+POPS LF@*tmp                                                                    #   193/205
+WRITE LF@*tmp                                                                   #   194/205
+JUMP $raaaaa                                                                    #   195/205
+LABEL $qaaaaa                                                                   #   196/205
+DEFVAR LF@*saaaaa                                                               #   197/205
+MOVE LF@*saaaaa string@                                                         #   198/205
+CONCAT LF@*saaaaa LF@*saaaaa string@NOTOK                                       #   199/205
+PUSHS LF@*saaaaa                                                                #   200/205
+POPS LF@*tmp                                                                    #   201/205
+WRITE LF@*tmp                                                                   #   202/205
+LABEL $raaaaa                                                                   #   203/205
+JUMP $end                                                                       #   204/205
+LABEL $end                                                                      #   205/205
+

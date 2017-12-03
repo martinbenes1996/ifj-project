@@ -1,0 +1,127 @@
+# 2017-12-04 00:14:59.887941
+# SECTION: 02_functions
+# TEST: 023
+# INFO: Length of string with escape sequences
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IDEFVAR at line: 16 with following arguments:
+# Dest: LF@a
+# Executing instruction: IPUSHS at line: 17 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 18 with following arguments:
+# Arg1: Stack@=0(int)
+# Dest: LF@a()
+# Executing instruction: IDEFVAR at line: 19 with following arguments:
+# Dest: LF@*baaaaa
+# Executing instruction: IMOVE at line: 20 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*baaaaa()
+# Executing instruction: ICONCAT at line: 21 with following arguments:
+# Arg1: LF@*baaaaa=(string)
+# Arg2: Const@=
+# 	
+# (string)
+# Dest: LF@*baaaaa=(string)
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: LF@*baaaaa=
+# 	
+# (string)
+# Dest: Stack@()
+# Executing instruction: IDEFVAR at line: 23 with following arguments:
+# Dest: LF@*caaaaa
+# Executing instruction: IPOPS at line: 24 with following arguments:
+# Arg1: Stack@=
+# 	
+# (string)
+# Dest: LF@*caaaaa()
+# Executing instruction: ISTRLEN at line: 25 with following arguments:
+# Arg1: LF@*caaaaa=
+# 	
+# (string)
+# Dest: LF@*tmp()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: LF@*tmp=3(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 27 with following arguments:
+# Arg1: Stack@=3(int)
+# Dest: LF@a=0(int)
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@a=3(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=3(int)
+# Dest: LF@*tmp=3(int)
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=3(int)
+# Executing instruction: IJUMP at line: 31 with following arguments:
+# Executing instruction: ILABEL at line: 32 with following arguments:
+# Executing instruction: IGROOT at line: 34 with following arguments:
+# I am Groot at 34 (130).
+# 
+# STDOUT DIFF:
+# 
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 130 (35+95)
+# GROOT: 130
+# 
+#   1: scope 
+#   2:  dim a as integer 
+#   3:  a = Length(!"\n\t\n")
+#   4:  print a; 
+#   5:  end scope 
+
+########################################
+
+# Generated code                                                                #     2/32
+# IFJ                                                                           #     3/32
+# xbenes49 xbolsh00 xpolan09                                                    #     4/32
+# 2017                                                                          #     5/32
+.IFJcode17                                                                      #     7/32
+CREATEFRAME                                                                     #     8/32
+PUSHFRAME                                                                       #     9/32
+DEFVAR LF@*tmp                                                                  #    10/32
+DEFVAR LF@*foo                                                                  #    11/32
+DEFVAR LF@*bar                                                                  #    12/32
+JUMP $main                                                                      #    13/32
+LABEL $main                                                                     #    15/32
+DEFVAR LF@a                                                                     #    16/32
+PUSHS int@0                                                                     #    17/32
+POPS LF@a                                                                       #    18/32
+DEFVAR LF@*baaaaa                                                               #    19/32
+MOVE LF@*baaaaa string@                                                         #    20/32
+CONCAT LF@*baaaaa LF@*baaaaa string@\010\009\010                                #    21/32
+PUSHS LF@*baaaaa                                                                #    22/32
+DEFVAR LF@*caaaaa                                                               #    23/32
+POPS LF@*caaaaa                                                                 #    24/32
+STRLEN LF@*tmp LF@*caaaaa                                                       #    25/32
+PUSHS LF@*tmp                                                                   #    26/32
+POPS LF@a                                                                       #    27/32
+PUSHS LF@a                                                                      #    28/32
+POPS LF@*tmp                                                                    #    29/32
+WRITE LF@*tmp                                                                   #    30/32
+JUMP $end                                                                       #    31/32
+LABEL $end                                                                      #    32/32
+

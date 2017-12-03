@@ -1,0 +1,87 @@
+# 2017-12-04 00:14:58.985941
+# SECTION: 02_functions
+# TEST: 04
+# INFO: function params
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 35 with following arguments:
+# Executing instruction: IJUMP at line: 36 with following arguments:
+# Executing instruction: ILABEL at line: 37 with following arguments:
+# Executing instruction: IGROOT at line: 39 with following arguments:
+# I am Groot at 39 (23).
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 23 (11+12)
+# GROOT: 23
+# 
+#   1: ' function params
+#   2: 
+#   3: function bar(b as string, c as integer) as string
+#   4: end function 
+#   5: 
+#   6: scope
+#   7: end scope
+
+########################################
+
+# Generated code                                                                #     2/37
+# IFJ                                                                           #     3/37
+# xbenes49 xbolsh00 xpolan09                                                    #     4/37
+# 2017                                                                          #     5/37
+.IFJcode17                                                                      #     7/37
+CREATEFRAME                                                                     #     8/37
+PUSHFRAME                                                                       #     9/37
+DEFVAR LF@*tmp                                                                  #    10/37
+DEFVAR LF@*foo                                                                  #    11/37
+DEFVAR LF@*bar                                                                  #    12/37
+JUMP $main                                                                      #    13/37
+# function bar                                                                  #    16/37
+LABEL bar                                                                       #    17/37
+PUSHFRAME                                                                       #    18/37
+DEFVAR LF@*tmp                                                                  #    19/37
+DEFVAR LF@*foo                                                                  #    20/37
+DEFVAR LF@*bar                                                                  #    21/37
+DEFVAR LF@*ret                                                                  #    22/37
+DEFVAR LF@b                                                                     #    23/37
+MOVE LF@b LF@*1                                                                 #    24/37
+DEFVAR LF@c                                                                     #    25/37
+MOVE LF@c LF@*2                                                                 #    26/37
+DEFVAR LF@*baaaaa                                                               #    28/37
+MOVE LF@*baaaaa string@                                                         #    29/37
+CONCAT LF@*baaaaa LF@*baaaaa string@                                            #    30/37
+PUSHS LF@*baaaaa                                                                #    31/37
+POPS LF@*ret                                                                    #    32/37
+CLEARS                                                                          #    33/37
+RETURN                                                                          #    34/37
+LABEL $main                                                                     #    35/37
+JUMP $end                                                                       #    36/37
+LABEL $end                                                                      #    37/37
+

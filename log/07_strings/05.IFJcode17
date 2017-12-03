@@ -1,0 +1,245 @@
+# 2017-12-04 00:15:01.547052
+# SECTION: 07_strings
+# TEST: 05
+# INFO: chr builtin function
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IDEFVAR at line: 16 with following arguments:
+# Dest: LF@res
+# Executing instruction: IDEFVAR at line: 17 with following arguments:
+# Dest: LF@*baaaaa
+# Executing instruction: IMOVE at line: 18 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*baaaaa()
+# Executing instruction: ICONCAT at line: 19 with following arguments:
+# Arg1: LF@*baaaaa=(string)
+# Arg2: Const@=(string)
+# Dest: LF@*baaaaa=(string)
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@*baaaaa=(string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 21 with following arguments:
+# Arg1: Stack@=(string)
+# Dest: LF@res()
+# Executing instruction: IDEFVAR at line: 22 with following arguments:
+# Dest: LF@tmp
+# Executing instruction: IPUSHS at line: 23 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 24 with following arguments:
+# Arg1: Stack@=0(int)
+# Dest: LF@tmp()
+# Executing instruction: IPUSHS at line: 25 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=10(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 27 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=10(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 28 with following arguments:
+# Arg1: Stack@=-10(int)
+# Dest: LF@tmp=0(int)
+# Executing instruction: IPUSHS at line: 29 with following arguments:
+# Arg1: Const@=119(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 30 with following arguments:
+# Arg1: Stack@=119(int)
+# Dest: LF@*tmp()
+# Executing instruction: IINT2CHAR at line: 31 with following arguments:
+# Arg1: LF@*tmp=119(int)
+# Dest: LF@*foo()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: LF@*foo=w(string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 33 with following arguments:
+# Arg1: Stack@=w(string)
+# Dest: LF@res=(string)
+# Executing instruction: IDEFVAR at line: 34 with following arguments:
+# Dest: LF@*caaaaa
+# Executing instruction: IMOVE at line: 35 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*caaaaa()
+# Executing instruction: ICONCAT at line: 36 with following arguments:
+# Arg1: LF@*caaaaa=(string)
+# Arg2: LF@res=w(string)
+# Dest: LF@*caaaaa=(string)
+# Executing instruction: IPUSHS at line: 37 with following arguments:
+# Arg1: LF@*caaaaa=w(string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 38 with following arguments:
+# Arg1: Stack@=w(string)
+# Dest: LF@*tmp=119(int)
+# Executing instruction: IWRITE at line: 39 with following arguments:
+# Arg1: LF@*tmp=w(string)
+# Executing instruction: IPUSHS at line: 40 with following arguments:
+# Arg1: Const@=40(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 41 with following arguments:
+# Arg1: Stack@=40(int)
+# Dest: LF@*tmp=w(string)
+# Executing instruction: IINT2CHAR at line: 42 with following arguments:
+# Arg1: LF@*tmp=40(int)
+# Dest: LF@*foo=w(string)
+# Executing instruction: IPUSHS at line: 43 with following arguments:
+# Arg1: LF@*foo=((string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 44 with following arguments:
+# Arg1: Stack@=((string)
+# Dest: LF@res=w(string)
+# Executing instruction: IDEFVAR at line: 45 with following arguments:
+# Dest: LF@*daaaaa
+# Executing instruction: IMOVE at line: 46 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*daaaaa()
+# Executing instruction: ICONCAT at line: 47 with following arguments:
+# Arg1: LF@*daaaaa=(string)
+# Arg2: LF@res=((string)
+# Dest: LF@*daaaaa=(string)
+# Executing instruction: IPUSHS at line: 48 with following arguments:
+# Arg1: LF@*daaaaa=((string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 49 with following arguments:
+# Arg1: Stack@=((string)
+# Dest: LF@*tmp=40(int)
+# Executing instruction: IWRITE at line: 50 with following arguments:
+# Arg1: LF@*tmp=((string)
+# Executing instruction: IPUSHS at line: 51 with following arguments:
+# Arg1: Const@=41.25(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 52 with following arguments:
+# Arg1: Stack@=41.25(double)
+# Dest: LF@*tmp=((string)
+# Executing instruction: IINT2CHAR at line: 53 with following arguments:
+# Arg1: LF@*tmp=41.25(double)
+# Dest: LF@*foo=((string)
+# Error at line: 53
+# Wrong operand type!
+# 
+# STDOUT DIFF:
+# --- expected
+# +++ actual
+# @@ -1 +1 @@
+
+# -w()
+# +w(
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 53
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' chr builtin function
+#   2: scope
+#   3: 	dim res as string
+#   4: 	dim tmp as integer
+#   5: 	tmp = 0 - 10
+#   6: 
+#   7: 	res = chr(119)
+#   8: 	print res;
+#   9: 	res = chr(40)
+#  10: 	print res;
+#  11: 	res = chr(41.25)
+#  12: 	print res;
+#  13: 	res = chr(1)
+#  14: 	print res;
+#  15: 	
+#  16: end scope
+
+########################################
+
+# Generated code                                                                #     2/75
+# IFJ                                                                           #     3/75
+# xbenes49 xbolsh00 xpolan09                                                    #     4/75
+# 2017                                                                          #     5/75
+.IFJcode17                                                                      #     7/75
+CREATEFRAME                                                                     #     8/75
+PUSHFRAME                                                                       #     9/75
+DEFVAR LF@*tmp                                                                  #    10/75
+DEFVAR LF@*foo                                                                  #    11/75
+DEFVAR LF@*bar                                                                  #    12/75
+JUMP $main                                                                      #    13/75
+LABEL $main                                                                     #    15/75
+DEFVAR LF@res                                                                   #    16/75
+DEFVAR LF@*baaaaa                                                               #    17/75
+MOVE LF@*baaaaa string@                                                         #    18/75
+CONCAT LF@*baaaaa LF@*baaaaa string@                                            #    19/75
+PUSHS LF@*baaaaa                                                                #    20/75
+POPS LF@res                                                                     #    21/75
+DEFVAR LF@tmp                                                                   #    22/75
+PUSHS int@0                                                                     #    23/75
+POPS LF@tmp                                                                     #    24/75
+PUSHS int@0                                                                     #    25/75
+PUSHS int@10                                                                    #    26/75
+SUBS                                                                            #    27/75
+POPS LF@tmp                                                                     #    28/75
+PUSHS int@119                                                                   #    29/75
+POPS LF@*tmp                                                                    #    30/75
+INT2CHAR LF@*foo LF@*tmp                                                        #    31/75
+PUSHS LF@*foo                                                                   #    32/75
+POPS LF@res                                                                     #    33/75
+DEFVAR LF@*caaaaa                                                               #    34/75
+MOVE LF@*caaaaa string@                                                         #    35/75
+CONCAT LF@*caaaaa LF@*caaaaa LF@res                                             #    36/75
+PUSHS LF@*caaaaa                                                                #    37/75
+POPS LF@*tmp                                                                    #    38/75
+WRITE LF@*tmp                                                                   #    39/75
+PUSHS int@40                                                                    #    40/75
+POPS LF@*tmp                                                                    #    41/75
+INT2CHAR LF@*foo LF@*tmp                                                        #    42/75
+PUSHS LF@*foo                                                                   #    43/75
+POPS LF@res                                                                     #    44/75
+DEFVAR LF@*daaaaa                                                               #    45/75
+MOVE LF@*daaaaa string@                                                         #    46/75
+CONCAT LF@*daaaaa LF@*daaaaa LF@res                                             #    47/75
+PUSHS LF@*daaaaa                                                                #    48/75
+POPS LF@*tmp                                                                    #    49/75
+WRITE LF@*tmp                                                                   #    50/75
+PUSHS float@41.25                                                               #    51/75
+POPS LF@*tmp                                                                    #    52/75
+INT2CHAR LF@*foo LF@*tmp                                                        #    53/75
+PUSHS LF@*foo                                                                   #    54/75
+INT2FLOATS                                                                      #    55/75
+POPS LF@res                                                                     #    56/75
+DEFVAR LF@*eaaaaa                                                               #    57/75
+MOVE LF@*eaaaaa string@                                                         #    58/75
+CONCAT LF@*eaaaaa LF@*eaaaaa LF@res                                             #    59/75
+PUSHS LF@*eaaaaa                                                                #    60/75
+POPS LF@*tmp                                                                    #    61/75
+WRITE LF@*tmp                                                                   #    62/75
+PUSHS int@1                                                                     #    63/75
+POPS LF@*tmp                                                                    #    64/75
+INT2CHAR LF@*foo LF@*tmp                                                        #    65/75
+PUSHS LF@*foo                                                                   #    66/75
+POPS LF@res                                                                     #    67/75
+DEFVAR LF@*faaaaa                                                               #    68/75
+MOVE LF@*faaaaa string@                                                         #    69/75
+CONCAT LF@*faaaaa LF@*faaaaa LF@res                                             #    70/75
+PUSHS LF@*faaaaa                                                                #    71/75
+POPS LF@*tmp                                                                    #    72/75
+WRITE LF@*tmp                                                                   #    73/75
+JUMP $end                                                                       #    74/75
+LABEL $end                                                                      #    75/75
+

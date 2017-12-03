@@ -1,0 +1,198 @@
+# 2017-12-04 00:15:00.145746
+# SECTION: 04_expressions
+# TEST: 08
+# INFO: divide integer and doubles
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IDEFVAR at line: 16 with following arguments:
+# Dest: LF@a
+# Executing instruction: IPUSHS at line: 17 with following arguments:
+# Arg1: Const@=9(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 18 with following arguments:
+# Arg1: Stack@=9(int)
+# Dest: LF@a()
+# Executing instruction: IDEFVAR at line: 19 with following arguments:
+# Dest: LF@b
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 21 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: LF@b()
+# Executing instruction: IDEFVAR at line: 22 with following arguments:
+# Dest: LF@c
+# Executing instruction: IPUSHS at line: 23 with following arguments:
+# Arg1: Const@=8(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=8(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 25 with following arguments:
+# Arg1: Stack@=8(double)
+# Dest: LF@c()
+# Executing instruction: IDEFVAR at line: 26 with following arguments:
+# Dest: LF@d
+# Executing instruction: IPUSHS at line: 27 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 28 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=2(double)
+# Dest: LF@d()
+# Executing instruction: IPUSHS at line: 30 with following arguments:
+# Arg1: LF@c=8(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@d=2(double)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 32 with following arguments:
+# Arg1: Stack@=8(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 33 with following arguments:
+# Arg1: Stack@=4(double)
+# Dest: LF@*tmp()
+# Executing instruction: IWRITE at line: 34 with following arguments:
+# Arg1: LF@*tmp=4(double)
+# Executing instruction: IDEFVAR at line: 35 with following arguments:
+# Dest: LF@*baaaaa
+# Executing instruction: IMOVE at line: 36 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*baaaaa()
+# Executing instruction: ICONCAT at line: 37 with following arguments:
+# Arg1: LF@*baaaaa=(string)
+# Arg2: Const@=
+# (string)
+# Dest: LF@*baaaaa=(string)
+# Executing instruction: IPUSHS at line: 38 with following arguments:
+# Arg1: LF@*baaaaa=
+# (string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 39 with following arguments:
+# Arg1: Stack@=
+# (string)
+# Dest: LF@*tmp=4(double)
+# Executing instruction: IWRITE at line: 40 with following arguments:
+# Arg1: LF@*tmp=
+# (string)
+# Executing instruction: IPUSHS at line: 41 with following arguments:
+# Arg1: LF@a=9(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 42 with following arguments:
+# Arg1: Stack@=9(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 43 with following arguments:
+# Arg1: LF@b=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 44 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 45 with following arguments:
+# Arg1: Stack@=9(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: IFLOAT2R2EINTS at line: 46 with following arguments:
+# Arg1: Stack@=4.5(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 47 with following arguments:
+# Arg1: Stack@=4(int)
+# Dest: LF@*tmp=
+# (string)
+# Executing instruction: IWRITE at line: 48 with following arguments:
+# Arg1: LF@*tmp=4(int)
+# Executing instruction: IJUMP at line: 49 with following arguments:
+# Executing instruction: ILABEL at line: 50 with following arguments:
+# Executing instruction: IGROOT at line: 52 with following arguments:
+# I am Groot at 52 (234).
+# 
+# STDOUT DIFF:
+# 
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 234 (60+174)
+# GROOT: 234
+# 
+#   1: ' divide integer and doubles
+#   2: scope
+#   3:     dim a as integer = 9
+#   4:     dim b as integer = 2
+#   5:     dim c as double = 8
+#   6:     dim d as double = 2
+#   7: 
+#   8:     print c / d; !"\n"; a \ b;
+#   9: end scope
+
+########################################
+
+# Generated code                                                                #     2/50
+# IFJ                                                                           #     3/50
+# xbenes49 xbolsh00 xpolan09                                                    #     4/50
+# 2017                                                                          #     5/50
+.IFJcode17                                                                      #     7/50
+CREATEFRAME                                                                     #     8/50
+PUSHFRAME                                                                       #     9/50
+DEFVAR LF@*tmp                                                                  #    10/50
+DEFVAR LF@*foo                                                                  #    11/50
+DEFVAR LF@*bar                                                                  #    12/50
+JUMP $main                                                                      #    13/50
+LABEL $main                                                                     #    15/50
+DEFVAR LF@a                                                                     #    16/50
+PUSHS int@9                                                                     #    17/50
+POPS LF@a                                                                       #    18/50
+DEFVAR LF@b                                                                     #    19/50
+PUSHS int@2                                                                     #    20/50
+POPS LF@b                                                                       #    21/50
+DEFVAR LF@c                                                                     #    22/50
+PUSHS int@8                                                                     #    23/50
+INT2FLOATS                                                                      #    24/50
+POPS LF@c                                                                       #    25/50
+DEFVAR LF@d                                                                     #    26/50
+PUSHS int@2                                                                     #    27/50
+INT2FLOATS                                                                      #    28/50
+POPS LF@d                                                                       #    29/50
+PUSHS LF@c                                                                      #    30/50
+PUSHS LF@d                                                                      #    31/50
+DIVS                                                                            #    32/50
+POPS LF@*tmp                                                                    #    33/50
+WRITE LF@*tmp                                                                   #    34/50
+DEFVAR LF@*baaaaa                                                               #    35/50
+MOVE LF@*baaaaa string@                                                         #    36/50
+CONCAT LF@*baaaaa LF@*baaaaa string@\010                                        #    37/50
+PUSHS LF@*baaaaa                                                                #    38/50
+POPS LF@*tmp                                                                    #    39/50
+WRITE LF@*tmp                                                                   #    40/50
+PUSHS LF@a                                                                      #    41/50
+INT2FLOATS                                                                      #    42/50
+PUSHS LF@b                                                                      #    43/50
+INT2FLOATS                                                                      #    44/50
+DIVS                                                                            #    45/50
+FLOAT2R2EINTS                                                                   #    46/50
+POPS LF@*tmp                                                                    #    47/50
+WRITE LF@*tmp                                                                   #    48/50
+JUMP $end                                                                       #    49/50
+LABEL $end                                                                      #    50/50
+

@@ -29,6 +29,7 @@ all: $(output)
 $(output) : $(obj)
 	@echo "Linking project into $@.";\
 	$(cc) $(flags) $(obj) -o $@ $(links)
+	rm -rf *.dep
 
 
 # dependencies generating
@@ -48,6 +49,7 @@ endif
 %.o : %.c
 	@echo "Compiling $@.";\
 	$(cc) $(flags) -c $< -o $@
+	rm -rf *.dep
 
 
 

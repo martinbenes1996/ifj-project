@@ -1,0 +1,906 @@
+# 2017-12-04 00:15:00.894400
+# SECTION: 06_loops
+# TEST: 01
+# INFO: basic while loop
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IDEFVAR at line: 16 with following arguments:
+# Dest: LF@a
+# Executing instruction: IPUSHS at line: 17 with following arguments:
+# Arg1: Const@=25.54(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 18 with following arguments:
+# Arg1: Stack@=25.54(double)
+# Dest: LF@a()
+# Executing instruction: ILABEL at line: 19 with following arguments:
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@a=25.54(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=25(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 23 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=25(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=-25(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 25 with following arguments:
+# Arg1: Stack@=25.54(double)
+# Arg2: Stack@=-25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 27 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@a=25.54(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=25.54(double)
+# Dest: LF@*tmp()
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=25.54(double)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@a=25.54(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 33 with following arguments:
+# Arg1: Stack@=25.54(double)
+# Arg2: Stack@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 34 with following arguments:
+# Arg1: Stack@=22.25(double)
+# Dest: LF@a=25.54(double)
+# Executing instruction: IJUMP at line: 35 with following arguments:
+# Executing instruction: ILABEL at line: 19 with following arguments:
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@a=22.25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=25(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 23 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=25(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=-25(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 25 with following arguments:
+# Arg1: Stack@=22.25(double)
+# Arg2: Stack@=-25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 27 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@a=22.25(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=22.25(double)
+# Dest: LF@*tmp=25.54(double)
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=22.25(double)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@a=22.25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 33 with following arguments:
+# Arg1: Stack@=22.25(double)
+# Arg2: Stack@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 34 with following arguments:
+# Arg1: Stack@=18.96(double)
+# Dest: LF@a=22.25(double)
+# Executing instruction: IJUMP at line: 35 with following arguments:
+# Executing instruction: ILABEL at line: 19 with following arguments:
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@a=18.96(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=25(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 23 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=25(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=-25(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 25 with following arguments:
+# Arg1: Stack@=18.96(double)
+# Arg2: Stack@=-25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 27 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@a=18.96(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=18.96(double)
+# Dest: LF@*tmp=22.25(double)
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=18.96(double)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@a=18.96(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 33 with following arguments:
+# Arg1: Stack@=18.96(double)
+# Arg2: Stack@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 34 with following arguments:
+# Arg1: Stack@=15.67(double)
+# Dest: LF@a=18.96(double)
+# Executing instruction: IJUMP at line: 35 with following arguments:
+# Executing instruction: ILABEL at line: 19 with following arguments:
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@a=15.67(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=25(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 23 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=25(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=-25(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 25 with following arguments:
+# Arg1: Stack@=15.67(double)
+# Arg2: Stack@=-25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 27 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@a=15.67(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=15.67(double)
+# Dest: LF@*tmp=18.96(double)
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=15.67(double)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@a=15.67(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 33 with following arguments:
+# Arg1: Stack@=15.67(double)
+# Arg2: Stack@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 34 with following arguments:
+# Arg1: Stack@=12.38(double)
+# Dest: LF@a=15.67(double)
+# Executing instruction: IJUMP at line: 35 with following arguments:
+# Executing instruction: ILABEL at line: 19 with following arguments:
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@a=12.38(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=25(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 23 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=25(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=-25(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 25 with following arguments:
+# Arg1: Stack@=12.38(double)
+# Arg2: Stack@=-25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 27 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@a=12.38(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=12.38(double)
+# Dest: LF@*tmp=15.67(double)
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=12.38(double)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@a=12.38(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 33 with following arguments:
+# Arg1: Stack@=12.38(double)
+# Arg2: Stack@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 34 with following arguments:
+# Arg1: Stack@=9.090000000000003(double)
+# Dest: LF@a=12.38(double)
+# Executing instruction: IJUMP at line: 35 with following arguments:
+# Executing instruction: ILABEL at line: 19 with following arguments:
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@a=9.090000000000003(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=25(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 23 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=25(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=-25(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 25 with following arguments:
+# Arg1: Stack@=9.090000000000003(double)
+# Arg2: Stack@=-25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 27 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@a=9.090000000000003(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=9.090000000000003(double)
+# Dest: LF@*tmp=12.38(double)
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=9.090000000000003(double)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@a=9.090000000000003(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 33 with following arguments:
+# Arg1: Stack@=9.090000000000003(double)
+# Arg2: Stack@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 34 with following arguments:
+# Arg1: Stack@=5.800000000000003(double)
+# Dest: LF@a=9.090000000000003(double)
+# Executing instruction: IJUMP at line: 35 with following arguments:
+# Executing instruction: ILABEL at line: 19 with following arguments:
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@a=5.800000000000003(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=25(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 23 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=25(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=-25(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 25 with following arguments:
+# Arg1: Stack@=5.800000000000003(double)
+# Arg2: Stack@=-25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 27 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@a=5.800000000000003(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=5.800000000000003(double)
+# Dest: LF@*tmp=9.090000000000003(double)
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=5.800000000000003(double)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@a=5.800000000000003(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 33 with following arguments:
+# Arg1: Stack@=5.800000000000003(double)
+# Arg2: Stack@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 34 with following arguments:
+# Arg1: Stack@=2.510000000000003(double)
+# Dest: LF@a=5.800000000000003(double)
+# Executing instruction: IJUMP at line: 35 with following arguments:
+# Executing instruction: ILABEL at line: 19 with following arguments:
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@a=2.510000000000003(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=25(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 23 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=25(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=-25(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 25 with following arguments:
+# Arg1: Stack@=2.510000000000003(double)
+# Arg2: Stack@=-25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 27 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@a=2.510000000000003(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=2.510000000000003(double)
+# Dest: LF@*tmp=5.800000000000003(double)
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=2.510000000000003(double)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@a=2.510000000000003(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 33 with following arguments:
+# Arg1: Stack@=2.510000000000003(double)
+# Arg2: Stack@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 34 with following arguments:
+# Arg1: Stack@=-0.7799999999999967(double)
+# Dest: LF@a=2.510000000000003(double)
+# Executing instruction: IJUMP at line: 35 with following arguments:
+# Executing instruction: ILABEL at line: 19 with following arguments:
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@a=-0.7799999999999967(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=25(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 23 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=25(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=-25(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 25 with following arguments:
+# Arg1: Stack@=-0.7799999999999967(double)
+# Arg2: Stack@=-25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 27 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@a=-0.7799999999999967(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=-0.7799999999999967(double)
+# Dest: LF@*tmp=2.510000000000003(double)
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=-0.7799999999999967(double)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@a=-0.7799999999999967(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 33 with following arguments:
+# Arg1: Stack@=-0.7799999999999967(double)
+# Arg2: Stack@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 34 with following arguments:
+# Arg1: Stack@=-4.069999999999997(double)
+# Dest: LF@a=-0.7799999999999967(double)
+# Executing instruction: IJUMP at line: 35 with following arguments:
+# Executing instruction: ILABEL at line: 19 with following arguments:
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@a=-4.069999999999997(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=25(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 23 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=25(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=-25(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 25 with following arguments:
+# Arg1: Stack@=-4.069999999999997(double)
+# Arg2: Stack@=-25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 27 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@a=-4.069999999999997(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=-4.069999999999997(double)
+# Dest: LF@*tmp=-0.7799999999999967(double)
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=-4.069999999999997(double)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@a=-4.069999999999997(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 33 with following arguments:
+# Arg1: Stack@=-4.069999999999997(double)
+# Arg2: Stack@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 34 with following arguments:
+# Arg1: Stack@=-7.359999999999997(double)
+# Dest: LF@a=-4.069999999999997(double)
+# Executing instruction: IJUMP at line: 35 with following arguments:
+# Executing instruction: ILABEL at line: 19 with following arguments:
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@a=-7.359999999999997(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=25(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 23 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=25(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=-25(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 25 with following arguments:
+# Arg1: Stack@=-7.359999999999997(double)
+# Arg2: Stack@=-25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 27 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@a=-7.359999999999997(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=-7.359999999999997(double)
+# Dest: LF@*tmp=-4.069999999999997(double)
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=-7.359999999999997(double)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@a=-7.359999999999997(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 33 with following arguments:
+# Arg1: Stack@=-7.359999999999997(double)
+# Arg2: Stack@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 34 with following arguments:
+# Arg1: Stack@=-10.65(double)
+# Dest: LF@a=-7.359999999999997(double)
+# Executing instruction: IJUMP at line: 35 with following arguments:
+# Executing instruction: ILABEL at line: 19 with following arguments:
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@a=-10.65(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=25(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 23 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=25(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=-25(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 25 with following arguments:
+# Arg1: Stack@=-10.65(double)
+# Arg2: Stack@=-25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 27 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@a=-10.65(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=-10.65(double)
+# Dest: LF@*tmp=-7.359999999999997(double)
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=-10.65(double)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@a=-10.65(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 33 with following arguments:
+# Arg1: Stack@=-10.65(double)
+# Arg2: Stack@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 34 with following arguments:
+# Arg1: Stack@=-13.94(double)
+# Dest: LF@a=-10.65(double)
+# Executing instruction: IJUMP at line: 35 with following arguments:
+# Executing instruction: ILABEL at line: 19 with following arguments:
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@a=-13.94(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=25(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 23 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=25(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=-25(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 25 with following arguments:
+# Arg1: Stack@=-13.94(double)
+# Arg2: Stack@=-25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 27 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@a=-13.94(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=-13.94(double)
+# Dest: LF@*tmp=-10.65(double)
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=-13.94(double)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@a=-13.94(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 33 with following arguments:
+# Arg1: Stack@=-13.94(double)
+# Arg2: Stack@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 34 with following arguments:
+# Arg1: Stack@=-17.23(double)
+# Dest: LF@a=-13.94(double)
+# Executing instruction: IJUMP at line: 35 with following arguments:
+# Executing instruction: ILABEL at line: 19 with following arguments:
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@a=-17.23(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=25(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 23 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=25(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=-25(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 25 with following arguments:
+# Arg1: Stack@=-17.23(double)
+# Arg2: Stack@=-25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 27 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@a=-17.23(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=-17.23(double)
+# Dest: LF@*tmp=-13.94(double)
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=-17.23(double)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@a=-17.23(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 33 with following arguments:
+# Arg1: Stack@=-17.23(double)
+# Arg2: Stack@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 34 with following arguments:
+# Arg1: Stack@=-20.52(double)
+# Dest: LF@a=-17.23(double)
+# Executing instruction: IJUMP at line: 35 with following arguments:
+# Executing instruction: ILABEL at line: 19 with following arguments:
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@a=-20.52(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=25(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 23 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=25(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=-25(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 25 with following arguments:
+# Arg1: Stack@=-20.52(double)
+# Arg2: Stack@=-25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 27 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@a=-20.52(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=-20.52(double)
+# Dest: LF@*tmp=-17.23(double)
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=-20.52(double)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@a=-20.52(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 33 with following arguments:
+# Arg1: Stack@=-20.52(double)
+# Arg2: Stack@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 34 with following arguments:
+# Arg1: Stack@=-23.81(double)
+# Dest: LF@a=-20.52(double)
+# Executing instruction: IJUMP at line: 35 with following arguments:
+# Executing instruction: ILABEL at line: 19 with following arguments:
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@a=-23.81(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=25(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 23 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=25(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=-25(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 25 with following arguments:
+# Arg1: Stack@=-23.81(double)
+# Arg2: Stack@=-25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 27 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@a=-23.81(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=-23.81(double)
+# Dest: LF@*tmp=-20.52(double)
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=-23.81(double)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@a=-23.81(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 33 with following arguments:
+# Arg1: Stack@=-23.81(double)
+# Arg2: Stack@=3.29(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 34 with following arguments:
+# Arg1: Stack@=-27.09999999999999(double)
+# Dest: LF@a=-23.81(double)
+# Executing instruction: IJUMP at line: 35 with following arguments:
+# Executing instruction: ILABEL at line: 19 with following arguments:
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@a=-27.09999999999999(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=25(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 23 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=25(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 24 with following arguments:
+# Arg1: Stack@=-25(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 25 with following arguments:
+# Arg1: Stack@=-27.09999999999999(double)
+# Arg2: Stack@=-25(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 27 with following arguments:
+# Arg1: Stack@=false(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: ILABEL at line: 36 with following arguments:
+# Executing instruction: IJUMP at line: 37 with following arguments:
+# Executing instruction: ILABEL at line: 38 with following arguments:
+# Executing instruction: IGROOT at line: 40 with following arguments:
+# I am Groot at 40 (1654).
+# 
+# STDOUT DIFF:
+# 
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 1654 (442+1212)
+# GROOT: 1654
+# 
+#   1: ' basic while loop
+#   2: scope
+#   3: 	dim a as double = 25.54
+#   4: 	do while a > (0 - 25)
+#   5: 		print a;
+#   6: 		a = a - 3.29
+#   7: 	loop
+#   8: end scope
+
+########################################
+
+# Generated code                                                                #     2/38
+# IFJ                                                                           #     3/38
+# xbenes49 xbolsh00 xpolan09                                                    #     4/38
+# 2017                                                                          #     5/38
+.IFJcode17                                                                      #     7/38
+CREATEFRAME                                                                     #     8/38
+PUSHFRAME                                                                       #     9/38
+DEFVAR LF@*tmp                                                                  #    10/38
+DEFVAR LF@*foo                                                                  #    11/38
+DEFVAR LF@*bar                                                                  #    12/38
+JUMP $main                                                                      #    13/38
+LABEL $main                                                                     #    15/38
+DEFVAR LF@a                                                                     #    16/38
+PUSHS float@25.54                                                               #    17/38
+POPS LF@a                                                                       #    18/38
+LABEL $aaaaaa                                                                   #    19/38
+PUSHS LF@a                                                                      #    20/38
+PUSHS int@0                                                                     #    21/38
+PUSHS int@25                                                                    #    22/38
+SUBS                                                                            #    23/38
+INT2FLOATS                                                                      #    24/38
+GTS                                                                             #    25/38
+PUSHS bool@true                                                                 #    26/38
+JUMPIFNEQS $baaaaa                                                              #    27/38
+PUSHS LF@a                                                                      #    28/38
+POPS LF@*tmp                                                                    #    29/38
+WRITE LF@*tmp                                                                   #    30/38
+PUSHS LF@a                                                                      #    31/38
+PUSHS float@3.29                                                                #    32/38
+SUBS                                                                            #    33/38
+POPS LF@a                                                                       #    34/38
+JUMP $aaaaaa                                                                    #    35/38
+LABEL $baaaaa                                                                   #    36/38
+JUMP $end                                                                       #    37/38
+LABEL $end                                                                      #    38/38
+

@@ -1,0 +1,65 @@
+# 2017-12-04 00:14:57.902865
+# SECTION: 01_basic
+# TEST: 01
+# INFO: single scope without any statements
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IJUMP at line: 16 with following arguments:
+# Executing instruction: ILABEL at line: 17 with following arguments:
+# Executing instruction: IGROOT at line: 19 with following arguments:
+# I am Groot at 19 (23).
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 23 (11+12)
+# GROOT: 23
+# 
+#   1: ' single scope without any statements
+#   2: SCOPE
+#   3: END SCOPE
+
+########################################
+
+# Generated code                                                                #     2/17
+# IFJ                                                                           #     3/17
+# xbenes49 xbolsh00 xpolan09                                                    #     4/17
+# 2017                                                                          #     5/17
+.IFJcode17                                                                      #     7/17
+CREATEFRAME                                                                     #     8/17
+PUSHFRAME                                                                       #     9/17
+DEFVAR LF@*tmp                                                                  #    10/17
+DEFVAR LF@*foo                                                                  #    11/17
+DEFVAR LF@*bar                                                                  #    12/17
+JUMP $main                                                                      #    13/17
+LABEL $main                                                                     #    15/17
+JUMP $end                                                                       #    16/17
+LABEL $end                                                                      #    17/17
+

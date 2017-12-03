@@ -1,0 +1,628 @@
+# 2017-12-04 00:15:03.855478
+# SECTION: 97_optimizations
+# TEST: 02
+# INFO: constant propagation into loop
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IDEFVAR at line: 16 with following arguments:
+# Dest: LF@counter
+# Executing instruction: IPUSHS at line: 17 with following arguments:
+# Arg1: Const@=50(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 18 with following arguments:
+# Arg1: Stack@=50(int)
+# Dest: LF@counter()
+# Executing instruction: IDEFVAR at line: 19 with following arguments:
+# Dest: LF@constant
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: Const@=8(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=7(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 22 with following arguments:
+# Arg1: Stack@=8(int)
+# Arg2: Stack@=7(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 23 with following arguments:
+# Arg1: Stack@=15(int)
+# Dest: LF@constant()
+# Executing instruction: ILABEL at line: 24 with following arguments:
+# Executing instruction: IPUSHS at line: 25 with following arguments:
+# Arg1: LF@counter=50(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 27 with following arguments:
+# Arg1: Stack@=50(int)
+# Arg2: Stack@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 29 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 30 with following arguments:
+# Arg1: Const@=10.2(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: Const@=98(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 32 with following arguments:
+# Arg1: Stack@=98(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 33 with following arguments:
+# Arg1: Stack@=10.2(double)
+# Arg2: Stack@=98(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 34 with following arguments:
+# Arg1: LF@constant=15(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 35 with following arguments:
+# Arg1: Stack@=15(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 36 with following arguments:
+# Arg1: Const@=3(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 37 with following arguments:
+# Arg1: Stack@=3(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 38 with following arguments:
+# Arg1: Const@=6.85(double)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 39 with following arguments:
+# Arg1: Stack@=3(double)
+# Arg2: Stack@=6.85(double)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 40 with following arguments:
+# Arg1: Stack@=15(double)
+# Arg2: Stack@=20.55(double)
+# Dest: Stack@()
+# Executing instruction: IFLOAT2R2EINTS at line: 41 with following arguments:
+# Arg1: Stack@=0.7299270072992702(double)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 42 with following arguments:
+# Arg1: Stack@=1(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 43 with following arguments:
+# Arg1: Stack@=0.1040816326530612(double)
+# Arg2: Stack@=1(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 44 with following arguments:
+# Arg1: Const@=14(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 45 with following arguments:
+# Arg1: Stack@=14(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 46 with following arguments:
+# Arg1: Stack@=1.104081632653061(double)
+# Arg2: Stack@=14(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 47 with following arguments:
+# Arg1: LF@constant=15(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 48 with following arguments:
+# Arg1: Const@=5(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 49 with following arguments:
+# Arg1: Stack@=15(int)
+# Arg2: Stack@=5(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 50 with following arguments:
+# Arg1: Stack@=10(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 51 with following arguments:
+# Arg1: Stack@=-12.89591836734694(double)
+# Arg2: Stack@=10(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 52 with following arguments:
+# Arg1: LF@constant=15(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 53 with following arguments:
+# Arg1: Const@=9(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 54 with following arguments:
+# Arg1: Stack@=15(int)
+# Arg2: Stack@=9(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 55 with following arguments:
+# Arg1: Const@=8(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 56 with following arguments:
+# Arg1: Stack@=24(int)
+# Arg2: Stack@=8(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 57 with following arguments:
+# Arg1: LF@constant=15(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 58 with following arguments:
+# Arg1: Stack@=15(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 59 with following arguments:
+# Arg1: Const@=17.21(double)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 60 with following arguments:
+# Arg1: Stack@=15(double)
+# Arg2: Stack@=17.21(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 61 with following arguments:
+# Arg1: Const@=10.8(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 62 with following arguments:
+# Arg1: LF@constant=15(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 63 with following arguments:
+# Arg1: Stack@=15(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 64 with following arguments:
+# Arg1: Stack@=10.8(double)
+# Arg2: Stack@=15(double)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 65 with following arguments:
+# Arg1: Stack@=32.21(double)
+# Arg2: Stack@=-4.199999999999999(double)
+# Dest: Stack@()
+# Executing instruction: IFLOAT2R2EINTS at line: 66 with following arguments:
+# Arg1: Stack@=-7.66904761904762(double)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 67 with following arguments:
+# Arg1: Stack@=16(int)
+# Arg2: Stack@=-8(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 68 with following arguments:
+# Arg1: Stack@=-128(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 69 with following arguments:
+# Arg1: Stack@=-1.289591836734694(double)
+# Arg2: Stack@=-128(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 70 with following arguments:
+# Arg1: Stack@=-129.2895918367347(double)
+# Dest: LF@*tmp()
+# Executing instruction: IWRITE at line: 71 with following arguments:
+# Arg1: LF@*tmp=-129.2895918367347(double)
+# Executing instruction: IPUSHS at line: 72 with following arguments:
+# Arg1: LF@counter=50(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 73 with following arguments:
+# Arg1: Const@=1(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 74 with following arguments:
+# Arg1: Stack@=50(int)
+# Arg2: Stack@=1(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 75 with following arguments:
+# Arg1: Stack@=49(int)
+# Dest: LF@counter=50(int)
+# Executing instruction: IDEFVAR at line: 76 with following arguments:
+# Dest: LF@*baaaaa
+# Executing instruction: IMOVE at line: 77 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*baaaaa()
+# Executing instruction: ICONCAT at line: 78 with following arguments:
+# Arg1: LF@*baaaaa=(string)
+# Arg2: Const@=
+# (string)
+# Dest: LF@*baaaaa=(string)
+# Executing instruction: IPUSHS at line: 79 with following arguments:
+# Arg1: LF@*baaaaa=
+# (string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 80 with following arguments:
+# Arg1: Stack@=
+# (string)
+# Dest: LF@*tmp=-129.2895918367347(double)
+# Executing instruction: IWRITE at line: 81 with following arguments:
+# Arg1: LF@*tmp=
+# (string)
+# Executing instruction: IJUMP at line: 82 with following arguments:
+# Executing instruction: ILABEL at line: 24 with following arguments:
+# Executing instruction: IPUSHS at line: 25 with following arguments:
+# Arg1: LF@counter=49(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 27 with following arguments:
+# Arg1: Stack@=49(int)
+# Arg2: Stack@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 29 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 30 with following arguments:
+# Arg1: Const@=10.2(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: Const@=98(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 32 with following arguments:
+# Arg1: Stack@=98(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 33 with following arguments:
+# Arg1: Stack@=10.2(double)
+# Arg2: Stack@=98(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 34 with following arguments:
+# Arg1: LF@constant=15(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 35 with following arguments:
+# Arg1: Stack@=15(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 36 with following arguments:
+# Arg1: Const@=3(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 37 with following arguments:
+# Arg1: Stack@=3(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 38 with following arguments:
+# Arg1: Const@=6.85(double)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 39 with following arguments:
+# Arg1: Stack@=3(double)
+# Arg2: Stack@=6.85(double)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 40 with following arguments:
+# Arg1: Stack@=15(double)
+# Arg2: Stack@=20.55(double)
+# Dest: Stack@()
+# Executing instruction: IFLOAT2R2EINTS at line: 41 with following arguments:
+# Arg1: Stack@=0.7299270072992702(double)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 42 with following arguments:
+# Arg1: Stack@=1(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 43 with following arguments:
+# Arg1: Stack@=0.1040816326530612(double)
+# Arg2: Stack@=1(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 44 with following arguments:
+# Arg1: Const@=14(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 45 with following arguments:
+# Arg1: Stack@=14(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 46 with following arguments:
+# Arg1: Stack@=1.104081632653061(double)
+# Arg2: Stack@=14(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 47 with following arguments:
+# Arg1: LF@constant=15(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 48 with following arguments:
+# Arg1: Const@=5(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 49 with following arguments:
+# Arg1: Stack@=15(int)
+# Arg2: Stack@=5(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 50 with following arguments:
+# Arg1: Stack@=10(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 51 with following arguments:
+# Arg1: Stack@=-12.89591836734694(double)
+# Arg2: Stack@=10(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 52 with following arguments:
+# Arg1: LF@constant=15(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 53 with following arguments:
+# Arg1: Const@=9(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 54 with following arguments:
+# Arg1: Stack@=15(int)
+# Arg2: Stack@=9(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 55 with following arguments:
+# Arg1: Const@=8(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 56 with following arguments:
+# Arg1: Stack@=24(int)
+# Arg2: Stack@=8(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 57 with following arguments:
+# Arg1: LF@constant=15(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 58 with following arguments:
+# Arg1: Stack@=15(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 59 with following arguments:
+# Arg1: Const@=17.21(double)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 60 with following arguments:
+# Arg1: Stack@=15(double)
+# Arg2: Stack@=17.21(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 61 with following arguments:
+# Arg1: Const@=10.8(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 62 with following arguments:
+# Arg1: LF@constant=15(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 63 with following arguments:
+# Arg1: Stack@=15(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 64 with following arguments:
+# Arg1: Stack@=10.8(double)
+# Arg2: Stack@=15(double)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 65 with following arguments:
+# Arg1: Stack@=32.21(double)
+# Arg2: Stack@=-4.199999999999999(double)
+# Dest: Stack@()
+# Executing instruction: IFLOAT2R2EINTS at line: 66 with following arguments:
+# Arg1: Stack@=-7.66904761904762(double)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 67 with following arguments:
+# Arg1: Stack@=16(int)
+# Arg2: Stack@=-8(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 68 with following arguments:
+# Arg1: Stack@=-128(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 69 with following arguments:
+# Arg1: Stack@=-1.289591836734694(double)
+# Arg2: Stack@=-128(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 70 with following arguments:
+# Arg1: Stack@=-129.2895918367347(double)
+# Dest: LF@*tmp=
+# (string)
+# Executing instruction: IWRITE at line: 71 with following arguments:
+# Arg1: LF@*tmp=-129.2895918367347(double)
+# Executing instruction: IPUSHS at line: 72 with following arguments:
+# Arg1: LF@counter=49(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 73 with following arguments:
+# Arg1: Const@=1(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 74 with following arguments:
+# Arg1: Stack@=49(int)
+# Arg2: Stack@=1(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 75 with following arguments:
+# Arg1: Stack@=48(int)
+# Dest: LF@counter=49(int)
+# Executing instruction: IDEFVAR at line: 76 with following arguments:
+# Dest: LF@*baaaaa
+# Error at line: 76
+# Symbol already exists!
+# 
+# STDOUT DIFF:
+# --- expected
+# +++ actual
+# @@ -1,50 +1,2 @@
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# --129.39
+
+# +-129.29
+
+# +-129.29
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 52
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' constant propagation into loop
+#   2: 
+#   3: scope
+#   4: 	dim counter as integer = 50
+#   5: 	dim constant as integer = 8 + 7
+#   6: 
+#   7: 	do while counter > 0
+#   8: 		print (10.2 / 98 + (constant \ 3 * 6.85) - 14) / (constant - 5) + (constant + 9 - 8) * ((constant+17.21)\(10.8 - constant));
+#   9: 		counter = counter - 1
+#  10: 		print !"\n";
+#  11: 	loop
+#  12: 
+#  13: end scope
+
+########################################
+
+# Generated code                                                                #     2/85
+# IFJ                                                                           #     3/85
+# xbenes49 xbolsh00 xpolan09                                                    #     4/85
+# 2017                                                                          #     5/85
+.IFJcode17                                                                      #     7/85
+CREATEFRAME                                                                     #     8/85
+PUSHFRAME                                                                       #     9/85
+DEFVAR LF@*tmp                                                                  #    10/85
+DEFVAR LF@*foo                                                                  #    11/85
+DEFVAR LF@*bar                                                                  #    12/85
+JUMP $main                                                                      #    13/85
+LABEL $main                                                                     #    15/85
+DEFVAR LF@counter                                                               #    16/85
+PUSHS int@50                                                                    #    17/85
+POPS LF@counter                                                                 #    18/85
+DEFVAR LF@constant                                                              #    19/85
+PUSHS int@8                                                                     #    20/85
+PUSHS int@7                                                                     #    21/85
+ADDS                                                                            #    22/85
+POPS LF@constant                                                                #    23/85
+LABEL $aaaaaa                                                                   #    24/85
+PUSHS LF@counter                                                                #    25/85
+PUSHS int@0                                                                     #    26/85
+GTS                                                                             #    27/85
+PUSHS bool@true                                                                 #    28/85
+JUMPIFNEQS $baaaaa                                                              #    29/85
+PUSHS float@10.2                                                                #    30/85
+PUSHS int@98                                                                    #    31/85
+INT2FLOATS                                                                      #    32/85
+DIVS                                                                            #    33/85
+PUSHS LF@constant                                                               #    34/85
+INT2FLOATS                                                                      #    35/85
+PUSHS int@3                                                                     #    36/85
+INT2FLOATS                                                                      #    37/85
+PUSHS float@6.85                                                                #    38/85
+MULS                                                                            #    39/85
+DIVS                                                                            #    40/85
+FLOAT2R2EINTS                                                                   #    41/85
+INT2FLOATS                                                                      #    42/85
+ADDS                                                                            #    43/85
+PUSHS int@14                                                                    #    44/85
+INT2FLOATS                                                                      #    45/85
+SUBS                                                                            #    46/85
+PUSHS LF@constant                                                               #    47/85
+PUSHS int@5                                                                     #    48/85
+SUBS                                                                            #    49/85
+INT2FLOATS                                                                      #    50/85
+DIVS                                                                            #    51/85
+PUSHS LF@constant                                                               #    52/85
+PUSHS int@9                                                                     #    53/85
+ADDS                                                                            #    54/85
+PUSHS int@8                                                                     #    55/85
+SUBS                                                                            #    56/85
+PUSHS LF@constant                                                               #    57/85
+INT2FLOATS                                                                      #    58/85
+PUSHS float@17.21                                                               #    59/85
+ADDS                                                                            #    60/85
+PUSHS float@10.8                                                                #    61/85
+PUSHS LF@constant                                                               #    62/85
+INT2FLOATS                                                                      #    63/85
+SUBS                                                                            #    64/85
+DIVS                                                                            #    65/85
+FLOAT2R2EINTS                                                                   #    66/85
+MULS                                                                            #    67/85
+INT2FLOATS                                                                      #    68/85
+ADDS                                                                            #    69/85
+POPS LF@*tmp                                                                    #    70/85
+WRITE LF@*tmp                                                                   #    71/85
+PUSHS LF@counter                                                                #    72/85
+PUSHS int@1                                                                     #    73/85
+SUBS                                                                            #    74/85
+POPS LF@counter                                                                 #    75/85
+DEFVAR LF@*baaaaa                                                               #    76/85
+MOVE LF@*baaaaa string@                                                         #    77/85
+CONCAT LF@*baaaaa LF@*baaaaa string@\010                                        #    78/85
+PUSHS LF@*baaaaa                                                                #    79/85
+POPS LF@*tmp                                                                    #    80/85
+WRITE LF@*tmp                                                                   #    81/85
+JUMP $aaaaaa                                                                    #    82/85
+LABEL $baaaaa                                                                   #    83/85
+JUMP $end                                                                       #    84/85
+LABEL $end                                                                      #    85/85
+

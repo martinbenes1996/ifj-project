@@ -1,0 +1,57 @@
+# 2017-12-04 00:15:03.352048
+# SECTION: 66_errors
+# TEST: 267
+# INFO: Fail type compatibility
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# parser.c: LogicParse: l.857: relation operator expected
+# relation operator expected. Line: 2
+# 
+# INTERPRETER STDERR:
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 4
+# CURRENT COMPILER EXIT CODE: 2
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: None
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: scope 
+#   2:  do while !"" 
+#   3:  loop 
+#   4:  end scope
+
+########################################
+
+# Generated code                                                                #     2/20
+# IFJ                                                                           #     3/20
+# xbenes49 xbolsh00 xpolan09                                                    #     4/20
+# 2017                                                                          #     5/20
+.IFJcode17                                                                      #     7/20
+CREATEFRAME                                                                     #     8/20
+PUSHFRAME                                                                       #     9/20
+DEFVAR LF@*tmp                                                                  #    10/20
+DEFVAR LF@*foo                                                                  #    11/20
+DEFVAR LF@*bar                                                                  #    12/20
+JUMP $main                                                                      #    13/20
+LABEL $main                                                                     #    15/20
+LABEL $aaaaaa                                                                   #    16/20
+DEFVAR LF@*baaaaa                                                               #    17/20
+MOVE LF@*baaaaa string@                                                         #    18/20
+CONCAT LF@*baaaaa LF@*baaaaa string@                                            #    19/20
+PUSHS LF@*baaaaa                                                                #    20/20
+

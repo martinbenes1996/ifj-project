@@ -1,0 +1,163 @@
+# 2017-12-04 00:14:58.083473
+# SECTION: 01_basic
+# TEST: 21
+# INFO: Sčítačka
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IDEFVAR at line: 16 with following arguments:
+# Dest: LF@a
+# Executing instruction: IPUSHS at line: 17 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 18 with following arguments:
+# Arg1: Stack@=0(int)
+# Dest: LF@a()
+# Executing instruction: IDEFVAR at line: 19 with following arguments:
+# Dest: LF@b
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 21 with following arguments:
+# Arg1: Stack@=0(int)
+# Dest: LF@b()
+# Executing instruction: IDEFVAR at line: 22 with following arguments:
+# Dest: LF@c
+# Executing instruction: IPUSHS at line: 23 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 24 with following arguments:
+# Arg1: Stack@=0(int)
+# Dest: LF@c()
+# Executing instruction: IWRITE at line: 25 with following arguments:
+# Arg1: Const@=? (string)
+# Executing instruction: IREAD at line: 26 with following arguments:
+# Dest: LF@a=0(int)
+# Executing instruction: IWRITE at line: 27 with following arguments:
+# Arg1: Const@=? (string)
+# Executing instruction: IREAD at line: 28 with following arguments:
+# Dest: LF@b=0(int)
+# Executing instruction: IWRITE at line: 29 with following arguments:
+# Arg1: Const@=? (string)
+# Executing instruction: IREAD at line: 30 with following arguments:
+# Dest: LF@c=0(int)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@a=1(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: LF@b=4(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 33 with following arguments:
+# Arg1: Stack@=1(int)
+# Arg2: Stack@=4(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 34 with following arguments:
+# Arg1: LF@c=5(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 35 with following arguments:
+# Arg1: Stack@=5(int)
+# Arg2: Stack@=5(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 36 with following arguments:
+# Arg1: Stack@=10(int)
+# Dest: LF@a=1(int)
+# Executing instruction: IPUSHS at line: 37 with following arguments:
+# Arg1: LF@a=10(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 38 with following arguments:
+# Arg1: Stack@=10(int)
+# Dest: LF@*tmp()
+# Executing instruction: IWRITE at line: 39 with following arguments:
+# Arg1: LF@*tmp=10(int)
+# Executing instruction: IJUMP at line: 40 with following arguments:
+# Executing instruction: ILABEL at line: 41 with following arguments:
+# Executing instruction: IGROOT at line: 43 with following arguments:
+# I am Groot at 43 (178).
+# 
+# STDOUT DIFF:
+# 
+
+# INTERPRETER STDIN: 
+# 1
+# 4
+# 5
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 178 (60+118)
+# GROOT: 178
+# 
+#   1: ' Sčítačka
+#   2: 
+#   3: 
+#   4: 
+#   5: SCOPE
+#   6: 
+#   7: 	dim a as integer
+#   8: 	dim b as integer
+#   9: 	dim c as integer
+#  10: 	input a
+#  11: 	input b
+#  12: 	input c
+#  13: 	a = a + b + c
+#  14: 	print a;
+#  15: 
+#  16: END SCOPE
+
+########################################
+
+# Generated code                                                                #     2/41
+# IFJ                                                                           #     3/41
+# xbenes49 xbolsh00 xpolan09                                                    #     4/41
+# 2017                                                                          #     5/41
+.IFJcode17                                                                      #     7/41
+CREATEFRAME                                                                     #     8/41
+PUSHFRAME                                                                       #     9/41
+DEFVAR LF@*tmp                                                                  #    10/41
+DEFVAR LF@*foo                                                                  #    11/41
+DEFVAR LF@*bar                                                                  #    12/41
+JUMP $main                                                                      #    13/41
+LABEL $main                                                                     #    15/41
+DEFVAR LF@a                                                                     #    16/41
+PUSHS int@0                                                                     #    17/41
+POPS LF@a                                                                       #    18/41
+DEFVAR LF@b                                                                     #    19/41
+PUSHS int@0                                                                     #    20/41
+POPS LF@b                                                                       #    21/41
+DEFVAR LF@c                                                                     #    22/41
+PUSHS int@0                                                                     #    23/41
+POPS LF@c                                                                       #    24/41
+WRITE string@?\032                                                              #    25/41
+READ LF@a int                                                                   #    26/41
+WRITE string@?\032                                                              #    27/41
+READ LF@b int                                                                   #    28/41
+WRITE string@?\032                                                              #    29/41
+READ LF@c int                                                                   #    30/41
+PUSHS LF@a                                                                      #    31/41
+PUSHS LF@b                                                                      #    32/41
+ADDS                                                                            #    33/41
+PUSHS LF@c                                                                      #    34/41
+ADDS                                                                            #    35/41
+POPS LF@a                                                                       #    36/41
+PUSHS LF@a                                                                      #    37/41
+POPS LF@*tmp                                                                    #    38/41
+WRITE LF@*tmp                                                                   #    39/41
+JUMP $end                                                                       #    40/41
+LABEL $end                                                                      #    41/41
+

@@ -1,0 +1,73 @@
+# 2017-12-04 00:14:58.794323
+# SECTION: 01_basic
+# TEST: 30
+# INFO: All formats of double
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# Expression error. Line: -1
+# 
+# INTERPRETER STDERR:
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+#  12496.1
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 2
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: None
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: 'All formats of double
+#   2: scope
+#   3:     dim a as double = 11.43
+#   4:     dim b as double = 31e2
+#   5:     dim c as double = 31e-3
+#   6:     dim d as double = 31.42e2
+#   7:     dim e as double = 31.42e-2
+#   8:     dim f as double = 31E2
+#   9:     dim g as double = 341E-4
+#  10:     dim h as double = 31.42E2
+#  11:     dim i as double = 31.42E-2
+#  12:     
+#  13:     print a + b + c + d + e + f+ g + h + i;
+#  14:     
+#  15: end scope
+
+########################################
+
+# Generated code                                                                #     2/25
+# IFJ                                                                           #     3/25
+# xbenes49 xbolsh00 xpolan09                                                    #     4/25
+# 2017                                                                          #     5/25
+.IFJcode17                                                                      #     7/25
+CREATEFRAME                                                                     #     8/25
+PUSHFRAME                                                                       #     9/25
+DEFVAR LF@*tmp                                                                  #    10/25
+DEFVAR LF@*foo                                                                  #    11/25
+DEFVAR LF@*bar                                                                  #    12/25
+JUMP $main                                                                      #    13/25
+LABEL $main                                                                     #    15/25
+DEFVAR LF@a                                                                     #    16/25
+PUSHS float@11.43                                                               #    17/25
+POPS LF@a                                                                       #    18/25
+DEFVAR LF@b                                                                     #    19/25
+PUSHS float@124                                                                 #    20/25
+POPS LF@b                                                                       #    21/25
+DEFVAR LF@c                                                                     #    22/25
+PUSHS float@3.875                                                               #    23/25
+POPS LF@c                                                                       #    24/25
+DEFVAR LF@d                                                                     #    25/25
+

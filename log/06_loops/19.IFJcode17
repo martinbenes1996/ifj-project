@@ -1,0 +1,106 @@
+# 2017-12-04 00:15:01.380012
+# SECTION: 06_loops
+# TEST: 19
+# INFO: substr in loop
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# pedant.c: P_HandleTarget: l.634: incompatible type
+# incompatible type. Line: 13
+# 
+# INTERPRETER STDERR:
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+# hhgdfh_DFGkf5665678hggdfh_DFGkf5665678hgddfh_DFGkf5665678hgdffh_DFGkf5665678hgdfhh_DFGkf5665678hgdfh__DFGkf5665678hgdfh_DDFGkf5665678hgdfh_DFFGkf5665678hgdfh_DFGGkf5665678hgdfh_DFGkkf5665678hgdfh_DFGkff5665678hgdfh_DFGkf55665678hgdfh_DFGkf56665678hgdfh_DFGkf56665678hgdfh_DFGkf56655678hgdfh_DFGkf56656678hgdfh_DFGkf56656778hgdfh_DFGkf56656788
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 4
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: None
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' substr in loop
+#   2: 
+#   3: scope
+#   4:     dim a as string
+#   5:     dim a_len as integer
+#   6:     dim res as string
+#   7:     a = !"hgdfh_DFGkf5665678"
+#   8:     a_len =  length(a)
+#   9:     dim i as integer = 1
+#  10: 
+#  11:     do while i <= a_len
+#  12:         res = substr(a, 1, i)
+#  13:         print res;
+#  14:         res = substr(a, i, a_len)
+#  15:         print res;
+#  16:         i = i + 1
+#  17:     loop
+#  18:     
+#  19: end scope
+
+########################################
+
+# Generated code                                                                #     2/53
+# IFJ                                                                           #     3/53
+# xbenes49 xbolsh00 xpolan09                                                    #     4/53
+# 2017                                                                          #     5/53
+.IFJcode17                                                                      #     7/53
+CREATEFRAME                                                                     #     8/53
+PUSHFRAME                                                                       #     9/53
+DEFVAR LF@*tmp                                                                  #    10/53
+DEFVAR LF@*foo                                                                  #    11/53
+DEFVAR LF@*bar                                                                  #    12/53
+JUMP $main                                                                      #    13/53
+LABEL $main                                                                     #    15/53
+DEFVAR LF@a                                                                     #    16/53
+DEFVAR LF@*baaaaa                                                               #    17/53
+MOVE LF@*baaaaa string@                                                         #    18/53
+CONCAT LF@*baaaaa LF@*baaaaa string@                                            #    19/53
+PUSHS LF@*baaaaa                                                                #    20/53
+POPS LF@a                                                                       #    21/53
+DEFVAR LF@a_len                                                                 #    22/53
+PUSHS int@0                                                                     #    23/53
+POPS LF@a_len                                                                   #    24/53
+DEFVAR LF@res                                                                   #    25/53
+DEFVAR LF@*caaaaa                                                               #    26/53
+MOVE LF@*caaaaa string@                                                         #    27/53
+CONCAT LF@*caaaaa LF@*caaaaa string@                                            #    28/53
+PUSHS LF@*caaaaa                                                                #    29/53
+POPS LF@res                                                                     #    30/53
+DEFVAR LF@*daaaaa                                                               #    31/53
+MOVE LF@*daaaaa string@                                                         #    32/53
+CONCAT LF@*daaaaa LF@*daaaaa string@hgdfh_DFGkf5665678                          #    33/53
+PUSHS LF@*daaaaa                                                                #    34/53
+POPS LF@a                                                                       #    35/53
+DEFVAR LF@*eaaaaa                                                               #    36/53
+MOVE LF@*eaaaaa string@                                                         #    37/53
+CONCAT LF@*eaaaaa LF@*eaaaaa LF@a                                               #    38/53
+PUSHS LF@*eaaaaa                                                                #    39/53
+DEFVAR LF@*faaaaa                                                               #    40/53
+POPS LF@*faaaaa                                                                 #    41/53
+STRLEN LF@*tmp LF@*faaaaa                                                       #    42/53
+PUSHS LF@*tmp                                                                   #    43/53
+POPS LF@a_len                                                                   #    44/53
+DEFVAR LF@i                                                                     #    45/53
+PUSHS int@1                                                                     #    46/53
+POPS LF@i                                                                       #    47/53
+LABEL $aaaaaa                                                                   #    48/53
+PUSHS LF@i                                                                      #    49/53
+PUSHS LF@a_len                                                                  #    50/53
+GTS                                                                             #    51/53
+PUSHS bool@true                                                                 #    52/53
+JUMIFEQS $baaaaa                                                                #    53/53
+

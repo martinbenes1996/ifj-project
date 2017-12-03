@@ -1,0 +1,155 @@
+# 2017-12-04 00:14:59.958551
+# SECTION: 03_statements
+# TEST: 02
+# INFO: basic constant assigment with implicit coversions
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IDEFVAR at line: 16 with following arguments:
+# Dest: LF@b
+# Executing instruction: IPUSHS at line: 17 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 18 with following arguments:
+# Arg1: Stack@=0(int)
+# Dest: LF@b()
+# Executing instruction: IPUSHS at line: 19 with following arguments:
+# Arg1: Const@=42.78(double)
+# Dest: Stack@()
+# Executing instruction: IFLOAT2R2EINTS at line: 20 with following arguments:
+# Arg1: Stack@=42.78(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 21 with following arguments:
+# Arg1: Stack@=43(int)
+# Dest: LF@b=0(int)
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=624(double)
+# Dest: Stack@()
+# Executing instruction: IFLOAT2R2EINTS at line: 23 with following arguments:
+# Arg1: Stack@=624(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 24 with following arguments:
+# Arg1: Stack@=624(int)
+# Dest: LF@b=43(int)
+# Executing instruction: IDEFVAR at line: 25 with following arguments:
+# Dest: LF@c
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=0(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 27 with following arguments:
+# Arg1: Stack@=0(double)
+# Dest: LF@c()
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: Const@=74(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 29 with following arguments:
+# Arg1: Stack@=74(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 30 with following arguments:
+# Arg1: Stack@=74(double)
+# Dest: LF@c=0(double)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@b=624(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 32 with following arguments:
+# Arg1: Stack@=624(int)
+# Dest: LF@*tmp()
+# Executing instruction: IWRITE at line: 33 with following arguments:
+# Arg1: LF@*tmp=624(int)
+# Executing instruction: IPUSHS at line: 34 with following arguments:
+# Arg1: LF@c=74(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 35 with following arguments:
+# Arg1: Stack@=74(double)
+# Dest: LF@*tmp=624(int)
+# Executing instruction: IWRITE at line: 36 with following arguments:
+# Arg1: LF@*tmp=74(double)
+# Executing instruction: IJUMP at line: 37 with following arguments:
+# Executing instruction: ILABEL at line: 38 with following arguments:
+# Executing instruction: IGROOT at line: 40 with following arguments:
+# I am Groot at 40 (147).
+# 
+# STDOUT DIFF:
+# --- expected
+# +++ actual
+# @@ -1 +1 @@
+
+# - 78000 74
+# + 624 74
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: ---
+# GROOT: 147
+# 
+#   1: ' basic constant assigment with implicit coversions
+#   2: scope
+#   3: 
+#   4: 	dim b as integer
+#   5: 	b = 42.78
+#   6: 	b = 78e3
+#   7: 
+#   8: 	dim c as double
+#   9: 	c  = 74
+#  10: 
+#  11: 	print b; c;
+#  12: 
+#  13: end scope
+
+########################################
+
+# Generated code                                                                #     2/38
+# IFJ                                                                           #     3/38
+# xbenes49 xbolsh00 xpolan09                                                    #     4/38
+# 2017                                                                          #     5/38
+.IFJcode17                                                                      #     7/38
+CREATEFRAME                                                                     #     8/38
+PUSHFRAME                                                                       #     9/38
+DEFVAR LF@*tmp                                                                  #    10/38
+DEFVAR LF@*foo                                                                  #    11/38
+DEFVAR LF@*bar                                                                  #    12/38
+JUMP $main                                                                      #    13/38
+LABEL $main                                                                     #    15/38
+DEFVAR LF@b                                                                     #    16/38
+PUSHS int@0                                                                     #    17/38
+POPS LF@b                                                                       #    18/38
+PUSHS float@42.78                                                               #    19/38
+FLOAT2R2EINTS                                                                   #    20/38
+POPS LF@b                                                                       #    21/38
+PUSHS float@624                                                                 #    22/38
+FLOAT2R2EINTS                                                                   #    23/38
+POPS LF@b                                                                       #    24/38
+DEFVAR LF@c                                                                     #    25/38
+PUSHS float@0                                                                   #    26/38
+POPS LF@c                                                                       #    27/38
+PUSHS int@74                                                                    #    28/38
+INT2FLOATS                                                                      #    29/38
+POPS LF@c                                                                       #    30/38
+PUSHS LF@b                                                                      #    31/38
+POPS LF@*tmp                                                                    #    32/38
+WRITE LF@*tmp                                                                   #    33/38
+PUSHS LF@c                                                                      #    34/38
+POPS LF@*tmp                                                                    #    35/38
+WRITE LF@*tmp                                                                   #    36/38
+JUMP $end                                                                       #    37/38
+LABEL $end                                                                      #    38/38
+

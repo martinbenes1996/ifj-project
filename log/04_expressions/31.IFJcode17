@@ -1,0 +1,155 @@
+# 2017-12-04 00:15:00.489561
+# SECTION: 04_expressions
+# TEST: 31
+# INFO: Random math expression test
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IPUSHS at line: 16 with following arguments:
+# Arg1: Const@=565656(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 17 with following arguments:
+# Arg1: Stack@=565656(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 18 with following arguments:
+# Arg1: Const@=56565(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 19 with following arguments:
+# Arg1: Stack@=56565(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: Const@=56567(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 21 with following arguments:
+# Arg1: Stack@=56567(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=565(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 23 with following arguments:
+# Arg1: Stack@=565(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 24 with following arguments:
+# Arg1: Stack@=56567(double)
+# Arg2: Stack@=565(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 25 with following arguments:
+# Arg1: Const@=6778(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 26 with following arguments:
+# Arg1: Stack@=6778(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 27 with following arguments:
+# Arg1: Stack@=100.1185840707965(double)
+# Arg2: Stack@=6778(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: Const@=6567886(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 29 with following arguments:
+# Arg1: Stack@=6567886(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 30 with following arguments:
+# Arg1: Stack@=0.01477111007241022(double)
+# Arg2: Stack@=6567886(double)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 31 with following arguments:
+# Arg1: Stack@=56565(double)
+# Arg2: Stack@=97014.96704904207(double)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 32 with following arguments:
+# Arg1: Stack@=565656(double)
+# Arg2: Stack@=153579.9670490421(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 33 with following arguments:
+# Arg1: Const@=4(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 34 with following arguments:
+# Arg1: Stack@=4(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 35 with following arguments:
+# Arg1: Stack@=3.683136615203019(double)
+# Arg2: Stack@=4(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 36 with following arguments:
+# Arg1: Stack@=14.73254646081208(double)
+# Dest: LF@*tmp()
+# Executing instruction: IWRITE at line: 37 with following arguments:
+# Arg1: LF@*tmp=14.73254646081208(double)
+# Executing instruction: IJUMP at line: 38 with following arguments:
+# Executing instruction: ILABEL at line: 39 with following arguments:
+# Executing instruction: IGROOT at line: 41 with following arguments:
+# I am Groot at 41 (155).
+# 
+# STDOUT DIFF:
+# 
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 155 (48+107)
+# GROOT: 155
+# 
+#   1: ' Random math expression test
+#   2: 
+#   3: scope
+#   4:     print 565656/(56565+(56567/565/6778*6567886)) * 4;
+#   5: end scope
+
+########################################
+
+# Generated code                                                                #     2/39
+# IFJ                                                                           #     3/39
+# xbenes49 xbolsh00 xpolan09                                                    #     4/39
+# 2017                                                                          #     5/39
+.IFJcode17                                                                      #     7/39
+CREATEFRAME                                                                     #     8/39
+PUSHFRAME                                                                       #     9/39
+DEFVAR LF@*tmp                                                                  #    10/39
+DEFVAR LF@*foo                                                                  #    11/39
+DEFVAR LF@*bar                                                                  #    12/39
+JUMP $main                                                                      #    13/39
+LABEL $main                                                                     #    15/39
+PUSHS int@565656                                                                #    16/39
+INT2FLOATS                                                                      #    17/39
+PUSHS int@56565                                                                 #    18/39
+INT2FLOATS                                                                      #    19/39
+PUSHS int@56567                                                                 #    20/39
+INT2FLOATS                                                                      #    21/39
+PUSHS int@565                                                                   #    22/39
+INT2FLOATS                                                                      #    23/39
+DIVS                                                                            #    24/39
+PUSHS int@6778                                                                  #    25/39
+INT2FLOATS                                                                      #    26/39
+DIVS                                                                            #    27/39
+PUSHS int@6567886                                                               #    28/39
+INT2FLOATS                                                                      #    29/39
+MULS                                                                            #    30/39
+ADDS                                                                            #    31/39
+DIVS                                                                            #    32/39
+PUSHS int@4                                                                     #    33/39
+INT2FLOATS                                                                      #    34/39
+MULS                                                                            #    35/39
+POPS LF@*tmp                                                                    #    36/39
+WRITE LF@*tmp                                                                   #    37/39
+JUMP $end                                                                       #    38/39
+LABEL $end                                                                      #    39/39
+

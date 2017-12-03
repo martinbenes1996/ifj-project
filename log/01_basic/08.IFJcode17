@@ -1,0 +1,155 @@
+# 2017-12-04 00:14:58.016339
+# SECTION: 01_basic
+# TEST: 08
+# INFO: variable declaration with implicit value
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IDEFVAR at line: 16 with following arguments:
+# Dest: LF@int
+# Executing instruction: IPUSHS at line: 17 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 18 with following arguments:
+# Arg1: Stack@=0(int)
+# Dest: LF@int()
+# Executing instruction: IDEFVAR at line: 19 with following arguments:
+# Dest: LF@float
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: Const@=0(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 21 with following arguments:
+# Arg1: Stack@=0(double)
+# Dest: LF@float()
+# Executing instruction: IDEFVAR at line: 22 with following arguments:
+# Dest: LF@str
+# Executing instruction: IDEFVAR at line: 23 with following arguments:
+# Dest: LF@*baaaaa
+# Executing instruction: IMOVE at line: 24 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*baaaaa()
+# Executing instruction: ICONCAT at line: 25 with following arguments:
+# Arg1: LF@*baaaaa=(string)
+# Arg2: Const@=(string)
+# Dest: LF@*baaaaa=(string)
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: LF@*baaaaa=(string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 27 with following arguments:
+# Arg1: Stack@=(string)
+# Dest: LF@str()
+# Executing instruction: IPUSHS at line: 28 with following arguments:
+# Arg1: LF@int=0(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=0(int)
+# Dest: LF@*tmp()
+# Executing instruction: IWRITE at line: 30 with following arguments:
+# Arg1: LF@*tmp=0(int)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@float=0(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 32 with following arguments:
+# Arg1: Stack@=0(double)
+# Dest: LF@*tmp=0(int)
+# Executing instruction: IWRITE at line: 33 with following arguments:
+# Arg1: LF@*tmp=0(double)
+# Executing instruction: IDEFVAR at line: 34 with following arguments:
+# Dest: LF@*caaaaa
+# Executing instruction: IMOVE at line: 35 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*caaaaa()
+# Executing instruction: ICONCAT at line: 36 with following arguments:
+# Arg1: LF@*caaaaa=(string)
+# Arg2: LF@str=(string)
+# Dest: LF@*caaaaa=(string)
+# Executing instruction: IPUSHS at line: 37 with following arguments:
+# Arg1: LF@*caaaaa=(string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 38 with following arguments:
+# Arg1: Stack@=(string)
+# Dest: LF@*tmp=0(double)
+# Executing instruction: IWRITE at line: 39 with following arguments:
+# Arg1: LF@*tmp=(string)
+# Executing instruction: IJUMP at line: 40 with following arguments:
+# Executing instruction: ILABEL at line: 41 with following arguments:
+# Executing instruction: IGROOT at line: 43 with following arguments:
+# I am Groot at 43 (191).
+# 
+# STDOUT DIFF:
+# 
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 191 (50+141)
+# GROOT: 191
+# 
+#   1: ' variable declaration with implicit value
+#   2: scope
+#   3: 	dim int as integer
+#   4: 	dim float as double
+#   5: 	dim str as string
+#   6: 
+#   7: 	print int; float; str;
+#   8: end scope
+
+########################################
+
+# Generated code                                                                #     2/41
+# IFJ                                                                           #     3/41
+# xbenes49 xbolsh00 xpolan09                                                    #     4/41
+# 2017                                                                          #     5/41
+.IFJcode17                                                                      #     7/41
+CREATEFRAME                                                                     #     8/41
+PUSHFRAME                                                                       #     9/41
+DEFVAR LF@*tmp                                                                  #    10/41
+DEFVAR LF@*foo                                                                  #    11/41
+DEFVAR LF@*bar                                                                  #    12/41
+JUMP $main                                                                      #    13/41
+LABEL $main                                                                     #    15/41
+DEFVAR LF@int                                                                   #    16/41
+PUSHS int@0                                                                     #    17/41
+POPS LF@int                                                                     #    18/41
+DEFVAR LF@float                                                                 #    19/41
+PUSHS float@0                                                                   #    20/41
+POPS LF@float                                                                   #    21/41
+DEFVAR LF@str                                                                   #    22/41
+DEFVAR LF@*baaaaa                                                               #    23/41
+MOVE LF@*baaaaa string@                                                         #    24/41
+CONCAT LF@*baaaaa LF@*baaaaa string@                                            #    25/41
+PUSHS LF@*baaaaa                                                                #    26/41
+POPS LF@str                                                                     #    27/41
+PUSHS LF@int                                                                    #    28/41
+POPS LF@*tmp                                                                    #    29/41
+WRITE LF@*tmp                                                                   #    30/41
+PUSHS LF@float                                                                  #    31/41
+POPS LF@*tmp                                                                    #    32/41
+WRITE LF@*tmp                                                                   #    33/41
+DEFVAR LF@*caaaaa                                                               #    34/41
+MOVE LF@*caaaaa string@                                                         #    35/41
+CONCAT LF@*caaaaa LF@*caaaaa LF@str                                             #    36/41
+PUSHS LF@*caaaaa                                                                #    37/41
+POPS LF@*tmp                                                                    #    38/41
+WRITE LF@*tmp                                                                   #    39/41
+JUMP $end                                                                       #    40/41
+LABEL $end                                                                      #    41/41
+

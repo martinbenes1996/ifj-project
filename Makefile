@@ -34,7 +34,7 @@ help:
 zip:
 	@echo "Compressing and zipping.";\
 	mkdir tmp
-	@printf "";\
+	@printf "================= IFJ test ================\n";\
 	cp src/*.c tmp/
 	@printf "";\
 	cp src/*.h tmp/
@@ -51,6 +51,8 @@ zip:
 	@printf "";\
 	cd tmp && tar -zcvf ~/Desktop/xbenes49.tgz * > /dev/null 2>/dev/null && cd ..
 	@printf "";\
+	doc/is_it_ok.sh ~/Desktop/xbenes49.tgz tmp
+	@printf "===========================================\n";\
 	rm -rf tmp
 
 # clean

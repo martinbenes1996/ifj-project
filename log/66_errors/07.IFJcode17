@@ -1,0 +1,84 @@
+# 2017-12-04 00:15:01.857466
+# SECTION: 66_errors
+# TEST: 07
+# INFO: Call function with too many arguments
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# parser.c: FunctionCallParse: l.1582: operator ')' expected
+# operator ')' expected. Line: 10
+# 
+# INTERPRETER STDERR:
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 4
+# CURRENT COMPILER EXIT CODE: 2
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: None
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' Call function with too many arguments
+#   2: 
+#   3: function foo(a as integer, b as integer) as integer
+#   4: 
+#   5: end function
+#   6: 
+#   7: scope
+#   8: 	dim a as integer
+#   9: 	a = foo(31, 42, 64)
+#  10: 
+#  11: end scope
+
+########################################
+
+# Generated code                                                                #     2/42
+# IFJ                                                                           #     3/42
+# xbenes49 xbolsh00 xpolan09                                                    #     4/42
+# 2017                                                                          #     5/42
+.IFJcode17                                                                      #     7/42
+CREATEFRAME                                                                     #     8/42
+PUSHFRAME                                                                       #     9/42
+DEFVAR LF@*tmp                                                                  #    10/42
+DEFVAR LF@*foo                                                                  #    11/42
+DEFVAR LF@*bar                                                                  #    12/42
+JUMP $main                                                                      #    13/42
+# function foo                                                                  #    16/42
+LABEL foo                                                                       #    17/42
+PUSHFRAME                                                                       #    18/42
+DEFVAR LF@*tmp                                                                  #    19/42
+DEFVAR LF@*foo                                                                  #    20/42
+DEFVAR LF@*bar                                                                  #    21/42
+DEFVAR LF@*ret                                                                  #    22/42
+DEFVAR LF@a                                                                     #    23/42
+MOVE LF@a LF@*1                                                                 #    24/42
+DEFVAR LF@b                                                                     #    25/42
+MOVE LF@b LF@*2                                                                 #    26/42
+PUSHS int@0                                                                     #    28/42
+POPS LF@*ret                                                                    #    29/42
+CLEARS                                                                          #    30/42
+RETURN                                                                          #    31/42
+LABEL $main                                                                     #    32/42
+DEFVAR LF@a                                                                     #    33/42
+PUSHS int@0                                                                     #    34/42
+POPS LF@a                                                                       #    35/42
+CREATEFRAME                                                                     #    36/42
+DEFVAR TF@*1                                                                    #    37/42
+PUSHS int@31                                                                    #    38/42
+POPS TF@*1                                                                      #    39/42
+DEFVAR TF@*2                                                                    #    40/42
+PUSHS int@42                                                                    #    41/42
+POPS TF@*2                                                                      #    42/42
+

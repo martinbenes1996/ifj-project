@@ -1,0 +1,161 @@
+# 2017-12-04 00:14:57.954230
+# SECTION: 01_basic
+# TEST: 04
+# INFO: variable declarations with edge cases
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IDEFVAR at line: 16 with following arguments:
+# Dest: LF@_a45
+# Executing instruction: IDEFVAR at line: 17 with following arguments:
+# Dest: LF@*baaaaa
+# Executing instruction: IMOVE at line: 18 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*baaaaa()
+# Executing instruction: ICONCAT at line: 19 with following arguments:
+# Arg1: LF@*baaaaa=(string)
+# Arg2: Const@=(string)
+# Dest: LF@*baaaaa=(string)
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@*baaaaa=(string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 21 with following arguments:
+# Arg1: Stack@=(string)
+# Dest: LF@_a45()
+# Executing instruction: IDEFVAR at line: 22 with following arguments:
+# Dest: LF@__b
+# Executing instruction: IPUSHS at line: 23 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 24 with following arguments:
+# Arg1: Stack@=0(int)
+# Dest: LF@__b()
+# Executing instruction: IDEFVAR at line: 25 with following arguments:
+# Dest: LF@_
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=0(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 27 with following arguments:
+# Arg1: Stack@=0(double)
+# Dest: LF@_()
+# Executing instruction: IDEFVAR at line: 28 with following arguments:
+# Dest: LF@__
+# Executing instruction: IPUSHS at line: 29 with following arguments:
+# Arg1: Const@=0(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 30 with following arguments:
+# Arg1: Stack@=0(double)
+# Dest: LF@__()
+# Executing instruction: IDEFVAR at line: 31 with following arguments:
+# Dest: LF@_47
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=0(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 33 with following arguments:
+# Arg1: Stack@=0(double)
+# Dest: LF@_47()
+# Executing instruction: IDEFVAR at line: 34 with following arguments:
+# Dest: LF@_47_
+# Executing instruction: IPUSHS at line: 35 with following arguments:
+# Arg1: Const@=0(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 36 with following arguments:
+# Arg1: Stack@=0(double)
+# Dest: LF@_47_()
+# Executing instruction: IDEFVAR at line: 37 with following arguments:
+# Dest: LF@_barman
+# Executing instruction: IPUSHS at line: 38 with following arguments:
+# Arg1: Const@=0(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 39 with following arguments:
+# Arg1: Stack@=0(double)
+# Dest: LF@_barman()
+# Executing instruction: IJUMP at line: 40 with following arguments:
+# Executing instruction: ILABEL at line: 41 with following arguments:
+# Executing instruction: IGROOT at line: 43 with following arguments:
+# I am Groot at 43 (162).
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 162 (38+124)
+# GROOT: 162
+# 
+#   1: ' variable declarations with edge cases
+#   2: scope
+#   3: 	Dim _a45 as string
+#   4: 	Dim __b as integer
+#   5: 	Dim _ as double
+#   6: 	Dim __ as double
+#   7: 	Dim _47 as double
+#   8: 	Dim _47_ as double
+#   9: 	Dim _barman as double
+#  10: end scope
+
+########################################
+
+# Generated code                                                                #     2/41
+# IFJ                                                                           #     3/41
+# xbenes49 xbolsh00 xpolan09                                                    #     4/41
+# 2017                                                                          #     5/41
+.IFJcode17                                                                      #     7/41
+CREATEFRAME                                                                     #     8/41
+PUSHFRAME                                                                       #     9/41
+DEFVAR LF@*tmp                                                                  #    10/41
+DEFVAR LF@*foo                                                                  #    11/41
+DEFVAR LF@*bar                                                                  #    12/41
+JUMP $main                                                                      #    13/41
+LABEL $main                                                                     #    15/41
+DEFVAR LF@_a45                                                                  #    16/41
+DEFVAR LF@*baaaaa                                                               #    17/41
+MOVE LF@*baaaaa string@                                                         #    18/41
+CONCAT LF@*baaaaa LF@*baaaaa string@                                            #    19/41
+PUSHS LF@*baaaaa                                                                #    20/41
+POPS LF@_a45                                                                    #    21/41
+DEFVAR LF@__b                                                                   #    22/41
+PUSHS int@0                                                                     #    23/41
+POPS LF@__b                                                                     #    24/41
+DEFVAR LF@_                                                                     #    25/41
+PUSHS float@0                                                                   #    26/41
+POPS LF@_                                                                       #    27/41
+DEFVAR LF@__                                                                    #    28/41
+PUSHS float@0                                                                   #    29/41
+POPS LF@__                                                                      #    30/41
+DEFVAR LF@_47                                                                   #    31/41
+PUSHS float@0                                                                   #    32/41
+POPS LF@_47                                                                     #    33/41
+DEFVAR LF@_47_                                                                  #    34/41
+PUSHS float@0                                                                   #    35/41
+POPS LF@_47_                                                                    #    36/41
+DEFVAR LF@_barman                                                               #    37/41
+PUSHS float@0                                                                   #    38/41
+POPS LF@_barman                                                                 #    39/41
+JUMP $end                                                                       #    40/41
+LABEL $end                                                                      #    41/41
+

@@ -1,0 +1,108 @@
+# 2017-12-04 00:14:58.324522
+# SECTION: 01_basic
+# TEST: 28
+# INFO: More prints
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IDEFVAR at line: 16 with following arguments:
+# Dest: LF@*baaaaa
+# Executing instruction: IMOVE at line: 17 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*baaaaa()
+# Executing instruction: ICONCAT at line: 18 with following arguments:
+# Arg1: LF@*baaaaa=(string)
+# Arg2: Const@=ahoj(string)
+# Dest: LF@*baaaaa=(string)
+# Executing instruction: IPUSHS at line: 19 with following arguments:
+# Arg1: LF@*baaaaa=ahoj(string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 20 with following arguments:
+# Arg1: Stack@=ahoj(string)
+# Dest: LF@*tmp()
+# Executing instruction: IWRITE at line: 21 with following arguments:
+# Arg1: LF@*tmp=ahoj(string)
+# Executing instruction: IDEFVAR at line: 22 with following arguments:
+# Dest: LF@*caaaaa
+# Executing instruction: IMOVE at line: 23 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*caaaaa()
+# Executing instruction: ICONCAT at line: 24 with following arguments:
+# Arg1: LF@*caaaaa=(string)
+# Arg2: Const@=ahoj(string)
+# Dest: LF@*caaaaa=(string)
+# Executing instruction: IPUSHS at line: 25 with following arguments:
+# Arg1: LF@*caaaaa=ahoj(string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 26 with following arguments:
+# Arg1: Stack@=ahoj(string)
+# Dest: LF@*tmp=ahoj(string)
+# Executing instruction: IWRITE at line: 27 with following arguments:
+# Arg1: LF@*tmp=ahoj(string)
+# Executing instruction: IJUMP at line: 28 with following arguments:
+# Executing instruction: ILABEL at line: 29 with following arguments:
+# Executing instruction: IGROOT at line: 31 with following arguments:
+# I am Groot at 31 (115).
+# 
+# STDOUT DIFF:
+# 
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 115 (35+80)
+# GROOT: 115
+# 
+#   1: ' More prints
+#   2: scope
+#   3: 	print !"ahoj";
+#   4: 	print !"ahoj";
+#   5: end scope
+
+########################################
+
+# Generated code                                                                #     2/29
+# IFJ                                                                           #     3/29
+# xbenes49 xbolsh00 xpolan09                                                    #     4/29
+# 2017                                                                          #     5/29
+.IFJcode17                                                                      #     7/29
+CREATEFRAME                                                                     #     8/29
+PUSHFRAME                                                                       #     9/29
+DEFVAR LF@*tmp                                                                  #    10/29
+DEFVAR LF@*foo                                                                  #    11/29
+DEFVAR LF@*bar                                                                  #    12/29
+JUMP $main                                                                      #    13/29
+LABEL $main                                                                     #    15/29
+DEFVAR LF@*baaaaa                                                               #    16/29
+MOVE LF@*baaaaa string@                                                         #    17/29
+CONCAT LF@*baaaaa LF@*baaaaa string@ahoj                                        #    18/29
+PUSHS LF@*baaaaa                                                                #    19/29
+POPS LF@*tmp                                                                    #    20/29
+WRITE LF@*tmp                                                                   #    21/29
+DEFVAR LF@*caaaaa                                                               #    22/29
+MOVE LF@*caaaaa string@                                                         #    23/29
+CONCAT LF@*caaaaa LF@*caaaaa string@ahoj                                        #    24/29
+PUSHS LF@*caaaaa                                                                #    25/29
+POPS LF@*tmp                                                                    #    26/29
+WRITE LF@*tmp                                                                   #    27/29
+JUMP $end                                                                       #    28/29
+LABEL $end                                                                      #    29/29
+

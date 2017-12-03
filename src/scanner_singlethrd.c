@@ -1121,12 +1121,17 @@ Phrasem RemoveFromQueue()
   {
     ALLOC_PHRASEM(phr);
     phr->table = TokenType_EOF;
+    PushOntoStack(mem, phr);
+
+    ALLOC_PHRASEM(p);
+    p->table = TokenType_Separator;
+    p->d.str = NULL;
 
     #ifdef SCANNER_DEBUG
       PrintPhrasem(phr);
     #endif
 
-    return phr;
+    return p;
   }
 
 

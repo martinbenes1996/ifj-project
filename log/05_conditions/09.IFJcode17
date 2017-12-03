@@ -1,0 +1,56 @@
+# 2017-12-04 00:15:00.776540
+# SECTION: 05_conditions
+# TEST: 09
+# INFO: Condition with implicit conversion
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# Expression error. Line: -1
+# 
+# INTERPRETER STDERR:
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+#  58
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 2
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: None
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' Condition with implicit conversion
+#   2: scope
+#   3: 	if ((8*(2.0/9)+112.3 - 13.8) > (8*(2.0/9)+112.3 + 13.8)) then
+#   4: 		print 42;
+#   5: 	else
+#   6: 		print 58;
+#   7: 	end if
+#   8: end scope
+
+########################################
+
+# Generated code                                                                #     2/15
+# IFJ                                                                           #     3/15
+# xbenes49 xbolsh00 xpolan09                                                    #     4/15
+# 2017                                                                          #     5/15
+.IFJcode17                                                                      #     7/15
+CREATEFRAME                                                                     #     8/15
+PUSHFRAME                                                                       #     9/15
+DEFVAR LF@*tmp                                                                  #    10/15
+DEFVAR LF@*foo                                                                  #    11/15
+DEFVAR LF@*bar                                                                  #    12/15
+JUMP $main                                                                      #    13/15
+LABEL $main                                                                     #    15/15
+

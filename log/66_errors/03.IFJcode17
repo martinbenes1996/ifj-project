@@ -1,0 +1,81 @@
+# 2017-12-04 00:15:01.835718
+# SECTION: 66_errors
+# TEST: 03
+# INFO: Try to redefinition function
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# parser.c: FunctionDefinitionParse: l.1783: FunctionDefinitionParse: redefinition of a function
+# FunctionDefinitionParse: redefinition of a function. Line: 7
+# 
+# INTERPRETER STDERR:
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 3
+# CURRENT COMPILER EXIT CODE: 3
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: None
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' Try to redefinition function
+#   2: 
+#   3: function erzert(aqrqwer as integer, bqewqxc as integer) as integer
+#   4: end function
+#   5: 
+#   6: function erzert(aqrqwer as integer) as integer
+#   7: end function
+#   8: 
+#   9: scope
+#  10: end scope
+
+########################################
+
+# Generated code                                                                #     2/41
+# IFJ                                                                           #     3/41
+# xbenes49 xbolsh00 xpolan09                                                    #     4/41
+# 2017                                                                          #     5/41
+.IFJcode17                                                                      #     7/41
+CREATEFRAME                                                                     #     8/41
+PUSHFRAME                                                                       #     9/41
+DEFVAR LF@*tmp                                                                  #    10/41
+DEFVAR LF@*foo                                                                  #    11/41
+DEFVAR LF@*bar                                                                  #    12/41
+JUMP $main                                                                      #    13/41
+# function erzert                                                               #    16/41
+LABEL erzert                                                                    #    17/41
+PUSHFRAME                                                                       #    18/41
+DEFVAR LF@*tmp                                                                  #    19/41
+DEFVAR LF@*foo                                                                  #    20/41
+DEFVAR LF@*bar                                                                  #    21/41
+DEFVAR LF@*ret                                                                  #    22/41
+DEFVAR LF@aqrqwer                                                               #    23/41
+MOVE LF@aqrqwer LF@*1                                                           #    24/41
+DEFVAR LF@bqewqxc                                                               #    25/41
+MOVE LF@bqewqxc LF@*2                                                           #    26/41
+PUSHS int@0                                                                     #    28/41
+POPS LF@*ret                                                                    #    29/41
+CLEARS                                                                          #    30/41
+RETURN                                                                          #    31/41
+# function erzert                                                               #    33/41
+LABEL erzert                                                                    #    34/41
+PUSHFRAME                                                                       #    35/41
+DEFVAR LF@*tmp                                                                  #    36/41
+DEFVAR LF@*foo                                                                  #    37/41
+DEFVAR LF@*bar                                                                  #    38/41
+DEFVAR LF@*ret                                                                  #    39/41
+DEFVAR LF@aqrqwer                                                               #    40/41
+MOVE LF@aqrqwer LF@*1                                                           #    41/41
+

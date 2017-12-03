@@ -1,0 +1,1327 @@
+# 2017-12-04 00:15:00.656919
+# SECTION: 04_expressions
+# TEST: 39
+# INFO: expresion 2013
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IDEFVAR at line: 16 with following arguments:
+# Dest: LF@a
+# Executing instruction: IPUSHS at line: 17 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 18 with following arguments:
+# Arg1: Stack@=0(int)
+# Dest: LF@a()
+# Executing instruction: IPUSHS at line: 19 with following arguments:
+# Arg1: Const@=5(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: Const@=964(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 21 with following arguments:
+# Arg1: Stack@=5(int)
+# Arg2: Stack@=964(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=556(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 23 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 24 with following arguments:
+# Arg1: Stack@=556(int)
+# Arg2: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 25 with following arguments:
+# Arg1: Stack@=4820(int)
+# Arg2: Stack@=1112(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=485(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 27 with following arguments:
+# Arg1: Const@=6(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 28 with following arguments:
+# Arg1: Stack@=485(int)
+# Arg2: Stack@=6(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 29 with following arguments:
+# Arg1: Stack@=5932(int)
+# Arg2: Stack@=2910(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 30 with following arguments:
+# Arg1: Const@=89(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 31 with following arguments:
+# Arg1: Stack@=3022(int)
+# Arg2: Stack@=89(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=98(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 33 with following arguments:
+# Arg1: Stack@=2933(int)
+# Arg2: Stack@=98(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 34 with following arguments:
+# Arg1: Const@=352(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 35 with following arguments:
+# Arg1: Stack@=2835(int)
+# Arg2: Stack@=352(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 36 with following arguments:
+# Arg1: Const@=187(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 37 with following arguments:
+# Arg1: Stack@=3187(int)
+# Arg2: Stack@=187(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 38 with following arguments:
+# Arg1: Stack@=3000(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 39 with following arguments:
+# Arg1: Const@=100(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 40 with following arguments:
+# Arg1: Stack@=100(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 41 with following arguments:
+# Arg1: Stack@=3000(double)
+# Arg2: Stack@=100(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 42 with following arguments:
+# Arg1: Const@=0.5(double)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 43 with following arguments:
+# Arg1: Stack@=30(double)
+# Arg2: Stack@=0.5(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 44 with following arguments:
+# Arg1: Const@=0.597(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 45 with following arguments:
+# Arg1: Const@=45(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 46 with following arguments:
+# Arg1: Const@=5(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 47 with following arguments:
+# Arg1: Stack@=45(int)
+# Arg2: Stack@=5(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 48 with following arguments:
+# Arg1: Stack@=40(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 49 with following arguments:
+# Arg1: Const@=21.1(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 50 with following arguments:
+# Arg1: Const@=99(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 51 with following arguments:
+# Arg1: Stack@=99(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 52 with following arguments:
+# Arg1: Stack@=21.1(double)
+# Arg2: Stack@=99(double)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 53 with following arguments:
+# Arg1: Stack@=40(double)
+# Arg2: Stack@=120.1(double)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 54 with following arguments:
+# Arg1: Stack@=0.597(double)
+# Arg2: Stack@=4804(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 55 with following arguments:
+# Arg1: Const@=4(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 56 with following arguments:
+# Arg1: Stack@=4(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 57 with following arguments:
+# Arg1: Stack@=2867.988(double)
+# Arg2: Stack@=4(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 58 with following arguments:
+# Arg1: Const@=98.48(double)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 59 with following arguments:
+# Arg1: Stack@=11471.952(double)
+# Arg2: Stack@=98.48(double)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 60 with following arguments:
+# Arg1: Stack@=30.5(double)
+# Arg2: Stack@=116.4901705930138(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 61 with following arguments:
+# Arg1: Const@=48.28(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 62 with following arguments:
+# Arg1: Const@=55.4841(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 63 with following arguments:
+# Arg1: Stack@=48.28(double)
+# Arg2: Stack@=55.4841(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 64 with following arguments:
+# Arg1: Const@=51.48(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 65 with following arguments:
+# Arg1: Stack@=-7.204099999999997(double)
+# Arg2: Stack@=51.48(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 66 with following arguments:
+# Arg1: Const@=410.4(double)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 67 with following arguments:
+# Arg1: Stack@=-58.68409999999999(double)
+# Arg2: Stack@=410.4(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 68 with following arguments:
+# Arg1: Const@=20.59(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 69 with following arguments:
+# Arg1: Const@=56(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 70 with following arguments:
+# Arg1: Stack@=56(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 71 with following arguments:
+# Arg1: Stack@=20.59(double)
+# Arg2: Stack@=56(double)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 72 with following arguments:
+# Arg1: Stack@=-24083.95464(double)
+# Arg2: Stack@=1153.04(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 73 with following arguments:
+# Arg1: Const@=0.18(double)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 74 with following arguments:
+# Arg1: Stack@=-22930.91464(double)
+# Arg2: Stack@=0.18(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 75 with following arguments:
+# Arg1: Const@=584.97(double)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 76 with following arguments:
+# Arg1: Stack@=-4127.564635199999(double)
+# Arg2: Stack@=584.97(double)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 77 with following arguments:
+# Arg1: Stack@=146.9901705930138(double)
+# Arg2: Stack@=-2414501.484652944(double)
+# Dest: Stack@()
+# Executing instruction: IFLOAT2R2EINTS at line: 78 with following arguments:
+# Arg1: Stack@=-2414354.494482351(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 79 with following arguments:
+# Arg1: Stack@=-2414354(int)
+# Dest: LF@a=0(int)
+# Executing instruction: IPUSHS at line: 80 with following arguments:
+# Arg1: LF@a=-2414354(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 81 with following arguments:
+# Arg1: Stack@=-2414354(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 82 with following arguments:
+# Arg1: Const@=482.48(double)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 83 with following arguments:
+# Arg1: Stack@=-2414354(double)
+# Arg2: Stack@=482.48(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 84 with following arguments:
+# Arg1: LF@a=-2414354(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 85 with following arguments:
+# Arg1: Stack@=-2414354(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 86 with following arguments:
+# Arg1: Stack@=-1164877517.92(double)
+# Arg2: Stack@=-2414354(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 87 with following arguments:
+# Arg1: Const@=62.48(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 88 with following arguments:
+# Arg1: Stack@=482.48(double)
+# Arg2: Stack@=62.48(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 89 with following arguments:
+# Arg1: Const@=10(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 90 with following arguments:
+# Arg1: Stack@=10(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 91 with following arguments:
+# Arg1: Stack@=420(double)
+# Arg2: Stack@=10(double)
+# Dest: Stack@()
+# Executing instruction: IFLOAT2R2EINTS at line: 92 with following arguments:
+# Arg1: Stack@=42(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 93 with following arguments:
+# Arg1: Stack@=42(int)
+# Dest: LF@a=-2414354(int)
+# Executing instruction: IDEFVAR at line: 94 with following arguments:
+# Dest: LF@b
+# Executing instruction: IPUSHS at line: 95 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 96 with following arguments:
+# Arg1: Stack@=0(int)
+# Dest: LF@b()
+# Executing instruction: IPUSHS at line: 97 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 98 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 99 with following arguments:
+# Arg1: Stack@=2(int)
+# Arg2: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 100 with following arguments:
+# Arg1: Stack@=4(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 101 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 102 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 103 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 104 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 105 with following arguments:
+# Arg1: Stack@=2(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 106 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 107 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 108 with following arguments:
+# Arg1: Stack@=1(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 109 with following arguments:
+# Arg1: Stack@=4(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 110 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 111 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 112 with following arguments:
+# Arg1: Stack@=2(int)
+# Arg2: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 113 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 114 with following arguments:
+# Arg1: Stack@=4(int)
+# Arg2: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 115 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 116 with following arguments:
+# Arg1: Stack@=8(int)
+# Arg2: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 117 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 118 with following arguments:
+# Arg1: Stack@=16(int)
+# Arg2: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 119 with following arguments:
+# Arg1: Stack@=32(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 120 with following arguments:
+# Arg1: Stack@=6(double)
+# Arg2: Stack@=32(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 121 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 122 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 123 with following arguments:
+# Arg1: Stack@=-26(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 124 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 125 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 126 with following arguments:
+# Arg1: Stack@=-28(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 127 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 128 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 129 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 130 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 131 with following arguments:
+# Arg1: Stack@=2(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 132 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 133 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 134 with following arguments:
+# Arg1: Stack@=1(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 135 with following arguments:
+# Arg1: Stack@=-30(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 136 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 137 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 138 with following arguments:
+# Arg1: Stack@=-28(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 139 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 140 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 141 with following arguments:
+# Arg1: Stack@=2(int)
+# Arg2: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 142 with following arguments:
+# Arg1: Stack@=4(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 143 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 144 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 145 with following arguments:
+# Arg1: Stack@=4(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 146 with following arguments:
+# Arg1: Stack@=-26(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 147 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 148 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 149 with following arguments:
+# Arg1: Stack@=-28(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 150 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 151 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 152 with following arguments:
+# Arg1: Stack@=2(int)
+# Arg2: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 153 with following arguments:
+# Arg1: Stack@=4(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 154 with following arguments:
+# Arg1: Stack@=-26(double)
+# Arg2: Stack@=4(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 155 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 156 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 157 with following arguments:
+# Arg1: Stack@=-30(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 158 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 159 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 160 with following arguments:
+# Arg1: Stack@=2(int)
+# Arg2: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 161 with following arguments:
+# Arg1: Stack@=4(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 162 with following arguments:
+# Arg1: Stack@=-28(double)
+# Arg2: Stack@=4(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 163 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 164 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 165 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 166 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 167 with following arguments:
+# Arg1: Stack@=2(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 168 with following arguments:
+# Arg1: Stack@=-32(double)
+# Arg2: Stack@=1(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 169 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 170 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 171 with following arguments:
+# Arg1: Stack@=-33(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 172 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 173 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 174 with following arguments:
+# Arg1: Stack@=-31(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: IFLOAT2R2EINTS at line: 175 with following arguments:
+# Arg1: Stack@=-29(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 176 with following arguments:
+# Arg1: Stack@=-29(int)
+# Dest: LF@b=0(int)
+# Executing instruction: IPUSHS at line: 177 with following arguments:
+# Arg1: LF@a=42(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 178 with following arguments:
+# Arg1: LF@b=-29(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 179 with following arguments:
+# Arg1: Stack@=42(int)
+# Arg2: Stack@=-29(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 180 with following arguments:
+# Arg1: Stack@=-1218(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 181 with following arguments:
+# Arg1: LF@b=-29(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 182 with following arguments:
+# Arg1: Stack@=-29(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 183 with following arguments:
+# Arg1: LF@a=42(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 184 with following arguments:
+# Arg1: Stack@=42(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 185 with following arguments:
+# Arg1: Const@=5(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 186 with following arguments:
+# Arg1: Const@=498(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 187 with following arguments:
+# Arg1: Stack@=5(int)
+# Arg2: Stack@=498(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 188 with following arguments:
+# Arg1: Stack@=-493(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 189 with following arguments:
+# Arg1: Stack@=42(double)
+# Arg2: Stack@=-493(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 190 with following arguments:
+# Arg1: Const@=56(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 191 with following arguments:
+# Arg1: Stack@=56(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 192 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 193 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 194 with following arguments:
+# Arg1: Stack@=56(double)
+# Arg2: Stack@=2(double)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 195 with following arguments:
+# Arg1: Stack@=-0.08519269776876268(double)
+# Arg2: Stack@=28(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 196 with following arguments:
+# Arg1: Const@=48(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 197 with following arguments:
+# Arg1: Stack@=48(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 198 with following arguments:
+# Arg1: Stack@=27.91480730223124(double)
+# Arg2: Stack@=48(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 199 with following arguments:
+# Arg1: Stack@=-29(double)
+# Arg2: Stack@=75.91480730223124(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 200 with following arguments:
+# Arg1: Const@=5(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 201 with following arguments:
+# Arg1: Stack@=5(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 202 with following arguments:
+# Arg1: Stack@=-104.9148073022312(double)
+# Arg2: Stack@=5(double)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 203 with following arguments:
+# Arg1: Stack@=-1218(double)
+# Arg2: Stack@=-99.91480730223124(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 204 with following arguments:
+# Arg1: Const@=64(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 205 with following arguments:
+# Arg1: Stack@=64(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 206 with following arguments:
+# Arg1: Const@=42(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 207 with following arguments:
+# Arg1: Const@=12(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 208 with following arguments:
+# Arg1: Const@=42(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 209 with following arguments:
+# Arg1: Stack@=12(int)
+# Arg2: Stack@=42(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 210 with following arguments:
+# Arg1: Stack@=42(int)
+# Arg2: Stack@=504(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 211 with following arguments:
+# Arg1: Stack@=546(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 212 with following arguments:
+# Arg1: Stack@=64(double)
+# Arg2: Stack@=546(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 213 with following arguments:
+# Arg1: Const@=4(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 214 with following arguments:
+# Arg1: Stack@=4(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 215 with following arguments:
+# Arg1: Stack@=0.1172161172161172(double)
+# Arg2: Stack@=4(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 216 with following arguments:
+# Arg1: Const@=1(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 217 with following arguments:
+# Arg1: Const@=1(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 218 with following arguments:
+# Arg1: Stack@=1(int)
+# Arg2: Stack@=1(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 219 with following arguments:
+# Arg1: Const@=1(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 220 with following arguments:
+# Arg1: Const@=12(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 221 with following arguments:
+# Arg1: Stack@=1(int)
+# Arg2: Stack@=12(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 222 with following arguments:
+# Arg1: Stack@=1(int)
+# Arg2: Stack@=13(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 223 with following arguments:
+# Arg1: Const@=486(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 224 with following arguments:
+# Arg1: Stack@=13(int)
+# Arg2: Stack@=486(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 225 with following arguments:
+# Arg1: Const@=45(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 226 with following arguments:
+# Arg1: Stack@=-473(int)
+# Arg2: Stack@=45(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 227 with following arguments:
+# Arg1: Stack@=-518(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 228 with following arguments:
+# Arg1: Stack@=0.4688644688644689(double)
+# Arg2: Stack@=-518(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 229 with following arguments:
+# Arg1: Stack@=-1317.914807302231(double)
+# Arg2: Stack@=-242.8717948717949(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 230 with following arguments:
+# Arg1: Const@=4(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 231 with following arguments:
+# Arg1: Const@=43(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 232 with following arguments:
+# Arg1: Stack@=4(int)
+# Arg2: Stack@=43(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 233 with following arguments:
+# Arg1: Stack@=172(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 234 with following arguments:
+# Arg1: Const@=54(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 235 with following arguments:
+# Arg1: Stack@=54(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 236 with following arguments:
+# Arg1: Const@=45(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 237 with following arguments:
+# Arg1: Stack@=45(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 238 with following arguments:
+# Arg1: Const@=4(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 239 with following arguments:
+# Arg1: Stack@=4(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 240 with following arguments:
+# Arg1: Const@=458(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 241 with following arguments:
+# Arg1: Stack@=458(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 242 with following arguments:
+# Arg1: Const@=45(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 243 with following arguments:
+# Arg1: Const@=54(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 244 with following arguments:
+# Arg1: Stack@=45(int)
+# Arg2: Stack@=54(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 245 with following arguments:
+# Arg1: Stack@=-9(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 246 with following arguments:
+# Arg1: Const@=45(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 247 with following arguments:
+# Arg1: Stack@=45(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 248 with following arguments:
+# Arg1: Stack@=-9(double)
+# Arg2: Stack@=45(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 249 with following arguments:
+# Arg1: Const@=4(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 250 with following arguments:
+# Arg1: Stack@=4(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 251 with following arguments:
+# Arg1: Stack@=-0.2(double)
+# Arg2: Stack@=4(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 252 with following arguments:
+# Arg1: Const@=487(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 253 with following arguments:
+# Arg1: Stack@=487(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 254 with following arguments:
+# Arg1: Stack@=-4.2(double)
+# Arg2: Stack@=487(double)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 255 with following arguments:
+# Arg1: Stack@=458(double)
+# Arg2: Stack@=-491.2(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 256 with following arguments:
+# Arg1: Stack@=4(double)
+# Arg2: Stack@=-224969.6(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 257 with following arguments:
+# Arg1: Const@=45(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 258 with following arguments:
+# Arg1: Stack@=45(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 259 with following arguments:
+# Arg1: Stack@=224973.6(double)
+# Arg2: Stack@=45(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 260 with following arguments:
+# Arg1: Const@=5(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 261 with following arguments:
+# Arg1: Stack@=5(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 262 with following arguments:
+# Arg1: Stack@=224928.6(double)
+# Arg2: Stack@=5(double)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 263 with following arguments:
+# Arg1: Stack@=45(double)
+# Arg2: Stack@=224923.6(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 264 with following arguments:
+# Arg1: Const@=56(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 265 with following arguments:
+# Arg1: Stack@=56(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 266 with following arguments:
+# Arg1: Stack@=10121562(double)
+# Arg2: Stack@=56(double)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 267 with following arguments:
+# Arg1: Stack@=54(double)
+# Arg2: Stack@=180742.1785714286(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 268 with following arguments:
+# Arg1: Const@=45(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 269 with following arguments:
+# Arg1: Stack@=45(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 270 with following arguments:
+# Arg1: Stack@=180796.1785714286(double)
+# Arg2: Stack@=45(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 271 with following arguments:
+# Arg1: Stack@=172(double)
+# Arg2: Stack@=180841.1785714286(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 272 with following arguments:
+# Arg1: Const@=579(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 273 with following arguments:
+# Arg1: Stack@=579(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 274 with following arguments:
+# Arg1: Stack@=-180669.1785714286(double)
+# Arg2: Stack@=579(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 275 with following arguments:
+# Arg1: Const@=18(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 276 with following arguments:
+# Arg1: Stack@=18(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 277 with following arguments:
+# Arg1: Stack@=-180090.1785714286(double)
+# Arg2: Stack@=18(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 278 with following arguments:
+# Arg1: Stack@=-1075.043012430436(double)
+# Arg2: Stack@=-180072.1785714286(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 279 with following arguments:
+# Arg1: Const@=1(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 280 with following arguments:
+# Arg1: Stack@=1(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 281 with following arguments:
+# Arg1: Stack@=178997.1355589982(double)
+# Arg2: Stack@=1(double)
+# Dest: Stack@()
+# Executing instruction: IFLOAT2R2EINTS at line: 282 with following arguments:
+# Arg1: Stack@=178998.1355589982(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 283 with following arguments:
+# Arg1: Stack@=178998(int)
+# Dest: LF@a=42(int)
+# Executing instruction: IPUSHS at line: 284 with following arguments:
+# Arg1: LF@a=178998(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 285 with following arguments:
+# Arg1: Stack@=178998(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 286 with following arguments:
+# Arg1: LF@b=-29(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 287 with following arguments:
+# Arg1: Const@=10(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 288 with following arguments:
+# Arg1: Stack@=-29(int)
+# Arg2: Stack@=10(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 289 with following arguments:
+# Arg1: Stack@=-290(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 290 with following arguments:
+# Arg1: Stack@=178998(double)
+# Arg2: Stack@=-290(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 291 with following arguments:
+# Arg1: Const@=11(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 292 with following arguments:
+# Arg1: Const@=14(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 293 with following arguments:
+# Arg1: Stack@=11(int)
+# Arg2: Stack@=14(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 294 with following arguments:
+# Arg1: Const@=5(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 295 with following arguments:
+# Arg1: Stack@=154(int)
+# Arg2: Stack@=5(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 296 with following arguments:
+# Arg1: Stack@=770(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 297 with following arguments:
+# Arg1: Stack@=-617.2344827586207(double)
+# Arg2: Stack@=770(double)
+# Dest: Stack@()
+# Executing instruction: IFLOAT2R2EINTS at line: 298 with following arguments:
+# Arg1: Stack@=152.7655172413793(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 299 with following arguments:
+# Arg1: Stack@=153(int)
+# Dest: LF@a=178998(int)
+# Executing instruction: IPUSHS at line: 300 with following arguments:
+# Arg1: LF@a=153(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 301 with following arguments:
+# Arg1: Stack@=153(int)
+# Dest: LF@*tmp()
+# Executing instruction: IWRITE at line: 302 with following arguments:
+# Arg1: LF@*tmp=153(int)
+# Executing instruction: IPUSHS at line: 303 with following arguments:
+# Arg1: LF@b=-29(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 304 with following arguments:
+# Arg1: Stack@=-29(int)
+# Dest: LF@*tmp=153(int)
+# Executing instruction: IWRITE at line: 305 with following arguments:
+# Arg1: LF@*tmp=-29(int)
+# Executing instruction: IJUMP at line: 306 with following arguments:
+# Executing instruction: ILABEL at line: 307 with following arguments:
+# Executing instruction: IGROOT at line: 309 with following arguments:
+# I am Groot at 309 (1821).
+# 
+# STDOUT DIFF:
+# 
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 1821 (509+1312)
+# GROOT: 1821
+# 
+#   1: ' expresion 2013
+#   2: scope
+#   3:     dim a as integer
+#   4:     a= (5*964+556*2-485*6-89-98+352-187)/100+(0.5)+(0.597*((45-5)*(21.10001+99))*4/98.48)+((48.28-55.4841-51.48)*410.4+20.59*56)*0.18*584.97
+#   5:     a = (a * 482.48 / a - 62.48	) / 10
+#   6:     dim b as integer
+#   7:     b = 2*2+2/2*2-2*2*2*2*2-2-2+2/2*2+2-2*2/2+2-2*2+2-2*2-2/2+2+2
+#   8:     a = a*b+(b-(a/(5-498)+56/2+48)+5)-64/(42+12*42)*4*(1*1*(1+12)-486-45)-(4*43-(54+45*(4-458*((45-54)/45-4-487)-45-5)/56+45)+579+18)+1
+#   9:     a = a/(b*10)+11*14*5
+#  10:     
+#  11:     print a; b;
+#  12: 
+#  13: end scope
+
+########################################
+
+# Generated code                                                                #     2/307
+# IFJ                                                                           #     3/307
+# xbenes49 xbolsh00 xpolan09                                                    #     4/307
+# 2017                                                                          #     5/307
+.IFJcode17                                                                      #     7/307
+CREATEFRAME                                                                     #     8/307
+PUSHFRAME                                                                       #     9/307
+DEFVAR LF@*tmp                                                                  #    10/307
+DEFVAR LF@*foo                                                                  #    11/307
+DEFVAR LF@*bar                                                                  #    12/307
+JUMP $main                                                                      #    13/307
+LABEL $main                                                                     #    15/307
+DEFVAR LF@a                                                                     #    16/307
+PUSHS int@0                                                                     #    17/307
+POPS LF@a                                                                       #    18/307
+PUSHS int@5                                                                     #    19/307
+PUSHS int@964                                                                   #    20/307
+MULS                                                                            #    21/307
+PUSHS int@556                                                                   #    22/307
+PUSHS int@2                                                                     #    23/307
+MULS                                                                            #    24/307
+ADDS                                                                            #    25/307
+PUSHS int@485                                                                   #    26/307
+PUSHS int@6                                                                     #    27/307
+MULS                                                                            #    28/307
+SUBS                                                                            #    29/307
+PUSHS int@89                                                                    #    30/307
+SUBS                                                                            #    31/307
+PUSHS int@98                                                                    #    32/307
+SUBS                                                                            #    33/307
+PUSHS int@352                                                                   #    34/307
+ADDS                                                                            #    35/307
+PUSHS int@187                                                                   #    36/307
+SUBS                                                                            #    37/307
+INT2FLOATS                                                                      #    38/307
+PUSHS int@100                                                                   #    39/307
+INT2FLOATS                                                                      #    40/307
+DIVS                                                                            #    41/307
+PUSHS float@0.5                                                                 #    42/307
+ADDS                                                                            #    43/307
+PUSHS float@0.597                                                               #    44/307
+PUSHS int@45                                                                    #    45/307
+PUSHS int@5                                                                     #    46/307
+SUBS                                                                            #    47/307
+INT2FLOATS                                                                      #    48/307
+PUSHS float@21.1                                                                #    49/307
+PUSHS int@99                                                                    #    50/307
+INT2FLOATS                                                                      #    51/307
+ADDS                                                                            #    52/307
+MULS                                                                            #    53/307
+MULS                                                                            #    54/307
+PUSHS int@4                                                                     #    55/307
+INT2FLOATS                                                                      #    56/307
+MULS                                                                            #    57/307
+PUSHS float@98.48                                                               #    58/307
+DIVS                                                                            #    59/307
+ADDS                                                                            #    60/307
+PUSHS float@48.28                                                               #    61/307
+PUSHS float@55.4841                                                             #    62/307
+SUBS                                                                            #    63/307
+PUSHS float@51.48                                                               #    64/307
+SUBS                                                                            #    65/307
+PUSHS float@410.4                                                               #    66/307
+MULS                                                                            #    67/307
+PUSHS float@20.59                                                               #    68/307
+PUSHS int@56                                                                    #    69/307
+INT2FLOATS                                                                      #    70/307
+MULS                                                                            #    71/307
+ADDS                                                                            #    72/307
+PUSHS float@0.18                                                                #    73/307
+MULS                                                                            #    74/307
+PUSHS float@584.97                                                              #    75/307
+MULS                                                                            #    76/307
+ADDS                                                                            #    77/307
+FLOAT2R2EINTS                                                                   #    78/307
+POPS LF@a                                                                       #    79/307
+PUSHS LF@a                                                                      #    80/307
+INT2FLOATS                                                                      #    81/307
+PUSHS float@482.48                                                              #    82/307
+MULS                                                                            #    83/307
+PUSHS LF@a                                                                      #    84/307
+INT2FLOATS                                                                      #    85/307
+DIVS                                                                            #    86/307
+PUSHS float@62.48                                                               #    87/307
+SUBS                                                                            #    88/307
+PUSHS int@10                                                                    #    89/307
+INT2FLOATS                                                                      #    90/307
+DIVS                                                                            #    91/307
+FLOAT2R2EINTS                                                                   #    92/307
+POPS LF@a                                                                       #    93/307
+DEFVAR LF@b                                                                     #    94/307
+PUSHS int@0                                                                     #    95/307
+POPS LF@b                                                                       #    96/307
+PUSHS int@2                                                                     #    97/307
+PUSHS int@2                                                                     #    98/307
+MULS                                                                            #    99/307
+INT2FLOATS                                                                      #   100/307
+PUSHS int@2                                                                     #   101/307
+INT2FLOATS                                                                      #   102/307
+PUSHS int@2                                                                     #   103/307
+INT2FLOATS                                                                      #   104/307
+DIVS                                                                            #   105/307
+PUSHS int@2                                                                     #   106/307
+INT2FLOATS                                                                      #   107/307
+MULS                                                                            #   108/307
+ADDS                                                                            #   109/307
+PUSHS int@2                                                                     #   110/307
+PUSHS int@2                                                                     #   111/307
+MULS                                                                            #   112/307
+PUSHS int@2                                                                     #   113/307
+MULS                                                                            #   114/307
+PUSHS int@2                                                                     #   115/307
+MULS                                                                            #   116/307
+PUSHS int@2                                                                     #   117/307
+MULS                                                                            #   118/307
+INT2FLOATS                                                                      #   119/307
+SUBS                                                                            #   120/307
+PUSHS int@2                                                                     #   121/307
+INT2FLOATS                                                                      #   122/307
+SUBS                                                                            #   123/307
+PUSHS int@2                                                                     #   124/307
+INT2FLOATS                                                                      #   125/307
+SUBS                                                                            #   126/307
+PUSHS int@2                                                                     #   127/307
+INT2FLOATS                                                                      #   128/307
+PUSHS int@2                                                                     #   129/307
+INT2FLOATS                                                                      #   130/307
+DIVS                                                                            #   131/307
+PUSHS int@2                                                                     #   132/307
+INT2FLOATS                                                                      #   133/307
+MULS                                                                            #   134/307
+ADDS                                                                            #   135/307
+PUSHS int@2                                                                     #   136/307
+INT2FLOATS                                                                      #   137/307
+ADDS                                                                            #   138/307
+PUSHS int@2                                                                     #   139/307
+PUSHS int@2                                                                     #   140/307
+MULS                                                                            #   141/307
+INT2FLOATS                                                                      #   142/307
+PUSHS int@2                                                                     #   143/307
+INT2FLOATS                                                                      #   144/307
+DIVS                                                                            #   145/307
+SUBS                                                                            #   146/307
+PUSHS int@2                                                                     #   147/307
+INT2FLOATS                                                                      #   148/307
+ADDS                                                                            #   149/307
+PUSHS int@2                                                                     #   150/307
+PUSHS int@2                                                                     #   151/307
+MULS                                                                            #   152/307
+INT2FLOATS                                                                      #   153/307
+SUBS                                                                            #   154/307
+PUSHS int@2                                                                     #   155/307
+INT2FLOATS                                                                      #   156/307
+ADDS                                                                            #   157/307
+PUSHS int@2                                                                     #   158/307
+PUSHS int@2                                                                     #   159/307
+MULS                                                                            #   160/307
+INT2FLOATS                                                                      #   161/307
+SUBS                                                                            #   162/307
+PUSHS int@2                                                                     #   163/307
+INT2FLOATS                                                                      #   164/307
+PUSHS int@2                                                                     #   165/307
+INT2FLOATS                                                                      #   166/307
+DIVS                                                                            #   167/307
+SUBS                                                                            #   168/307
+PUSHS int@2                                                                     #   169/307
+INT2FLOATS                                                                      #   170/307
+ADDS                                                                            #   171/307
+PUSHS int@2                                                                     #   172/307
+INT2FLOATS                                                                      #   173/307
+ADDS                                                                            #   174/307
+FLOAT2R2EINTS                                                                   #   175/307
+POPS LF@b                                                                       #   176/307
+PUSHS LF@a                                                                      #   177/307
+PUSHS LF@b                                                                      #   178/307
+MULS                                                                            #   179/307
+INT2FLOATS                                                                      #   180/307
+PUSHS LF@b                                                                      #   181/307
+INT2FLOATS                                                                      #   182/307
+PUSHS LF@a                                                                      #   183/307
+INT2FLOATS                                                                      #   184/307
+PUSHS int@5                                                                     #   185/307
+PUSHS int@498                                                                   #   186/307
+SUBS                                                                            #   187/307
+INT2FLOATS                                                                      #   188/307
+DIVS                                                                            #   189/307
+PUSHS int@56                                                                    #   190/307
+INT2FLOATS                                                                      #   191/307
+PUSHS int@2                                                                     #   192/307
+INT2FLOATS                                                                      #   193/307
+DIVS                                                                            #   194/307
+ADDS                                                                            #   195/307
+PUSHS int@48                                                                    #   196/307
+INT2FLOATS                                                                      #   197/307
+ADDS                                                                            #   198/307
+SUBS                                                                            #   199/307
+PUSHS int@5                                                                     #   200/307
+INT2FLOATS                                                                      #   201/307
+ADDS                                                                            #   202/307
+ADDS                                                                            #   203/307
+PUSHS int@64                                                                    #   204/307
+INT2FLOATS                                                                      #   205/307
+PUSHS int@42                                                                    #   206/307
+PUSHS int@12                                                                    #   207/307
+PUSHS int@42                                                                    #   208/307
+MULS                                                                            #   209/307
+ADDS                                                                            #   210/307
+INT2FLOATS                                                                      #   211/307
+DIVS                                                                            #   212/307
+PUSHS int@4                                                                     #   213/307
+INT2FLOATS                                                                      #   214/307
+MULS                                                                            #   215/307
+PUSHS int@1                                                                     #   216/307
+PUSHS int@1                                                                     #   217/307
+MULS                                                                            #   218/307
+PUSHS int@1                                                                     #   219/307
+PUSHS int@12                                                                    #   220/307
+ADDS                                                                            #   221/307
+MULS                                                                            #   222/307
+PUSHS int@486                                                                   #   223/307
+SUBS                                                                            #   224/307
+PUSHS int@45                                                                    #   225/307
+SUBS                                                                            #   226/307
+INT2FLOATS                                                                      #   227/307
+MULS                                                                            #   228/307
+SUBS                                                                            #   229/307
+PUSHS int@4                                                                     #   230/307
+PUSHS int@43                                                                    #   231/307
+MULS                                                                            #   232/307
+INT2FLOATS                                                                      #   233/307
+PUSHS int@54                                                                    #   234/307
+INT2FLOATS                                                                      #   235/307
+PUSHS int@45                                                                    #   236/307
+INT2FLOATS                                                                      #   237/307
+PUSHS int@4                                                                     #   238/307
+INT2FLOATS                                                                      #   239/307
+PUSHS int@458                                                                   #   240/307
+INT2FLOATS                                                                      #   241/307
+PUSHS int@45                                                                    #   242/307
+PUSHS int@54                                                                    #   243/307
+SUBS                                                                            #   244/307
+INT2FLOATS                                                                      #   245/307
+PUSHS int@45                                                                    #   246/307
+INT2FLOATS                                                                      #   247/307
+DIVS                                                                            #   248/307
+PUSHS int@4                                                                     #   249/307
+INT2FLOATS                                                                      #   250/307
+SUBS                                                                            #   251/307
+PUSHS int@487                                                                   #   252/307
+INT2FLOATS                                                                      #   253/307
+SUBS                                                                            #   254/307
+MULS                                                                            #   255/307
+SUBS                                                                            #   256/307
+PUSHS int@45                                                                    #   257/307
+INT2FLOATS                                                                      #   258/307
+SUBS                                                                            #   259/307
+PUSHS int@5                                                                     #   260/307
+INT2FLOATS                                                                      #   261/307
+SUBS                                                                            #   262/307
+MULS                                                                            #   263/307
+PUSHS int@56                                                                    #   264/307
+INT2FLOATS                                                                      #   265/307
+DIVS                                                                            #   266/307
+ADDS                                                                            #   267/307
+PUSHS int@45                                                                    #   268/307
+INT2FLOATS                                                                      #   269/307
+ADDS                                                                            #   270/307
+SUBS                                                                            #   271/307
+PUSHS int@579                                                                   #   272/307
+INT2FLOATS                                                                      #   273/307
+ADDS                                                                            #   274/307
+PUSHS int@18                                                                    #   275/307
+INT2FLOATS                                                                      #   276/307
+ADDS                                                                            #   277/307
+SUBS                                                                            #   278/307
+PUSHS int@1                                                                     #   279/307
+INT2FLOATS                                                                      #   280/307
+ADDS                                                                            #   281/307
+FLOAT2R2EINTS                                                                   #   282/307
+POPS LF@a                                                                       #   283/307
+PUSHS LF@a                                                                      #   284/307
+INT2FLOATS                                                                      #   285/307
+PUSHS LF@b                                                                      #   286/307
+PUSHS int@10                                                                    #   287/307
+MULS                                                                            #   288/307
+INT2FLOATS                                                                      #   289/307
+DIVS                                                                            #   290/307
+PUSHS int@11                                                                    #   291/307
+PUSHS int@14                                                                    #   292/307
+MULS                                                                            #   293/307
+PUSHS int@5                                                                     #   294/307
+MULS                                                                            #   295/307
+INT2FLOATS                                                                      #   296/307
+ADDS                                                                            #   297/307
+FLOAT2R2EINTS                                                                   #   298/307
+POPS LF@a                                                                       #   299/307
+PUSHS LF@a                                                                      #   300/307
+POPS LF@*tmp                                                                    #   301/307
+WRITE LF@*tmp                                                                   #   302/307
+PUSHS LF@b                                                                      #   303/307
+POPS LF@*tmp                                                                    #   304/307
+WRITE LF@*tmp                                                                   #   305/307
+JUMP $end                                                                       #   306/307
+LABEL $end                                                                      #   307/307
+

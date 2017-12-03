@@ -1,0 +1,133 @@
+# 2017-12-04 00:14:59.037561
+# SECTION: 02_functions
+# TEST: 08
+# INFO: Simple call function
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 28 with following arguments:
+# Executing instruction: IDEFVAR at line: 29 with following arguments:
+# Dest: LF@a
+# Executing instruction: IPUSHS at line: 30 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 31 with following arguments:
+# Arg1: Stack@=0(int)
+# Dest: LF@a()
+# Executing instruction: ICREATEFRAME at line: 32 with following arguments:
+# Executing instruction: ICALL at line: 33 with following arguments:
+# Executing instruction: ILABEL at line: 17 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 18 with following arguments:
+# Executing instruction: IDEFVAR at line: 19 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 20 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 21 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IDEFVAR at line: 22 with following arguments:
+# Dest: LF@*ret
+# Executing instruction: IPUSHS at line: 23 with following arguments:
+# Arg1: Const@=42(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 24 with following arguments:
+# Arg1: Stack@=42(int)
+# Dest: LF@*ret()
+# Executing instruction: ICLEARS at line: 25 with following arguments:
+# Executing instruction: IRETURN at line: 26 with following arguments:
+# Executing instruction: IPOPFRAME at line: 34 with following arguments:
+# Executing instruction: IPUSHS at line: 35 with following arguments:
+# Arg1: TF@*ret=42(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 36 with following arguments:
+# Arg1: Stack@=42(int)
+# Dest: LF@a=0(int)
+# Executing instruction: IPUSHS at line: 37 with following arguments:
+# Arg1: LF@a=42(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 38 with following arguments:
+# Arg1: Stack@=42(int)
+# Dest: LF@*tmp()
+# Executing instruction: IWRITE at line: 39 with following arguments:
+# Arg1: LF@*tmp=42(int)
+# Executing instruction: IJUMP at line: 40 with following arguments:
+# Executing instruction: ILABEL at line: 41 with following arguments:
+# Executing instruction: IGROOT at line: 43 with following arguments:
+# I am Groot at 43 (124).
+# 
+# STDOUT DIFF:
+# 
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 124 (46+78)
+# GROOT: 124
+# 
+#   1: ' Simple call function
+#   2: 
+#   3: function foo() as integer
+#   4: 	return 42
+#   5: end function
+#   6: 
+#   7: scope
+#   8: 	dim a as integer
+#   9: 	a = foo()
+#  10: 	print a;
+#  11: end scope
+
+########################################
+
+# Generated code                                                                #     2/41
+# IFJ                                                                           #     3/41
+# xbenes49 xbolsh00 xpolan09                                                    #     4/41
+# 2017                                                                          #     5/41
+.IFJcode17                                                                      #     7/41
+CREATEFRAME                                                                     #     8/41
+PUSHFRAME                                                                       #     9/41
+DEFVAR LF@*tmp                                                                  #    10/41
+DEFVAR LF@*foo                                                                  #    11/41
+DEFVAR LF@*bar                                                                  #    12/41
+JUMP $main                                                                      #    13/41
+# function foo                                                                  #    16/41
+LABEL foo                                                                       #    17/41
+PUSHFRAME                                                                       #    18/41
+DEFVAR LF@*tmp                                                                  #    19/41
+DEFVAR LF@*foo                                                                  #    20/41
+DEFVAR LF@*bar                                                                  #    21/41
+DEFVAR LF@*ret                                                                  #    22/41
+PUSHS int@42                                                                    #    23/41
+POPS LF@*ret                                                                    #    24/41
+CLEARS                                                                          #    25/41
+RETURN                                                                          #    26/41
+LABEL $main                                                                     #    28/41
+DEFVAR LF@a                                                                     #    29/41
+PUSHS int@0                                                                     #    30/41
+POPS LF@a                                                                       #    31/41
+CREATEFRAME                                                                     #    32/41
+CALL foo                                                                        #    33/41
+POPFRAME                                                                        #    34/41
+PUSHS TF@*ret                                                                   #    35/41
+POPS LF@a                                                                       #    36/41
+PUSHS LF@a                                                                      #    37/41
+POPS LF@*tmp                                                                    #    38/41
+WRITE LF@*tmp                                                                   #    39/41
+JUMP $end                                                                       #    40/41
+LABEL $end                                                                      #    41/41
+

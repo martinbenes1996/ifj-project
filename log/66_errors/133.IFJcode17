@@ -1,0 +1,50 @@
+# 2017-12-04 00:15:02.678152
+# SECTION: 66_errors
+# TEST: 133
+# INFO: lexical error
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# Expression error. Line: -1
+# 
+# INTERPRETER STDERR:
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 1
+# CURRENT COMPILER EXIT CODE: 2
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: None
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: scope 
+#   2:  print 7.0ee6; 
+#   3:  end scope
+
+########################################
+
+# Generated code                                                                #     2/15
+# IFJ                                                                           #     3/15
+# xbenes49 xbolsh00 xpolan09                                                    #     4/15
+# 2017                                                                          #     5/15
+.IFJcode17                                                                      #     7/15
+CREATEFRAME                                                                     #     8/15
+PUSHFRAME                                                                       #     9/15
+DEFVAR LF@*tmp                                                                  #    10/15
+DEFVAR LF@*foo                                                                  #    11/15
+DEFVAR LF@*bar                                                                  #    12/15
+JUMP $main                                                                      #    13/15
+LABEL $main                                                                     #    15/15
+

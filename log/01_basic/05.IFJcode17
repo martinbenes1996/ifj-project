@@ -1,0 +1,66 @@
+# 2017-12-04 00:14:57.962000
+# SECTION: 01_basic
+# TEST: 05
+# INFO: string escape sequences
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Wrong escape sequence!
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 51
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' string escape sequences
+#   2: scope
+#   3: 	dim str as string = !"\"\n\t\\\238"
+#   4: 	dim str0 as string = !"\001\255\\\n"
+#   5: end scope
+
+########################################
+
+# Generated code                                                                #     2/29
+# IFJ                                                                           #     3/29
+# xbenes49 xbolsh00 xpolan09                                                    #     4/29
+# 2017                                                                          #     5/29
+.IFJcode17                                                                      #     7/29
+CREATEFRAME                                                                     #     8/29
+PUSHFRAME                                                                       #     9/29
+DEFVAR LF@*tmp                                                                  #    10/29
+DEFVAR LF@*foo                                                                  #    11/29
+DEFVAR LF@*bar                                                                  #    12/29
+JUMP $main                                                                      #    13/29
+LABEL $main                                                                     #    15/29
+DEFVAR LF@str                                                                   #    16/29
+DEFVAR LF@*baaaaa                                                               #    17/29
+MOVE LF@*baaaaa string@                                                         #    18/29
+CONCAT LF@*baaaaa LF@*baaaaa string@"\010\009\092\0/(                           #    19/29
+PUSHS LF@*baaaaa                                                                #    20/29
+POPS LF@str                                                                     #    21/29
+DEFVAR LF@str0                                                                  #    22/29
+DEFVAR LF@*caaaaa                                                               #    23/29
+MOVE LF@*caaaaa string@                                                         #    24/29
+CONCAT LF@*caaaaa LF@*caaaaa string@\001                                        #    25/29
+PUSHS LF@*caaaaa                                                                #    26/29
+POPS LF@str0                                                                    #    27/29
+JUMP $end                                                                       #    28/29
+LABEL $end                                                                      #    29/29
+

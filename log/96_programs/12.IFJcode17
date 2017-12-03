@@ -1,0 +1,161 @@
+# 2017-12-04 00:15:03.778105
+# SECTION: 96_programs
+# TEST: 12
+# INFO: Leap year
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# Expression error. Line: -1
+# 
+# INTERPRETER STDERR:
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+# Enter a year: ?  2016 is a leap year
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 2016
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 2
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: None
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' Leap year
+#   2: 
+#   3: declare function modulo(divident as integer, divider as integer) as integer
+#   4: 
+#   5: function get_year() as integer
+#   6:     print !"Enter a year: ";
+#   7:     dim year as integer
+#   8:     input year
+#   9:     return year
+#  10: end function
+#  11: 
+#  12: function modulo(divident as integer, divider as integer) as integer
+#  13:     dim res as integer
+#  14:     res = divident - (divident \ divider) * divider
+#  15:     return res
+#  16: end function
+#  17: 
+#  18: scope
+#  19:     dim year as integer
+#  20:     year = get_year()
+#  21:     dim res as integer
+#  22:     res = modulo(year, 4)
+#  23:     if(res = 0) then
+#  24:         res = modulo(year, 100)
+#  25:         if(res = 0) then
+#  26:             ' year is divisible by 400, hence the year is a leap year
+#  27:             res = modulo(year, 400)
+#  28:             if (res = 0) then
+#  29:                 print year; !" is a leap year";
+#  30:             else
+#  31:                 print year; !" is not a leap year";
+#  32:             end if
+#  33:         else
+#  34:             print year; !" is a leap year";
+#  35:         end if
+#  36:     
+#  37:     else
+#  38:          print year; !" is not a leap year";
+#  39:     end if
+#  40: end scope
+
+########################################
+
+# Generated code                                                                #     2/92
+# IFJ                                                                           #     3/92
+# xbenes49 xbolsh00 xpolan09                                                    #     4/92
+# 2017                                                                          #     5/92
+.IFJcode17                                                                      #     7/92
+CREATEFRAME                                                                     #     8/92
+PUSHFRAME                                                                       #     9/92
+DEFVAR LF@*tmp                                                                  #    10/92
+DEFVAR LF@*foo                                                                  #    11/92
+DEFVAR LF@*bar                                                                  #    12/92
+JUMP $main                                                                      #    13/92
+# function get_year                                                             #    16/92
+LABEL get_year                                                                  #    17/92
+PUSHFRAME                                                                       #    18/92
+DEFVAR LF@*tmp                                                                  #    19/92
+DEFVAR LF@*foo                                                                  #    20/92
+DEFVAR LF@*bar                                                                  #    21/92
+DEFVAR LF@*ret                                                                  #    22/92
+DEFVAR LF@*baaaaa                                                               #    23/92
+MOVE LF@*baaaaa string@                                                         #    24/92
+CONCAT LF@*baaaaa LF@*baaaaa string@Enter\032a\032year:\032                     #    25/92
+PUSHS LF@*baaaaa                                                                #    26/92
+POPS LF@*tmp                                                                    #    27/92
+WRITE LF@*tmp                                                                   #    28/92
+DEFVAR LF@year                                                                  #    29/92
+PUSHS int@0                                                                     #    30/92
+POPS LF@year                                                                    #    31/92
+WRITE string@?\032                                                              #    32/92
+READ LF@year int                                                                #    33/92
+PUSHS LF@year                                                                   #    34/92
+POPS LF@*ret                                                                    #    35/92
+CLEARS                                                                          #    36/92
+RETURN                                                                          #    37/92
+# function modulo                                                               #    40/92
+LABEL modulo                                                                    #    41/92
+PUSHFRAME                                                                       #    42/92
+DEFVAR LF@*tmp                                                                  #    43/92
+DEFVAR LF@*foo                                                                  #    44/92
+DEFVAR LF@*bar                                                                  #    45/92
+DEFVAR LF@*ret                                                                  #    46/92
+DEFVAR LF@divident                                                              #    47/92
+MOVE LF@divident LF@*1                                                          #    48/92
+DEFVAR LF@divider                                                               #    49/92
+MOVE LF@divider LF@*2                                                           #    50/92
+DEFVAR LF@res                                                                   #    51/92
+PUSHS int@0                                                                     #    52/92
+POPS LF@res                                                                     #    53/92
+PUSHS LF@divident                                                               #    54/92
+PUSHS LF@divident                                                               #    55/92
+INT2FLOATS                                                                      #    56/92
+PUSHS LF@divider                                                                #    57/92
+INT2FLOATS                                                                      #    58/92
+DIVS                                                                            #    59/92
+FLOAT2R2EINTS                                                                   #    60/92
+PUSHS LF@divider                                                                #    61/92
+MULS                                                                            #    62/92
+SUBS                                                                            #    63/92
+POPS LF@res                                                                     #    64/92
+PUSHS LF@res                                                                    #    65/92
+POPS LF@*ret                                                                    #    66/92
+CLEARS                                                                          #    67/92
+RETURN                                                                          #    68/92
+LABEL $main                                                                     #    70/92
+DEFVAR LF@year                                                                  #    71/92
+PUSHS int@0                                                                     #    72/92
+POPS LF@year                                                                    #    73/92
+CREATEFRAME                                                                     #    74/92
+CALL get_year                                                                   #    75/92
+POPFRAME                                                                        #    76/92
+PUSHS TF@*ret                                                                   #    77/92
+POPS LF@year                                                                    #    78/92
+DEFVAR LF@res                                                                   #    79/92
+PUSHS int@0                                                                     #    80/92
+POPS LF@res                                                                     #    81/92
+CREATEFRAME                                                                     #    82/92
+DEFVAR TF@*1                                                                    #    83/92
+PUSHS LF@year                                                                   #    84/92
+POPS TF@*1                                                                      #    85/92
+DEFVAR TF@*2                                                                    #    86/92
+PUSHS int@4                                                                     #    87/92
+POPS TF@*2                                                                      #    88/92
+CALL modulo                                                                     #    89/92
+POPFRAME                                                                        #    90/92
+PUSHS TF@*ret                                                                   #    91/92
+POPS LF@res                                                                     #    92/92
+

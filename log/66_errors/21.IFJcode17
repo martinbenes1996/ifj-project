@@ -1,0 +1,88 @@
+# 2017-12-04 00:15:01.948614
+# SECTION: 66_errors
+# TEST: 21
+# INFO: Colision of argument name and function name
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 3
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: None
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' Colision of argument name and function name
+#   2: 
+#   3: declare function foo1() as integer
+#   4: declare function bar(foo1 as integer) as integer
+#   5: 
+#   6: function foo1() as integer
+#   7:     return 42
+#   8: end function
+#   9: 
+#  10: function bar(a as integer) as integer
+#  11:     return 42
+#  12: end function
+#  13:     
+#  14: scope
+#  15: 
+#  16: end scope
+
+########################################
+
+# Generated code                                                                #     2/45
+# IFJ                                                                           #     3/45
+# xbenes49 xbolsh00 xpolan09                                                    #     4/45
+# 2017                                                                          #     5/45
+.IFJcode17                                                                      #     7/45
+CREATEFRAME                                                                     #     8/45
+PUSHFRAME                                                                       #     9/45
+DEFVAR LF@*tmp                                                                  #    10/45
+DEFVAR LF@*foo                                                                  #    11/45
+DEFVAR LF@*bar                                                                  #    12/45
+JUMP $main                                                                      #    13/45
+# function foo1                                                                 #    16/45
+LABEL foo1                                                                      #    17/45
+PUSHFRAME                                                                       #    18/45
+DEFVAR LF@*tmp                                                                  #    19/45
+DEFVAR LF@*foo                                                                  #    20/45
+DEFVAR LF@*bar                                                                  #    21/45
+DEFVAR LF@*ret                                                                  #    22/45
+PUSHS int@42                                                                    #    23/45
+POPS LF@*ret                                                                    #    24/45
+CLEARS                                                                          #    25/45
+RETURN                                                                          #    26/45
+# function bar                                                                  #    29/45
+LABEL bar                                                                       #    30/45
+PUSHFRAME                                                                       #    31/45
+DEFVAR LF@*tmp                                                                  #    32/45
+DEFVAR LF@*foo                                                                  #    33/45
+DEFVAR LF@*bar                                                                  #    34/45
+DEFVAR LF@*ret                                                                  #    35/45
+DEFVAR LF@a                                                                     #    36/45
+MOVE LF@a LF@*1                                                                 #    37/45
+PUSHS int@42                                                                    #    38/45
+POPS LF@*ret                                                                    #    39/45
+CLEARS                                                                          #    40/45
+RETURN                                                                          #    41/45
+LABEL $main                                                                     #    43/45
+JUMP $end                                                                       #    44/45
+LABEL $end                                                                      #    45/45
+

@@ -1,0 +1,275 @@
+# 2017-12-04 00:15:04.332060
+# SECTION: 99_benchmarks
+# TEST: 11
+# INFO: big count of function parameters
+# REQUIRED EXTENSIONS: UNARY
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+# OK
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: -6
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: None
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' big count of function parameters
+#   2:     
+#   3: function testing(n as integer, a AS double, b AS double, c AS double, d AS integer, e AS double, f AS double, g AS integer, h AS integer, i AS integer, j AS double, k AS double, l AS integer, m AS double, o AS integer, p AS integer, q AS integer, r AS double, s AS double, t AS double, u AS double, v AS integer, w AS double, x AS double, y AS integer, z AS integer, aa AS double, ab AS double, ac AS integer, ad AS integer, ae AS integer, af AS double, ag AS integer, ah AS double, ai AS integer, aj AS integer, ak AS double, al AS double, am AS double, an AS double, ao AS integer, ap AS integer, aq AS double, ar AS integer, at AS integer, au AS double, av AS integer, aw AS integer, ax AS integer, ay AS integer, az AS integer, ba AS double, bb AS integer, bc AS double, bd AS double, be AS double, bf AS integer, bg AS double, bh AS integer, bi AS integer, bj AS integer, bk AS integer, bl AS integer, bm AS double, bn AS double, bo AS integer, bp AS double, bq AS double, br AS integer, bs AS integer, bt AS double, bu AS double, bv AS integer, bw AS double, bx AS integer, by AS integer, bz AS double, ca AS double, cb AS double, cc AS integer, cd AS double, ce AS integer, cf AS integer, cg AS double, ch AS double, ci AS integer, cj AS double, ck AS double, cl AS double, cm AS double, cn AS integer, co AS double, cp AS double, cq AS double, cr AS integer, cs AS integer, ct AS integer, cu AS double, cv AS integer, cw AS double, cx AS integer) as integer
+#   4:     dim res as integer
+#   5:     if n > 0 then
+#   6:         n = n - 1
+#   7:         res = testing(n, a, b, c, d, e, f, g, h, i, j, k, l, m, o, p, q, r, s, t, u, v, w, x, y, z, aa, ab, ac, ad, ae, af, ag, ah, ai, aj, ak, al, am, an, ao, ap, aq, ar, at, au, av, aw, ax, ay, az, ba, bb, bc, bd, be, bf, bg, bh, bi, bj, bk, bl, bm, bn, bo, bp, bq, br, bs, bt, bu, bv, bw, bx, by, bz, ca, cb, cc, cd, ce, cf, cg, ch, ci, cj, ck, cl, cm, cn, co, cp, cq, cr, cs, ct, cu, cv, cw, cx)
+#   8:         return res
+#   9:     else 
+#  10:         return a - b * c + d * e + f * g * h * i - j * k + l - m - o * p - q + r - s - t - u + v - w - x - y * z - aa + ab * ac - ad - ae * af - ag + ah * ai * aj + ak * al - am * an * ao + ap + aq + ar + at + au * av * aw + ax + ay + az - ba + bb + bc - bd - be * bf * bg - bh - bi + bj + bk - bl * bm - bn * bo * bp - bq * br * bs - bt + bu + bv - bw * bx * by - bz * ca * cb * cc + cd - ce * cf + cg * ch + ci - cj - ck - cl * cm + cn * co - cp - cq * cr - cs * ct + cu - cv * cw * cx 
+#  11:     end if
+#  12: end function
+#  13: 
+#  14: scope
+#  15:     dim res as integer
+#  16:     res = testing(10, 4, 1, 1, 8, 15, 8, 1, 7, 12, 4, 10, 0, 2, 8, 0, 7, 6, 15, 3, 5, 14, 11, 2, 5, 4, 6, 2, 13, 12, 0, 14, 10, 5, 4, 6, 13, 7, 10, 11, 13, 9, 12, 0, 7, 5, 13, 14, 4, 15, 13, 12, 5, 9, 14, 4, 14, 15, 5, 12, 9, 8, 3, 14, 11, 0, 3, 9, 3, 3, 14, 6, 7, 11, 4, 4, 12, 8, 11, 11, 4, 4, 4, 14, 3, 12, 6, 5, 11, 15, 3, 7, 0, 14, 5, 10, 15, 5, 1, 12, 5)
+#  17:     if res = -12697 then
+#  18:         print !"OK";
+#  19:     else
+#  20:         print !"NONOK";
+#  21:     end if
+#  22: end scope
+#  23: 
+
+########################################
+
+# Generated code                                                                #     2/221
+# IFJ                                                                           #     3/221
+# xbenes49 xbolsh00 xpolan09                                                    #     4/221
+# 2017                                                                          #     5/221
+.IFJcode17                                                                      #     7/221
+CREATEFRAME                                                                     #     8/221
+PUSHFRAME                                                                       #     9/221
+DEFVAR LF@*tmp                                                                  #    10/221
+DEFVAR LF@*foo                                                                  #    11/221
+DEFVAR LF@*bar                                                                  #    12/221
+JUMP $main                                                                      #    13/221
+# function testing                                                              #    16/221
+LABEL testing                                                                   #    17/221
+PUSHFRAME                                                                       #    18/221
+DEFVAR LF@*tmp                                                                  #    19/221
+DEFVAR LF@*foo                                                                  #    20/221
+DEFVAR LF@*bar                                                                  #    21/221
+DEFVAR LF@*ret                                                                  #    22/221
+DEFVAR LF@n                                                                     #    23/221
+MOVE LF@n LF@*1                                                                 #    24/221
+DEFVAR LF@a                                                                     #    25/221
+MOVE LF@a LF@*2                                                                 #    26/221
+DEFVAR LF@b                                                                     #    27/221
+MOVE LF@b LF@*3                                                                 #    28/221
+DEFVAR LF@c                                                                     #    29/221
+MOVE LF@c LF@*4                                                                 #    30/221
+DEFVAR LF@d                                                                     #    31/221
+MOVE LF@d LF@*5                                                                 #    32/221
+DEFVAR LF@e                                                                     #    33/221
+MOVE LF@e LF@*6                                                                 #    34/221
+DEFVAR LF@f                                                                     #    35/221
+MOVE LF@f LF@*7                                                                 #    36/221
+DEFVAR LF@g                                                                     #    37/221
+MOVE LF@g LF@*8                                                                 #    38/221
+DEFVAR LF@h                                                                     #    39/221
+MOVE LF@h LF@*9                                                                 #    40/221
+DEFVAR LF@i                                                                     #    41/221
+MOVE LF@i LF@*10                                                                #    42/221
+DEFVAR LF@j                                                                     #    43/221
+MOVE LF@j LF@*11                                                                #    44/221
+DEFVAR LF@k                                                                     #    45/221
+MOVE LF@k LF@*12                                                                #    46/221
+DEFVAR LF@l                                                                     #    47/221
+MOVE LF@l LF@*13                                                                #    48/221
+DEFVAR LF@m                                                                     #    49/221
+MOVE LF@m LF@*14                                                                #    50/221
+DEFVAR LF@o                                                                     #    51/221
+MOVE LF@o LF@*15                                                                #    52/221
+DEFVAR LF@p                                                                     #    53/221
+MOVE LF@p LF@*16                                                                #    54/221
+DEFVAR LF@q                                                                     #    55/221
+MOVE LF@q LF@*17                                                                #    56/221
+DEFVAR LF@r                                                                     #    57/221
+MOVE LF@r LF@*18                                                                #    58/221
+DEFVAR LF@s                                                                     #    59/221
+MOVE LF@s LF@*19                                                                #    60/221
+DEFVAR LF@t                                                                     #    61/221
+MOVE LF@t LF@*20                                                                #    62/221
+DEFVAR LF@u                                                                     #    63/221
+MOVE LF@u LF@*21                                                                #    64/221
+DEFVAR LF@v                                                                     #    65/221
+MOVE LF@v LF@*22                                                                #    66/221
+DEFVAR LF@w                                                                     #    67/221
+MOVE LF@w LF@*23                                                                #    68/221
+DEFVAR LF@x                                                                     #    69/221
+MOVE LF@x LF@*24                                                                #    70/221
+DEFVAR LF@y                                                                     #    71/221
+MOVE LF@y LF@*25                                                                #    72/221
+DEFVAR LF@z                                                                     #    73/221
+MOVE LF@z LF@*26                                                                #    74/221
+DEFVAR LF@aa                                                                    #    75/221
+MOVE LF@aa LF@*27                                                               #    76/221
+DEFVAR LF@ab                                                                    #    77/221
+MOVE LF@ab LF@*28                                                               #    78/221
+DEFVAR LF@ac                                                                    #    79/221
+MOVE LF@ac LF@*29                                                               #    80/221
+DEFVAR LF@ad                                                                    #    81/221
+MOVE LF@ad LF@*30                                                               #    82/221
+DEFVAR LF@ae                                                                    #    83/221
+MOVE LF@ae LF@*31                                                               #    84/221
+DEFVAR LF@af                                                                    #    85/221
+MOVE LF@af LF@*32                                                               #    86/221
+DEFVAR LF@ag                                                                    #    87/221
+MOVE LF@ag LF@*33                                                               #    88/221
+DEFVAR LF@ah                                                                    #    89/221
+MOVE LF@ah LF@*34                                                               #    90/221
+DEFVAR LF@ai                                                                    #    91/221
+MOVE LF@ai LF@*35                                                               #    92/221
+DEFVAR LF@aj                                                                    #    93/221
+MOVE LF@aj LF@*36                                                               #    94/221
+DEFVAR LF@ak                                                                    #    95/221
+MOVE LF@ak LF@*37                                                               #    96/221
+DEFVAR LF@al                                                                    #    97/221
+MOVE LF@al LF@*38                                                               #    98/221
+DEFVAR LF@am                                                                    #    99/221
+MOVE LF@am LF@*39                                                               #   100/221
+DEFVAR LF@an                                                                    #   101/221
+MOVE LF@an LF@*40                                                               #   102/221
+DEFVAR LF@ao                                                                    #   103/221
+MOVE LF@ao LF@*41                                                               #   104/221
+DEFVAR LF@ap                                                                    #   105/221
+MOVE LF@ap LF@*42                                                               #   106/221
+DEFVAR LF@aq                                                                    #   107/221
+MOVE LF@aq LF@*43                                                               #   108/221
+DEFVAR LF@ar                                                                    #   109/221
+MOVE LF@ar LF@*44                                                               #   110/221
+DEFVAR LF@at                                                                    #   111/221
+MOVE LF@at LF@*45                                                               #   112/221
+DEFVAR LF@au                                                                    #   113/221
+MOVE LF@au LF@*46                                                               #   114/221
+DEFVAR LF@av                                                                    #   115/221
+MOVE LF@av LF@*47                                                               #   116/221
+DEFVAR LF@aw                                                                    #   117/221
+MOVE LF@aw LF@*48                                                               #   118/221
+DEFVAR LF@ax                                                                    #   119/221
+MOVE LF@ax LF@*49                                                               #   120/221
+DEFVAR LF@ay                                                                    #   121/221
+MOVE LF@ay LF@*50                                                               #   122/221
+DEFVAR LF@az                                                                    #   123/221
+MOVE LF@az LF@*51                                                               #   124/221
+DEFVAR LF@ba                                                                    #   125/221
+MOVE LF@ba LF@*52                                                               #   126/221
+DEFVAR LF@bb                                                                    #   127/221
+MOVE LF@bb LF@*53                                                               #   128/221
+DEFVAR LF@bc                                                                    #   129/221
+MOVE LF@bc LF@*54                                                               #   130/221
+DEFVAR LF@bd                                                                    #   131/221
+MOVE LF@bd LF@*55                                                               #   132/221
+DEFVAR LF@be                                                                    #   133/221
+MOVE LF@be LF@*56                                                               #   134/221
+DEFVAR LF@bf                                                                    #   135/221
+MOVE LF@bf LF@*57                                                               #   136/221
+DEFVAR LF@bg                                                                    #   137/221
+MOVE LF@bg LF@*58                                                               #   138/221
+DEFVAR LF@bh                                                                    #   139/221
+MOVE LF@bh LF@*59                                                               #   140/221
+DEFVAR LF@bi                                                                    #   141/221
+MOVE LF@bi LF@*60                                                               #   142/221
+DEFVAR LF@bj                                                                    #   143/221
+MOVE LF@bj LF@*61                                                               #   144/221
+DEFVAR LF@bk                                                                    #   145/221
+MOVE LF@bk LF@*62                                                               #   146/221
+DEFVAR LF@bl                                                                    #   147/221
+MOVE LF@bl LF@*63                                                               #   148/221
+DEFVAR LF@bm                                                                    #   149/221
+MOVE LF@bm LF@*64                                                               #   150/221
+DEFVAR LF@bn                                                                    #   151/221
+MOVE LF@bn LF@*65                                                               #   152/221
+DEFVAR LF@bo                                                                    #   153/221
+MOVE LF@bo LF@*66                                                               #   154/221
+DEFVAR LF@bp                                                                    #   155/221
+MOVE LF@bp LF@*67                                                               #   156/221
+DEFVAR LF@bq                                                                    #   157/221
+MOVE LF@bq LF@*68                                                               #   158/221
+DEFVAR LF@br                                                                    #   159/221
+MOVE LF@br LF@*69                                                               #   160/221
+DEFVAR LF@bs                                                                    #   161/221
+MOVE LF@bs LF@*70                                                               #   162/221
+DEFVAR LF@bt                                                                    #   163/221
+MOVE LF@bt LF@*71                                                               #   164/221
+DEFVAR LF@bu                                                                    #   165/221
+MOVE LF@bu LF@*72                                                               #   166/221
+DEFVAR LF@bv                                                                    #   167/221
+MOVE LF@bv LF@*73                                                               #   168/221
+DEFVAR LF@bw                                                                    #   169/221
+MOVE LF@bw LF@*74                                                               #   170/221
+DEFVAR LF@bx                                                                    #   171/221
+MOVE LF@bx LF@*75                                                               #   172/221
+DEFVAR LF@by                                                                    #   173/221
+MOVE LF@by LF@*76                                                               #   174/221
+DEFVAR LF@bz                                                                    #   175/221
+MOVE LF@bz LF@*77                                                               #   176/221
+DEFVAR LF@ca                                                                    #   177/221
+MOVE LF@ca LF@*78                                                               #   178/221
+DEFVAR LF@cb                                                                    #   179/221
+MOVE LF@cb LF@*79                                                               #   180/221
+DEFVAR LF@cc                                                                    #   181/221
+MOVE LF@cc LF@*80                                                               #   182/221
+DEFVAR LF@cd                                                                    #   183/221
+MOVE LF@cd LF@*81                                                               #   184/221
+DEFVAR LF@ce                                                                    #   185/221
+MOVE LF@ce LF@*82                                                               #   186/221
+DEFVAR LF@cf                                                                    #   187/221
+MOVE LF@cf LF@*83                                                               #   188/221
+DEFVAR LF@cg                                                                    #   189/221
+MOVE LF@cg LF@*84                                                               #   190/221
+DEFVAR LF@ch                                                                    #   191/221
+MOVE LF@ch LF@*85                                                               #   192/221
+DEFVAR LF@ci                                                                    #   193/221
+MOVE LF@ci LF@*86                                                               #   194/221
+DEFVAR LF@cj                                                                    #   195/221
+MOVE LF@cj LF@*87                                                               #   196/221
+DEFVAR LF@ck                                                                    #   197/221
+MOVE LF@ck LF@*88                                                               #   198/221
+DEFVAR LF@cl                                                                    #   199/221
+MOVE LF@cl LF@*89                                                               #   200/221
+DEFVAR LF@cm                                                                    #   201/221
+MOVE LF@cm LF@*90                                                               #   202/221
+DEFVAR LF@cn                                                                    #   203/221
+MOVE LF@cn LF@*91                                                               #   204/221
+DEFVAR LF@co                                                                    #   205/221
+MOVE LF@co LF@*92                                                               #   206/221
+DEFVAR LF@cp                                                                    #   207/221
+MOVE LF@cp LF@*93                                                               #   208/221
+DEFVAR LF@cq                                                                    #   209/221
+MOVE LF@cq LF@*94                                                               #   210/221
+DEFVAR LF@cr                                                                    #   211/221
+MOVE LF@cr LF@*95                                                               #   212/221
+DEFVAR LF@cs                                                                    #   213/221
+MOVE LF@cs LF@*96                                                               #   214/221
+DEFVAR LF@ct                                                                    #   215/221
+MOVE LF@ct LF@*97                                                               #   216/221
+DEFVAR LF@cu                                                                    #   217/221
+MOVE LF@cu LF@*98                                                               #   218/221
+DEFVAR LF@cv                                                                    #   219/221
+MOVE LF@cv LF@*99                                                               #   220/221
+DEFVAR LF@cw                                                                    #   221/221
+

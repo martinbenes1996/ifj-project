@@ -1,0 +1,63 @@
+# 2017-12-04 00:15:02.424252
+# SECTION: 66_errors
+# TEST: 077
+# INFO: Function after scope
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 2
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: None
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: scope  
+#   2:  end scope 
+#   3:  function foo() as integer 
+#   4:  end function
+
+########################################
+
+# Generated code                                                                #     2/30
+# IFJ                                                                           #     3/30
+# xbenes49 xbolsh00 xpolan09                                                    #     4/30
+# 2017                                                                          #     5/30
+.IFJcode17                                                                      #     7/30
+CREATEFRAME                                                                     #     8/30
+PUSHFRAME                                                                       #     9/30
+DEFVAR LF@*tmp                                                                  #    10/30
+DEFVAR LF@*foo                                                                  #    11/30
+DEFVAR LF@*bar                                                                  #    12/30
+JUMP $main                                                                      #    13/30
+LABEL $main                                                                     #    15/30
+JUMP $end                                                                       #    16/30
+# function foo                                                                  #    18/30
+LABEL foo                                                                       #    19/30
+PUSHFRAME                                                                       #    20/30
+DEFVAR LF@*tmp                                                                  #    21/30
+DEFVAR LF@*foo                                                                  #    22/30
+DEFVAR LF@*bar                                                                  #    23/30
+DEFVAR LF@*ret                                                                  #    24/30
+PUSHS int@0                                                                     #    26/30
+POPS LF@*ret                                                                    #    27/30
+CLEARS                                                                          #    28/30
+RETURN                                                                          #    29/30
+LABEL $end                                                                      #    30/30
+

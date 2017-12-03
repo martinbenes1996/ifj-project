@@ -1,0 +1,116 @@
+# 2017-12-04 00:14:58.857289
+# SECTION: 01_basic
+# TEST: 34
+# INFO: _ as variable name
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IDEFVAR at line: 16 with following arguments:
+# Dest: LF@_
+# Executing instruction: IPUSHS at line: 17 with following arguments:
+# Arg1: Const@=6.5(double)
+# Dest: Stack@()
+# Executing instruction: IFLOAT2R2EINTS at line: 18 with following arguments:
+# Arg1: Stack@=6.5(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 19 with following arguments:
+# Arg1: Stack@=6(int)
+# Dest: LF@_()
+# Executing instruction: IDEFVAR at line: 20 with following arguments:
+# Dest: LF@__
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=5(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 22 with following arguments:
+# Arg1: Stack@=5(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 23 with following arguments:
+# Arg1: Stack@=5(double)
+# Dest: LF@__()
+# Executing instruction: IPUSHS at line: 24 with following arguments:
+# Arg1: LF@_=6(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 25 with following arguments:
+# Arg1: Stack@=6(int)
+# Dest: LF@*tmp()
+# Executing instruction: IWRITE at line: 26 with following arguments:
+# Arg1: LF@*tmp=6(int)
+# Executing instruction: IPUSHS at line: 27 with following arguments:
+# Arg1: LF@__=5(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 28 with following arguments:
+# Arg1: Stack@=5(double)
+# Dest: LF@*tmp=6(int)
+# Executing instruction: IWRITE at line: 29 with following arguments:
+# Arg1: LF@*tmp=5(double)
+# Executing instruction: IJUMP at line: 30 with following arguments:
+# Executing instruction: ILABEL at line: 31 with following arguments:
+# Executing instruction: IGROOT at line: 33 with following arguments:
+# I am Groot at 33 (109).
+# 
+# STDOUT DIFF:
+# 
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 109 (31+78)
+# GROOT: 109
+# 
+#   1: ' _ as variable name
+#   2: 
+#   3: scope
+#   4: dim _ as integer = 6.5
+#   5: dim __ as double = 5
+#   6: print _;__;
+#   7: end scope
+
+########################################
+
+# Generated code                                                                #     2/31
+# IFJ                                                                           #     3/31
+# xbenes49 xbolsh00 xpolan09                                                    #     4/31
+# 2017                                                                          #     5/31
+.IFJcode17                                                                      #     7/31
+CREATEFRAME                                                                     #     8/31
+PUSHFRAME                                                                       #     9/31
+DEFVAR LF@*tmp                                                                  #    10/31
+DEFVAR LF@*foo                                                                  #    11/31
+DEFVAR LF@*bar                                                                  #    12/31
+JUMP $main                                                                      #    13/31
+LABEL $main                                                                     #    15/31
+DEFVAR LF@_                                                                     #    16/31
+PUSHS float@6.5                                                                 #    17/31
+FLOAT2R2EINTS                                                                   #    18/31
+POPS LF@_                                                                       #    19/31
+DEFVAR LF@__                                                                    #    20/31
+PUSHS int@5                                                                     #    21/31
+INT2FLOATS                                                                      #    22/31
+POPS LF@__                                                                      #    23/31
+PUSHS LF@_                                                                      #    24/31
+POPS LF@*tmp                                                                    #    25/31
+WRITE LF@*tmp                                                                   #    26/31
+PUSHS LF@__                                                                     #    27/31
+POPS LF@*tmp                                                                    #    28/31
+WRITE LF@*tmp                                                                   #    29/31
+JUMP $end                                                                       #    30/31
+LABEL $end                                                                      #    31/31
+

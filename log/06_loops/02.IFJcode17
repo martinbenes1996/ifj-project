@@ -1,0 +1,109 @@
+# 2017-12-04 00:15:00.911471
+# SECTION: 06_loops
+# TEST: 02
+# INFO: multiple while loop
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# 26.1-8: syntax error, unexpected ID, expecting END
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+# -49.98-33.98-17.98-1.98 14.02 100 89 78 67 56 45 34 23 12 1
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 51
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' multiple while loop
+#   2: scope
+#   3: 	dim a as integer = 0 - 25
+#   4: 	do while a <= 10
+#   5: 		print 2 * a + 0.02;
+#   6: 		a = a + 8
+#   7: 	loop
+#   8: 	a = (0 - 200 + 300)
+#   9: 	do while a >= 0
+#  10: 		print a;
+#  11: 		a = a - 11
+#  12: 	loop
+#  13: end scope
+
+########################################
+
+# Generated code                                                                #     2/63
+# IFJ                                                                           #     3/63
+# xbenes49 xbolsh00 xpolan09                                                    #     4/63
+# 2017                                                                          #     5/63
+.IFJcode17                                                                      #     7/63
+CREATEFRAME                                                                     #     8/63
+PUSHFRAME                                                                       #     9/63
+DEFVAR LF@*tmp                                                                  #    10/63
+DEFVAR LF@*foo                                                                  #    11/63
+DEFVAR LF@*bar                                                                  #    12/63
+JUMP $main                                                                      #    13/63
+LABEL $main                                                                     #    15/63
+DEFVAR LF@a                                                                     #    16/63
+PUSHS int@0                                                                     #    17/63
+PUSHS int@25                                                                    #    18/63
+SUBS                                                                            #    19/63
+POPS LF@a                                                                       #    20/63
+LABEL $aaaaaa                                                                   #    21/63
+PUSHS LF@a                                                                      #    22/63
+PUSHS int@10                                                                    #    23/63
+GTS                                                                             #    24/63
+PUSHS bool@true                                                                 #    25/63
+JUMIFEQS $baaaaa                                                                #    26/63
+PUSHS int@2                                                                     #    27/63
+PUSHS LF@a                                                                      #    28/63
+MULS                                                                            #    29/63
+INT2FLOATS                                                                      #    30/63
+PUSHS float@0.02                                                                #    31/63
+ADDS                                                                            #    32/63
+POPS LF@*tmp                                                                    #    33/63
+WRITE LF@*tmp                                                                   #    34/63
+PUSHS LF@a                                                                      #    35/63
+PUSHS int@8                                                                     #    36/63
+ADDS                                                                            #    37/63
+POPS LF@a                                                                       #    38/63
+JUMP $aaaaaa                                                                    #    39/63
+LABEL $baaaaa                                                                   #    40/63
+PUSHS int@0                                                                     #    41/63
+PUSHS int@200                                                                   #    42/63
+SUBS                                                                            #    43/63
+PUSHS int@300                                                                   #    44/63
+ADDS                                                                            #    45/63
+POPS LF@a                                                                       #    46/63
+LABEL $caaaaa                                                                   #    47/63
+PUSHS LF@a                                                                      #    48/63
+PUSHS int@0                                                                     #    49/63
+LTS                                                                             #    50/63
+PUSHS bool@true                                                                 #    51/63
+JUMPIFEQS $daaaaa                                                               #    52/63
+PUSHS LF@a                                                                      #    53/63
+POPS LF@*tmp                                                                    #    54/63
+WRITE LF@*tmp                                                                   #    55/63
+PUSHS LF@a                                                                      #    56/63
+PUSHS int@11                                                                    #    57/63
+SUBS                                                                            #    58/63
+POPS LF@a                                                                       #    59/63
+JUMP $caaaaa                                                                    #    60/63
+LABEL $daaaaa                                                                   #    61/63
+JUMP $end                                                                       #    62/63
+LABEL $end                                                                      #    63/63
+

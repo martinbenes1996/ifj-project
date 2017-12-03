@@ -1,0 +1,324 @@
+# 2017-12-04 00:15:01.521664
+# SECTION: 07_strings
+# TEST: 04
+# INFO: asc builtin function
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Label already exists!
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+#  0 116 1 255 127 10 0 0
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 52
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' asc builtin function
+#   2: scope
+#   3: 	dim res as integer
+#   4: 	dim tmp as integer
+#   5: 	tmp = 0 - 10
+#   6: 
+#   7: 	res = asc(!"test", 0)
+#   8: 	print res;
+#   9: 	res = asc(!"test", 1)
+#  10: 	print res;
+#  11: 	res = asc(!"\001", 1)
+#  12: 	print res;
+#  13: 	res = asc(!"\255", 1)
+#  14: 	print res;
+#  15: 	res = asc(!"\127", 1)
+#  16: 	print res;
+#  17: 	res = asc(!"\n", 1)
+#  18: 	print res;
+#  19: 	res = asc(!"asdasd", tmp)
+#  20: 	print res;
+#  21: 	res = asc(!"asdasd", 42)
+#  22: 	print res;
+#  23: 	
+#  24: end scope
+
+########################################
+
+# Generated code                                                                #     2/267
+# IFJ                                                                           #     3/267
+# xbenes49 xbolsh00 xpolan09                                                    #     4/267
+# 2017                                                                          #     5/267
+.IFJcode17                                                                      #     7/267
+CREATEFRAME                                                                     #     8/267
+PUSHFRAME                                                                       #     9/267
+DEFVAR LF@*tmp                                                                  #    10/267
+DEFVAR LF@*foo                                                                  #    11/267
+DEFVAR LF@*bar                                                                  #    12/267
+JUMP $main                                                                      #    13/267
+LABEL $main                                                                     #    15/267
+DEFVAR LF@res                                                                   #    16/267
+PUSHS int@0                                                                     #    17/267
+POPS LF@res                                                                     #    18/267
+DEFVAR LF@tmp                                                                   #    19/267
+PUSHS int@0                                                                     #    20/267
+POPS LF@tmp                                                                     #    21/267
+PUSHS int@0                                                                     #    22/267
+PUSHS int@10                                                                    #    23/267
+SUBS                                                                            #    24/267
+POPS LF@tmp                                                                     #    25/267
+DEFVAR LF@*baaaaa                                                               #    26/267
+MOVE LF@*baaaaa string@                                                         #    27/267
+CONCAT LF@*baaaaa LF@*baaaaa string@test                                        #    28/267
+PUSHS LF@*baaaaa                                                                #    29/267
+PUSHS int@0                                                                     #    30/267
+# asc()                                                                         #    31/267
+	POPS LF@*tmp                                                                   #    32/267
+	POPS LF@*foo                                                                   #    33/267
+	STRLEN LF@*bar LF@*foo                                                         #    34/267
+	PUSHS LF@*tmp                                                                  #    35/267
+	PUSHS LF@*bar                                                                  #    36/267
+	LTS                                                                            #    37/267
+	PUSHS bool@true                                                                #    38/267
+	JUMPIFNEQS $zero                                                               #    39/267
+	PUSHS LF@*tmp                                                                  #    40/267
+	PUSHS int@0                                                                    #    41/267
+	GTS                                                                            #    42/267
+	PUSHS bool@true                                                                #    43/267
+	JUMPIFNEQS $zero                                                               #    44/267
+		PUSHS LF@*foo                                                                 #    45/267
+		PUSHS LF@*tmp                                                                 #    46/267
+		STRI2INTS                                                                     #    47/267
+		JUMP $aaaaaa                                                                  #    48/267
+	LABEL $zero                                                                    #    49/267
+	PUSHS int@0                                                                    #    50/267
+LABEL $aaaaaa                                                                   #    51/267
+POPS LF@res                                                                     #    52/267
+PUSHS LF@res                                                                    #    53/267
+POPS LF@*tmp                                                                    #    54/267
+WRITE LF@*tmp                                                                   #    55/267
+DEFVAR LF@*caaaaa                                                               #    56/267
+MOVE LF@*caaaaa string@                                                         #    57/267
+CONCAT LF@*caaaaa LF@*caaaaa string@test                                        #    58/267
+PUSHS LF@*caaaaa                                                                #    59/267
+PUSHS int@1                                                                     #    60/267
+# asc()                                                                         #    61/267
+	POPS LF@*tmp                                                                   #    62/267
+	POPS LF@*foo                                                                   #    63/267
+	STRLEN LF@*bar LF@*foo                                                         #    64/267
+	PUSHS LF@*tmp                                                                  #    65/267
+	PUSHS LF@*bar                                                                  #    66/267
+	LTS                                                                            #    67/267
+	PUSHS bool@true                                                                #    68/267
+	JUMPIFNEQS $zero                                                               #    69/267
+	PUSHS LF@*tmp                                                                  #    70/267
+	PUSHS int@0                                                                    #    71/267
+	GTS                                                                            #    72/267
+	PUSHS bool@true                                                                #    73/267
+	JUMPIFNEQS $zero                                                               #    74/267
+		PUSHS LF@*foo                                                                 #    75/267
+		PUSHS LF@*tmp                                                                 #    76/267
+		STRI2INTS                                                                     #    77/267
+		JUMP $baaaaa                                                                  #    78/267
+	LABEL $zero                                                                    #    79/267
+	PUSHS int@0                                                                    #    80/267
+LABEL $baaaaa                                                                   #    81/267
+POPS LF@res                                                                     #    82/267
+PUSHS LF@res                                                                    #    83/267
+POPS LF@*tmp                                                                    #    84/267
+WRITE LF@*tmp                                                                   #    85/267
+DEFVAR LF@*daaaaa                                                               #    86/267
+MOVE LF@*daaaaa string@                                                         #    87/267
+CONCAT LF@*daaaaa LF@*daaaaa string@\001                                        #    88/267
+PUSHS LF@*daaaaa                                                                #    89/267
+PUSHS int@1                                                                     #    90/267
+# asc()                                                                         #    91/267
+	POPS LF@*tmp                                                                   #    92/267
+	POPS LF@*foo                                                                   #    93/267
+	STRLEN LF@*bar LF@*foo                                                         #    94/267
+	PUSHS LF@*tmp                                                                  #    95/267
+	PUSHS LF@*bar                                                                  #    96/267
+	LTS                                                                            #    97/267
+	PUSHS bool@true                                                                #    98/267
+	JUMPIFNEQS $zero                                                               #    99/267
+	PUSHS LF@*tmp                                                                  #   100/267
+	PUSHS int@0                                                                    #   101/267
+	GTS                                                                            #   102/267
+	PUSHS bool@true                                                                #   103/267
+	JUMPIFNEQS $zero                                                               #   104/267
+		PUSHS LF@*foo                                                                 #   105/267
+		PUSHS LF@*tmp                                                                 #   106/267
+		STRI2INTS                                                                     #   107/267
+		JUMP $caaaaa                                                                  #   108/267
+	LABEL $zero                                                                    #   109/267
+	PUSHS int@0                                                                    #   110/267
+LABEL $caaaaa                                                                   #   111/267
+POPS LF@res                                                                     #   112/267
+PUSHS LF@res                                                                    #   113/267
+POPS LF@*tmp                                                                    #   114/267
+WRITE LF@*tmp                                                                   #   115/267
+DEFVAR LF@*eaaaaa                                                               #   116/267
+MOVE LF@*eaaaaa string@                                                         #   117/267
+CONCAT LF@*eaaaaa LF@*eaaaaa string@\00/                                        #   118/267
+PUSHS LF@*eaaaaa                                                                #   119/267
+PUSHS int@1                                                                     #   120/267
+# asc()                                                                         #   121/267
+	POPS LF@*tmp                                                                   #   122/267
+	POPS LF@*foo                                                                   #   123/267
+	STRLEN LF@*bar LF@*foo                                                         #   124/267
+	PUSHS LF@*tmp                                                                  #   125/267
+	PUSHS LF@*bar                                                                  #   126/267
+	LTS                                                                            #   127/267
+	PUSHS bool@true                                                                #   128/267
+	JUMPIFNEQS $zero                                                               #   129/267
+	PUSHS LF@*tmp                                                                  #   130/267
+	PUSHS int@0                                                                    #   131/267
+	GTS                                                                            #   132/267
+	PUSHS bool@true                                                                #   133/267
+	JUMPIFNEQS $zero                                                               #   134/267
+		PUSHS LF@*foo                                                                 #   135/267
+		PUSHS LF@*tmp                                                                 #   136/267
+		STRI2INTS                                                                     #   137/267
+		JUMP $daaaaa                                                                  #   138/267
+	LABEL $zero                                                                    #   139/267
+	PUSHS int@0                                                                    #   140/267
+LABEL $daaaaa                                                                   #   141/267
+POPS LF@res                                                                     #   142/267
+PUSHS LF@res                                                                    #   143/267
+POPS LF@*tmp                                                                    #   144/267
+WRITE LF@*tmp                                                                   #   145/267
+DEFVAR LF@*faaaaa                                                               #   146/267
+MOVE LF@*faaaaa string@                                                         #   147/267
+CONCAT LF@*faaaaa LF@*faaaaa string@                                           #   148/267
+PUSHS LF@*faaaaa                                                                #   149/267
+PUSHS int@1                                                                     #   150/267
+# asc()                                                                         #   151/267
+	POPS LF@*tmp                                                                   #   152/267
+	POPS LF@*foo                                                                   #   153/267
+	STRLEN LF@*bar LF@*foo                                                         #   154/267
+	PUSHS LF@*tmp                                                                  #   155/267
+	PUSHS LF@*bar                                                                  #   156/267
+	LTS                                                                            #   157/267
+	PUSHS bool@true                                                                #   158/267
+	JUMPIFNEQS $zero                                                               #   159/267
+	PUSHS LF@*tmp                                                                  #   160/267
+	PUSHS int@0                                                                    #   161/267
+	GTS                                                                            #   162/267
+	PUSHS bool@true                                                                #   163/267
+	JUMPIFNEQS $zero                                                               #   164/267
+		PUSHS LF@*foo                                                                 #   165/267
+		PUSHS LF@*tmp                                                                 #   166/267
+		STRI2INTS                                                                     #   167/267
+		JUMP $eaaaaa                                                                  #   168/267
+	LABEL $zero                                                                    #   169/267
+	PUSHS int@0                                                                    #   170/267
+LABEL $eaaaaa                                                                   #   171/267
+POPS LF@res                                                                     #   172/267
+PUSHS LF@res                                                                    #   173/267
+POPS LF@*tmp                                                                    #   174/267
+WRITE LF@*tmp                                                                   #   175/267
+DEFVAR LF@*gaaaaa                                                               #   176/267
+MOVE LF@*gaaaaa string@                                                         #   177/267
+CONCAT LF@*gaaaaa LF@*gaaaaa string@\010                                        #   178/267
+PUSHS LF@*gaaaaa                                                                #   179/267
+PUSHS int@1                                                                     #   180/267
+# asc()                                                                         #   181/267
+	POPS LF@*tmp                                                                   #   182/267
+	POPS LF@*foo                                                                   #   183/267
+	STRLEN LF@*bar LF@*foo                                                         #   184/267
+	PUSHS LF@*tmp                                                                  #   185/267
+	PUSHS LF@*bar                                                                  #   186/267
+	LTS                                                                            #   187/267
+	PUSHS bool@true                                                                #   188/267
+	JUMPIFNEQS $zero                                                               #   189/267
+	PUSHS LF@*tmp                                                                  #   190/267
+	PUSHS int@0                                                                    #   191/267
+	GTS                                                                            #   192/267
+	PUSHS bool@true                                                                #   193/267
+	JUMPIFNEQS $zero                                                               #   194/267
+		PUSHS LF@*foo                                                                 #   195/267
+		PUSHS LF@*tmp                                                                 #   196/267
+		STRI2INTS                                                                     #   197/267
+		JUMP $faaaaa                                                                  #   198/267
+	LABEL $zero                                                                    #   199/267
+	PUSHS int@0                                                                    #   200/267
+LABEL $faaaaa                                                                   #   201/267
+POPS LF@res                                                                     #   202/267
+PUSHS LF@res                                                                    #   203/267
+POPS LF@*tmp                                                                    #   204/267
+WRITE LF@*tmp                                                                   #   205/267
+DEFVAR LF@*haaaaa                                                               #   206/267
+MOVE LF@*haaaaa string@                                                         #   207/267
+CONCAT LF@*haaaaa LF@*haaaaa string@asdasd                                      #   208/267
+PUSHS LF@*haaaaa                                                                #   209/267
+PUSHS LF@tmp                                                                    #   210/267
+# asc()                                                                         #   211/267
+	POPS LF@*tmp                                                                   #   212/267
+	POPS LF@*foo                                                                   #   213/267
+	STRLEN LF@*bar LF@*foo                                                         #   214/267
+	PUSHS LF@*tmp                                                                  #   215/267
+	PUSHS LF@*bar                                                                  #   216/267
+	LTS                                                                            #   217/267
+	PUSHS bool@true                                                                #   218/267
+	JUMPIFNEQS $zero                                                               #   219/267
+	PUSHS LF@*tmp                                                                  #   220/267
+	PUSHS int@0                                                                    #   221/267
+	GTS                                                                            #   222/267
+	PUSHS bool@true                                                                #   223/267
+	JUMPIFNEQS $zero                                                               #   224/267
+		PUSHS LF@*foo                                                                 #   225/267
+		PUSHS LF@*tmp                                                                 #   226/267
+		STRI2INTS                                                                     #   227/267
+		JUMP $gaaaaa                                                                  #   228/267
+	LABEL $zero                                                                    #   229/267
+	PUSHS int@0                                                                    #   230/267
+LABEL $gaaaaa                                                                   #   231/267
+POPS LF@res                                                                     #   232/267
+PUSHS LF@res                                                                    #   233/267
+POPS LF@*tmp                                                                    #   234/267
+WRITE LF@*tmp                                                                   #   235/267
+DEFVAR LF@*iaaaaa                                                               #   236/267
+MOVE LF@*iaaaaa string@                                                         #   237/267
+CONCAT LF@*iaaaaa LF@*iaaaaa string@asdasd                                      #   238/267
+PUSHS LF@*iaaaaa                                                                #   239/267
+PUSHS int@42                                                                    #   240/267
+# asc()                                                                         #   241/267
+	POPS LF@*tmp                                                                   #   242/267
+	POPS LF@*foo                                                                   #   243/267
+	STRLEN LF@*bar LF@*foo                                                         #   244/267
+	PUSHS LF@*tmp                                                                  #   245/267
+	PUSHS LF@*bar                                                                  #   246/267
+	LTS                                                                            #   247/267
+	PUSHS bool@true                                                                #   248/267
+	JUMPIFNEQS $zero                                                               #   249/267
+	PUSHS LF@*tmp                                                                  #   250/267
+	PUSHS int@0                                                                    #   251/267
+	GTS                                                                            #   252/267
+	PUSHS bool@true                                                                #   253/267
+	JUMPIFNEQS $zero                                                               #   254/267
+		PUSHS LF@*foo                                                                 #   255/267
+		PUSHS LF@*tmp                                                                 #   256/267
+		STRI2INTS                                                                     #   257/267
+		JUMP $haaaaa                                                                  #   258/267
+	LABEL $zero                                                                    #   259/267
+	PUSHS int@0                                                                    #   260/267
+LABEL $haaaaa                                                                   #   261/267
+POPS LF@res                                                                     #   262/267
+PUSHS LF@res                                                                    #   263/267
+POPS LF@*tmp                                                                    #   264/267
+WRITE LF@*tmp                                                                   #   265/267
+JUMP $end                                                                       #   266/267
+LABEL $end                                                                      #   267/267
+

@@ -1,0 +1,132 @@
+# 2017-12-04 00:15:00.104502
+# SECTION: 04_expressions
+# TEST: 06
+# INFO: multiple operations with different priorities I
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IDEFVAR at line: 16 with following arguments:
+# Dest: LF@a
+# Executing instruction: IPUSHS at line: 17 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 18 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: LF@a()
+# Executing instruction: IDEFVAR at line: 19 with following arguments:
+# Dest: LF@b
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: Const@=9(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 21 with following arguments:
+# Arg1: Stack@=9(int)
+# Dest: LF@b()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: LF@b=9(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 23 with following arguments:
+# Arg1: LF@a=2(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 24 with following arguments:
+# Arg1: LF@b=9(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 25 with following arguments:
+# Arg1: Stack@=2(int)
+# Arg2: Stack@=9(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 26 with following arguments:
+# Arg1: Stack@=9(int)
+# Arg2: Stack@=18(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 27 with following arguments:
+# Arg1: LF@b=9(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 28 with following arguments:
+# Arg1: Stack@=27(int)
+# Arg2: Stack@=9(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 29 with following arguments:
+# Arg1: Stack@=36(int)
+# Dest: LF@a=2(int)
+# Executing instruction: IPUSHS at line: 30 with following arguments:
+# Arg1: LF@a=36(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 31 with following arguments:
+# Arg1: Stack@=36(int)
+# Dest: LF@*tmp()
+# Executing instruction: IWRITE at line: 32 with following arguments:
+# Arg1: LF@*tmp=36(int)
+# Executing instruction: IJUMP at line: 33 with following arguments:
+# Executing instruction: ILABEL at line: 34 with following arguments:
+# Executing instruction: IGROOT at line: 36 with following arguments:
+# I am Groot at 36 (139).
+# 
+# STDOUT DIFF:
+# 
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 139 (37+102)
+# GROOT: 139
+# 
+#   1: ' multiple operations with different priorities I
+#   2: scope
+#   3:     dim a as integer = 2
+#   4:     dim b as integer = 9
+#   5:     a = b + a * b + b
+#   6:     print a;
+#   7: end scope
+
+########################################
+
+# Generated code                                                                #     2/34
+# IFJ                                                                           #     3/34
+# xbenes49 xbolsh00 xpolan09                                                    #     4/34
+# 2017                                                                          #     5/34
+.IFJcode17                                                                      #     7/34
+CREATEFRAME                                                                     #     8/34
+PUSHFRAME                                                                       #     9/34
+DEFVAR LF@*tmp                                                                  #    10/34
+DEFVAR LF@*foo                                                                  #    11/34
+DEFVAR LF@*bar                                                                  #    12/34
+JUMP $main                                                                      #    13/34
+LABEL $main                                                                     #    15/34
+DEFVAR LF@a                                                                     #    16/34
+PUSHS int@2                                                                     #    17/34
+POPS LF@a                                                                       #    18/34
+DEFVAR LF@b                                                                     #    19/34
+PUSHS int@9                                                                     #    20/34
+POPS LF@b                                                                       #    21/34
+PUSHS LF@b                                                                      #    22/34
+PUSHS LF@a                                                                      #    23/34
+PUSHS LF@b                                                                      #    24/34
+MULS                                                                            #    25/34
+ADDS                                                                            #    26/34
+PUSHS LF@b                                                                      #    27/34
+ADDS                                                                            #    28/34
+POPS LF@a                                                                       #    29/34
+PUSHS LF@a                                                                      #    30/34
+POPS LF@*tmp                                                                    #    31/34
+WRITE LF@*tmp                                                                   #    32/34
+JUMP $end                                                                       #    33/34
+LABEL $end                                                                      #    34/34
+

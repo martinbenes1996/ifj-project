@@ -1,0 +1,78 @@
+# 2017-12-04 00:15:01.928714
+# SECTION: 66_errors
+# TEST: 19
+# INFO: Colision of argument name and function name
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# pedant.c: P_HandleOperand: l.536: Handle_operand: function as an operand in expression! not allowed
+# Handle_operand: function as an operand in expression! not allowed. Line: 8
+# 
+# INTERPRETER STDERR:
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 3
+# CURRENT COMPILER EXIT CODE: 4
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: None
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' Colision of argument name and function name
+#   2: 
+#   3: function foo1() as integer
+#   4: end function
+#   5: 
+#   6: function bar(foo1 as integer) as integer
+#   7:     return foo1
+#   8: end function
+#   9: 
+#  10: scope
+#  11: end scope
+
+########################################
+
+# Generated code                                                                #     2/37
+# IFJ                                                                           #     3/37
+# xbenes49 xbolsh00 xpolan09                                                    #     4/37
+# 2017                                                                          #     5/37
+.IFJcode17                                                                      #     7/37
+CREATEFRAME                                                                     #     8/37
+PUSHFRAME                                                                       #     9/37
+DEFVAR LF@*tmp                                                                  #    10/37
+DEFVAR LF@*foo                                                                  #    11/37
+DEFVAR LF@*bar                                                                  #    12/37
+JUMP $main                                                                      #    13/37
+# function foo1                                                                 #    16/37
+LABEL foo1                                                                      #    17/37
+PUSHFRAME                                                                       #    18/37
+DEFVAR LF@*tmp                                                                  #    19/37
+DEFVAR LF@*foo                                                                  #    20/37
+DEFVAR LF@*bar                                                                  #    21/37
+DEFVAR LF@*ret                                                                  #    22/37
+PUSHS int@0                                                                     #    24/37
+POPS LF@*ret                                                                    #    25/37
+CLEARS                                                                          #    26/37
+RETURN                                                                          #    27/37
+# function bar                                                                  #    29/37
+LABEL bar                                                                       #    30/37
+PUSHFRAME                                                                       #    31/37
+DEFVAR LF@*tmp                                                                  #    32/37
+DEFVAR LF@*foo                                                                  #    33/37
+DEFVAR LF@*bar                                                                  #    34/37
+DEFVAR LF@*ret                                                                  #    35/37
+DEFVAR LF@foo1                                                                  #    36/37
+MOVE LF@foo1 LF@*1                                                              #    37/37
+

@@ -1,0 +1,107 @@
+# 2017-12-04 00:15:00.252852
+# SECTION: 04_expressions
+# TEST: 20
+# INFO: Add doubles with dot format
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IDEFVAR at line: 16 with following arguments:
+# Dest: LF@ahoj
+# Executing instruction: IPUSHS at line: 17 with following arguments:
+# Arg1: Const@=10.8(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 18 with following arguments:
+# Arg1: Stack@=10.8(double)
+# Dest: LF@ahoj()
+# Executing instruction: IDEFVAR at line: 19 with following arguments:
+# Dest: LF@neboj
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: Const@=67.40000000000001(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 21 with following arguments:
+# Arg1: Stack@=67.40000000000001(double)
+# Dest: LF@neboj()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: LF@ahoj=10.8(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 23 with following arguments:
+# Arg1: LF@neboj=67.40000000000001(double)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 24 with following arguments:
+# Arg1: Stack@=10.8(double)
+# Arg2: Stack@=67.40000000000001(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 25 with following arguments:
+# Arg1: Stack@=78.2(double)
+# Dest: LF@*tmp()
+# Executing instruction: IWRITE at line: 26 with following arguments:
+# Arg1: LF@*tmp=78.2(double)
+# Executing instruction: IJUMP at line: 27 with following arguments:
+# Executing instruction: ILABEL at line: 28 with following arguments:
+# Executing instruction: IGROOT at line: 30 with following arguments:
+# I am Groot at 30 (93).
+# 
+# STDOUT DIFF:
+# 
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 93 (27+66)
+# GROOT: 93
+# 
+#   1: ' Add doubles with dot format
+#   2: scope
+#   3: dim ahoj as double = 10.8
+#   4: dim neboj as double = 67.4
+#   5: 
+#   6: print ahoj + neboj;
+#   7: 
+#   8: end scope
+
+########################################
+
+# Generated code                                                                #     2/28
+# IFJ                                                                           #     3/28
+# xbenes49 xbolsh00 xpolan09                                                    #     4/28
+# 2017                                                                          #     5/28
+.IFJcode17                                                                      #     7/28
+CREATEFRAME                                                                     #     8/28
+PUSHFRAME                                                                       #     9/28
+DEFVAR LF@*tmp                                                                  #    10/28
+DEFVAR LF@*foo                                                                  #    11/28
+DEFVAR LF@*bar                                                                  #    12/28
+JUMP $main                                                                      #    13/28
+LABEL $main                                                                     #    15/28
+DEFVAR LF@ahoj                                                                  #    16/28
+PUSHS float@10.8                                                                #    17/28
+POPS LF@ahoj                                                                    #    18/28
+DEFVAR LF@neboj                                                                 #    19/28
+PUSHS float@67.4                                                                #    20/28
+POPS LF@neboj                                                                   #    21/28
+PUSHS LF@ahoj                                                                   #    22/28
+PUSHS LF@neboj                                                                  #    23/28
+ADDS                                                                            #    24/28
+POPS LF@*tmp                                                                    #    25/28
+WRITE LF@*tmp                                                                   #    26/28
+JUMP $end                                                                       #    27/28
+LABEL $end                                                                      #    28/28
+

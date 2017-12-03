@@ -1,0 +1,132 @@
+# 2017-12-04 00:15:04.232902
+# SECTION: 99_benchmarks
+# TEST: 05
+# INFO: factorial by recursion
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+#  3628800
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: None
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' factorial by recursion
+#   2: declare function factorial (n As integer) As integer
+#   3: function factorial (n As integer) As integer
+#   4: 	dim temp_result As integer
+#   5: 	dim decremented_n As integer
+#   6: 	dim result As integer
+#   7: 	if n < 2 Then
+#   8: 		result = 1
+#   9: 	Else
+#  10: 		decremented_n = n - 1
+#  11: 		temp_result = factorial(decremented_n)
+#  12: 		result = n * temp_result
+#  13: 	end if
+#  14: 	Return result
+#  15: end function
+#  16: 
+#  17: scope
+#  18: 	dim res as integer
+#  19: 	res = factorial(10)
+#  20: 	print res;
+#  21: end scope
+
+########################################
+
+# Generated code                                                                #     2/80
+# IFJ                                                                           #     3/80
+# xbenes49 xbolsh00 xpolan09                                                    #     4/80
+# 2017                                                                          #     5/80
+.IFJcode17                                                                      #     7/80
+CREATEFRAME                                                                     #     8/80
+PUSHFRAME                                                                       #     9/80
+DEFVAR LF@*tmp                                                                  #    10/80
+DEFVAR LF@*foo                                                                  #    11/80
+DEFVAR LF@*bar                                                                  #    12/80
+JUMP $main                                                                      #    13/80
+# function factorial                                                            #    16/80
+LABEL factorial                                                                 #    17/80
+PUSHFRAME                                                                       #    18/80
+DEFVAR LF@*tmp                                                                  #    19/80
+DEFVAR LF@*foo                                                                  #    20/80
+DEFVAR LF@*bar                                                                  #    21/80
+DEFVAR LF@*ret                                                                  #    22/80
+DEFVAR LF@n                                                                     #    23/80
+MOVE LF@n LF@*1                                                                 #    24/80
+DEFVAR LF@temp_result                                                           #    25/80
+PUSHS int@0                                                                     #    26/80
+POPS LF@temp_result                                                             #    27/80
+DEFVAR LF@decremented_n                                                         #    28/80
+PUSHS int@0                                                                     #    29/80
+POPS LF@decremented_n                                                           #    30/80
+DEFVAR LF@result                                                                #    31/80
+PUSHS int@0                                                                     #    32/80
+POPS LF@result                                                                  #    33/80
+PUSHS LF@n                                                                      #    34/80
+PUSHS int@2                                                                     #    35/80
+LTS                                                                             #    36/80
+PUSHS bool@true                                                                 #    37/80
+JUMPIFNEQS $aaaaaa                                                              #    38/80
+PUSHS int@1                                                                     #    39/80
+POPS LF@result                                                                  #    40/80
+JUMP $baaaaa                                                                    #    41/80
+LABEL $aaaaaa                                                                   #    42/80
+PUSHS LF@n                                                                      #    43/80
+PUSHS int@1                                                                     #    44/80
+SUBS                                                                            #    45/80
+POPS LF@decremented_n                                                           #    46/80
+CREATEFRAME                                                                     #    47/80
+DEFVAR TF@*1                                                                    #    48/80
+PUSHS LF@decremented_n                                                          #    49/80
+POPS TF@*1                                                                      #    50/80
+CALL factorial                                                                  #    51/80
+POPFRAME                                                                        #    52/80
+PUSHS TF@*ret                                                                   #    53/80
+POPS LF@temp_result                                                             #    54/80
+PUSHS LF@n                                                                      #    55/80
+PUSHS LF@temp_result                                                            #    56/80
+MULS                                                                            #    57/80
+POPS LF@result                                                                  #    58/80
+PUSHS LF@result                                                                 #    59/80
+POPS LF@*ret                                                                    #    60/80
+CLEARS                                                                          #    61/80
+RETURN                                                                          #    62/80
+LABEL $baaaaa                                                                   #    63/80
+LABEL $main                                                                     #    64/80
+DEFVAR LF@res                                                                   #    65/80
+PUSHS int@0                                                                     #    66/80
+POPS LF@res                                                                     #    67/80
+CREATEFRAME                                                                     #    68/80
+DEFVAR TF@*1                                                                    #    69/80
+PUSHS int@10                                                                    #    70/80
+POPS TF@*1                                                                      #    71/80
+CALL factorial                                                                  #    72/80
+POPFRAME                                                                        #    73/80
+PUSHS TF@*ret                                                                   #    74/80
+POPS LF@res                                                                     #    75/80
+PUSHS LF@res                                                                    #    76/80
+POPS LF@*tmp                                                                    #    77/80
+WRITE LF@*tmp                                                                   #    78/80
+JUMP $end                                                                       #    79/80
+LABEL $end                                                                      #    80/80
+

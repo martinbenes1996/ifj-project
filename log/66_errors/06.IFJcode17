@@ -1,0 +1,81 @@
+# 2017-12-04 00:15:01.852867
+# SECTION: 66_errors
+# TEST: 06
+# INFO: Call function with too little arguments
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# parser.c: FunctionCallParse: l.1575: bad arguments count
+# bad arguments count. Line: 10
+# 
+# INTERPRETER STDERR:
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 4
+# CURRENT COMPILER EXIT CODE: 4
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: None
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' Call function with too little arguments
+#   2: 
+#   3: function foo(a as integer, b as integer) as integer
+#   4: 
+#   5: end function
+#   6: 
+#   7: scope
+#   8: 	dim a as integer
+#   9: 	a = foo(31)
+#  10: 
+#  11: end scope
+
+########################################
+
+# Generated code                                                                #     2/39
+# IFJ                                                                           #     3/39
+# xbenes49 xbolsh00 xpolan09                                                    #     4/39
+# 2017                                                                          #     5/39
+.IFJcode17                                                                      #     7/39
+CREATEFRAME                                                                     #     8/39
+PUSHFRAME                                                                       #     9/39
+DEFVAR LF@*tmp                                                                  #    10/39
+DEFVAR LF@*foo                                                                  #    11/39
+DEFVAR LF@*bar                                                                  #    12/39
+JUMP $main                                                                      #    13/39
+# function foo                                                                  #    16/39
+LABEL foo                                                                       #    17/39
+PUSHFRAME                                                                       #    18/39
+DEFVAR LF@*tmp                                                                  #    19/39
+DEFVAR LF@*foo                                                                  #    20/39
+DEFVAR LF@*bar                                                                  #    21/39
+DEFVAR LF@*ret                                                                  #    22/39
+DEFVAR LF@a                                                                     #    23/39
+MOVE LF@a LF@*1                                                                 #    24/39
+DEFVAR LF@b                                                                     #    25/39
+MOVE LF@b LF@*2                                                                 #    26/39
+PUSHS int@0                                                                     #    28/39
+POPS LF@*ret                                                                    #    29/39
+CLEARS                                                                          #    30/39
+RETURN                                                                          #    31/39
+LABEL $main                                                                     #    32/39
+DEFVAR LF@a                                                                     #    33/39
+PUSHS int@0                                                                     #    34/39
+POPS LF@a                                                                       #    35/39
+CREATEFRAME                                                                     #    36/39
+DEFVAR TF@*1                                                                    #    37/39
+PUSHS int@31                                                                    #    38/39
+POPS TF@*1                                                                      #    39/39
+

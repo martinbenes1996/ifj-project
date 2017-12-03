@@ -1,0 +1,73 @@
+# 2017-12-04 00:15:01.877309
+# SECTION: 66_errors
+# TEST: 09
+# INFO: Assign integer into string
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# pedant.c: P_HandleTarget: l.634: incompatible type
+# incompatible type. Line: 10
+# 
+# INTERPRETER STDERR:
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 4
+# CURRENT COMPILER EXIT CODE: 4
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: None
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: ' Assign integer into string
+#   2: 
+#   3: scope
+#   4: 
+#   5: 	dim a as string
+#   6: 	a = !"ahoj"
+#   7: 
+#   8: 	dim b as integer
+#   9: 	b = a
+#  10: 
+#  11: end scope
+
+########################################
+
+# Generated code                                                                #     2/29
+# IFJ                                                                           #     3/29
+# xbenes49 xbolsh00 xpolan09                                                    #     4/29
+# 2017                                                                          #     5/29
+.IFJcode17                                                                      #     7/29
+CREATEFRAME                                                                     #     8/29
+PUSHFRAME                                                                       #     9/29
+DEFVAR LF@*tmp                                                                  #    10/29
+DEFVAR LF@*foo                                                                  #    11/29
+DEFVAR LF@*bar                                                                  #    12/29
+JUMP $main                                                                      #    13/29
+LABEL $main                                                                     #    15/29
+DEFVAR LF@a                                                                     #    16/29
+DEFVAR LF@*baaaaa                                                               #    17/29
+MOVE LF@*baaaaa string@                                                         #    18/29
+CONCAT LF@*baaaaa LF@*baaaaa string@                                            #    19/29
+PUSHS LF@*baaaaa                                                                #    20/29
+POPS LF@a                                                                       #    21/29
+DEFVAR LF@*caaaaa                                                               #    22/29
+MOVE LF@*caaaaa string@                                                         #    23/29
+CONCAT LF@*caaaaa LF@*caaaaa string@ahoj                                        #    24/29
+PUSHS LF@*caaaaa                                                                #    25/29
+POPS LF@a                                                                       #    26/29
+DEFVAR LF@b                                                                     #    27/29
+PUSHS int@0                                                                     #    28/29
+POPS LF@b                                                                       #    29/29
+

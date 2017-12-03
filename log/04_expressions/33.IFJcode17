@@ -1,0 +1,208 @@
+# 2017-12-04 00:15:00.514077
+# SECTION: 04_expressions
+# TEST: 33
+# INFO: Random math expression with -
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IDEFVAR at line: 16 with following arguments:
+# Dest: LF@a
+# Executing instruction: IPUSHS at line: 17 with following arguments:
+# Arg1: Const@=0(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 18 with following arguments:
+# Arg1: Stack@=0(double)
+# Dest: LF@a()
+# Executing instruction: IPUSHS at line: 19 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 20 with following arguments:
+# Arg1: Stack@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 21 with following arguments:
+# Arg1: Const@=4576.57(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=4(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 23 with following arguments:
+# Arg1: Stack@=4(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 24 with following arguments:
+# Arg1: Stack@=4576.57(double)
+# Arg2: Stack@=4(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 25 with following arguments:
+# Arg1: Stack@=0(double)
+# Arg2: Stack@=18306.28(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=676(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 27 with following arguments:
+# Arg1: Stack@=676(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 28 with following arguments:
+# Arg1: Stack@=-18306.28(double)
+# Arg2: Stack@=676(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 29 with following arguments:
+# Arg1: Const@=5(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 30 with following arguments:
+# Arg1: Stack@=5(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 31 with following arguments:
+# Arg1: Stack@=-12375045.28(double)
+# Arg2: Stack@=5(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: Const@=65.67(double)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 33 with following arguments:
+# Arg1: Stack@=-2475009.056(double)
+# Arg2: Stack@=65.67(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 34 with following arguments:
+# Arg1: Const@=6.68(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 35 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 36 with following arguments:
+# Arg1: Stack@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 37 with following arguments:
+# Arg1: Const@=58.5668(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 38 with following arguments:
+# Arg1: Stack@=0(double)
+# Arg2: Stack@=58.5668(double)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 39 with following arguments:
+# Arg1: Stack@=6.68(double)
+# Arg2: Stack@=-58.5668(double)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 40 with following arguments:
+# Arg1: Stack@=-37688.58011268463(double)
+# Arg2: Stack@=-391.226224(double)
+# Dest: Stack@()
+# Executing instruction: IFLOAT2R2EINTS at line: 41 with following arguments:
+# Arg1: Stack@=96.33449344818111(double)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 42 with following arguments:
+# Arg1: Stack@=96(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 43 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 44 with following arguments:
+# Arg1: Const@=5(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 45 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=5(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 46 with following arguments:
+# Arg1: Stack@=-5(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 47 with following arguments:
+# Arg1: Stack@=96(double)
+# Arg2: Stack@=-5(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 48 with following arguments:
+# Arg1: Stack@=-19.2(double)
+# Dest: LF@*tmp()
+# Executing instruction: IWRITE at line: 49 with following arguments:
+# Arg1: LF@*tmp=-19.2(double)
+# Executing instruction: IJUMP at line: 50 with following arguments:
+# Executing instruction: ILABEL at line: 51 with following arguments:
+# Executing instruction: IGROOT at line: 53 with following arguments:
+# I am Groot at 53 (228).
+# 
+# STDOUT DIFF:
+# 
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 228 (68+160)
+# GROOT: 228
+# 
+#   1: ' Random math expression with -
+#   2: 
+#   3: scope
+#   4:     dim a as double
+#   5:     print ((0-4576.5656*4)*676/5/65.67\6.68*(0-58.56678))/(0-5);
+#   6: 
+#   7: end scope
+
+########################################
+
+# Generated code                                                                #     2/51
+# IFJ                                                                           #     3/51
+# xbenes49 xbolsh00 xpolan09                                                    #     4/51
+# 2017                                                                          #     5/51
+.IFJcode17                                                                      #     7/51
+CREATEFRAME                                                                     #     8/51
+PUSHFRAME                                                                       #     9/51
+DEFVAR LF@*tmp                                                                  #    10/51
+DEFVAR LF@*foo                                                                  #    11/51
+DEFVAR LF@*bar                                                                  #    12/51
+JUMP $main                                                                      #    13/51
+LABEL $main                                                                     #    15/51
+DEFVAR LF@a                                                                     #    16/51
+PUSHS float@0                                                                   #    17/51
+POPS LF@a                                                                       #    18/51
+PUSHS int@0                                                                     #    19/51
+INT2FLOATS                                                                      #    20/51
+PUSHS float@4576.57                                                             #    21/51
+PUSHS int@4                                                                     #    22/51
+INT2FLOATS                                                                      #    23/51
+MULS                                                                            #    24/51
+SUBS                                                                            #    25/51
+PUSHS int@676                                                                   #    26/51
+INT2FLOATS                                                                      #    27/51
+MULS                                                                            #    28/51
+PUSHS int@5                                                                     #    29/51
+INT2FLOATS                                                                      #    30/51
+DIVS                                                                            #    31/51
+PUSHS float@65.67                                                               #    32/51
+DIVS                                                                            #    33/51
+PUSHS float@6.68                                                                #    34/51
+PUSHS int@0                                                                     #    35/51
+INT2FLOATS                                                                      #    36/51
+PUSHS float@58.5668                                                             #    37/51
+SUBS                                                                            #    38/51
+MULS                                                                            #    39/51
+DIVS                                                                            #    40/51
+FLOAT2R2EINTS                                                                   #    41/51
+INT2FLOATS                                                                      #    42/51
+PUSHS int@0                                                                     #    43/51
+PUSHS int@5                                                                     #    44/51
+SUBS                                                                            #    45/51
+INT2FLOATS                                                                      #    46/51
+DIVS                                                                            #    47/51
+POPS LF@*tmp                                                                    #    48/51
+WRITE LF@*tmp                                                                   #    49/51
+JUMP $end                                                                       #    50/51
+LABEL $end                                                                      #    51/51
+

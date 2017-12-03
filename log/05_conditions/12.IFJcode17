@@ -1,0 +1,473 @@
+# 2017-12-04 00:15:00.800596
+# SECTION: 05_conditions
+# TEST: 12
+# INFO: string compare
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IDEFVAR at line: 16 with following arguments:
+# Dest: LF@str1
+# Executing instruction: IDEFVAR at line: 17 with following arguments:
+# Dest: LF@*baaaaa
+# Executing instruction: IMOVE at line: 18 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*baaaaa()
+# Executing instruction: ICONCAT at line: 19 with following arguments:
+# Arg1: LF@*baaaaa=(string)
+# Arg2: Const@=(string)
+# Dest: LF@*baaaaa=(string)
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: LF@*baaaaa=(string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 21 with following arguments:
+# Arg1: Stack@=(string)
+# Dest: LF@str1()
+# Executing instruction: IDEFVAR at line: 22 with following arguments:
+# Dest: LF@str2
+# Executing instruction: IDEFVAR at line: 23 with following arguments:
+# Dest: LF@*caaaaa
+# Executing instruction: IMOVE at line: 24 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*caaaaa()
+# Executing instruction: ICONCAT at line: 25 with following arguments:
+# Arg1: LF@*caaaaa=(string)
+# Arg2: Const@=(string)
+# Dest: LF@*caaaaa=(string)
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: LF@*caaaaa=(string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 27 with following arguments:
+# Arg1: Stack@=(string)
+# Dest: LF@str2()
+# Executing instruction: IDEFVAR at line: 28 with following arguments:
+# Dest: LF@*daaaaa
+# Executing instruction: IMOVE at line: 29 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*daaaaa()
+# Executing instruction: ICONCAT at line: 30 with following arguments:
+# Arg1: LF@*daaaaa=(string)
+# Arg2: LF@str1=(string)
+# Dest: LF@*daaaaa=(string)
+# Executing instruction: IPUSHS at line: 31 with following arguments:
+# Arg1: LF@*daaaaa=(string)
+# Dest: Stack@()
+# Executing instruction: IDEFVAR at line: 32 with following arguments:
+# Dest: LF@*eaaaaa
+# Executing instruction: IMOVE at line: 33 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*eaaaaa()
+# Executing instruction: ICONCAT at line: 34 with following arguments:
+# Arg1: LF@*eaaaaa=(string)
+# Arg2: LF@str2=(string)
+# Dest: LF@*eaaaaa=(string)
+# Executing instruction: IPUSHS at line: 35 with following arguments:
+# Arg1: LF@*eaaaaa=(string)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 36 with following arguments:
+# Arg1: Stack@=(string)
+# Arg2: Stack@=(string)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 37 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 38 with following arguments:
+# Arg1: Stack@=false(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: ILABEL at line: 43 with following arguments:
+# Executing instruction: IPUSHS at line: 44 with following arguments:
+# Arg1: Const@=1(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 45 with following arguments:
+# Arg1: Stack@=1(int)
+# Dest: LF@*tmp()
+# Executing instruction: IWRITE at line: 46 with following arguments:
+# Arg1: LF@*tmp=1(int)
+# Executing instruction: ILABEL at line: 47 with following arguments:
+# Executing instruction: IDEFVAR at line: 48 with following arguments:
+# Dest: LF@*faaaaa
+# Executing instruction: IMOVE at line: 49 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*faaaaa()
+# Executing instruction: ICONCAT at line: 50 with following arguments:
+# Arg1: LF@*faaaaa=(string)
+# Arg2: LF@str1=(string)
+# Dest: LF@*faaaaa=(string)
+# Executing instruction: IPUSHS at line: 51 with following arguments:
+# Arg1: LF@*faaaaa=(string)
+# Dest: Stack@()
+# Executing instruction: IDEFVAR at line: 52 with following arguments:
+# Dest: LF@*gaaaaa
+# Executing instruction: IMOVE at line: 53 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*gaaaaa()
+# Executing instruction: ICONCAT at line: 54 with following arguments:
+# Arg1: LF@*gaaaaa=(string)
+# Arg2: LF@str2=(string)
+# Dest: LF@*gaaaaa=(string)
+# Executing instruction: IPUSHS at line: 55 with following arguments:
+# Arg1: LF@*gaaaaa=(string)
+# Dest: Stack@()
+# Executing instruction: ILSS at line: 56 with following arguments:
+# Arg1: Stack@=(string)
+# Arg2: Stack@=(string)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 57 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFEQS at line: 58 with following arguments:
+# Arg1: Stack@=false(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 59 with following arguments:
+# Arg1: Const@=1(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 60 with following arguments:
+# Arg1: Stack@=1(int)
+# Dest: LF@*tmp=1(int)
+# Executing instruction: IWRITE at line: 61 with following arguments:
+# Arg1: LF@*tmp=1(int)
+# Executing instruction: IJUMP at line: 62 with following arguments:
+# Executing instruction: ILABEL at line: 67 with following arguments:
+# Executing instruction: IDEFVAR at line: 68 with following arguments:
+# Dest: LF@*haaaaa
+# Executing instruction: IMOVE at line: 69 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*haaaaa()
+# Executing instruction: ICONCAT at line: 70 with following arguments:
+# Arg1: LF@*haaaaa=(string)
+# Arg2: Const@=a(string)
+# Dest: LF@*haaaaa=(string)
+# Executing instruction: IPUSHS at line: 71 with following arguments:
+# Arg1: LF@*haaaaa=a(string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 72 with following arguments:
+# Arg1: Stack@=a(string)
+# Dest: LF@str1=(string)
+# Executing instruction: IDEFVAR at line: 73 with following arguments:
+# Dest: LF@*iaaaaa
+# Executing instruction: IMOVE at line: 74 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*iaaaaa()
+# Executing instruction: ICONCAT at line: 75 with following arguments:
+# Arg1: LF@*iaaaaa=(string)
+# Arg2: Const@=b(string)
+# Dest: LF@*iaaaaa=(string)
+# Executing instruction: IPUSHS at line: 76 with following arguments:
+# Arg1: LF@*iaaaaa=b(string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 77 with following arguments:
+# Arg1: Stack@=b(string)
+# Dest: LF@str2=(string)
+# Executing instruction: IDEFVAR at line: 78 with following arguments:
+# Dest: LF@*jaaaaa
+# Executing instruction: IMOVE at line: 79 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*jaaaaa()
+# Executing instruction: ICONCAT at line: 80 with following arguments:
+# Arg1: LF@*jaaaaa=(string)
+# Arg2: LF@str1=a(string)
+# Dest: LF@*jaaaaa=(string)
+# Executing instruction: IPUSHS at line: 81 with following arguments:
+# Arg1: LF@*jaaaaa=a(string)
+# Dest: Stack@()
+# Executing instruction: IDEFVAR at line: 82 with following arguments:
+# Dest: LF@*kaaaaa
+# Executing instruction: IMOVE at line: 83 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*kaaaaa()
+# Executing instruction: ICONCAT at line: 84 with following arguments:
+# Arg1: LF@*kaaaaa=(string)
+# Arg2: LF@str2=b(string)
+# Dest: LF@*kaaaaa=(string)
+# Executing instruction: IPUSHS at line: 85 with following arguments:
+# Arg1: LF@*kaaaaa=b(string)
+# Dest: Stack@()
+# Executing instruction: ILSS at line: 86 with following arguments:
+# Arg1: Stack@=a(string)
+# Arg2: Stack@=b(string)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 87 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 88 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 89 with following arguments:
+# Arg1: Const@=1(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 90 with following arguments:
+# Arg1: Stack@=1(int)
+# Dest: LF@*tmp=1(int)
+# Executing instruction: IWRITE at line: 91 with following arguments:
+# Arg1: LF@*tmp=1(int)
+# Executing instruction: IJUMP at line: 92 with following arguments:
+# Executing instruction: ILABEL at line: 97 with following arguments:
+# Executing instruction: IDEFVAR at line: 98 with following arguments:
+# Dest: LF@*laaaaa
+# Executing instruction: IMOVE at line: 99 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*laaaaa()
+# Executing instruction: ICONCAT at line: 100 with following arguments:
+# Arg1: LF@*laaaaa=(string)
+# Arg2: Const@=aa(string)
+# Dest: LF@*laaaaa=(string)
+# Executing instruction: IPUSHS at line: 101 with following arguments:
+# Arg1: LF@*laaaaa=aa(string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 102 with following arguments:
+# Arg1: Stack@=aa(string)
+# Dest: LF@str1=a(string)
+# Executing instruction: IDEFVAR at line: 103 with following arguments:
+# Dest: LF@*maaaaa
+# Executing instruction: IMOVE at line: 104 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*maaaaa()
+# Executing instruction: ICONCAT at line: 105 with following arguments:
+# Arg1: LF@*maaaaa=(string)
+# Arg2: Const@=aac(string)
+# Dest: LF@*maaaaa=(string)
+# Executing instruction: IPUSHS at line: 106 with following arguments:
+# Arg1: LF@*maaaaa=aac(string)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 107 with following arguments:
+# Arg1: Stack@=aac(string)
+# Dest: LF@str2=b(string)
+# Executing instruction: IDEFVAR at line: 108 with following arguments:
+# Dest: LF@*naaaaa
+# Executing instruction: IMOVE at line: 109 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*naaaaa()
+# Executing instruction: ICONCAT at line: 110 with following arguments:
+# Arg1: LF@*naaaaa=(string)
+# Arg2: LF@str2=aac(string)
+# Dest: LF@*naaaaa=(string)
+# Executing instruction: IPUSHS at line: 111 with following arguments:
+# Arg1: LF@*naaaaa=aac(string)
+# Dest: Stack@()
+# Executing instruction: IDEFVAR at line: 112 with following arguments:
+# Dest: LF@*oaaaaa
+# Executing instruction: IMOVE at line: 113 with following arguments:
+# Arg1: Const@=(string)
+# Dest: LF@*oaaaaa()
+# Executing instruction: ICONCAT at line: 114 with following arguments:
+# Arg1: LF@*oaaaaa=(string)
+# Arg2: LF@str1=aa(string)
+# Dest: LF@*oaaaaa=(string)
+# Executing instruction: IPUSHS at line: 115 with following arguments:
+# Arg1: LF@*oaaaaa=aa(string)
+# Dest: Stack@()
+# Executing instruction: IGTS at line: 116 with following arguments:
+# Arg1: Stack@=aac(string)
+# Arg2: Stack@=aa(string)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 117 with following arguments:
+# Arg1: Const@=true(bool)
+# Dest: Stack@()
+# Executing instruction: IJUMPIFNEQS at line: 118 with following arguments:
+# Arg1: Stack@=true(bool)
+# Arg2: Stack@=true(bool)
+# Executing instruction: IPUSHS at line: 119 with following arguments:
+# Arg1: Const@=1(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 120 with following arguments:
+# Arg1: Stack@=1(int)
+# Dest: LF@*tmp=1(int)
+# Executing instruction: IWRITE at line: 121 with following arguments:
+# Arg1: LF@*tmp=1(int)
+# Executing instruction: IJUMP at line: 122 with following arguments:
+# Executing instruction: ILABEL at line: 127 with following arguments:
+# Executing instruction: IJUMP at line: 128 with following arguments:
+# Executing instruction: ILABEL at line: 129 with following arguments:
+# Executing instruction: IGROOT at line: 131 with following arguments:
+# I am Groot at 131 (687).
+# 
+# STDOUT DIFF:
+# 
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 687 (167+520)
+# GROOT: 687
+# 
+#   1: ' string compare
+#   2: scope
+#   3: 	dim str1 as string
+#   4: 	dim str2 as string
+#   5: 
+#   6: 	if str1 > str2 then
+#   7: 		print 0;
+#   8: 	else
+#   9: 		print 1;
+#  10: 	end if
+#  11: 
+#  12: 	if str1 >= str2 then
+#  13: 		print 1;
+#  14: 	else
+#  15: 		print 0;
+#  16: 	end if
+#  17: 
+#  18: 	str1 = !"a"
+#  19: 	str2 = !"b"
+#  20: 	if str1 < str2 then
+#  21: 		print 1;
+#  22: 	else
+#  23: 		print 0;
+#  24: 	end if
+#  25: 
+#  26: 	str1 = !"aa"
+#  27: 	str2 = !"aac"
+#  28: 	if str2 > str1 then
+#  29: 		print 1;
+#  30: 	else
+#  31: 		print 0;
+#  32: 	end if
+#  33: 
+#  34: end scope
+
+########################################
+
+# Generated code                                                                #     2/129
+# IFJ                                                                           #     3/129
+# xbenes49 xbolsh00 xpolan09                                                    #     4/129
+# 2017                                                                          #     5/129
+.IFJcode17                                                                      #     7/129
+CREATEFRAME                                                                     #     8/129
+PUSHFRAME                                                                       #     9/129
+DEFVAR LF@*tmp                                                                  #    10/129
+DEFVAR LF@*foo                                                                  #    11/129
+DEFVAR LF@*bar                                                                  #    12/129
+JUMP $main                                                                      #    13/129
+LABEL $main                                                                     #    15/129
+DEFVAR LF@str1                                                                  #    16/129
+DEFVAR LF@*baaaaa                                                               #    17/129
+MOVE LF@*baaaaa string@                                                         #    18/129
+CONCAT LF@*baaaaa LF@*baaaaa string@                                            #    19/129
+PUSHS LF@*baaaaa                                                                #    20/129
+POPS LF@str1                                                                    #    21/129
+DEFVAR LF@str2                                                                  #    22/129
+DEFVAR LF@*caaaaa                                                               #    23/129
+MOVE LF@*caaaaa string@                                                         #    24/129
+CONCAT LF@*caaaaa LF@*caaaaa string@                                            #    25/129
+PUSHS LF@*caaaaa                                                                #    26/129
+POPS LF@str2                                                                    #    27/129
+DEFVAR LF@*daaaaa                                                               #    28/129
+MOVE LF@*daaaaa string@                                                         #    29/129
+CONCAT LF@*daaaaa LF@*daaaaa LF@str1                                            #    30/129
+PUSHS LF@*daaaaa                                                                #    31/129
+DEFVAR LF@*eaaaaa                                                               #    32/129
+MOVE LF@*eaaaaa string@                                                         #    33/129
+CONCAT LF@*eaaaaa LF@*eaaaaa LF@str2                                            #    34/129
+PUSHS LF@*eaaaaa                                                                #    35/129
+GTS                                                                             #    36/129
+PUSHS bool@true                                                                 #    37/129
+JUMPIFNEQS $aaaaaa                                                              #    38/129
+PUSHS int@0                                                                     #    39/129
+POPS LF@*tmp                                                                    #    40/129
+WRITE LF@*tmp                                                                   #    41/129
+JUMP $baaaaa                                                                    #    42/129
+LABEL $aaaaaa                                                                   #    43/129
+PUSHS int@1                                                                     #    44/129
+POPS LF@*tmp                                                                    #    45/129
+WRITE LF@*tmp                                                                   #    46/129
+LABEL $baaaaa                                                                   #    47/129
+DEFVAR LF@*faaaaa                                                               #    48/129
+MOVE LF@*faaaaa string@                                                         #    49/129
+CONCAT LF@*faaaaa LF@*faaaaa LF@str1                                            #    50/129
+PUSHS LF@*faaaaa                                                                #    51/129
+DEFVAR LF@*gaaaaa                                                               #    52/129
+MOVE LF@*gaaaaa string@                                                         #    53/129
+CONCAT LF@*gaaaaa LF@*gaaaaa LF@str2                                            #    54/129
+PUSHS LF@*gaaaaa                                                                #    55/129
+LTS                                                                             #    56/129
+PUSHS bool@true                                                                 #    57/129
+JUMPIFEQS $caaaaa                                                               #    58/129
+PUSHS int@1                                                                     #    59/129
+POPS LF@*tmp                                                                    #    60/129
+WRITE LF@*tmp                                                                   #    61/129
+JUMP $daaaaa                                                                    #    62/129
+LABEL $caaaaa                                                                   #    63/129
+PUSHS int@0                                                                     #    64/129
+POPS LF@*tmp                                                                    #    65/129
+WRITE LF@*tmp                                                                   #    66/129
+LABEL $daaaaa                                                                   #    67/129
+DEFVAR LF@*haaaaa                                                               #    68/129
+MOVE LF@*haaaaa string@                                                         #    69/129
+CONCAT LF@*haaaaa LF@*haaaaa string@a                                           #    70/129
+PUSHS LF@*haaaaa                                                                #    71/129
+POPS LF@str1                                                                    #    72/129
+DEFVAR LF@*iaaaaa                                                               #    73/129
+MOVE LF@*iaaaaa string@                                                         #    74/129
+CONCAT LF@*iaaaaa LF@*iaaaaa string@b                                           #    75/129
+PUSHS LF@*iaaaaa                                                                #    76/129
+POPS LF@str2                                                                    #    77/129
+DEFVAR LF@*jaaaaa                                                               #    78/129
+MOVE LF@*jaaaaa string@                                                         #    79/129
+CONCAT LF@*jaaaaa LF@*jaaaaa LF@str1                                            #    80/129
+PUSHS LF@*jaaaaa                                                                #    81/129
+DEFVAR LF@*kaaaaa                                                               #    82/129
+MOVE LF@*kaaaaa string@                                                         #    83/129
+CONCAT LF@*kaaaaa LF@*kaaaaa LF@str2                                            #    84/129
+PUSHS LF@*kaaaaa                                                                #    85/129
+LTS                                                                             #    86/129
+PUSHS bool@true                                                                 #    87/129
+JUMPIFNEQS $eaaaaa                                                              #    88/129
+PUSHS int@1                                                                     #    89/129
+POPS LF@*tmp                                                                    #    90/129
+WRITE LF@*tmp                                                                   #    91/129
+JUMP $faaaaa                                                                    #    92/129
+LABEL $eaaaaa                                                                   #    93/129
+PUSHS int@0                                                                     #    94/129
+POPS LF@*tmp                                                                    #    95/129
+WRITE LF@*tmp                                                                   #    96/129
+LABEL $faaaaa                                                                   #    97/129
+DEFVAR LF@*laaaaa                                                               #    98/129
+MOVE LF@*laaaaa string@                                                         #    99/129
+CONCAT LF@*laaaaa LF@*laaaaa string@aa                                          #   100/129
+PUSHS LF@*laaaaa                                                                #   101/129
+POPS LF@str1                                                                    #   102/129
+DEFVAR LF@*maaaaa                                                               #   103/129
+MOVE LF@*maaaaa string@                                                         #   104/129
+CONCAT LF@*maaaaa LF@*maaaaa string@aac                                         #   105/129
+PUSHS LF@*maaaaa                                                                #   106/129
+POPS LF@str2                                                                    #   107/129
+DEFVAR LF@*naaaaa                                                               #   108/129
+MOVE LF@*naaaaa string@                                                         #   109/129
+CONCAT LF@*naaaaa LF@*naaaaa LF@str2                                            #   110/129
+PUSHS LF@*naaaaa                                                                #   111/129
+DEFVAR LF@*oaaaaa                                                               #   112/129
+MOVE LF@*oaaaaa string@                                                         #   113/129
+CONCAT LF@*oaaaaa LF@*oaaaaa LF@str1                                            #   114/129
+PUSHS LF@*oaaaaa                                                                #   115/129
+GTS                                                                             #   116/129
+PUSHS bool@true                                                                 #   117/129
+JUMPIFNEQS $gaaaaa                                                              #   118/129
+PUSHS int@1                                                                     #   119/129
+POPS LF@*tmp                                                                    #   120/129
+WRITE LF@*tmp                                                                   #   121/129
+JUMP $haaaaa                                                                    #   122/129
+LABEL $gaaaaa                                                                   #   123/129
+PUSHS int@0                                                                     #   124/129
+POPS LF@*tmp                                                                    #   125/129
+WRITE LF@*tmp                                                                   #   126/129
+LABEL $haaaaa                                                                   #   127/129
+JUMP $end                                                                       #   128/129
+LABEL $end                                                                      #   129/129
+

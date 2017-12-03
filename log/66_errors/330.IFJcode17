@@ -1,0 +1,107 @@
+# 2017-12-04 00:15:03.639489
+# SECTION: 66_errors
+# TEST: 330
+# INFO: Errors during interpretation
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IPUSHS at line: 16 with following arguments:
+# Arg1: Const@=3(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 17 with following arguments:
+# Arg1: Stack@=3(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 18 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 19 with following arguments:
+# Arg1: Stack@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: Const@=0.2(double)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 21 with following arguments:
+# Arg1: Stack@=0(double)
+# Arg2: Stack@=0.2(double)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 22 with following arguments:
+# Arg1: Stack@=3(double)
+# Arg2: Stack@=-0.2(double)
+# Dest: Stack@()
+# Executing instruction: IFLOAT2R2EINTS at line: 23 with following arguments:
+# Arg1: Stack@=-15(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 24 with following arguments:
+# Arg1: Stack@=-15(int)
+# Dest: LF@*tmp()
+# Executing instruction: IWRITE at line: 25 with following arguments:
+# Arg1: LF@*tmp=-15(int)
+# Executing instruction: IJUMP at line: 26 with following arguments:
+# Executing instruction: ILABEL at line: 27 with following arguments:
+# Executing instruction: IGROOT at line: 29 with following arguments:
+# I am Groot at 29 (83).
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+
+
+# CURRENT INTERPRETER STDOUT:
+
+# -15
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 57
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: ---
+# GROOT: 83
+# 
+#   1: scope 
+#   2:  print 3\(0-0.2); 
+#   3:  end scope
+
+########################################
+
+# Generated code                                                                #     2/27
+# IFJ                                                                           #     3/27
+# xbenes49 xbolsh00 xpolan09                                                    #     4/27
+# 2017                                                                          #     5/27
+.IFJcode17                                                                      #     7/27
+CREATEFRAME                                                                     #     8/27
+PUSHFRAME                                                                       #     9/27
+DEFVAR LF@*tmp                                                                  #    10/27
+DEFVAR LF@*foo                                                                  #    11/27
+DEFVAR LF@*bar                                                                  #    12/27
+JUMP $main                                                                      #    13/27
+LABEL $main                                                                     #    15/27
+PUSHS int@3                                                                     #    16/27
+INT2FLOATS                                                                      #    17/27
+PUSHS int@0                                                                     #    18/27
+INT2FLOATS                                                                      #    19/27
+PUSHS float@0.2                                                                 #    20/27
+SUBS                                                                            #    21/27
+DIVS                                                                            #    22/27
+FLOAT2R2EINTS                                                                   #    23/27
+POPS LF@*tmp                                                                    #    24/27
+WRITE LF@*tmp                                                                   #    25/27
+JUMP $end                                                                       #    26/27
+LABEL $end                                                                      #    27/27
+

@@ -1,0 +1,141 @@
+# 2017-12-04 00:15:03.686458
+# SECTION: 96_programs
+# TEST: 03
+# INFO: Swap
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ICREATEFRAME at line: 8 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@*tmp
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@*foo
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@*bar
+# Executing instruction: IJUMP at line: 13 with following arguments:
+# Executing instruction: ILABEL at line: 15 with following arguments:
+# Executing instruction: IDEFVAR at line: 16 with following arguments:
+# Dest: LF@a
+# Executing instruction: IPUSHS at line: 17 with following arguments:
+# Arg1: Const@=10(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 18 with following arguments:
+# Arg1: Stack@=10(int)
+# Dest: LF@a()
+# Executing instruction: IDEFVAR at line: 19 with following arguments:
+# Dest: LF@b
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: Const@=30(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 21 with following arguments:
+# Arg1: Stack@=30(int)
+# Dest: LF@b()
+# Executing instruction: IDEFVAR at line: 22 with following arguments:
+# Dest: LF@pomocna
+# Executing instruction: IPUSHS at line: 23 with following arguments:
+# Arg1: LF@b=30(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 24 with following arguments:
+# Arg1: Stack@=30(int)
+# Dest: LF@pomocna()
+# Executing instruction: IPUSHS at line: 25 with following arguments:
+# Arg1: LF@a=10(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 26 with following arguments:
+# Arg1: Stack@=10(int)
+# Dest: LF@b=30(int)
+# Executing instruction: IPUSHS at line: 27 with following arguments:
+# Arg1: LF@pomocna=30(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 28 with following arguments:
+# Arg1: Stack@=30(int)
+# Dest: LF@a=10(int)
+# Executing instruction: IPUSHS at line: 29 with following arguments:
+# Arg1: LF@a=30(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 30 with following arguments:
+# Arg1: Stack@=30(int)
+# Dest: LF@*tmp()
+# Executing instruction: IWRITE at line: 31 with following arguments:
+# Arg1: LF@*tmp=30(int)
+# Executing instruction: IPUSHS at line: 32 with following arguments:
+# Arg1: LF@b=10(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 33 with following arguments:
+# Arg1: Stack@=10(int)
+# Dest: LF@*tmp=30(int)
+# Executing instruction: IWRITE at line: 34 with following arguments:
+# Arg1: LF@*tmp=10(int)
+# Executing instruction: IJUMP at line: 35 with following arguments:
+# Executing instruction: ILABEL at line: 36 with following arguments:
+# Executing instruction: IGROOT at line: 38 with following arguments:
+# I am Groot at 38 (146).
+# 
+# STDOUT DIFF:
+# 
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 0
+# PRICE: 146 (36+110)
+# GROOT: 146
+# 
+#   1: 'Swap
+#   2: scope 
+#   3: 
+#   4: dim a as integer = 10
+#   5: dim b as integer = 30
+#   6: 
+#   7: dim pomocna as integer = b
+#   8: b = a
+#   9: a = pomocna
+#  10: 
+#  11: print a; b;
+#  12: 
+#  13: end scope
+
+########################################
+
+# Generated code                                                                #     2/36
+# IFJ                                                                           #     3/36
+# xbenes49 xbolsh00 xpolan09                                                    #     4/36
+# 2017                                                                          #     5/36
+.IFJcode17                                                                      #     7/36
+CREATEFRAME                                                                     #     8/36
+PUSHFRAME                                                                       #     9/36
+DEFVAR LF@*tmp                                                                  #    10/36
+DEFVAR LF@*foo                                                                  #    11/36
+DEFVAR LF@*bar                                                                  #    12/36
+JUMP $main                                                                      #    13/36
+LABEL $main                                                                     #    15/36
+DEFVAR LF@a                                                                     #    16/36
+PUSHS int@10                                                                    #    17/36
+POPS LF@a                                                                       #    18/36
+DEFVAR LF@b                                                                     #    19/36
+PUSHS int@30                                                                    #    20/36
+POPS LF@b                                                                       #    21/36
+DEFVAR LF@pomocna                                                               #    22/36
+PUSHS LF@b                                                                      #    23/36
+POPS LF@pomocna                                                                 #    24/36
+PUSHS LF@a                                                                      #    25/36
+POPS LF@b                                                                       #    26/36
+PUSHS LF@pomocna                                                                #    27/36
+POPS LF@a                                                                       #    28/36
+PUSHS LF@a                                                                      #    29/36
+POPS LF@*tmp                                                                    #    30/36
+WRITE LF@*tmp                                                                   #    31/36
+PUSHS LF@b                                                                      #    32/36
+POPS LF@*tmp                                                                    #    33/36
+WRITE LF@*tmp                                                                   #    34/36
+JUMP $end                                                                       #    35/36
+LABEL $end                                                                      #    36/36
+

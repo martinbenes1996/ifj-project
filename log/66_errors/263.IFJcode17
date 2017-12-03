@@ -1,0 +1,54 @@
+# 2017-12-04 00:15:03.325951
+# SECTION: 66_errors
+# TEST: 263
+# INFO: Fail type compatibility
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: BASE, UNARY
+# STATE: SUCCESS
+# 
+# COMPILER STDERR:
+# pedant.c: P_HandleTarget: l.634: incompatible type
+# incompatible type. Line: 2
+# 
+# INTERPRETER STDERR:
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 4
+# CURRENT COMPILER EXIT CODE: 4
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: None
+# PRICE: ---
+# GROOT: ---
+# 
+#   1: scope 
+#   2:  dim __a7as as string  = 31.5
+#   3:  end scope
+
+########################################
+
+# Generated code                                                                #     2/18
+# IFJ                                                                           #     3/18
+# xbenes49 xbolsh00 xpolan09                                                    #     4/18
+# 2017                                                                          #     5/18
+.IFJcode17                                                                      #     7/18
+CREATEFRAME                                                                     #     8/18
+PUSHFRAME                                                                       #     9/18
+DEFVAR LF@*tmp                                                                  #    10/18
+DEFVAR LF@*foo                                                                  #    11/18
+DEFVAR LF@*bar                                                                  #    12/18
+JUMP $main                                                                      #    13/18
+LABEL $main                                                                     #    15/18
+DEFVAR LF@__a7as                                                                #    16/18
+JUMP $end                                                                       #    17/18
+LABEL $end                                                                      #    18/18
+
