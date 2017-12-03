@@ -894,9 +894,7 @@ Phrasem Base() {
         }
 
         else {
-          returnByte(input);
-          end = true;
-          break;
+          RaiseError("bad base", ErrorType_Lexical);
         }
 
       //binary number

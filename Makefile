@@ -14,7 +14,7 @@ all:
 .PHONY: doc
 doc:
 	@echo "Generating documentation.";\
-	doxygen Doxyfile 2> /dev/null > /dev/null
+	#doxygen Doxyfile 2> /dev/null > /dev/null
 	cd doc && pdflatex ifj.tex
 
 # test
@@ -33,7 +33,25 @@ help:
 .PHONY: zip
 zip:
 	@echo "Compressing and zipping.";\
-	tar -zcvf ifj.tar.gz src/*.c src/*.h Makefile README install.sh dev/* test/* > /dev/null
+	mkdir tmp
+	@printf "";\
+	cp src/*.c tmp/
+	@printf "";\
+	cp src/*.h tmp/
+	@printf "";\
+	cp doc/Makefile tmp/
+	@printf "";\
+	cp doc/rozsireni tmp/
+	@printf "";\
+	cp doc/rozdeleni tmp/
+	@printf "";\
+	make doc 2> /dev/null > /dev/null
+	@printf "";\
+	cp doc/dokumentace.pdf tmp/
+	@printf "";\
+	cd tmp && tar -zcvf ~/Desktop/xbenes49.tgz * > /dev/null 2>/dev/null && cd ..
+	@printf "";\
+	rm -rf tmp
 
 # clean
 .PHONY: clean
@@ -41,6 +59,6 @@ clean:
 	@printf "";\
 	cd ./src && make clean -s
 	@echo "Cleaning project files.";\
-	rm -rf doc/html doc/*.toc doc/*.aux doc/*.log
+	rm -rf doc/html doc/*.toc doc/*.aux doc/*.log tmp/
 	@printf "";\
 	$(MAKE) -C test/ -s
