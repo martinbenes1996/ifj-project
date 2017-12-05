@@ -51,6 +51,7 @@ typedef enum
   GState_Length,                /**< Function length(). */
   GState_Int2Str,               /**< Function chr(). */
   GState_Asc,                   /**< Function asc(). */
+  GState_SubStr,                /**< Function substr(). */
 
   // others
   GState_Empty                  /**< Empty. */
@@ -84,6 +85,7 @@ char * GStateToStr(GState st)
     case GState_Print: return "GState_Print";
     case GState_Return: return "GState_Return";
     case GState_StringExpression: return "GState_StringExpression";
+    case GState_SubStr: return "GState_SubStr";
     case GState_VariableDeclaration: return "GState_VariableDeclaration";
     default: return "UNKNOWN STATE!";
   }
@@ -465,6 +467,84 @@ void GenerateAsc()
   free((void *)lbl);
 }
 
+void GenerateSubStr()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generating substr.");
+  #endif
+
+  const char * result = strdup(GenerateTmpVariable());
+  out("DEFVAR LF@%s", result);
+  out("MOVE LF@%s string@", result);
+  out("POPS LF@*foo"); // foo - n
+  out("POPS LF@*bar"); // bar - i
+  out("POPS LF@*tmp"); // tmp - str
+  const char * len = strdup(GenerateTmpVariable());
+  out("DEFVAR LF@%s", len);
+  out("STRLEN LF@%s LF@*tmp", len);
+
+  const char * nempty = GenerateLabel();
+  out("PUSHS LF@*tmp");
+  out("PUSHS string@");
+  out("JUMPIFNEQS %s", nempty);
+    const char * retempty = GenerateLabel();
+    out("LABEL %s", retempty);
+    const char * done = GenerateLabel();
+    out("JUMP %s", done);
+
+  out("LABEL %s", nempty);
+
+  out("PUSHS LF@*bar");
+  out("PUSHS int@1");
+  out("LTS");
+  out("PUSHS bool@true");
+  out("JUMPIFEQS %s", retempty);
+
+  out("PUSHS LF@*foo");
+  out("PUSHS int@0");
+  out("LTS");
+  out("PUSHS bool@true");
+  const char * retall = GenerateLabel();
+  out("JUMPIFEQS %s", retall);
+
+  const char * nall = GenerateLabel();
+  out("JUMP %s", nall);
+
+  out("LABEL %s", retall);
+    // n = len - 1 + 1
+
+  out("LABEL %s", nall);
+
+  const char * pom = GenerateTmpVariable();
+  out("DEFVAR LF@%s", pom);
+  out("SUB LF@*bar LF@*bar int@1");
+  const char *newchar = GenerateLabel();
+  out("LABEL %s", newchar);
+  out("GETCHAR LF@%s LF@*tmp LF@*bar", pom);
+  out("CONCAT LF@%s LF@%s LF@%s", result, result, pom);
+  out("ADD LF@*bar LF@*bar int@1");
+  out("PUSHS LF@*bar");
+  out("PUSHS LF@%s", len);
+  out("LTS");
+  out("PUSHS bool@true");
+  out("JUMPIFEQS %s", newchar);
+
+  out("LABEL %s", done);
+
+  out("PUSHS LF@%s", result);
+
+  free((void *)result);
+  free((void *)len);
+  free((void *)nempty);
+  free((void *)retempty);
+  free((void *)done);
+  free((void *)retall);
+  free((void *)nall);
+  //free(pom);
+  free((void *)newchar);
+
+}
+
 void GenerateAritm(Stack s)
 {
   #ifdef GENERATOR_DEBUG
@@ -578,6 +658,10 @@ bool Send(Stack s)
   else if(below == GState_Empty)
   {
     PopGState();
+  }
+  else if(below == GState_SubStr)
+  {
+    GenerateSubStr();
   }
 
   #ifdef GENERATOR_DEBUG
@@ -895,6 +979,15 @@ void G_Scope()
   #endif
 
   out("LABEL $main");
+}
+
+void G_SubStr()
+{
+  #ifdef GENERATOR_DEBUG
+    debug("Generate substr.");
+  #endif
+
+  PushGState(GState_SubStr);
 }
 
 void G_VariableDeclaration()

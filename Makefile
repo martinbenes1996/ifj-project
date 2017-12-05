@@ -15,7 +15,7 @@ all:
 doc:
 	@echo "Generating documentation.";\
 	#doxygen Doxyfile 2> /dev/null > /dev/null
-	cd doc && pdflatex ifj.tex
+	cd doc && pdflatex dokumentace.tex
 
 # test
 .PHONY: test
@@ -34,7 +34,7 @@ help:
 zip:
 	@echo "Compressing and zipping.";\
 	mkdir tmp
-	@printf "================= IFJ test ================\n";\
+	@printf "";\
 	cp src/*.c tmp/
 	@printf "";\
 	cp src/*.h tmp/
@@ -48,7 +48,7 @@ zip:
 	make doc 2> /dev/null > /dev/null
 	@printf "";\
 	cp doc/dokumentace.pdf tmp/
-	@printf "";\
+	@printf "================= IFJ test ================\n";\
 	cd tmp && tar -zcvf ~/Desktop/xbenes49.tgz * > /dev/null 2>/dev/null && cd ..
 	@printf "";\
 	doc/is_it_ok.sh ~/Desktop/xbenes49.tgz tmp

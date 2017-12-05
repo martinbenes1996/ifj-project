@@ -1013,6 +1013,7 @@ bool VariableDefinitionParse()
   // declare
   HandlePhrasem(var);
   if(P_VariableDefined(var)) RaiseError("variable already defined", ErrorType_Semantic1);
+  if(P_FunctionExists(var)) RaiseError("function of the same name already defined", ErrorType_Semantic1);
 
   // semantics
   if(!P_DefineNewVariable(var, dt)) return false;
@@ -1317,6 +1318,7 @@ bool FunctionDeclarationParse()
     RaiseError("FunctionDeclarationParse: redeclaration or declaration of an already defined function",
                                                                                 ErrorType_Semantic1);
   }
+  if(P_VariableDefined(funcname)) RaiseError("variable of the same name already defined", ErrorType_Semantic1);
   // later you just have to call P_DeclareNewFunction
   // pouzivat funkci P_FunctionDefined je zbytecne
 
@@ -1339,6 +1341,7 @@ bool FunctionDeclarationParse()
       // variable
       Phrasem arg = CheckQueue(arg);
       if(!VariableParse(arg)) RaiseExpectedError("identificator");
+      if(findParamName(params, arg->d.str)) RaiseError("duplicit parameter name", ErrorType_Semantic1);
 
       // keyword 'as'
       CheckKeyword("as");
@@ -1349,7 +1352,7 @@ bool FunctionDeclarationParse()
       DataType dt = getDataType(type);
 
       // parameter to add
-      if(!paramAdd(&params, NULL, dt))
+      if(!paramAdd(&params, arg->d.str, dt))
         RaiseError("list allocation error", ErrorType_Internal);
 
       // , or )
@@ -1624,8 +1627,38 @@ bool SubStrParse()
     debug("SubStr call parse.");
   #endif
 
-  // call
-  //...
+  G_SubStr();
+  G_Empty();
+  G_Empty();
+
+  CheckOperator("(");
+
+  if(!ExpressionParse()) return false;
+  /*-------------- GENERATOR ------------*/
+  G_Expression2StringExpression();
+  P_MoveStackToGenerator();
+  if(!P_CheckDataType(DataType_String)) return false;
+  /*-------------------------------------*/
+
+  CheckOperator(",");
+
+  if(!ExpressionParse()) return false;
+  /*-------------- GENERATOR ------------*/
+  P_MoveStackToGenerator();
+  if(!P_CheckDataType(DataType_Integer)) return false;
+  /*-------------------------------------*/
+
+  CheckOperator(",");
+  extraCloseBracket = true;
+  if(!ExpressionParse()) return false;
+  extraCloseBracket = false;
+  /*-------------- GENERATOR ------------*/
+  P_MoveStackToGenerator();
+  if(!P_CheckDataType(DataType_Integer)) return false;
+  /*-------------------------------------*/
+
+  CheckOperator(")");
+  P_HangDataType(DataType_String);
 
   return true;
 }
@@ -1725,6 +1758,7 @@ bool FunctionDefinitionParse()
       // variable
       Phrasem arg = CheckQueue(arg);
       if(!VariableParse(arg)) RaiseExpectedError("identificator");
+      if(findParamName(params, arg->d.str)) RaiseError("duplicit parameter name", ErrorType_Semantic1);
 
       // keyword 'as'
       CheckKeyword("as");
@@ -1786,11 +1820,12 @@ bool FunctionDefinitionParse()
   {
     // check params in declaration
     if(!ParametersMatches(params, findFunctionParameters(funcname->d.str)))
-      RaiseError("not matching parameters in declaration and definition", ErrorType_Semantic3);
+      RaiseError("not matching parameters in declaration and definition", ErrorType_Semantic1);
     // check return value datatype
     if(dt != findFunctionType(funcname->d.str))
-      RaiseError("not matchig return datatype in declaration and definition", ErrorType_Semantic3);
+      RaiseError("not matching return datatype in declaration and definition", ErrorType_Semantic1);
   }
+  if(P_VariableDefined(funcname)) RaiseError("variable of the same name already defined", ErrorType_Semantic1);
 
   // define new function
   if(!P_DefineNewFunction(funcname, type, params))

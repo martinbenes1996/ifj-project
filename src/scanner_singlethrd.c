@@ -151,7 +151,7 @@ bool getComment() {
         else RaiseError("bad internal state", ErrorType_Internal);
 
       case 1:
-        if ( input == EOF) RaiseLexicalError("expected \'\\n\'");
+        if ( input == EOF) {end = true; break;} // RaiseLexicalError("expected \'\\n\'");
         if ( input != '\n') { break; }
         else { end = true; Config_setLine(Config_getLine()+1); returnByte('\n'); break; }
 
@@ -616,17 +616,24 @@ Phrasem getNumber(){
     debug("Get Number");
   #endif
 
-  int state = 0; // state of the machine
+  int state = 13; // state of the machine
   // integer
   double result = 0; // result of integers
   // double
   int order = 1; // iterator of exponent
   double exponent = 0; // result of the exponent
 
+  bool sign = false;
+
   int input;
   while(1){
     input = getByte();
     switch (state) {
+      case 13:
+        if(input == '-') sign = true;
+        returnByte(input);
+        state = 0;
+        break;
 
       case 0:
         if (isdigit(input)) {
@@ -675,6 +682,10 @@ Phrasem getNumber(){
         if (isdigit(input)) {
           result = result + (input - '0')/pow(10,order);
           order++;
+        }
+        else if((input == 'e') || input == 'E')
+        {
+          state = 4;
         }
 
         else {
@@ -757,6 +768,7 @@ Phrasem getNumber(){
         do {
           returnByte(input);
           result *= pow(2, exponent);
+          if(sign) result *= -1;
 
           DataUnion uni;
           uni.dvalue = result;
@@ -783,6 +795,7 @@ Phrasem getNumber(){
           returnByte(input);
 
           result *= pow(2, -exponent);
+          if(sign) result *= -1;
 
           DataUnion uni;
           uni.dvalue = result;
@@ -808,6 +821,7 @@ Phrasem getNumber(){
         do {
           returnByte(input);
           DataUnion uni;
+          if(sign) result *= -1;
           uni.dvalue = result;
 
           int i = constInsert(DataType_Double, uni);
@@ -831,6 +845,7 @@ Phrasem getNumber(){
         do {
           returnByte(input);
           DataUnion uni;
+          if(sign) result *= -1;
           uni.ivalue = (int)result;
 
           int i = constInsert(DataType_Integer, uni);
@@ -878,17 +893,17 @@ Phrasem Base() {
         }
 
       case 1:
-        if (input == 'B') {
+        if ((input == 'B') || (input == 'b')) {
           state = 2;
           break;
         }
 
-        else if (input == 'O') {
+        else if ((input == 'O') || (input == 'o')) {
           state = 3;
           break;
         }
 
-        else if (input == 'H') {
+        else if ((input == 'H') || (input == 'h')) {
           state = 4;
           break;
         }

@@ -107,3 +107,18 @@ inline bool ParametersMatches(Parameters p1, Parameters p2)
 
   return (ptr1 == NULL) && (ptr2 == NULL);
 }
+
+bool findParamName(Parameters parameter, const char * name)
+{
+  struct paramFce * pom;
+
+  if(parameter == NULL) return false;
+
+  while(parameter != NULL)
+  {
+    pom = parameter;
+    parameter = parameter->next;
+    if((pom->name != NULL) && (!strcmp(pom->name, name))) return true;
+  }
+  return false;
+}

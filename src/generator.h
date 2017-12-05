@@ -137,6 +137,9 @@ void G_Print();
 /** @brief Announces scope. */
 void G_Scope();
 
+/** @brief Announces call of built-in function substr. */
+void G_SubStr();
+
 /** @brief Announces return call to generator. */
 void G_Return();
 

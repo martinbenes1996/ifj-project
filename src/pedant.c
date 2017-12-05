@@ -692,7 +692,7 @@ bool P_CheckDataType(DataType dt)
   }
 
   else if((generated == DataType_Double)&&(waiting == DataType_Integer)) {
-    GenerateTypeCast(TypeCast_Int2Double);
+    GenerateTypeCast(TypeCast_Double2Int);
   }
 
   else RaiseError("incompatible types", ErrorType_Semantic2);

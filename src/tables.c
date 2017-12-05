@@ -333,7 +333,6 @@ int constInsert(DataType type, DataUnion uni)
         debug("Insert string %s to index %d", uni.svalue, consttable.count);
       #endif
         consttable.arr[consttable.count].type = DataType_String;
-        /*
         if((consttable.arr[consttable.count].data.svalue = malloc(strlen(uni.svalue) * sizeof(char)
                                                                     + sizeof(char))) == NULL)
 
@@ -342,9 +341,8 @@ int constInsert(DataType type, DataUnion uni)
             setErrorMessage("constantTableInsert: could not allocate memory");
             return false;
         }
-        */
-        consttable.arr[consttable.count].data.svalue = uni.svalue;
-        //strcpy(consttable.arr[consttable.count].data.svalue, uni.svalue);
+        //consttable.arr[consttable.count].data.svalue = uni.svalue;
+        strcpy(consttable.arr[consttable.count].data.svalue, uni.svalue);
     }
     consttable.count++;
 

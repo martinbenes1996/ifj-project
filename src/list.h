@@ -88,6 +88,8 @@ DataType paramPop(Parameters * p);
  */
 bool ParametersMatches(Parameters p1, Parameters p2);
 
+bool findParamName(Parameters parameter, const char * name);
+
 /** @} */
 /*-----------------------------------------------------------*/
 
