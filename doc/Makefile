@@ -49,7 +49,6 @@ endif
 %.o : %.c
 	@echo "Compiling $@.";\
 	$(cc) $(flags) -c $< -o $@
-	rm -rf *.dep
 
 
 

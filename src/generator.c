@@ -473,15 +473,16 @@ void GenerateSubStr()
     debug("Generating substr.");
   #endif
 
+  out("CREATEFRAME");
   const char * result = strdup(GenerateTmpVariable());
-  out("DEFVAR LF@%s", result);
+  out("DEFVAR TF@%s", result);
   out("MOVE LF@%s string@", result);
   out("POPS LF@*foo"); // foo - n
   out("POPS LF@*bar"); // bar - i
   out("POPS LF@*tmp"); // tmp - str
   const char * len = strdup(GenerateTmpVariable());
-  out("DEFVAR LF@%s", len);
-  out("STRLEN LF@%s LF@*tmp", len);
+  out("DEFVAR TF@%s", len);
+  out("STRLEN TF@%s LF@*tmp", len);
 
   const char * nempty = GenerateLabel();
   out("PUSHS LF@*tmp");
@@ -516,22 +517,22 @@ void GenerateSubStr()
   out("LABEL %s", nall);
 
   const char * pom = GenerateTmpVariable();
-  out("DEFVAR LF@%s", pom);
+  out("DEFVAR TF@%s", pom);
   out("SUB LF@*bar LF@*bar int@1");
   const char *newchar = GenerateLabel();
   out("LABEL %s", newchar);
-  out("GETCHAR LF@%s LF@*tmp LF@*bar", pom);
-  out("CONCAT LF@%s LF@%s LF@%s", result, result, pom);
+  out("GETCHAR TF@%s LF@*tmp LF@*bar", pom);
+  out("CONCAT TF@%s TF@%s TF@%s", result, result, pom);
   out("ADD LF@*bar LF@*bar int@1");
   out("PUSHS LF@*bar");
-  out("PUSHS LF@%s", len);
+  out("PUSHS TF@%s", len);
   out("LTS");
   out("PUSHS bool@true");
   out("JUMPIFEQS %s", newchar);
 
   out("LABEL %s", done);
 
-  out("PUSHS LF@%s", result);
+  out("PUSHS TF@%s", result);
 
   free((void *)result);
   free((void *)len);
@@ -647,14 +648,6 @@ bool Send(Stack s)
   {
     GenerateLength();
   }
-  else if(below == GState_Int2Str)
-  {
-    GenerateInt2Str();
-  }
-  else if(below == GState_Asc)
-  {
-    GenerateAsc();
-  }
   else if(below == GState_Empty)
   {
     PopGState();
@@ -722,6 +715,28 @@ void AssignArgument(Phrasem p, unsigned ord)
 {
     sprintf(param_name, "*%u", ord);
     out("MOVE LF@%s LF@%s", p->d.str, param_name);
+}
+
+void GenerateBuiltIn()
+{
+
+  GState func = PopGState();
+  if(func == GState_Asc)
+  {
+    GenerateAsc();
+  }
+  else if(func == GState_Int2Str)
+  {
+    GenerateInt2Str();
+  }
+  else if(func == GState_SubStr)
+  {
+    GenerateSubStr();
+  }
+  else if(func == GState_Length)
+  {
+    GenerateLength();
+  }
 }
 
 

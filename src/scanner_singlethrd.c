@@ -59,8 +59,6 @@ void EndScanner(const char * msg, ErrorType errtype)
       debug("End Scanner.");
     #endif
   }
-
-  ClearStack(mem);
 }
 
 void ClearScanner()
@@ -70,6 +68,8 @@ void ClearScanner()
   if (p != NULL) free(p);
 
   EndScanner(NULL, ErrorType_Ok);
+
+  ClearStack(mem);
 }
 
 /**
@@ -84,8 +84,6 @@ void ClearScanner()
   do {                                                          \
     err("%s: %s: l.%d: %s", __FILE__, __func__, __LINE__, msg); \
     EndScanner(msg, errtype);                                   \
-    char * p = GetBuffer();                                     \
-    if (p != NULL) free(p);                                     \
     return NULL;                                                \
   } while(0)
 
@@ -187,6 +185,7 @@ Phrasem getOperator() {
   int state = 0;
   int input;
   bool end = false;
+  SubstitudeEscapeSequences(false);
 
   while(!end) {
     input = getByte();
@@ -389,7 +388,6 @@ Phrasem getOperator() {
   char * p = GetBuffer();
   if(p == NULL) RaiseError("buffer allocation failed", ErrorType_Internal);
 
-
   long x = getOperatorId(p);
   free(p);
 
@@ -482,7 +480,7 @@ Phrasem getString() {
           state = 2;
           break;
         }
-        // process \<backslash>
+        // process \(2x)
         else if (input == '\\') {
           SaveToBuffer('\\');
           state = 2;
@@ -531,6 +529,7 @@ Phrasem getIdentifier(){
   #endif
 
   Decapitalize(true);
+  SubstitudeEscapeSequences(false);
 
 	int state = 0;
  	int input;
@@ -767,7 +766,7 @@ Phrasem getNumber(){
       case 7:
         do {
           returnByte(input);
-          result *= pow(2, exponent);
+          result *= pow(10, exponent);
           if(sign) result *= -1;
 
           DataUnion uni;
@@ -794,7 +793,7 @@ Phrasem getNumber(){
         do {
           returnByte(input);
 
-          result *= pow(2, -exponent);
+          result *= pow(10, -exponent);
           if(sign) result *= -1;
 
           DataUnion uni;

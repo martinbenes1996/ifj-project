@@ -48,6 +48,8 @@ bool AddToBuffer(char c);
  */
 void Decapitalize(bool d);
 
+void SubstitudeEscapeSequences(bool s);
+
 /**
  * @brief   Buffer cutter.
  *

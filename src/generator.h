@@ -170,6 +170,13 @@ void GenerateTypeCast(TokenType tc);
  */
 void GenerateArgument();
 
+/**
+ * @brief Generates built-in function.
+ *
+ * This function generates built-in function.
+ */
+void GenerateBuiltIn();
+
 /** @} */
 /*-----------------------------------------------------------*/
 

@@ -12,6 +12,7 @@ static char *buf = NULL;
 static long iter = -1;
 static long max = -1;
 static bool mdecapitalize = false;
+static bool msubst_esc = true;
 /*-------------------------*/
 
 // -------------- Decapitalize ---------------
@@ -19,6 +20,8 @@ void Decapitalize(bool d)
 {
   mdecapitalize = d;
 }
+
+void SubstitudeEscapeSequences(bool s) { msubst_esc = s; }
 
 // ---------------- GetBuffer -----------------
 char * GetBuffer()
@@ -42,6 +45,8 @@ char * GetBuffer()
   buf = NULL;
   max = -1;
   iter = -1;
+  mdecapitalize = false;
+  msubst_esc = true;
 
   // return
   return svbuf;
@@ -97,13 +102,15 @@ bool AddToBuffer(char c)
   }
 
   // others non-visible
-  else if( (c <= 32) || (c == 35) || (c == 92))
+  else if( msubst_esc && ((c <= 32) || (c == 35) || (c == 92)) /*(!isalpha(c) && !isdigit(c))*/ )
   {
     buf[iter] = '\\';
     iter++;
-    AddToBuffer((c/100) + '0');
-    AddToBuffer((c%100)/10 + '0');
-    AddToBuffer(c%10 + '0');
+
+    int m = (unsigned char)c;
+    AddToBuffer((m/100) + '0');
+    AddToBuffer((m%100)/10 + '0');
+    AddToBuffer(m%10 + '0');
   }
 
   // regular symbols

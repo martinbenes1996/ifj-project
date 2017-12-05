@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "collector.h"
@@ -1173,6 +1174,7 @@ bool ReturnParse()
   if(!ExpressionParse()) return false;
 
   // semantics
+  if((Config_getFunction() == NULL) || !strcmp(Config_getFunction(), "scope")) RaiseError("return outside function", ErrorType_Syntax);
   DataType ftype = findFunctionType(Config_getFunction());
   if(!P_CheckType_MoveStackToGenerator(ftype)) return false;
 
@@ -1605,15 +1607,14 @@ bool LengthParse()
   if(!ExpressionParse()) return false;
   extraCloseBracket = false;
 
-  /*----------- SEMANTICS -----------*/
+  /*----------- GENERATOR -----------*/
+  G_Empty();
+  G_Expression2StringExpression();
+  if(!P_MoveStackToGenerator()) return false;
   if(!P_CheckDataType(DataType_String)) return false;
   /*---------------------------------*/
 
-  /*----------- GENERATOR -----------*/
-  G_Expression2StringExpression();
-  if(!P_MoveStackToGenerator()) return false;
-  /*---------------------------------*/
-
+  GenerateBuiltIn();
   CheckOperator(")");
   P_HangDataType(DataType_Integer);
 
@@ -1628,13 +1629,12 @@ bool SubStrParse()
   #endif
 
   G_SubStr();
-  G_Empty();
-  G_Empty();
 
   CheckOperator("(");
 
   if(!ExpressionParse()) return false;
   /*-------------- GENERATOR ------------*/
+  G_Empty();
   G_Expression2StringExpression();
   P_MoveStackToGenerator();
   if(!P_CheckDataType(DataType_String)) return false;
@@ -1644,6 +1644,7 @@ bool SubStrParse()
 
   if(!ExpressionParse()) return false;
   /*-------------- GENERATOR ------------*/
+  G_Empty();
   P_MoveStackToGenerator();
   if(!P_CheckDataType(DataType_Integer)) return false;
   /*-------------------------------------*/
@@ -1653,9 +1654,12 @@ bool SubStrParse()
   if(!ExpressionParse()) return false;
   extraCloseBracket = false;
   /*-------------- GENERATOR ------------*/
+  G_Empty();
   P_MoveStackToGenerator();
   if(!P_CheckDataType(DataType_Integer)) return false;
   /*-------------------------------------*/
+
+  GenerateBuiltIn();
 
   CheckOperator(")");
   P_HangDataType(DataType_String);
@@ -1670,12 +1674,12 @@ bool AscParse()
   #endif
 
   G_Asc();
-  G_Empty();
 
   CheckOperator("(");
 
   if(!ExpressionParse()) return false;
   /*-------------- GENERATOR ------------*/
+  G_Empty();
   G_Expression2StringExpression();
   P_MoveStackToGenerator();
   if(!P_CheckDataType(DataType_String)) return false;
@@ -1687,9 +1691,12 @@ bool AscParse()
   if(!ExpressionParse()) return false;
   extraCloseBracket = false;
   /*-------------- GENERATOR ------------*/
+  G_Empty();
   P_MoveStackToGenerator();
   if(!P_CheckDataType(DataType_Integer)) return false;
   /*-------------------------------------*/
+
+  GenerateBuiltIn();
 
   CheckOperator(")");
 
@@ -1710,9 +1717,12 @@ bool ChrParse()
   if(!ExpressionParse()) return false;
 
   /*-------------- GENERATOR ------------*/
+  G_Empty();
   P_MoveStackToGenerator();
   if(!P_CheckDataType(DataType_Integer)) return false;
   /*-------------------------------------*/
+
+  GenerateBuiltIn();
 
   CheckOperator(")");
   P_HangDataType(DataType_String);
