@@ -146,7 +146,7 @@ bool getComment() {
       case 0:
         if ( input == '~') { state = 2; break; }
         else if (input == '\'') { state = 1; break; }
-        else RaiseError("bad internal state", ErrorType_Internal);
+        else RaiseError("bad symbol", ErrorType_Lexical);
 
       case 1:
         if ( input == EOF) {end = true; break;} // RaiseLexicalError("expected \'\\n\'");
@@ -418,6 +418,7 @@ Phrasem getString() {
   bool end = false;
 
   Decapitalize(false);
+  SubstitudeEscapeSequences(true);
 
   while(!end) {
     input = getByte();
@@ -425,12 +426,12 @@ Phrasem getString() {
 
       case 0:
         if (input == '!') { state = 1; }
-        else RaiseError("bad internal state", ErrorType_Internal);
+        else RaiseError("bad symbol", ErrorType_Lexical);
         break;
 
       case 1:
         if (input == '"') { state = 2; }
-        else RaiseError("bad internal state", ErrorType_Internal);
+        else RaiseError("bad symbol", ErrorType_Lexical);
         break;
 
       case 2:
@@ -490,7 +491,7 @@ Phrasem getString() {
           asciival += 100*(input - '0');
           state = 4;
         }
-        else RaiseError("bad internal state", ErrorType_Internal);
+        else RaiseError("bad symbol", ErrorType_Lexical);
 
         break;
       // second digit of \xxx
@@ -508,9 +509,10 @@ Phrasem getString() {
         if(isdigit(input))
         {
           asciival += input-'0';
-          if((asciival > 255) && (asciival < 1)) RaiseLexicalError("not valid escape sequence");
+          if((asciival > 255) || (asciival < 1)) RaiseLexicalError("not valid escape sequence");
           SaveToBuffer(asciival);
           state = 2;
+          asciival = 0;
           break;
         }
         else RaiseLexicalError("invalid escape sequence");
@@ -549,7 +551,7 @@ Phrasem getIdentifier(){
           break;
         }
 
-	      else RaiseError("bad internal state", ErrorType_Internal);
+	      else RaiseError("bad symbol", ErrorType_Lexical);
 
       // other letters
       case 1:
@@ -641,7 +643,7 @@ Phrasem getNumber(){
           break;
         }
         else {
-          RaiseError("bad internal state", ErrorType_Internal);
+          RaiseError("bad symbol", ErrorType_Lexical);
         }
 
       case 1:
@@ -888,7 +890,7 @@ Phrasem Base() {
           break;
         }
         else {
-          RaiseError("bad internal state", ErrorType_Internal);
+          RaiseError("bad symbol", ErrorType_Lexical);
         }
 
       case 1:

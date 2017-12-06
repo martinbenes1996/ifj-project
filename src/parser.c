@@ -496,7 +496,7 @@ bool RunParser()
           // success
           if(end)
           {
-            if(!wasScope) RaiseError("no scope defined", ErrorType_Semantic3);
+            if(!wasScope) RaiseError("no scope defined", ErrorType_Syntax);
             G_FinalLabel();
             break;
           }
@@ -839,12 +839,26 @@ bool LogicParse()
   #endif
   G_Logic();
 
+  bool logicInBraces = false;
+  Phrasem br = CheckQueue(br);
+  if( isOperator(br, "(") ) logicInBraces = true;
+  else ReturnToQueue(br);
 
   // left
+                                        if(logicInBraces) extraCloseBracket = true;
   if(!ExpressionParse()) return false;
-  P_MoveStackToGenerator();
+                                        Phrasem blb = CheckQueue(blb);
+                                        if(isOperator(blb, ")"))
+                                        {
+                                          logicInBraces = false;
+                                        }
+                                        else
+                                        {
+                                          ReturnToQueue(blb);
+                                        }
+                                        extraCloseBracket = false;
 
-  //Phrasem q = CheckQueue(q); // foo
+  P_MoveStackToGenerator();
 
   // parse the sign
   Phrasem p = CheckQueue(p);
@@ -859,8 +873,11 @@ bool LogicParse()
   }
 
   // right
+  if(logicInBraces) extraCloseBracket = true;
   if(!ExpressionParse()) return false;
-  //Phrasem r = CheckQueue(r);  // foo
+  if(logicInBraces) extraCloseBracket = false;
+
+  if(logicInBraces) CheckOperator(")");
 
   // sending logic operator
   #ifdef PARSER_DEBUG
@@ -1056,6 +1073,7 @@ bool VariableDefinitionParse()
     CheckSeparator();
 
     // assignment target
+    if(!P_MoveStackToGenerator()) return false;
     if(!P_HandleTarget(var)) return false;
 
   }
@@ -1069,7 +1087,8 @@ bool VariableDefinitionParse()
     CheckSeparator();
 
     // assignment target
-    P_HandleTarget(var); // semantics
+    if(!P_MoveStackToGenerator()) return false;
+    if(!P_HandleTarget(var)) return false;
 
   }
   else RaiseError("unexpected token", ErrorType_Syntax);
@@ -1092,7 +1111,7 @@ bool InputParse()
   if(!VariableParse(p)) return false;
 
   // control of previous definition
-  if( !P_VariableDefined(p)) return false;
+  if( !P_VariableDefined(p)) RaiseError("variable not defined", ErrorType_Semantic1);
 
   HandlePhrasem(p);
 
@@ -1157,7 +1176,7 @@ bool SymbolParse()
     if( !AssignmentParse() ) return false;
 
   }
-  else RaiseError("unknown symbol", ErrorType_Internal);
+  else RaiseError("unknown symbol", ErrorType_Semantic1);
 
   return true;
 }
@@ -1305,6 +1324,8 @@ bool FunctionDeclarationParse()
 
   // keyword function
   CheckKeyword("function");
+
+  if(wasScope) RaiseError("declaration after scope", ErrorType_Syntax);
 
   // function name
   Phrasem funcname = CheckQueue(funcname);
@@ -1535,6 +1556,7 @@ bool AssignmentParse()
     // expression
     if(!ExpressionParse()) return false;
 
+    if(!P_MoveStackToGenerator()) return false;
     if(!P_HandleTarget(var)) return false;
   }
 
@@ -1583,6 +1605,8 @@ bool FunctionCallParse()
     params = params->next;
   }
 
+  if(params != NULL) RaiseError("too many arguments", ErrorType_Semantic1);
+
   // )
   CheckOperator(")");
   extraCloseBracket = false;
@@ -1600,6 +1624,7 @@ bool LengthParse()
   #endif
 
   G_Length();
+  G_Empty(); // 1. parameter action
 
   CheckOperator("(");
 
@@ -1608,7 +1633,6 @@ bool LengthParse()
   extraCloseBracket = false;
 
   /*----------- GENERATOR -----------*/
-  G_Empty();
   G_Expression2StringExpression();
   if(!P_MoveStackToGenerator()) return false;
   if(!P_CheckDataType(DataType_String)) return false;
@@ -1629,12 +1653,14 @@ bool SubStrParse()
   #endif
 
   G_SubStr();
+  G_Empty(); // 1. parameter action
+  G_Empty(); // 2. parameter action
+  G_Empty(); // 3. parameter action
 
   CheckOperator("(");
 
   if(!ExpressionParse()) return false;
   /*-------------- GENERATOR ------------*/
-  G_Empty();
   G_Expression2StringExpression();
   P_MoveStackToGenerator();
   if(!P_CheckDataType(DataType_String)) return false;
@@ -1644,7 +1670,6 @@ bool SubStrParse()
 
   if(!ExpressionParse()) return false;
   /*-------------- GENERATOR ------------*/
-  G_Empty();
   P_MoveStackToGenerator();
   if(!P_CheckDataType(DataType_Integer)) return false;
   /*-------------------------------------*/
@@ -1654,7 +1679,6 @@ bool SubStrParse()
   if(!ExpressionParse()) return false;
   extraCloseBracket = false;
   /*-------------- GENERATOR ------------*/
-  G_Empty();
   P_MoveStackToGenerator();
   if(!P_CheckDataType(DataType_Integer)) return false;
   /*-------------------------------------*/
@@ -1674,12 +1698,14 @@ bool AscParse()
   #endif
 
   G_Asc();
+  G_Empty(); // 1. parameter action
+  G_Empty(); // 2. parameter action
 
   CheckOperator("(");
 
   if(!ExpressionParse()) return false;
   /*-------------- GENERATOR ------------*/
-  G_Empty();
+
   G_Expression2StringExpression();
   P_MoveStackToGenerator();
   if(!P_CheckDataType(DataType_String)) return false;
@@ -1691,7 +1717,6 @@ bool AscParse()
   if(!ExpressionParse()) return false;
   extraCloseBracket = false;
   /*-------------- GENERATOR ------------*/
-  G_Empty();
   P_MoveStackToGenerator();
   if(!P_CheckDataType(DataType_Integer)) return false;
   /*-------------------------------------*/
@@ -1710,6 +1735,7 @@ bool ChrParse()
   #endif
 
   G_Int2Str();
+  G_Empty(); // 1. parameter action
 
   CheckOperator("(");
 
@@ -1717,7 +1743,6 @@ bool ChrParse()
   if(!ExpressionParse()) return false;
 
   /*-------------- GENERATOR ------------*/
-  G_Empty();
   P_MoveStackToGenerator();
   if(!P_CheckDataType(DataType_Integer)) return false;
   /*-------------------------------------*/
@@ -1738,6 +1763,7 @@ bool FunctionDefinitionParse()
 
   G_Function();
   wasReturn = false;
+  if(wasScope) RaiseError("definition after scope", ErrorType_Syntax);
 
   // function name
   Phrasem funcname = CheckQueue(funcname);

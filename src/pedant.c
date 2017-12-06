@@ -533,7 +533,7 @@ bool P_HandleOperand(Phrasem p)
     // checks if the token contains a name of function
     if(findFunctionInTable(p->d.str))
     {
-        RaiseError("Handle_operand: function as an operand in expression! not allowed", ErrorType_Semantic2);
+        RaiseError("Handle_operand: function as an operand in expression! not allowed", ErrorType_Semantic1);
     }
     // checks if the token contains defined variable with known type
     if(findVariable(functionName, p->d.str))
@@ -596,11 +596,6 @@ bool P_HandleTarget(Phrasem p)
     #ifdef TYPECAST_DEBUG
       debug("No typecast.");
     #endif
-
-    if(target_dt == DataType_String) G_Expression2StringExpression();
-
-    if( !Send(mstack) ) return false;
-    mstack = NULL;
     if( !HandlePhrasem(p) ) return false;
   }
 
@@ -611,8 +606,6 @@ bool P_HandleTarget(Phrasem p)
     #ifdef TYPECAST_DEBUG
       debug("Source: [double]->[int].");
     #endif
-    if( !Send(mstack) ) return false;
-    mstack = NULL;
     GenerateTypeCast(TypeCast_Double2Int);
     if( !HandlePhrasem(p) ) return false;
   }
@@ -624,8 +617,6 @@ bool P_HandleTarget(Phrasem p)
     #ifdef TYPECAST_DEBUG
       debug("Source: [int]->[double].");
     #endif
-    if( !Send(mstack) ) return false;
-    mstack = NULL;
     GenerateTypeCast(TypeCast_Int2Double);
     if( !HandlePhrasem(p) ) return false;
   }

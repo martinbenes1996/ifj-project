@@ -58,6 +58,17 @@ UNARY
 \setcounter{page}{1}
 \pagenumbering{arabic}
 
+\section{Introduction}
+\begin{justify}
+In a course Formal Languages and Compilers, we have been given a task to do
+a compiler from a language {\it IFJ17} (FreeBASIC subset) to a language
+{\it IFJcode17} (special assembler-like language). We divided the work:
+scanner, parser, semantics, generator and table of symbols.
+
+The whole project was done in Linux, using {\it make} and {\it git}, this
+documentation was done in \LaTeX.
+\end{justify}
+
 \section{Lexical analysis}
 
 \begin{justify}
@@ -264,6 +275,25 @@ implementation of the stack for the pushdown automaton though.
 \end{justify}
 
 \subsection {Expression parsing}
+% ExpressionParse table
+{\scriptsize
+%{\footnotesize
+  \begin{center}
+    \begin{tabular}{ | c | c c c c c c c c c | } \hline
+                             & \textbf + & \textbf - &\textbf \textbackslash & \textbf * & \textbf / & \textbf ( & \textbf ) & \textbf i & \textbf \$  \\ \hline
+      \textbf +              & $>$       & $>$       & $<$                   & $<$       & $<$       & $<$       & $>$       & $<$       & $>$         \\
+      \textbf -              & $>$       & $>$       & $<$                   & $<$       & $<$       & $<$       & $>$       & $<$       & $>$         \\
+      \textbf \textbackslash & $>$       & $>$       & $>$                   & $<$       & $<$       & $<$       & $>$       & $<$       & $>$         \\
+      \textbf *              & $>$       & $>$       & $>$                   & $>$       & $>$       & $<$       & $>$       & $<$       & $>$         \\
+      \textbf /              & $>$       & $>$       & $>$                   & $>$       & $>$       & $<$       & $>$       & $<$       & $>$         \\
+      \textbf (              & $<$       & $<$       & $<$                   & $<$       & $<$       & $<$       & =         & $<$       & \#          \\
+      \textbf )              & $>$       & $>$       & $>$                   & $>$       & $>$       & \#        & $>$       & \#        & $>$         \\
+      \textbf i              & $>$       & $>$       & $>$                   & $>$       & $>$       & \#        & $>$       & \#        & $>$         \\
+      \textbf \$             & $<$       & $<$       & $<$                   & $<$       & $<$       & $<$       & \#        & $<$       & $>$         \\ \hline
+    \end{tabular}
+  \end{center}
+}
+
 \begin{justify}
 When the numeric expression is expected (arguments in function call, right
 side of assignment), the separate predictive parser (ExpressionParse) is

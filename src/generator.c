@@ -476,7 +476,7 @@ void GenerateSubStr()
   out("CREATEFRAME");
   const char * result = strdup(GenerateTmpVariable());
   out("DEFVAR TF@%s", result);
-  out("MOVE LF@%s string@", result);
+  out("MOVE TF@%s string@", result);
   out("POPS LF@*foo"); // foo - n
   out("POPS LF@*bar"); // bar - i
   out("POPS LF@*tmp"); // tmp - str
@@ -735,6 +735,7 @@ void GenerateBuiltIn()
   }
   else if(func == GState_Length)
   {
+
     GenerateLength();
   }
 }
