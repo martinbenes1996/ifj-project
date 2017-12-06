@@ -583,11 +583,12 @@ static bool extraCloseBracket = false;
 #define ExpressionError(msg)                                \
     do {                                                    \
     setErrorMessage(msg);                                   \
-    setErrorType(ErrorType_Syntax);                      \
+    setErrorType(ErrorType_Syntax);                         \
+    setErrorLine(Config_getLine());                         \
     } while(0)
 
 //tries to perform stack modifications based on rules (called when '>')
-int checkEPRules(/*Stack returnStack, */Stack temporaryOpStack)
+int checkEPRules(Stack temporaryOpStack)
 {
     #ifdef EXPRESSION_DEBUG
         debug("EP: checkEPRules: executing reduction rules.");

@@ -308,6 +308,7 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
                             // when only one of them is string it is an error
                             setErrorMessage("only one operand is string (add)");
                             setErrorType(ErrorType_Semantic2);
+                            setErrorLine(Config_getLine());
                             return DataType_Unknown;
                       }
                       else if(typeOfResult1 == DataType_Integer && typeOfResult2 == DataType_Double)
@@ -339,6 +340,7 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
                             // when atleast one of them is string it is an error
                             setErrorMessage("one operand is string (mul, sub)");
                             setErrorType(ErrorType_Semantic2);
+                            setErrorLine(Config_getLine());
                             return DataType_Unknown;
                       }
                       else if(typeOfResult1 == typeOfResult2)   // <<<--- both operands are the same
@@ -375,6 +377,7 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
                             // when atleast one of them is string it is an error
                             setErrorMessage("one operand is string (DivInt)");
                             setErrorType(ErrorType_Semantic2);
+                            setErrorLine(Config_getLine());
                             return DataType_Unknown;
                       }
                       else if(typeOfResult1 == DataType_Integer && typeOfResult2 == DataType_Integer)
@@ -417,6 +420,7 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
                             // when atleast one of them is string it is an error
                             setErrorMessage("one operand is string (DivDouble)");
                             setErrorType(ErrorType_Semantic2);
+                            setErrorLine(Config_getLine());
                             return DataType_Unknown;
                       }
                       else if(typeOfResult1 == DataType_Double && typeOfResult2 == DataType_Double)
@@ -450,6 +454,7 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
 
             default: setErrorMessage("invalid operator");
                      setErrorType(ErrorType_Semantic3);
+                     setErrorLine(Config_getLine());
                      return DataType_Unknown;
         }
     }
@@ -461,6 +466,7 @@ DataType RetypeRecursive(StackItem *** where, StackItem *** from)
 
         setErrorMessage("token type is not constant or variable or operator");
         setErrorType(ErrorType_Semantic3);
+        setErrorLine(Config_getLine());
         *from = &(**from)->next;
         return DataType_Unknown;
     }
